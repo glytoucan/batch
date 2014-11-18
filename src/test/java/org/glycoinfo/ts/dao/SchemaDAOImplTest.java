@@ -5,8 +5,7 @@ import static org.junit.Assert.assertFalse;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.glycoinfo.batch.BatchConfiguration;
-import org.glycoinfo.batch.ConvertTripleBatch;
+import org.glycoinfo.batch.convert.ConvertTripleBatchConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,7 @@ import static org.junit.Assert.*;
 @SpringApplicationConfiguration(classes = SchemaDAOSesameImpl.class)
 //@EnableAutoConfiguration
 // @ContextConfiguration
-@ContextConfiguration(classes = BatchConfiguration.class,initializers = ConfigFileApplicationContextInitializer.class)
+@ContextConfiguration(classes = ConvertTripleBatchConfiguration.class,initializers = ConfigFileApplicationContextInitializer.class)
 public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 
 	public static Logger logger = (Logger) LoggerFactory
@@ -36,18 +35,18 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 	@Autowired
 	SchemaDAO schemaDAO;
 
-	public static final String prefix = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n"
-			+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n"
-			+ "PREFIX owl: <http://www.w3.org/2002/07/owl#> .\n"
-			+ "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
-			+ "PREFIX dc: <http://purl.org/dc/elements/1.1/> .\n"
-			+ "PREFIX dcterms: <http://purl.org/dc/terms/> .\n"
-			+ "PREFIX dbpedia2: <http://dbpedia.org/property/> .\n"
-			+ "PREFIX dbpedia: <http://dbpedia.org/> .\n"
-			+ "PREFIX foaf: <http://xmlns.com/foaf/0.1/> .\n"
-			+ "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> .\n"
-			+ "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> .\n"
-			+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#> .\n";
+	public static final String prefix = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+			+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
+			+ "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n"
+			+ "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \n"
+			+ "PREFIX dc: <http://purl.org/dc/elements/1.1/> \n"
+			+ "PREFIX dcterms: <http://purl.org/dc/terms/> \n"
+			+ "PREFIX dbpedia2: <http://dbpedia.org/property/> \n"
+			+ "PREFIX dbpedia: <http://dbpedia.org/> \n"
+			+ "PREFIX foaf: <http://xmlns.com/foaf/0.1/> \n"
+			+ "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> \n"
+			+ "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> \n"
+			+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#> \n";
 
 	public static final String from = "from <http://glytoucan.org/rdf/demo/0.5>\n"
 			+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
@@ -373,6 +372,77 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 			assertFalse("Exception occurred while querying schema.", true);
 		}
 
+	}
+	
+	@Test
+	public void testKCFQuery() {
+		// http://macpro:8080/glyspace/service/schema/query.json?query=SELECT%20*%20WHERE%20{%20GRAPH%20%3Fgraph%20{%20%3Fs%20a%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23Class%3E%20}%20}%20LIMIT%2010
+
+		String query = prefix + "SELECT DISTINCT ?s ?name ?AccessionNumber ?Seq\n" +
+		"from <http://glytoucan.org/rdf/demo/0.6>\n"
+		+ "from <http://bluetree.jp/test>\n"
+		+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
+		+ "from <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
+		+ "from <http://www.glytoucan.org/glyco/owl/glytoucan>\n"
+		+ " WHERE { ?s a glycan:glycan_motif .\n"
+		+ "?s foaf:name ?name .\n"
+		+ "        ?s glytoucan:has_primary_id ?AccessionNumber .\n"
+		+ "       ?s glycan:has_glycosequence ?gseq .\n"
+		+ "        ?gseq glycan:has_sequence ?Seq .\n"
+		+ "        ?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf }\n"
+		+ "order by ?AccessionNumber";
+		try {
+			List<SchemaEntity> list = schemaDAO.query(query);
+			SchemaEntity row = list.get(0);
+			// assertTrue("added glycan with id " + glycan.getGlycanId(), true);
+			logger.debug("Node:>" + row.getValue("s"));
+			logger.debug("graph:>" + row.getValue("name"));
+			logger.debug("Seq:>" + row.getValue("Seq"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertFalse("Exception occurred while querying schema.", true);
+		}
+	}
+	
+	
+	@Test
+	public void testDelete() throws SQLException {
+//		schemaDAO
+//				.delete("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
+//						+ "DELETE DATA FROM <http://glytoucan.org/rdf/demo/0.7> "
+//						+ "<http://www.glycoinfo.org/rdf/glycan/G00021MO/sequence> glycan:has_sequence \"RES\n1b:x-dglc-HEX-x:x\n2s:sulfate\n3s:n-acetyl\n4b:a-dido-HEX-1:5|6:a\n5s:sulfate\n6b:b-dglc-HEX-1:5\n7s:sulfate\n8s:n-acetyl\n9b:a-dido-HEX-1:5|6:a\n10s:sulfate\n11s:sulfate\nLIN\n1:1o(-1+-1)2n\n2:1d(2+1)3n\n3:1o(4+1)4d\n4:4o(2+-1)5n\n5:4o(4+1)6d\n6:6o(-1+-1)7n\n7:6d(2+1)8n\n8:6o(4+1)9d\n9:6o(6+1)10n\n10:1o(6+1)11n\"^^xsd:string . }");
+		schemaDAO
+		.delete("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
+				+ "DELETE DATA FROM <http://glytoucan.org/rdf/demo/0.8> {"
+				+ "<http://www.glycoinfo.org/rdf/glycan/G00021MO/sequence> glycan:has_sequence \"RES\\n1b:x-dglc-HEX-x:x\\n2s:sulfate\\n3s:n-acetyl\\n4b:a-dido-HEX-1:5|6:a\\n5s:sulfate\\n6b:b-dglc-HEX-1:5\\n7s:sulfate\\n8s:n-acetyl\\n9b:a-dido-HEX-1:5|6:a\\n10s:sulfate\\n11s:sulfate\\nLIN\\n1:1o(-1+-1)2n\\n2:1d(2+1)3n\\n3:1o(4+1)4d\\n4:4o(2+-1)5n\\n5:4o(4+1)6d\\n6:6o(-1+-1)7n\\n7:6d(2+1)8n\\n8:6o(4+1)9d\\n9:6o(6+1)10n\\n10:1o(6+1)11n\"^^xsd:string . }");
+
+		
+		//		String query = prefix + "SELECT ?s ?v ?o\n"
+//				+ "from <gr-test>\n"
+//				+ "WHERE { ?s ?v ?o }";
+//
+//		try {
+//			logger.debug("query:>" + query);
+//			List<SchemaEntity> list = schemaDAO.query(query);
+//			if (list.size() > 0) {
+//				SchemaEntity row = list.get(0);
+//				// assertTrue("added glycan with id " + glycan.getGlycanId(),
+//				// true);
+//				logger.debug("s:>" + row.getValue("s"));
+//				logger.debug("v:>" + row.getValue("v"));
+//				logger.debug("o:>" + row.getValue("o"));
+//			} else
+//				fail();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			assertFalse("Exception occurred while querying schema.", true);
+//		}
+
+	}
+	@Test
+	public void testClearGraph() throws SQLException {
+		schemaDAO
+		.delete("clear graph <http://glytoucan.org/rdf/demo/0.7/motif>");
 	}
 
 }

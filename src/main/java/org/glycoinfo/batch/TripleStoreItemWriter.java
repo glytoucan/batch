@@ -26,16 +26,32 @@ import org.springframework.util.CollectionUtils;
  * </p>
  *
  */
-public class TripleStoreItemWriter<T> implements ItemWriter<T>, InitializingBean {
+public class TripleStoreItemWriter<T extends TripleBean> implements ItemWriter<T>, InitializingBean {
 
 		protected static final Log logger = LogFactory
 				.getLog(TripleStoreItemWriter.class);
 
 		private boolean delete = false;
+		
+		private String graph;
 
 		public void setDelete(boolean delete) {
 			this.delete = delete;
 		}
+		
+		public String getGraph() {
+			return graph;
+		}
+
+		public void setGraph(String graph) {
+			this.graph = graph;
+		}
+
+		public boolean isDelete() {
+			return delete;
+		}
+
+
 
 		@Autowired
 		private SchemaDAO schemaDAO;
@@ -74,10 +90,11 @@ public class TripleStoreItemWriter<T> implements ItemWriter<T>, InitializingBean
 				logger.debug(t);
 				
 				try {
-					schemaDAO.insert("nobutest", t.toString(), false);
+					if (!(t.getInsert().trim().length() == 0))
+						schemaDAO.insert(getGraph(), t.getInsert(), isDelete());
 				} catch (SQLException e) {
 					e.printStackTrace();
-					schemaDAO.insert("nobutest", t.toString(), false);
+					schemaDAO.insert(getGraph(), t.getFailInsert(), delete);
 				}
 			}
 		}

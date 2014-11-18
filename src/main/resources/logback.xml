@@ -6,7 +6,7 @@
 		</evaluator>
 
 		<smtpHost>localhost</smtpHost>
-		<to>aoki@test.glytoucan.org</to> <!-- additional destinations are possible -->
+		<to>aoki@glytoucan.org</to> <!-- additional destinations are possible -->
 		<from>admin@glytoucan.org</from>
 		<subject>%logger{20} - %m</subject>
 		<layout class="ch.qos.logback.classic.PatternLayout">

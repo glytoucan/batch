@@ -1,5 +1,7 @@
 package org.glycoinfo.batch;
 
+import org.glycoinfo.ts.dao.SchemaDAO;
+
 /*
 <http://www.glycoinfo.org/rdf/glycan/G63838JW> glycan:has_glycosequence ?gseq .
 ?gseq glycan:has_sequence ?Seq .
@@ -109,91 +111,35 @@ from <http://www.glytoucan.org/glyco/owl/glytoucan>
  OFFSET 10 LIMIT 10
 
 */
-public class ConvertTriple {
+public interface TripleBean {
 	
-	String ident;
-	String sequence;
-	String subjectLocation;
-	String format = "glycan:carbohydrate_format_kcf";
+	public String getIdent();
 
-	public static String glycanLocation = "<http://www.glycoinfo.org/rdf/glycan/%ID%/sequence>";
-	public static String prefix = "@prefix glycan: <http://purl.jp/bio/12/glyco/glycan#> .\n";
+	public void setIdent(String ident);
 
-	public String getIdent() {
-		return ident;
-	}
+	public String getInsert();
 
-	public void setIdent(String ident) {
-		this.ident = ident;
-	}
+	public void setInsert(String insert);
 
-	public String getSequence() {
-		return sequence;
-	}
+	public String getFailInsert();
 
-	public void setSequence(String sequence) {
-		this.sequence = sequence;
-	}
-
-	public String getSubjectLocation() {
-		return "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence>";
-	}
-
-	public void setSubjectLocation(String subjectLocation) {
-		this.subjectLocation = subjectLocation;
-	}
-
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
-	}
-
-	@Override
-	public String toString() {
-//		return "<http://glycoinfo.org/rdf/glycan/" + getIdent() + "> a glycan:saccharide ;\n" +
-//				"glycan:has_glycosequence <http://glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf>\n" +
-//				"<http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> a glycan:glycosequence ;\n" +
-//				"rdfs:label \"" + getIdent() + " KCF\"^^xsd:string ;\n" +
-//				"glycan:has_sequence \"" + getSequence() + "\"^^xsd:string ;\n" +
-//				"glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf ;\n" +
-//				"glytoucan:is_glycosequence_of <http://glycoinfo.org/rdf/glycan/" + getIdent() + "> ;\n";
-		if (null != getSequence()) {
-		return "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "> glycan:has_glycosequence <http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> .\n"
-		+ "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> rdfs:label \"" + getIdent() + " KCF\"^^xsd:string .\n"
-		+ "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> glycan:has_sequence \"" + getSequence().replace("\n", "\\n") + "\"^^xsd:string .\n"
-		+ "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf .\n"
-		+ "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> glytoucan:is_glycosequence_of <http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "> .\n";
-		} else {
-			return "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "> glycan:has_glycosequence <http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> .\n"
-		+ "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> rdfs:label \" ERROR IN CONVERSION: " + getIdent() + " KCF\"^^xsd:string .\n"
-//		+ "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> glycan:has_sequence \"" + getSequence().replace("\n", "\\n") + "\"^^xsd:string .\n"
-		+ "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf .\n"
-		+ "<http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "/sequence/kcf> glytoucan:is_glycosequence_of <http://www.glycoinfo.org/rdf/glycan/" + getIdent() + "> .\n";
-		}
-	}
+	public void setFailInsert(String failInsert);
 	
-	// triple store batch process
-	// conversion
-		// retrieve a list of asc#
-		// for each asc #
-			// convert to kcf
-			// insert into rdf
+	public String getPrefix();
 
-	
-	
-	
-	
-	
-	// mass
+	public void setPrefix(String prefix);
 
-	// motif/substructure
-		// retrieve a list of asc#
-		// for each asc# - 
-			// retrieve all structures
-			// convert to kcf
-			// search for substructure - kcam
-	 
+	public void setOrderBy(String orderByStatement);
+
+	public String getSelect();
+
+	public void setSelect(String select);
+
+	public String getWhere();
+
+	public void setWhere(String where);
+	
+	public String getFrom();
+
+	public void setFrom(String from);
 }

@@ -1,6 +1,7 @@
-package org.glycoinfo.batch;
+package org.glycoinfo.batch.convert;
 
-import org.glycoinfo.ts.utils.ConvertTripleStoreConverter;
+import org.glycoinfo.batch.TripleStoreItemReader;
+import org.glycoinfo.batch.TripleStoreItemWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -19,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableBatchProcessing
 @EnableAutoConfiguration
 @ComponentScan(basePackages = ("org.glycoinfo"))
-public class BatchConfiguration {
+public class ConvertTripleBatchConfiguration {
 	
 	public static int pageSize = 10;
 	
@@ -36,10 +37,10 @@ public class BatchConfiguration {
 			+ "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 			+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
 	
-	public static final String from = "from <http://glytoucan.org/rdf/demo/0.5>\n"
-			+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
-			+ "from <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
-			+ "from <http://www.glytoucan.org/glyco/owl/glytoucan>\n";
+	public static final String from = "from <http://glytoucan.org/rdf/demo/0.7>\n";
+//			+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
+//			+ "from <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
+//			+ "from <http://www.glytoucan.org/glyco/owl/glytoucan>\n";
 
     // tag::readerwriterprocessor[]
     @Bean
@@ -83,6 +84,8 @@ WHERE {
     @Bean
     public ItemWriter<ConvertTriple> writer() {
     	TripleStoreItemWriter<ConvertTriple> writer = new TripleStoreItemWriter<ConvertTriple>();
+    	writer.setGraph(ConvertTriple.graph);
+    	writer.setDelete(false);
         return writer;
     }
     // end::readerwriterprocessor[]

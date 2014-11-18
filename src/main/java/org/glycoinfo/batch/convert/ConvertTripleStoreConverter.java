@@ -1,7 +1,7 @@
-package org.glycoinfo.ts.utils;
+package org.glycoinfo.batch.convert;
 
-import org.glycoinfo.batch.ConvertTriple;
 import org.glycoinfo.ts.dao.SchemaEntity;
+import org.glycoinfo.ts.utils.TripleStoreConverter;
 
 public class ConvertTripleStoreConverter implements TripleStoreConverter<ConvertTriple> {
 

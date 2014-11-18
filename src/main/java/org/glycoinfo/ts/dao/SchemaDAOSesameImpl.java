@@ -47,7 +47,6 @@ import ch.qos.logback.classic.Logger;
 /**
  * @author aoki
  */
-@Primary
 @Repository
 //@SuppressWarnings({ "unchecked", "rawtypes" })
 //@SpringApplicationConfiguration(classes = TripleStoreProperties.class)
@@ -241,6 +240,29 @@ public class SchemaDAOSesameImpl implements SchemaDAO {
 		return null;
 	}
 
+	public void delete(String statement) throws SQLException {
+		try {
+			Class.forName(datasource.getDriverClassName());
+			Connection connection = DriverManager.getConnection(
+					datasource.getUrl(), datasource.getUsername(),
+					datasource.getPassword());
+			java.sql.Statement stmt = connection.createStatement();
+			ResultSet rs = null;
+
+			logger.debug("sparql " + statement);
+			stmt.execute("sparql " + statement);
+			rs = stmt.getResultSet();
+			while (rs.next())
+				logger.debug(rs.toString());
+
+			connection.close();
+		} catch (ClassNotFoundException  e) {
+			e.printStackTrace();
+			logger.debug("class not found, check config" + e.getMessage());
+		}
+	}
+
+	
 	@Override
 	public List<SchemaEntity> query(String subject, String baseURI) {
 		// TODO Auto-generated method stub

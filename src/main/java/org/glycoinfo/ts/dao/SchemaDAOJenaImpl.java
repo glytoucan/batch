@@ -4,6 +4,7 @@
  */
 package org.glycoinfo.ts.dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +31,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
  * @author sena
  *
  */
-@Repository
+//@Repository
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class SchemaDAOJenaImpl implements SchemaDAO {
 	public static Logger logger=(Logger) LoggerFactory.getLogger("org.glytoucan.registry.dao.SchemaDAOImpl");
@@ -152,5 +153,11 @@ public class SchemaDAOJenaImpl implements SchemaDAO {
 	public List<SchemaEntity> insert(String graph, String insert, boolean clear) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void delete(String string) throws SQLException {
+		// TODO Auto-generated method stub
+		
 	}
 }
