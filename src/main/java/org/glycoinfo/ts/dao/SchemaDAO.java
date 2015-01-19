@@ -19,4 +19,5 @@ public interface SchemaDAO {
 	List<SchemaEntity> query(String subject, String baseURI);
 	List<SchemaEntity> insert(String graph, String insert, boolean clear) throws SQLException;
 	void delete(String string) throws SQLException;
+	void execute(String string) throws SQLException;
 }

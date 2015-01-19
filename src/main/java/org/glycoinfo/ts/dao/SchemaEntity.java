@@ -77,6 +77,13 @@ public class SchemaEntity {
 		this.data.put("s", s);
 	}
 
+	@Override
+	public String toString() {
+		return "SchemaEntity [columns=" + columns + ", data=" + data
+				+ ", graph=" + graph + ", s=" + s + ", p=" + p + ", o=" + o
+				+ "]";
+	}
+
 //	public String getP() {
 //		return data.get("p");
 //	}
@@ -92,4 +99,6 @@ public class SchemaEntity {
 //	public void setO(String o) {
 //		this.data.put("o", o);
 //	}
+	
+	
 }

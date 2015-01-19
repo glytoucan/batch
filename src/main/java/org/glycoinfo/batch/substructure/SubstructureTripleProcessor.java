@@ -46,6 +46,7 @@ public class SubstructureTripleProcessor implements
 
 		if (data == null || data.size() == 0 || iris == null
 				|| iris.size() == 0) {
+			logger.debug("schemaDAO.query(triple.getProcessQuery())" + triple.getProcessQuery());
 			List<SchemaEntity> list = schemaDAO.query(triple.getProcessQuery());
 			data = new HashMap<String, Object>();
 			iris = new HashMap<String, String>();
@@ -63,7 +64,9 @@ public class SubstructureTripleProcessor implements
 
 		BeanUtils.copyProperties(triple, transformedTriple);
 
+		logger.debug("getGlySearch().search()>" + triple.getKeyword() + "<");
 		List<String> results = getGlySearch().search();
+		logger.debug("getGlySearch().search() completed");
 		transformedTriple.setSubIri(new HashSet<String>());
 		if (null != results) {
 			for (String string : results) {
@@ -72,8 +75,8 @@ public class SubstructureTripleProcessor implements
 			}
 		}
 
-		logger.debug("Converting (" + triple + ") into (" + transformedTriple
-				+ ")");
+//		logger.debug("Converting (" + triple + ") into (" + transformedTriple
+//				+ ")");
 
 		return transformedTriple;
 	}

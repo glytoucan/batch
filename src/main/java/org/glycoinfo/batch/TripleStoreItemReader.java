@@ -14,9 +14,6 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.data.AbstractPaginatedDataItemReader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.neo4j.conversion.ResultConverter;
-import org.springframework.data.neo4j.mapping.MappingPolicy;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -59,7 +56,7 @@ WHERE {
  *
  */
 
-public class TripleStoreItemReader<T> extends
+public class TripleStoreItemReader<T extends TripleBean> extends
 		AbstractPaginatedDataItemReader<T> implements InitializingBean {
 
 	protected Log logger = LogFactory.getLog(getClass());
@@ -67,13 +64,9 @@ public class TripleStoreItemReader<T> extends
 	@Autowired
 	private SchemaDAO schemaDAO;
 
-	private String prefix;
-	private String select;
-	private String where;
-	private String orderBy;
-	private String from;
-
 	private Class<T> targetType;
+	
+	private T sample;
 	
 	private TripleStoreConverter<T> converter;
 
@@ -83,70 +76,39 @@ public class TripleStoreItemReader<T> extends
 		setName(ClassUtils.getShortName(TripleStoreItemReader.class));
 	}
 
-	public String getPrefix() {
-		return prefix;
+	public void setTripleBean(T set) {
+		this.sample = set;
 	}
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
+	public T getTripleBean() {
+		return this.sample;
 	}
-
-	/**
-	 * A list of properties to order the results by. This is required so that
-	 * subsequent page requests pull back the segment of results correctly.
-	 * ORDER BY is prepended to the statement provided and should <em>not</em>
-	 * be included.
-	 *
-	 * @param orderByStatement
-	 *            order by fragment of the cypher query.
-	 */
-	public void setOrderBy(String orderByStatement) {
-		this.orderBy = orderByStatement;
-	}
-
-	
 	
 	public SchemaDAO getSchemaDAO() {
 		return schemaDAO;
 	}
 
-	
 	public void setSchemaDAO(SchemaDAO schemaDAO) {
 		this.schemaDAO = schemaDAO;
 	}
 
-	public String getSelect() {
-		return select;
-	}
-
-	public void setSelect(String select) {
-		this.select = select;
-	}
-
-	public String getWhere() {
-		return where;
-	}
-
-	public void setWhere(String where) {
-		this.where = where;
-	}
-	
-	public String getFrom() {
-		return from;
-	}
-
-	public void setFrom(String from) {
-		this.from = from;
-	}
-
 	@Override
 	protected Iterator<T> doPageRead() {
-		logger.debug("generated query:>" + generateLimitQuery());
-		List<SchemaEntity> queryResults = schemaDAO.query(generateLimitQuery());
+		String q = sample.getSelectRdf();
+
+		StringBuffer query = new StringBuffer(q);
+		query.append(" OFFSET " + (pageSize * page));
+		query.append(" LIMIT " + pageSize);
+		logger.debug("generated query:>" + query);
+
+		List<SchemaEntity> queryResults = schemaDAO.query(query.toString());
 		ArrayList<T> result = new ArrayList<T>();
 		if (queryResults != null) {
 			for (SchemaEntity schemaEntity : queryResults) {
-				result.add(getConverter().converter(schemaEntity));
+				logger.info("converting:>" + schemaEntity);
+				T converted = getConverter().converter(schemaEntity);
+				logger.info("converted:>" + converted.getIdent());
+				result.add(converted);
 			}
 			return result.iterator();
 		} else {
@@ -154,27 +116,6 @@ public class TripleStoreItemReader<T> extends
 		}
 	}
 
-	private String generateLimitQuery() {
-		StringBuilder query = new StringBuilder();
-
-		query.append(prefix);
-		query.append(select);
-		query.append(from);
-//		query.append(matchStatement != null ? " MATCH " + matchStatement : "");
-		query.append(where != null ? " WHERE " + where : "");
-//		query.append(" RETURN ").append(returnStatement);
-		query.append(orderBy != null ? orderBy : "");
-		query.append(" OFFSET " + (pageSize * page));
-		query.append(" LIMIT " + pageSize);
-
-		String resultingQuery = query.toString();
-
-		if (logger.isDebugEnabled()) {
-			logger.debug(resultingQuery);
-		}
-
-		return resultingQuery;
-	}
 
 	/**
 	 * Checks mandatory properties
@@ -185,11 +126,6 @@ public class TripleStoreItemReader<T> extends
 	public void afterPropertiesSet() throws Exception {
 		Assert.state(schemaDAO != null,
 				"A DAO is required");
-		Assert.state(from != null, "The from is required");
-		Assert.state(StringUtils.hasText(select),
-				"A SELECT is required");
-//		Assert.state(StringUtils.hasText(orderBy),
-//				"A ORDER BY statement is required");
 	}
 
 	public TripleStoreConverter<T> getConverter() {

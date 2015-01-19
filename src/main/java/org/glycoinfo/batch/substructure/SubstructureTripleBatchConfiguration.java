@@ -1,7 +1,11 @@
 package org.glycoinfo.batch.substructure;
 
+import org.glycoinfo.batch.TripleBean;
 import org.glycoinfo.batch.TripleStoreItemReader;
 import org.glycoinfo.batch.TripleStoreItemWriter;
+import org.glycoinfo.search.GlySearch;
+import org.glycoinfo.search.glycoct.GlycoCTSearch;
+import org.glycoinfo.search.kcam.KCAMSearch;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -24,26 +28,44 @@ public class SubstructureTripleBatchConfiguration {
 	
 	public static int pageSize = 10;
 	
+	@Bean
+	GlySearch getGlySearch() {
+		return new GlycoCTSearch();
+	}
 
-    // tag::readerwriterprocessor[]
+	@Bean
+	public TripleBean getTripleBean() {
+		return new SubstructureTriple();
+	}
+	
+
+    /**
+     * 
+     * Data read sparql process.
+     * 
+     * @return
+     */
     @Bean
     public ItemReader<SubstructureTriple> reader() {
-    	String where = "{ ?glycans a glycan:saccharide . \n"
+    	String where = "?glycans a glycan:saccharide . \n"
     			+ "?glycans toucan:has_primary_id ?AccessionNumber . \n"
     			+ "?glycans glycan:has_glycosequence ?gseq . \n"
     			+ "?gseq glycan:has_sequence ?Seq . \n"
-    			+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf }\n";
+    			+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct .\n"
+    			+ "FILTER NOT EXISTS {?glycans glycan:has_motif ?motif} \n";
     	
     	TripleStoreItemReader<SubstructureTriple> reader = new TripleStoreItemReader<SubstructureTriple>();
-    	reader.setPrefix(SubstructureTriple.prefix);
+//    	reader.setPrefix(SubstructureTriple.prefix);
+    	SubstructureTriple subTriple = (org.glycoinfo.batch.substructure.SubstructureTriple) getTripleBean();
+    	subTriple.setWhere(where);
+    	reader.setTripleBean(subTriple);
     	reader.setConverter(new SubstructureTripleStoreConverter());
     	reader.setPageSize(pageSize);
-    	reader.setFrom(SubstructureTriple.from);
-    	reader.setSelect("SELECT DISTINCT ?glycans ?AccessionNumber ?Seq\n");
+//    	reader.setFrom(SubstructureTriple.from);
+//    	reader.setSelect("SELECT DISTINCT ?glycans ?AccessionNumber ?Seq\n");
 //    	reader.setOrderBy("");
 
-    	reader.setWhere(where);
-    	
+//    	reader.setWhere(where);
     	
         return reader;
     }
@@ -56,7 +78,6 @@ public class SubstructureTripleBatchConfiguration {
     @Bean
     public ItemWriter<SubstructureTriple> writer() {
     	TripleStoreItemWriter<SubstructureTriple> writer = new TripleStoreItemWriter<SubstructureTriple>();
-    	writer.setGraph(SubstructureTriple.graph);
         return writer;
     }
     // end::readerwriterprocessor[]
@@ -74,6 +95,7 @@ public class SubstructureTripleBatchConfiguration {
     @Bean
     public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<SubstructureTriple> reader,
             ItemWriter<SubstructureTriple> writer, ItemProcessor<SubstructureTriple, SubstructureTriple> processor) {
+    	System.gc();
         return stepBuilderFactory.get("step1")
                 .<SubstructureTriple, SubstructureTriple> chunk(10)
                 .reader(reader)

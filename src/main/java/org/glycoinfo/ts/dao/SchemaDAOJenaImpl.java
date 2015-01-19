@@ -158,6 +158,10 @@ public class SchemaDAOJenaImpl implements SchemaDAO {
 	@Override
 	public void delete(String string) throws SQLException {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void execute(String string) throws SQLException {
+		// TODO Auto-generated method stub
 	}
 }

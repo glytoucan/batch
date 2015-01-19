@@ -27,16 +27,17 @@ public class SubstructureTriple implements TripleBean {
 			+ "?glycans toucan:has_primary_id ?AccessionNumber .\n"
 			+ "?glycans glycan:has_glycosequence ?gseq .\n"
 			+ "?gseq glycan:has_sequence ?Seq .\n"
-			+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf\n";
+			+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct\n";
 
 	public static final String prefix = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
 			+ "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 			+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
-
-	public static final String from = "from <http://glytoucan.org/rdf/demo/0.7>\n"
-			+ "from <http://glytoucan.org/rdf/demo/0.7/kcf> \n";
-
-	public static String graph = "http://glytoucan.org/rdf/demo/0.7/motif";
+	
+	String graph = "http://glytoucan.org/rdf/demo/0.2/motif";
+	
+	String from = "from <http://glytoucan.org/rdf/demo/0.2>\n"
+			+ "from <http://glytoucan.org/rdf/demo/0.2/kcf> \n"
+			+ "from <" + graph + ">";
 
 	@Override
 	public String getIdent() {
@@ -55,6 +56,8 @@ public class SubstructureTriple implements TripleBean {
 		StringBuffer insert = new StringBuffer();
 		for (String string : subIriList) {
 			insert.append("<" + getSupIri() + "> glycan:has_motif <" + string + "> .\n");
+			insert.append("<" + getSupIri() + "> glycan:has_substructure <" + string + "> .\n");
+			insert.append("<" + string + "> glycan:has_superstructure <" + getSupIri() + "> .\n");
 		}
 		return insert.toString();
 	}
@@ -136,8 +139,10 @@ public class SubstructureTriple implements TripleBean {
 
 	@Override
 	public void setWhere(String where) {
+		this.where = where;
 	}
 
+	
 	@Override
 	public String getFrom() {
 		return from;
@@ -165,6 +170,42 @@ public class SubstructureTriple implements TripleBean {
 
 		return resultingQuery;
 
+	}
+
+	@Override
+	public String getGraph() {
+		return graph;
+	}
+
+	@Override
+	public void setGraph(String graph) {
+		this.graph = graph;
+	}
+
+	@Override
+	public String getOrderBy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getSelectRdf() {
+		StringBuilder query = new StringBuilder();
+		query.append(getPrefix());
+		query.append(getSelect());
+		query.append(getFrom());
+//		query.append(matchStatement != null ? " MATCH " + matchStatement : "");
+		query.append(getWhere() != null ? getWhere() : "");
+//		query.append(" RETURN ").append(returnStatement);
+		query.append(getOrderBy() != null ? getOrderBy() : "");
+
+		String resultingQuery = query.toString();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug(resultingQuery);
+		}
+
+		return resultingQuery;
 	}
 
 	/*

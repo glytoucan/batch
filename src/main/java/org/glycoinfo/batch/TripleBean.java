@@ -111,35 +111,161 @@ from <http://www.glytoucan.org/glyco/owl/glytoucan>
  OFFSET 10 LIMIT 10
 
 */
+/**
+ * @author aoki
+ *
+ */
 public interface TripleBean {
-	
+
+	/**
+	 * 
+	 * Identifier used for a particular call (not an IRI).
+	 * 
+	 * @return
+	 */
 	public String getIdent();
 
+	/**
+	 * 
+	 * Set an identifier.
+	 * 
+	 * @param ident
+	 */
 	public void setIdent(String ident);
 
+	/**
+	 * 
+	 * Insert command.
+	 * 
+	 * @return
+	 */
 	public String getInsert();
 
+	/**
+	 * 
+	 * Set the insert command.
+	 * 
+	 * @param insert
+	 */
 	public void setInsert(String insert);
 
+	/**
+	 * 
+	 * In case the original insert fails, a new fail condition is retrieved here and used, if this also fails, there is nothing more than can be done.
+	 * 
+	 * @return
+	 */
 	public String getFailInsert();
 
+	/**
+	 * 
+	 * Set the fail command.
+	 * 
+	 * @param failInsert
+	 */
 	public void setFailInsert(String failInsert);
 	
+	/**
+	 * 
+	 * The prefix used for all sparql.
+	 * 
+	 * @return
+	 */
 	public String getPrefix();
 
+	/**
+	 * 
+	 * Setting the prefix.
+	 * 
+	 * @param prefix
+	 */
 	public void setPrefix(String prefix);
 
-	public void setOrderBy(String orderByStatement);
-
+	/**
+	 * 
+	 * Retrieve the initial select usually used in the reader and or processor.
+	 * 
+	 * @return
+	 */
 	public String getSelect();
 
+	/**
+	 * 
+	 * Set the select.
+	 * 
+	 * @param select
+	 */
 	public void setSelect(String select);
 
+	/**
+	 * 
+	 * Retrieve the where clause.
+	 * 
+	 * @return
+	 */
 	public String getWhere();
 
-	public void setWhere(String where);
-	
+	/**
+	 * 
+	 * Set the where clause.
+	 * 
+	 * @param where
+	 */
+	void setWhere(String where);
+
+	/**
+	 * 
+	 * Retrieve the froms used in all sparql commands.
+	 * 
+	 * @return
+	 */
 	public String getFrom();
 
+	/**
+	 * 
+	 * Set the froms. 
+	 * 
+	 * @param from
+	 */
 	public void setFrom(String from);
+
+	/**
+	 * 
+	 * Get the graphs used in all sparql commands.
+	 * 
+	 * @return
+	 */
+	public String getGraph();
+
+	/**
+	 * 
+	 * Set the graphs.
+	 * 
+	 * @param graph
+	 */
+	public void setGraph(String graph);
+	
+	/**
+	 * 
+	 * Retrieve the order by used in the original select.  If this is null it is ignored.
+	 * 
+	 * @return
+	 */
+	public String getOrderBy();
+
+	/**
+	 * 
+	 * Set the order by.
+	 * 
+	 * @param orderByStatement
+	 */
+	public void setOrderBy(String orderByStatement);
+	
+	/**
+	 * 
+	 * Retrieve the overall select rdf constructed from all of the parts above.
+	 * 
+	 * @return
+	 */
+	public String getSelectRdf();
 }

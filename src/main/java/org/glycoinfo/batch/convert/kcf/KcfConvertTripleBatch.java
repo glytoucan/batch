@@ -1,4 +1,4 @@
-package org.glycoinfo.batch.convert;
+package org.glycoinfo.batch.convert.kcf;
 
 import org.glycoinfo.ts.utils.TripleStoreProperties;
 import org.springframework.boot.SpringApplication;
@@ -8,13 +8,13 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan(basePackages = ("org.glycoinfo"))
+@ComponentScan(basePackages = ("org.glycoinfo.batch.convert.kcf"))
 @EnableAutoConfiguration
 //@EnableConfigurationProperties(TripleStoreProperties.class)
 //@SpringApplicationConfiguration(classes = TripleStoreProperties.class)
-public class ConvertTripleBatch {
+public class KcfConvertTripleBatch {
 
 	public static void main(String[] args) {
-		ApplicationContext ctx = SpringApplication.run(ConvertTripleBatch.class, args);
+		ApplicationContext ctx = SpringApplication.run(KcfConvertTripleBatch.class, args);
 	}
 }

@@ -49,7 +49,7 @@ import ch.qos.logback.classic.Logger;
  */
 @Repository
 //@SuppressWarnings({ "unchecked", "rawtypes" })
-//@SpringApplicationConfiguration(classes = TripleStoreProperties.class)
+@SpringApplicationConfiguration(classes = TripleStoreProperties.class)
 public class SchemaDAOSesameImpl implements SchemaDAO {
 
 	public static Logger logger = (Logger) LoggerFactory
@@ -241,6 +241,10 @@ public class SchemaDAOSesameImpl implements SchemaDAO {
 	}
 
 	public void delete(String statement) throws SQLException {
+		execute(statement);
+	}
+	
+	public void execute(String statement) throws SQLException {
 		try {
 			Class.forName(datasource.getDriverClassName());
 			Connection connection = DriverManager.getConnection(

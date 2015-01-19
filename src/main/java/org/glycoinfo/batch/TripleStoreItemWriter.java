@@ -9,7 +9,6 @@ import org.glycoinfo.ts.dao.SchemaDAO;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -30,28 +29,6 @@ public class TripleStoreItemWriter<T extends TripleBean> implements ItemWriter<T
 
 		protected static final Log logger = LogFactory
 				.getLog(TripleStoreItemWriter.class);
-
-		private boolean delete = false;
-		
-		private String graph;
-
-		public void setDelete(boolean delete) {
-			this.delete = delete;
-		}
-		
-		public String getGraph() {
-			return graph;
-		}
-
-		public void setGraph(String graph) {
-			this.graph = graph;
-		}
-
-		public boolean isDelete() {
-			return delete;
-		}
-
-
 
 		@Autowired
 		private SchemaDAO schemaDAO;
@@ -90,11 +67,15 @@ public class TripleStoreItemWriter<T extends TripleBean> implements ItemWriter<T
 				logger.debug(t);
 				
 				try {
-					if (!(t.getInsert().trim().length() == 0))
-						schemaDAO.insert(getGraph(), t.getInsert(), isDelete());
+					if (!(t.getInsert().trim().length() == 0)) {
+						logger.debug("inserting " + t.getInsert() + " into " + t.getGraph() + "<");
+						schemaDAO.insert(t.getGraph(), t.getInsert(), false);
+					}
 				} catch (SQLException e) {
 					e.printStackTrace();
-					schemaDAO.insert(getGraph(), t.getFailInsert(), delete);
+					logger.debug("inserting " + t.getInsert() + " into " + t.getGraph() + "< failed");
+					logger.debug("inserting " + t.getFailInsert() + " into " + t.getGraph() + "< failed");
+					schemaDAO.insert(t.getGraph(), t.getFailInsert(), false);
 				}
 			}
 		}

@@ -1,7 +1,7 @@
 target*
 .settings
+.springBeans
 .classpath
 .project
 /bin
-/logs		
-logs		
+logs*
