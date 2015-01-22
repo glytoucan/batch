@@ -1,4 +1,4 @@
-package org.glycoinfo.ts.dao;
+package org.glycoinfo.rdf.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.glycoinfo.ts.utils.SchemaEntityValueConverter;
+import org.glycoinfo.rdf.utils.SchemaEntityValueConverter;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 //import com.wordnik.swagger.annotations.ApiModel;
@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 //@ApiModel(value = "SchemaEntity", description = "Schema query results")
 @JsonSerialize(using=SchemaEntityValueConverter.class)
-public class SchemaEntity {
+public class SparqlEntity {
 	List<String> columns = new ArrayList<String>();
 	
 	Map<String, String> data = new HashMap<String, String>();

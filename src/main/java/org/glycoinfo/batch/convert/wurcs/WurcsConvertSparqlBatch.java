@@ -1,13 +1,13 @@
 package org.glycoinfo.batch.convert.wurcs;
 
-import org.glycoinfo.batch.TripleStoreItemReader;
-import org.glycoinfo.batch.TripleStoreItemWriter;
-import org.glycoinfo.batch.convert.ConvertTriple;
-import org.glycoinfo.batch.convert.kcf.ConvertTripleProcessor;
-import org.glycoinfo.batch.convert.kcf.ConvertTripleStoreConverter;
-import org.glycoinfo.batch.convert.kcf.KcfConvertTriple;
-import org.glycoinfo.ts.utils.TripleStoreConverter;
-import org.glycoinfo.ts.utils.TripleStoreProperties;
+import org.glycoinfo.batch.SparqlItemReader;
+import org.glycoinfo.batch.SparqlItemWriter;
+import org.glycoinfo.batch.convert.ConvertReaderSparqlInterface;
+import org.glycoinfo.batch.convert.kcf.ConvertSparqlProcessor;
+import org.glycoinfo.batch.convert.kcf.ConvertSparqlConverter;
+import org.glycoinfo.batch.convert.kcf.KcfConvertSparql;
+import org.glycoinfo.rdf.utils.TripleStoreConverter;
+import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -32,23 +32,28 @@ import com.hp.hpl.jena.graph.impl.TripleStore;
 @Configuration
 // @EnableConfigurationProperties(TripleStoreProperties.class)
 // @SpringApplicationConfiguration(classes = TripleStoreProperties.class)
-public class WurcsConvertTripleBatch {
+public class WurcsConvertSparqlBatch {
 
 	private int pageSize = 10;
 
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(
-				WurcsConvertTripleBatch.class, args);
+				WurcsConvertSparqlBatch.class, args);
 	}
 	
 	@Bean
-	WurcsConvertTriple getConvertTriple() {
-		return new WurcsConvertTriple();
+	SparqlReader getSparqlReader() {
+		return new WurcsConvertSparqlReader();
 	}
 	
 	@Bean
-	public ItemReader<WurcsConvertTriple> reader() {
-		TripleStoreItemReader<WurcsConvertTriple> reader = new TripleStoreItemReader<WurcsConvertTriple>();
+	WurcsConvertSparqlReader getConvertTriple() {
+		return new WurcsConvertSparqlReader();
+	}
+	
+	@Bean
+	public ItemReader<WurcsConvertSparqlReader> reader() {
+		SparqlItemReader<WurcsConvertSparqlReader> reader = new SparqlItemReader<WurcsConvertSparqlReader>();
 		reader.setTripleBean(getConvertTriple());
 		reader.setConverter(getConvertTriple());
 		reader.setPageSize(pageSize);
@@ -64,8 +69,8 @@ public class WurcsConvertTripleBatch {
 	}
 
 	@Bean
-	public ItemWriter<WurcsConvertTriple> writer() {
-		return new TripleStoreItemWriter<WurcsConvertTriple>();
+	public ItemWriter<WurcsConvertSparqlReader> writer() {
+		return new SparqlItemWriter<WurcsConvertSparqlReader>();
 	}
 
 	// end::readerwriterprocessor[]
@@ -79,17 +84,17 @@ public class WurcsConvertTripleBatch {
 
 	@Bean
 	public Step step1(StepBuilderFactory stepBuilderFactory,
-			ItemReader<WurcsConvertTriple> reader,
-			ItemWriter<WurcsConvertTriple> writer,
-			ItemProcessor<WurcsConvertTriple, WurcsConvertTriple> processor) {
+			ItemReader<WurcsConvertSparqlReader> reader,
+			ItemWriter<WurcsConvertSparqlReader> writer,
+			ItemProcessor<WurcsConvertSparqlReader, WurcsConvertSparqlReader> processor) {
 		return stepBuilderFactory.get("step1")
-				.<WurcsConvertTriple, WurcsConvertTriple> chunk(10).reader(reader)
+				.<WurcsConvertSparqlReader, WurcsConvertSparqlReader> chunk(10).reader(reader)
 				.processor(processor).writer(writer).build();
 	}
 	
     @Bean
-    public ItemProcessor<WurcsConvertTriple, WurcsConvertTriple> processor() {
-        return new WurcsConvertTripleProcessor();
+    public ItemProcessor<WurcsConvertSparqlReader, WurcsConvertSparqlReader> processor() {
+        return new WurcsConvertSparqlProcessor();
     }
 
 }

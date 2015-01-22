@@ -1,9 +1,9 @@
 package org.glycoinfo.batch.convert.kcf;
 
-import org.glycoinfo.batch.TripleStoreItemReader;
-import org.glycoinfo.batch.TripleStoreItemWriter;
-import org.glycoinfo.batch.convert.ConvertTriple;
-import org.glycoinfo.batch.convert.kcf.KcfConvertTriple;
+import org.glycoinfo.batch.SparqlItemReader;
+import org.glycoinfo.batch.SparqlItemWriter;
+import org.glycoinfo.batch.convert.ConvertReaderSparqlInterface;
+import org.glycoinfo.batch.convert.kcf.KcfConvertSparql;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -22,15 +22,15 @@ import org.springframework.context.annotation.Configuration;
 @EnableBatchProcessing
 //@EnableAutoConfiguration
 @ComponentScan(basePackages = ("org.glycoinfo"))
-public class KcfConvertTripleBatchConfiguration {
+public class KcfConvertSparqlBatchConfiguration {
 	
 	private int pageSize = 10;
 
     @Bean
-    public ItemReader<KcfConvertTriple> reader() {
-    	TripleStoreItemReader<KcfConvertTriple> reader = new TripleStoreItemReader<KcfConvertTriple>();
-    	reader.setConverter(new ConvertTripleStoreConverter());
-    	reader.setTripleBean(new KcfConvertTriple());
+    public ItemReader<KcfConvertSparql> reader() {
+    	SparqlItemReader<KcfConvertSparql> reader = new SparqlItemReader<KcfConvertSparql>();
+    	reader.setConverter(new ConvertSparqlConverter());
+    	reader.setTripleBean(new KcfConvertSparql());
     	reader.setPageSize(pageSize);
 
 /*
@@ -48,13 +48,13 @@ WHERE {
         return reader;
     }
     @Bean
-    public ItemProcessor<KcfConvertTriple, KcfConvertTriple> processor() {
-        return new ConvertTripleProcessor();
+    public ItemProcessor<KcfConvertSparql, KcfConvertSparql> processor() {
+        return new ConvertSparqlProcessor();
     }
 
     @Bean
-    public ItemWriter<KcfConvertTriple> writer() {
-    	return new TripleStoreItemWriter<KcfConvertTriple>();
+    public ItemWriter<KcfConvertSparql> writer() {
+    	return new SparqlItemWriter<KcfConvertSparql>();
     }
     // end::readerwriterprocessor[]
 
@@ -69,10 +69,10 @@ WHERE {
     }
 
     @Bean
-    public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<KcfConvertTriple> reader,
-            ItemWriter<KcfConvertTriple> writer, ItemProcessor<KcfConvertTriple, KcfConvertTriple> processor) {
+    public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<KcfConvertSparql> reader,
+            ItemWriter<KcfConvertSparql> writer, ItemProcessor<KcfConvertSparql, KcfConvertSparql> processor) {
         return stepBuilderFactory.get("step1")
-                .<KcfConvertTriple, KcfConvertTriple> chunk(10)
+                .<KcfConvertSparql, KcfConvertSparql> chunk(10)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)

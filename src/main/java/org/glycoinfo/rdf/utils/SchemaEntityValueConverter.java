@@ -1,11 +1,11 @@
-package org.glycoinfo.ts.utils;
+package org.glycoinfo.rdf.utils;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.glycoinfo.ts.dao.SchemaEntity;
+import org.glycoinfo.rdf.dao.SparqlEntity;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -15,10 +15,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.databind.util.StdConverter;
 
-public class SchemaEntityValueConverter extends JsonSerializer<SchemaEntity> {
+public class SchemaEntityValueConverter extends JsonSerializer<SparqlEntity> {
 
 	@Override
-	public void serialize(SchemaEntity schema, JsonGenerator jgen,
+	public void serialize(SparqlEntity schema, JsonGenerator jgen,
 			SerializerProvider provider) throws IOException,
 			JsonGenerationException {
         jgen.writeStartObject();

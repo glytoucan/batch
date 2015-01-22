@@ -1,6 +1,6 @@
 package org.glycoinfo.batch.convert;
 
-import org.glycoinfo.batch.TripleBean;
+import org.glycoinfo.rdf.InsertSparql;
 
 /*
  <http://www.glycoinfo.org/rdf/glycan/G63838JW> glycan:has_glycosequence ?gseq .
@@ -111,10 +111,10 @@ import org.glycoinfo.batch.TripleBean;
  OFFSET 10 LIMIT 10
 
  */
-public interface ConvertTriple extends TripleBean {
+public interface ConvertReaderSparqlInterface extends InsertSparql {
 
 	public String graphbase = "http://glytoucan.org/rdf/demo/0.2/";
-	
+
 	public String getIdent();
 	
 	public void setIdent(String ident);

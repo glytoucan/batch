@@ -1,4 +1,4 @@
-package org.glycoinfo.ts.dao;
+package org.glycoinfo.rdf.dao;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
@@ -6,10 +6,15 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.dao.SparqlDAO;
+import org.glycoinfo.rdf.dao.SparqlDAOSesameImpl;
+import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,19 +24,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.qos.logback.classic.Logger;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-// @ContextConfiguration(locations = "classpath:springmvc-servlet.xml")
-@SpringApplicationConfiguration(classes = SchemaDAOSesameImpl.class)
-// @EnableAutoConfiguration
-// @ContextConfiguration
-@ContextConfiguration(initializers = ConfigFileApplicationContextInitializer.class)
-public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
+@SpringApplicationConfiguration(classes = SesameDAOTestConfig.class)
+public class SparqlDAOImplTest {
 
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger("org.glytoucan.registry.dao.test.SchemaDAOImplTest");
 
 	@Autowired
-	SchemaDAO schemaDAO;
-
+	SparqlDAO schemaDAO;
+ 
 	public static final String prefix = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
 			+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
 			+ "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n"
@@ -45,7 +46,7 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 			+ "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> \n"
 			+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#> \n";
 
-	public static final String from = "from <http://glytoucan.org/rdf/demo/0.5>\n"
+	public static final String from = "from <http://glytoucan.org/rdf/demo/0.2>\n"
 			+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
 			+ "from <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
 			+ "from <http://www.glytoucan.org/glyco/owl/glytoucan>\n";
@@ -61,8 +62,8 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 
 		String query = "SELECT * WHERE { GRAPH ?graph { ?s a ?type } } LIMIT 100";
 		try {
-			List<SchemaEntity> list = schemaDAO.query(query);
-			SchemaEntity row = list.get(0);
+			List<SparqlEntity> list = schemaDAO.query(query);
+			SparqlEntity row = list.get(0);
 			// assertTrue("added glycan with id " + glycan.getGlycanId(), true);
 			logger.debug("Node:>" + row.getValue("s"));
 			logger.debug("graph:>" + row.getValue("graph"));
@@ -78,8 +79,8 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 
 		String query = "SELECT distinct ?s WHERE  {[] a ?s}  LIMIT 100";
 		try {
-			List<SchemaEntity> list = schemaDAO.query(query);
-			SchemaEntity row = list.get(0);
+			List<SparqlEntity> list = schemaDAO.query(query);
+			SparqlEntity row = list.get(0);
 			// assertTrue("added glycan with id " + glycan.getGlycanId(), true);
 			logger.debug("Node:>" + row.getValue("s"));
 			logger.debug("graph:>" + row.getValue("graph"));
@@ -155,9 +156,9 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 				+ "?entry glytoucan:date_registered ?time .\n" + "}";
 		try {
 			logger.debug("query:>" + query + "<");
-			List<SchemaEntity> list = schemaDAO.query(query);
+			List<SparqlEntity> list = schemaDAO.query(query);
 			if (list.size() > 0) {
-				SchemaEntity row = list.get(0);
+				SparqlEntity row = list.get(0);
 				// assertTrue("added glycan with id " + glycan.getGlycanId(),
 				// true);
 				logger.debug("Node:>" + row.getValue("s"));
@@ -172,22 +173,20 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testInsert() throws SQLException {
+	public void testInsert() throws SparqlException {
 		schemaDAO
-				.insert("nobutest",
-						"<aa> <bb> \"cc\" . \n"
+				.insert("insert into graph <nobutest>  { <aa> <bb> \"cc\" . \n"
 								+ "<xx> <yy> <zz> . \n"
 								+ "<mm> <nn> \"Some long literal with language\"@en . \n"
-								+ "<oo> <pp> \"12345\"^^<http://www.w3.org/2001/XMLSchema#int>\n",
-						true);
-		String query = prefix + "SELECT ?s ?v ?o\n" + "from <gr-test>\n"
+								+ "<oo> <pp> \"12345\"^^<http://www.w3.org/2001/XMLSchema#int>\n }");
+		String query = prefix + "SELECT ?s ?v ?o\n" + "from <nobutest>\n"
 				+ "WHERE { ?s ?v ?o }";
 
 		try {
 			logger.debug("query:>" + query);
-			List<SchemaEntity> list = schemaDAO.query(query);
+			List<SparqlEntity> list = schemaDAO.query(query);
 			if (list.size() > 0) {
-				SchemaEntity row = list.get(0);
+				SparqlEntity row = list.get(0);
 				// assertTrue("added glycan with id " + glycan.getGlycanId(),
 				// true);
 				logger.debug("s:>" + row.getValue("s"));
@@ -214,9 +213,9 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 
 		try {
 			logger.debug("query:>" + query);
-			List<SchemaEntity> list = schemaDAO.query(query);
+			List<SparqlEntity> list = schemaDAO.query(query);
 			if (list.size() > 0) {
-				SchemaEntity row = list.get(0);
+				SparqlEntity row = list.get(0);
 				// assertTrue("added glycan with id " + glycan.getGlycanId(),
 				// true);
 				logger.debug("s:>" + row.getValue("s"));
@@ -234,38 +233,10 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testInsertGraph() throws SQLException {
-		schemaDAO.insert("gr-test", "<http://example/bookStore2>"
-				+ "	 { ?s ?p ?p }" + "	WHERE" + "	  { GRAPH  <\"gr-test\">}",
-				false);
-
-		String query = prefix + "SELECT ?s ?v ?o\n"
-				+ "from <http://example/bookStore2>\n" + "WHERE { ?s ?v ?o }";
-
-		try {
-			logger.debug("query:>" + query);
-			List<SchemaEntity> list = schemaDAO.query(query);
-			if (list.size() > 0) {
-				SchemaEntity row = list.get(0);
-				// assertTrue("added glycan with id " + glycan.getGlycanId(),
-				// true);
-				logger.debug("s:>" + row.getValue("s"));
-				logger.debug("v:>" + row.getValue("v"));
-				logger.debug("o:>" + row.getValue("o"));
-			} else
-				fail();
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertFalse("Exception occurred while querying schema.", true);
-		}
-
-	}
-
-	@Test
-	public void testInsertConvert() throws SQLException {
+	public void testInsertConvert() throws SparqlException {
 		schemaDAO
-				.insert("nobutest",
-						"<http://www.glycoinfo.org/rdf/glycan/G63838JW/sequence>"
+				.insert("insert into graph <nobutest>  {"
+						+ "<http://www.glycoinfo.org/rdf/glycan/G63838JW/sequence>"
 								+ "        a                              glycan:glycosequence ;\n"
 								+ "        glycan:has_sequence            "
 								+ "\"ENTRY         CT-1             Glycan"
@@ -292,17 +263,16 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 								+ "     9  4:b1     5:4"
 								+ "///\""
 								+ "^^xsd:string ;\n"
-								+ "        glycan:in_carbohydrate_format  glycan:carbohydrate_format_kcf .\n",
-						false);
+								+ "        glycan:in_carbohydrate_format  glycan:carbohydrate_format_kcf .\n }");
 
 		String query = "SELECT ?s ?v ?o\n" + "from <nobutest>\n"
 				+ "WHERE { ?s ?v ?o }";
 
 		try {
 			logger.debug("query:>" + query);
-			List<SchemaEntity> list = schemaDAO.query(query);
+			List<SparqlEntity> list = schemaDAO.query(query);
 			if (list.size() > 0) {
-				SchemaEntity row = list.get(0);
+				SparqlEntity row = list.get(0);
 				// assertTrue("added glycan with id " + glycan.getGlycanId(),
 				// true);
 				logger.debug("s:>" + row.getValue("s"));
@@ -317,54 +287,54 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 
 	}
 
-	@Test
-	public void testInsertConvert2() throws SQLException {
-		schemaDAO
-				.insert("nobutest",
-						"<http://glycoinfo.org/rdf/glycan/G72943US> glycan:has_glycosequence <http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> .\n"
-								+ "<http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> rdfs:label \"G72943US KCF\"^^xsd:string .\n"
-								+ "<http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> glycan:has_sequence \"ENTRY         CT-1             Glycan\\n"
-								+ "NODE  7\\n"
-								+ "1  GlcNAc   0   0\\n"
-								+ "2  GlcNAc   -8   0\\n"
-								+ "3  Man   -24   -4\\n"
-								+ "4  Man   -32   2\\n"
-								+ "5  Man   -32   6\\n"
-								+ "6  Man   -24   4\\n"
-								+ "7  Man   -16   0\\n"
-								+ "EDGE  6\\n"
-								+ "1  2:b1     1:4\\n"
-								+ "2  7:b1     2:4\\n"
-								+ "3  3:a1     7:3\\n"
-								+ "4  6:a1     7:6\\n"
-								+ "5  4:a1     6:3\\n"
-								+ "6  5:a1     6:6\\n"
-								+ "///\"^^xsd:string .\n"
-								+ "<http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf .\n"
-								+ "<http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> glytoucan:is_glycosequence_of <http://glycoinfo.org/rdf/glycan/G72943US> .\n",
-						true);
-
-		String query = "SELECT ?s ?v ?o\n" + "from <nobutest>\n"
-				+ "WHERE { ?s ?v ?o }";
-
-		try {
-			logger.debug("query:>" + query);
-			List<SchemaEntity> list = schemaDAO.query(query);
-			if (list.size() > 0) {
-				SchemaEntity row = list.get(0);
-				// assertTrue("added glycan with id " + glycan.getGlycanId(),
-				// true);
-				logger.debug("s:>" + row.getValue("s"));
-				logger.debug("v:>" + row.getValue("v"));
-				logger.debug("o:>" + row.getValue("o"));
-			} else
-				fail();
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertFalse("Exception occurred while querying schema.", true);
-		}
-
-	}
+//	@Test
+//	public void testInsertConvert2() throws SQLException {
+//		schemaDAO
+//				.insert("nobutest",
+//						"<http://glycoinfo.org/rdf/glycan/G72943US> glycan:has_glycosequence <http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> .\n"
+//								+ "<http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> rdfs:label \"G72943US KCF\"^^xsd:string .\n"
+//								+ "<http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> glycan:has_sequence \"ENTRY         CT-1             Glycan\\n"
+//								+ "NODE  7\\n"
+//								+ "1  GlcNAc   0   0\\n"
+//								+ "2  GlcNAc   -8   0\\n"
+//								+ "3  Man   -24   -4\\n"
+//								+ "4  Man   -32   2\\n"
+//								+ "5  Man   -32   6\\n"
+//								+ "6  Man   -24   4\\n"
+//								+ "7  Man   -16   0\\n"
+//								+ "EDGE  6\\n"
+//								+ "1  2:b1     1:4\\n"
+//								+ "2  7:b1     2:4\\n"
+//								+ "3  3:a1     7:3\\n"
+//								+ "4  6:a1     7:6\\n"
+//								+ "5  4:a1     6:3\\n"
+//								+ "6  5:a1     6:6\\n"
+//								+ "///\"^^xsd:string .\n"
+//								+ "<http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf .\n"
+//								+ "<http://glycoinfo.org/rdf/glycan/G72943US/sequence/kcf> glytoucan:is_glycosequence_of <http://glycoinfo.org/rdf/glycan/G72943US> .\n",
+//						true);
+//
+//		String query = "SELECT ?s ?v ?o\n" + "from <nobutest>\n"
+//				+ "WHERE { ?s ?v ?o }";
+//
+//		try {
+//			logger.debug("query:>" + query);
+//			List<SparqlEntity> list = schemaDAO.query(query);
+//			if (list.size() > 0) {
+//				SparqlEntity row = list.get(0);
+//				// assertTrue("added glycan with id " + glycan.getGlycanId(),
+//				// true);
+//				logger.debug("s:>" + row.getValue("s"));
+//				logger.debug("v:>" + row.getValue("v"));
+//				logger.debug("o:>" + row.getValue("o"));
+//			} else
+//				fail();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			assertFalse("Exception occurred while querying schema.", true);
+//		}
+//
+//	}
 
 	@Test
 	public void testKCFQuery() {
@@ -372,8 +342,8 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 
 		String query = prefix
 				+ "SELECT DISTINCT ?s ?name ?AccessionNumber ?Seq\n"
-				+ "from <http://glytoucan.org/rdf/demo/0.6>\n"
-				+ "from <http://bluetree.jp/test>\n"
+				+ "from <http://glytoucan.org/rdf/demo/0.2>\n"
+				+ "from <http://glytoucan.org/rdf/demo/0.2/kcf>\n"
 				+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
 				+ "from <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
 				+ "from <http://www.glytoucan.org/glyco/owl/glytoucan>\n"
@@ -385,8 +355,8 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 				+ "        ?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf }\n"
 				+ "order by ?AccessionNumber";
 		try {
-			List<SchemaEntity> list = schemaDAO.query(query);
-			SchemaEntity row = list.get(0);
+			List<SparqlEntity> list = schemaDAO.query(query);
+			SparqlEntity row = list.get(0);
 			// assertTrue("added glycan with id " + glycan.getGlycanId(), true);
 			logger.debug("Node:>" + row.getValue("s"));
 			logger.debug("graph:>" + row.getValue("name"));
@@ -398,7 +368,7 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testDelete() throws SQLException {
+	public void testDelete() throws SparqlException {
 		// schemaDAO
 		// .delete("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
 		// + "DELETE DATA FROM <http://glytoucan.org/rdf/demo/0.7> "
@@ -433,9 +403,9 @@ public class SchemaDAOImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testClearGraph() throws SQLException {
+	public void testClearGraph() throws SparqlException {
 		schemaDAO
-				.delete("clear graph <nobutest>");
+				.execute("clear graph <nobutest>");
 		//sparql clear graph <http://glytoucan.org/rdf/demo/0.2/wurcs>
 	}
 

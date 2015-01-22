@@ -1,7 +1,6 @@
-package org.glycoinfo.batch.convert.kcf;
+package org.glycoinfo.batch.convert;
 
-import org.glycoinfo.batch.TripleBean;
-import org.glycoinfo.batch.convert.ConvertTripleAbstract;
+import org.glycoinfo.rdf.InsertSparql;
 
 /*
  <http://www.glycoinfo.org/rdf/glycan/G63838JW> glycan:has_glycosequence ?gseq .
@@ -112,88 +111,43 @@ import org.glycoinfo.batch.convert.ConvertTripleAbstract;
  OFFSET 10 LIMIT 10
 
  */
-public class KcfConvertTriple extends ConvertTripleAbstract {
+public interface ConvertWriter extends InsertSparql {
 
-	String ident;
-	String sequence;
-	String glycanUri;
-
-	public String getIdent() {
-		return ident;
-	}
-
-	public void setIdent(String ident) {
-		this.ident = ident;
-	}
-
-	public String getSequence() {
-		if (null == this.sequence)
-			return null;
-		if (this.sequence.contains("CT-1"))
-			return getSequenceFormatted();
-		return sequence;
-	}
-
-	public void setSequence(String sequence) {
-		this.sequence = sequence;
-	}
-
-	public String getFormat() {
-		return "kcf";
-	}
-
-	public void setFormat(String format) {
-	}
-
-	@Override
-	public void setOrderBy(String orderByStatement) {
-	}
-
-	@Override
-	public String getGlycanSequenceUri() {
-		return "<http://www.glycoinfo.org/rdf/glycan/"
-				+ getIdent()
-				+ "/sequence/kcf>";
-	}
-
-	@Override
-	public void setGlycanSequenceUri(String glycanSequenceUri) {
-	}
-
-	@Override
-	public String getOrderBy() {
-		return null;
-	}
+	public String graphbase = "http://glytoucan.org/rdf/demo/0.2/";
 	
-/*	public String getFilter() {
-		return "FILTER NOT EXISTS {?s glycan:has_glycosequence ?kseq .\n"
-		+ "?kseq glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf"
-		+ "}";
-	}
-*/
-	@Override
-	public String getSequenceFormatted() {
-		return sequence.replace("\n", "\\n").replace("CT-1", getIdent());
-	}
+	public String getIdent();
+	
+	public void setIdent(String ident);
 
-	@Override
-	public void setSequenceFormatted(String sequence) {
-	}
+	public String getSequence();
 
-	// triple store batch process
-	// conversion
-	// retrieve a list of asc#
-	// for each asc #
-	// convert to kcf
-	// insert into rdf
+	public void setSequence(String sequence);
 
-	// mass
+	public String getSequenceFormatted();
 
-	// motif/substructure
-	// retrieve a list of asc#
-	// for each asc# -
-	// retrieve all structures
-	// convert to kcf
-	// search for substructure - kcam
+	public void setSequenceFormatted(String sequence);
+	
+	public String getGlycanUri();
 
+	public void setGlycanUri(String glycanUri);
+
+	public String getGlycanSequenceUri();
+
+	public void setGlycanSequenceUri(String glycanSequenceUri);
+
+	public String getFormat();
+
+	public void setFormat(String format);
+	
+	public String getFormatUri();
+
+	public void setFormatUri(String formatUri);
+	
+	public String getFrom();
+	
+	public void setFrom(String from);
+	
+	public String getWhere();
+	
+	public String getFilter();
 }

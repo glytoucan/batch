@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.glycoinfo.batch.TripleBean;
+import org.glycoinfo.rdf.InsertSparql;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 
-public class SubstructureTriple implements TripleBean {
+public class SubstructureTriple implements InsertSparql {
 
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger("org.glycoinfo.batch.substructure.SubstructureTriple");

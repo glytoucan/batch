@@ -1,8 +1,8 @@
 package org.glycoinfo.batch.substructure;
 
-import org.glycoinfo.batch.TripleBean;
-import org.glycoinfo.batch.TripleStoreItemReader;
-import org.glycoinfo.batch.TripleStoreItemWriter;
+import org.glycoinfo.batch.SparqlItemReader;
+import org.glycoinfo.batch.SparqlItemWriter;
+import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.search.GlySearch;
 import org.glycoinfo.search.glycoct.GlycoCTSearch;
 import org.glycoinfo.search.kcam.KCAMSearch;
@@ -34,7 +34,7 @@ public class SubstructureTripleBatchConfiguration {
 	}
 
 	@Bean
-	public TripleBean getTripleBean() {
+	public InsertSparql getTripleBean() {
 		return new SubstructureTriple();
 	}
 	
@@ -54,7 +54,7 @@ public class SubstructureTripleBatchConfiguration {
     			+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct .\n"
     			+ "FILTER NOT EXISTS {?glycans glycan:has_motif ?motif} \n";
     	
-    	TripleStoreItemReader<SubstructureTriple> reader = new TripleStoreItemReader<SubstructureTriple>();
+    	SparqlItemReader<SubstructureTriple> reader = new SparqlItemReader<SubstructureTriple>();
 //    	reader.setPrefix(SubstructureTriple.prefix);
     	SubstructureTriple subTriple = (org.glycoinfo.batch.substructure.SubstructureTriple) getTripleBean();
     	subTriple.setWhere(where);
@@ -77,7 +77,7 @@ public class SubstructureTripleBatchConfiguration {
 
     @Bean
     public ItemWriter<SubstructureTriple> writer() {
-    	TripleStoreItemWriter<SubstructureTriple> writer = new TripleStoreItemWriter<SubstructureTriple>();
+    	SparqlItemWriter<SubstructureTriple> writer = new SparqlItemWriter<SubstructureTriple>();
         return writer;
     }
     // end::readerwriterprocessor[]

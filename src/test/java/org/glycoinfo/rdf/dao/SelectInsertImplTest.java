@@ -1,7 +1,7 @@
-package org.glycoinfo.ts.dao;
+package org.glycoinfo.rdf.dao;
 
-import java.sql.SQLException;
-
+import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class SelectInsertImplTest extends AbstractJUnit4SpringContextTests {
 			.getLogger("org.glytoucan.registry.dao.test.SchemaDAOImplTest");
 
 	@Autowired
-	SchemaDAO schemaDAO;
+	SparqlDAO schemaDAO;
 
 	public static final String prefix = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
 			+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
@@ -59,7 +59,7 @@ public class SelectInsertImplTest extends AbstractJUnit4SpringContextTests {
 	public static final String graph = "http://www.glytoucan.org/rdf/construction";
 
 	@Test
-	public void testInsertSelectGraphconstruction() throws SQLException {
+	public void testInsertSelectGraphconstruction() throws SparqlException {
 		schemaDAO.delete(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "  ?s a glycan:saccharide .\n"
@@ -70,7 +70,7 @@ public class SelectInsertImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testInsertSelectGraphMass() throws SQLException {
+	public void testInsertSelectGraphMass() throws SparqlException {
 		schemaDAO.delete(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "?s glytoucan:has_mass ?Mass ." + "}}\n" + using + "WHERE {\n"
@@ -82,7 +82,7 @@ public class SelectInsertImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testInsertSelectGraphGlycoCT() throws SQLException {
+	public void testInsertSelectGraphGlycoCT() throws SparqlException {
 		schemaDAO.delete(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "	  ?s glycan:has_sequence ?Seq .\n" + "					}}\n" + using
@@ -91,7 +91,7 @@ public class SelectInsertImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testInsertSelectGraphContributor() throws SQLException {
+	public void testInsertSelectGraphContributor() throws SparqlException {
 		schemaDAO
 				.execute(prefix
 						+ "\n"
@@ -111,7 +111,7 @@ public class SelectInsertImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testInsertSelectGraphMotif() throws SQLException {
+	public void testInsertSelectGraphMotif() throws SparqlException {
 		schemaDAO.delete(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "				?s glycan:has_motif ?motif .\n"
@@ -124,7 +124,7 @@ public class SelectInsertImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testInsertSelectGraphMono() throws SQLException {
+	public void testInsertSelectGraphMono() throws SparqlException {
 		schemaDAO
 				.delete(prefix
 						+ "\n"

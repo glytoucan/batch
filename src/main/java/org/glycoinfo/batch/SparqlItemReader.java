@@ -7,9 +7,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.ts.dao.SchemaDAO;
-import org.glycoinfo.ts.dao.SchemaEntity;
-import org.glycoinfo.ts.utils.TripleStoreConverter;
+import org.glycoinfo.rdf.InsertSparql;
+import org.glycoinfo.rdf.dao.SparqlDAO;
+import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.utils.TripleStoreConverter;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.data.AbstractPaginatedDataItemReader;
 import org.springframework.beans.factory.InitializingBean;
@@ -56,55 +57,51 @@ WHERE {
  *
  */
 
-public class TripleStoreItemReader<T extends TripleBean> extends
+public class SparqlItemReader<T extends InsertSparql> extends
 		AbstractPaginatedDataItemReader<T> implements InitializingBean {
 
 	protected Log logger = LogFactory.getLog(getClass());
 
 	@Autowired
-	private SchemaDAO schemaDAO;
+	private SparqlDAO schemaDAO;
 
-	private Class<T> targetType;
-	
-	private T sample;
+	private T readSparql;
 	
 	private TripleStoreConverter<T> converter;
 
-	private Map<String, Object> parameterValues;
-
-	public TripleStoreItemReader() {
-		setName(ClassUtils.getShortName(TripleStoreItemReader.class));
+	public SparqlItemReader() {
+		setName(ClassUtils.getShortName(SparqlItemReader.class));
 	}
 
-	public void setTripleBean(T set) {
-		this.sample = set;
+	public void setSparqlReader(T read) {
+		this.readSparql = read;
 	}
 
-	public T getTripleBean() {
-		return this.sample;
+	public T getSparqlReader() {
+		return this.readSparql;
 	}
 	
-	public SchemaDAO getSchemaDAO() {
+	public SparqlDAO getSchemaDAO() {
 		return schemaDAO;
 	}
 
-	public void setSchemaDAO(SchemaDAO schemaDAO) {
+	public void setSchemaDAO(SparqlDAO schemaDAO) {
 		this.schemaDAO = schemaDAO;
 	}
 
 	@Override
 	protected Iterator<T> doPageRead() {
-		String q = sample.getSelectRdf();
+		String q = getSparqlReader().getSparql();
 
 		StringBuffer query = new StringBuffer(q);
 		query.append(" OFFSET " + (pageSize * page));
 		query.append(" LIMIT " + pageSize);
 		logger.debug("generated query:>" + query);
 
-		List<SchemaEntity> queryResults = schemaDAO.query(query.toString());
+		List<SparqlEntity> queryResults = schemaDAO.query(query.toString());
 		ArrayList<T> result = new ArrayList<T>();
 		if (queryResults != null) {
-			for (SchemaEntity schemaEntity : queryResults) {
+			for (SparqlEntity schemaEntity : queryResults) {
 				logger.info("converting:>" + schemaEntity);
 				T converted = getConverter().converter(schemaEntity);
 				logger.info("converted:>" + converted.getIdent());

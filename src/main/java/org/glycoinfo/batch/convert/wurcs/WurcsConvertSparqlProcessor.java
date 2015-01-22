@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 
-public class WurcsConvertTripleProcessor implements
-		ItemProcessor<WurcsConvertTriple, WurcsConvertTriple> {
+public class WurcsConvertSparqlProcessor implements
+		ItemProcessor<WurcsConvertSparqlReader, WurcsConvertSparqlReader> {
 	protected Log logger = LogFactory.getLog(getClass());
 	
 	@Autowired(required=true)
@@ -26,8 +26,8 @@ public class WurcsConvertTripleProcessor implements
 	}
 
 	@Override
-	public WurcsConvertTriple process(final WurcsConvertTriple triple) throws Exception {
-		WurcsConvertTriple transformedTriple = new WurcsConvertTriple();
+	public WurcsConvertSparqlReader process(final WurcsConvertSparqlReader triple) throws Exception {
+		WurcsConvertSparqlReader transformedTriple = new WurcsConvertSparqlReader();
 		getGlyConvert().setFrom(triple.getSequence());
 		transformedTriple.setIdent(triple.getIdent());
 		transformedTriple.setSequence(getGlyConvert().convert());

@@ -16,7 +16,7 @@ import org.springframework.util.Assert;
  * @author aoki
  *
  */
-public abstract class ConvertTripleAbstract implements ConvertTriple,
+public abstract class ConvertReadSparql implements ConvertReaderSparqlInterface,
 		InitializingBean {
 
 	protected Log logger = LogFactory.getLog(getClass());

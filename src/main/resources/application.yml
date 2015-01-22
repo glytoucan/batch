@@ -7,7 +7,7 @@ spring:
     triplestore:
         driverClassName: virtuoso.jdbc4.Driver
         dialect: sparqs
-        url: jdbc:virtuoso://test.glytoucan.org:1111
+        url: jdbc:virtuoso://cell:1111
         username: dba
         password: dba
         graph: graph

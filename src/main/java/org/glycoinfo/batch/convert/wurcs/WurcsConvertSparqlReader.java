@@ -3,13 +3,13 @@ package org.glycoinfo.batch.convert.wurcs;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.glycoinfo.batch.TripleBean;
-import org.glycoinfo.batch.convert.ConvertTripleAbstract;
-import org.glycoinfo.ts.dao.SchemaEntity;
-import org.glycoinfo.ts.utils.TripleStoreConverter;
+import org.glycoinfo.batch.convert.ConvertSparqlWriter;
+import org.glycoinfo.rdf.InsertSparql;
+import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.utils.TripleStoreConverter;
 
-public class WurcsConvertTriple extends ConvertTripleAbstract implements
-		TripleStoreConverter<WurcsConvertTriple> {
+public class WurcsConvertSparqlReader extends ConvertSparqlWriter implements
+		TripleStoreConverter<WurcsConvertSparqlReader> {
 
 	String ident;
 	String sequence;
@@ -56,8 +56,8 @@ public class WurcsConvertTriple extends ConvertTripleAbstract implements
 	}
 
 	@Override
-	public WurcsConvertTriple converter(SchemaEntity e) {
-		WurcsConvertTriple converted = new WurcsConvertTriple();
+	public WurcsConvertSparqlReader converter(SparqlEntity e) {
+		WurcsConvertSparqlReader converted = new WurcsConvertSparqlReader();
 		converted.setIdent(e.getValue("AccessionNumber"));
 		converted.setGlycanUri(e.getValue("s"));
 		converted.setSequence(e.getValue("Seq"));

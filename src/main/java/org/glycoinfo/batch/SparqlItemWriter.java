@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.ts.dao.SchemaDAO;
+import org.glycoinfo.rdf.InsertSparql;
+import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,13 @@ import org.springframework.util.CollectionUtils;
  * </p>
  *
  */
-public class TripleStoreItemWriter<T extends TripleBean> implements ItemWriter<T>, InitializingBean {
+public class SparqlItemWriter<T extends InsertSparql> implements ItemWriter<T>, InitializingBean {
 
 		protected static final Log logger = LogFactory
-				.getLog(TripleStoreItemWriter.class);
+				.getLog(SparqlItemWriter.class);
 
 		@Autowired
-		private SchemaDAO schemaDAO;
+		private SparqlDAO schemaDAO;
 
 		/**
 		 * Checks mandatory properties

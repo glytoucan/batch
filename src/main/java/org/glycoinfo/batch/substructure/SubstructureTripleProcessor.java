@@ -9,9 +9,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.conversion.GlyConvert;
+import org.glycoinfo.rdf.dao.SparqlDAO;
+import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.search.GlySearch;
-import org.glycoinfo.ts.dao.SchemaDAO;
-import org.glycoinfo.ts.dao.SchemaEntity;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class SubstructureTripleProcessor implements
 	protected static HashMap<String, String> iris = new HashMap<String, String>();
 
 	@Autowired
-	private SchemaDAO schemaDAO;
+	private SparqlDAO schemaDAO;
 
 	@Autowired
 	GlySearch glySearch;
@@ -47,11 +47,11 @@ public class SubstructureTripleProcessor implements
 		if (data == null || data.size() == 0 || iris == null
 				|| iris.size() == 0) {
 			logger.debug("schemaDAO.query(triple.getProcessQuery())" + triple.getProcessQuery());
-			List<SchemaEntity> list = schemaDAO.query(triple.getProcessQuery());
+			List<SparqlEntity> list = schemaDAO.query(triple.getProcessQuery());
 			data = new HashMap<String, Object>();
 			iris = new HashMap<String, String>();
 
-			for (SchemaEntity schemaEntity : list) {
+			for (SparqlEntity schemaEntity : list) {
 				data.put(schemaEntity.getValue("AccessionNumber"),
 						schemaEntity.getValue("Seq"));
 				iris.put(schemaEntity.getValue("AccessionNumber"),

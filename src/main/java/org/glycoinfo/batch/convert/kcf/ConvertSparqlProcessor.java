@@ -7,8 +7,8 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-public class ConvertTripleProcessor implements
-		ItemProcessor<KcfConvertTriple, KcfConvertTriple> {
+public class ConvertSparqlProcessor implements
+		ItemProcessor<KcfConvertSparql, KcfConvertSparql> {
 	protected Log logger = LogFactory.getLog(getClass());
 	
 	@Autowired(required=true)
@@ -23,8 +23,8 @@ public class ConvertTripleProcessor implements
 	}
 
 	@Override
-	public KcfConvertTriple process(final KcfConvertTriple triple) throws Exception {
-		KcfConvertTriple transformedTriple = new KcfConvertTriple();
+	public KcfConvertSparql process(final KcfConvertSparql triple) throws Exception {
+		KcfConvertSparql transformedTriple = new KcfConvertSparql();
 		getGlyConvert().setFrom(triple.getSequence());
 		transformedTriple.setIdent(triple.getIdent());
 		transformedTriple.setSequence(getGlyConvert().convert());

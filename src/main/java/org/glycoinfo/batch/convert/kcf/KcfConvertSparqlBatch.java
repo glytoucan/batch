@@ -1,6 +1,6 @@
 package org.glycoinfo.batch.convert.kcf;
 
-import org.glycoinfo.ts.utils.TripleStoreProperties;
+import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,9 +12,9 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableAutoConfiguration
 //@EnableConfigurationProperties(TripleStoreProperties.class)
 //@SpringApplicationConfiguration(classes = TripleStoreProperties.class)
-public class KcfConvertTripleBatch {
+public class KcfConvertSparqlBatch {
 
 	public static void main(String[] args) {
-		ApplicationContext ctx = SpringApplication.run(KcfConvertTripleBatch.class, args);
+		ApplicationContext ctx = SpringApplication.run(KcfConvertSparqlBatch.class, args);
 	}
 }
