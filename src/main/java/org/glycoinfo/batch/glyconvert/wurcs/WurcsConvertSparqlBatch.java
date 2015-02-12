@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Configuration;
 @SpringApplicationConfiguration(classes = WurcsConvertSparqlBatch.class)
 @EnableBatchProcessing
 public class WurcsConvertSparqlBatch {
-
+ 
 	// graph base to set the graph to insert into. The format type (toFormat()) will be added to the end. 
 	// example: http://glytoucan.org/rdf/demo/0.7/wurcs
 	public static String graphbase = "http://rdf.glytoucan.org/sequence";

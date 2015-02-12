@@ -50,6 +50,7 @@ public class ListSparqlProcessor implements
 
 	@Override
 	public List<SparqlEntity> process(final SparqlEntity sparqlEntity) throws Exception {
+		logger.debug("PROCESSING:>" + sparqlEntity + "<");
 		SelectSparql select = getSelectSparql();
 		if (null != getConverter())
 			select.setSparqlEntity(getConverter().converter(sparqlEntity));

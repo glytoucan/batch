@@ -130,6 +130,15 @@
 			<artifactId>wurcsframework</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.glycoinfo</groupId>
+			<artifactId>wurcsframework</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 	</dependencies>
 	<!-- <properties> <start-class>org.glycoinfo.ts.dao.SchemaDAOSesameImpl</start-class> 
 		</properties> -->
@@ -157,6 +166,10 @@
 		<repository>
 			<id>spring-releases</id>
 			<url>http://repo.spring.io/libs-release</url>
+		</repository>
+		<repository>
+			<id>glycoinfo</id>
+			<url>http://nexus.glycoinfo.org/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 
