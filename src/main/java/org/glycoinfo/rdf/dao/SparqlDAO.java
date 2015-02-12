@@ -13,11 +13,7 @@ public interface SparqlDAO {
 
 	void setTripleStoreProperties(TripleStoreProperties ts) throws SparqlException;
 
-	List<SparqlEntity> query(String query) throws SparqlException;
-
 	List<SparqlEntity> query(SelectSparql select) throws SparqlException;
-
-	void insert(String insert) throws SparqlException;
 
 	void insert(InsertSparql insert) throws SparqlException;
 

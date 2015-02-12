@@ -17,24 +17,18 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * <p>
- * A {@link ItemWriter} implementation that writes to a Neo4j database using an
- * implementation of Spring Data's {@link Neo4jOperations}.
- * </p>
- *
- * <p>
- * This writer is thread-safe once all properties are set (normal singleton
- * behavior) so it can be used in multiple concurrent transactions.
+ * A {@link ItemWriter} implementation that writes to an RDF database using {@link SparqlBeans}.
  * </p>
  *
  */
-public class SparqlItemWriter<T extends SparqlEntity> implements
-		ItemWriter<SparqlEntity>, InitializingBean {
+public class SparqlListWriter<T extends List<SparqlEntity>> implements
+		ItemWriter<List<SparqlEntity>>, InitializingBean {
 
 	protected static final Log logger = LogFactory
-			.getLog(SparqlItemWriter.class);
+			.getLog(SparqlListWriter.class);
 
 	@Autowired
-	private SparqlDAO schemaDAO;
+	private SparqlDAO dao;
 
 	@Autowired
 	private InsertSparql insertSparql;
@@ -65,7 +59,7 @@ public class SparqlItemWriter<T extends SparqlEntity> implements
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		Assert.state(schemaDAO != null, "A dao is required");
+		Assert.state(dao != null, "A dao is required");
 	}
 
 	/**
@@ -74,7 +68,7 @@ public class SparqlItemWriter<T extends SparqlEntity> implements
 	 * @see org.springframework.batch.item.ItemWriter#write(java.util.List)
 	 */
 	@Override
-	public void write(List<? extends SparqlEntity> items) throws Exception {
+	public void write(List<? extends List<SparqlEntity>> items) throws Exception {
 		if (!CollectionUtils.isEmpty(items)) {
 			doWrite(items);
 		}
@@ -88,31 +82,33 @@ public class SparqlItemWriter<T extends SparqlEntity> implements
 	 *            the list of items to be persisted.
 	 * @throws SQLException
 	 */
-	protected void doWrite(List<? extends SparqlEntity> items)
+	protected void doWrite(List<? extends List<SparqlEntity>> items)
 			throws SQLException {
-		for (SparqlEntity t : items) {
+		for (List<SparqlEntity> t : items) {
 			logger.debug(t);
 
-			InsertSparql insertSparql = getInsertSparql();
-			try {
-				insertSparql.setSparqlEntity(t);
+			for (SparqlEntity sparqlEntity : t) {
+				InsertSparql insertSparql = getInsertSparql();
+				try {
+					insertSparql.setSparqlEntity(sparqlEntity);
 
-				if (!(insertSparql.getSparql().trim().length() == 0)) {
-					logger.debug("inserting >" + insertSparql.getSparql()
-							+ "< into " + insertSparql.getGraph() + "<");
-					schemaDAO.insert(insertSparql);
-				}
-			} catch (SparqlException e) {
-				e.printStackTrace();
-				InsertSparql fail = getInsertFailSparql();
-				if (null != fail) {
-					fail.setSparqlEntity(t);
-					logger.debug("inserting " + fail.getSparql() + " into "
-							+ t.getGraph() + "< failed");
-					try {
-						schemaDAO.insert(getInsertFailSparql());
-					} catch (SparqlException sqle) {
-						logger.debug("inserting " + sqle.getMessage() + "<");
+					if (!(insertSparql.getSparql().trim().length() == 0)) {
+						logger.debug("inserting >" + insertSparql.getSparql()
+								+ "< into " + insertSparql.getGraph() + "<");
+						dao.insert(insertSparql);
+					}
+				} catch (SparqlException e) {
+					e.printStackTrace();
+					InsertSparql fail = getInsertFailSparql();
+					if (null != fail) {
+						fail.setSparqlEntity(sparqlEntity);
+						logger.debug("inserting " + fail.getSparql() + " into "
+								+ sparqlEntity.getGraph() + "<");
+						try {
+							dao.insert(getInsertFailSparql());
+						} catch (SparqlException sqle) {
+							logger.debug("failed fail insert:>" + sqle.getMessage() + "<");
+						}
 					}
 				}
 			}

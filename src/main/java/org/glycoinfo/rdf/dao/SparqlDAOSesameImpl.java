@@ -132,8 +132,7 @@ public class SparqlDAOSesameImpl implements SparqlDAO {
 		return al;
 	}
 
-	@Override
-	public List<SparqlEntity> query(String subject) {
+	public List<SparqlEntity> query(String subject) throws SparqlException {
 		org.openrdf.repository.Repository repository = new VirtuosoRepository(
 				datasource.getUrl(), 
 				datasource.getUsername(),
@@ -162,11 +161,13 @@ public class SparqlDAOSesameImpl implements SparqlDAO {
 				al = doTupleQuery(con, query);
 			} catch (MalformedQueryException | QueryEvaluationException e) {
 				e.printStackTrace();
+				throw new SparqlException(e);
 			}
 
 		} catch (RepositoryException e) {
 			logger.debug("Error[" + e + "]");
 			e.printStackTrace();
+			throw new SparqlException(e);
 		}
 
 		SparqlEntity spo = new SparqlEntity();
@@ -280,7 +281,6 @@ public class SparqlDAOSesameImpl implements SparqlDAO {
 		return query(select.getSparql());
 	}
 
-	@Override
 	public void insert(String insert) throws SparqlException {
 		execute(insert);
 	}

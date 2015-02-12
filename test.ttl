@@ -1,0 +1,8 @@
+prefix xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>
+<http://rdf.glycoinfo.org/glycan/G56189SC> glycan:has_glycosequence <http://www.glycoinfo.org/rdf/glycan/G56189SC/wurcs> .
+<http://www.glycoinfo.org/rdf/glycan/G56189SC/wurcs> glycan:has_sequence "WURCS=2.0/1,1,1/[4<nx>h-?a_?-?]/1/a1-a7~n"^^xsd:string .
+<http://www.glycoinfo.org/rdf/glycan/G56189SC/wurcs> glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .
+<http://www.glycoinfo.org/rdf/glycan/G56189SC/wurcs> glytoucan:is_glycosequence_of <http://rdf.glycoinfo.org/glycan/G56189SC> .

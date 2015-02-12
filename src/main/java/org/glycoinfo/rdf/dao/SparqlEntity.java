@@ -5,31 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.glycoinfo.rdf.utils.SchemaEntityValueConverter;
+import org.glycoinfo.rdf.utils.SparqlEntityValueConverter;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-//import com.wordnik.swagger.annotations.ApiModel;
 
 /**
  * Class to hold information about Triplestore schema
  * 
  * @author aoki
- *
  */
-
-//@ApiModel(value = "SchemaEntity", description = "Schema query results")
-@JsonSerialize(using=SchemaEntityValueConverter.class)
+@JsonSerialize(using=SparqlEntityValueConverter.class)
 public class SparqlEntity {
 	List<String> columns = new ArrayList<String>();
 	
 	Map<String, String> data = new HashMap<String, String>();
 	String graph;
-	String s;
-	String p;
-	String o;
 
 	/**
 	 * @return the subject
@@ -68,37 +58,10 @@ public class SparqlEntity {
 	public void setGraph(String graph) {
 		this.data.put("graph", graph);
 	}
-	
-	public String getS() {
-		return data.get("s");
-	}
-
-	public void setS(String s) {
-		this.data.put("s", s);
-	}
 
 	@Override
 	public String toString() {
 		return "SchemaEntity [columns=" + columns + ", data=" + data
-				+ ", graph=" + graph + ", s=" + s + ", p=" + p + ", o=" + o
-				+ "]";
-	}
-
-//	public String getP() {
-//		return data.get("p");
-//	}
-//
-//	public void setP(String p) {
-//		this.data.put("p", p);
-//	}
-//
-//	public String getO() {
-//		return data.get("o");
-//	}
-//
-//	public void setO(String o) {
-//		this.data.put("o", o);
-//	}
-	
-	
+				+ ", graph=" + graph + "]";
+	}	
 }

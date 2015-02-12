@@ -94,7 +94,6 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 		return al;
 	}
 	
-	@Override
 	public List<SparqlEntity> query(String subject) {
 		Query sparql = QueryFactory.create(subject);
 		sparql.setLimit(1000);
@@ -158,7 +157,6 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 		return query(select.getSparql());
 	}
 
-	@Override
 	public void insert(String insert) throws SparqlException {
 		execute(insert);
 	}

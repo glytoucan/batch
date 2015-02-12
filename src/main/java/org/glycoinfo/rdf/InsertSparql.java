@@ -1,5 +1,9 @@
 package org.glycoinfo.rdf;
 
+import java.util.List;
+
+import org.glycoinfo.rdf.dao.SparqlEntity;
+
 /**
  * 
  * Representing the parts of an insert statement.  Nullable clauses can be ignored with null, whitespace or a blank string.
@@ -8,7 +12,7 @@ package org.glycoinfo.rdf;
  * 
  * A simple insert statment:
  * 
- * insert into graph <" + graph + "> " + "{ " + insert + " }"
+ * insert into graph <" + graph + "> " + using + "{ " + insert + " }" + where
  * 
  *The following describes the parts of a complex statement. 
  * 
@@ -27,7 +31,7 @@ package org.glycoinfo.rdf;
  * "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#> \n";
  * 
  * graph:
- * "http://www.glytoucan.org/rdf/construction";
+ * into graph <"http://www.glytoucan.org/rdf/construction">
  * 
  * using:
  * "USING <http://glytoucan.org/rdf/demo/0.2>\n" +
@@ -66,23 +70,6 @@ public interface InsertSparql {
 	 * @param insert
 	 */
 	public void setInsert(String insert);
-
-	/**
-	 * 
-	 * In case the original insert fails, a new fail condition is retrieved here
-	 * and used, if this also fails, there is nothing more than can be done.
-	 * 
-	 * @return
-	 */
-	public String getFailInsert();
-
-	/**
-	 * 
-	 * Set the fail command.
-	 * 
-	 * @param failInsert
-	 */
-	public void setFailInsert(String failInsert);
 
 	/**
 	 * 
@@ -131,6 +118,22 @@ public interface InsertSparql {
 	 * @param graph
 	 */
 	public void setGraph(String graph);
+	
+	/**
+	 * 
+	 * Get the using clause.
+	 * 
+	 * @return
+	 */
+	public String getUsing();
+
+	/**
+	 * 
+	 * Set the using clause.
+	 * 
+	 * @param using
+	 */
+	public void setUsing(String using);
 
 	/**
 	 * 
@@ -139,4 +142,24 @@ public interface InsertSparql {
 	 * @return
 	 */
 	public String getSparql();
+	
+	/**
+	 * 
+	 * The sparqlentity is a simple Map where "value" can be retrieved based on a key.  This is mainly to represent the results of a SparqlQuery, but can be any kind of data Map.
+	 * The primary use of this is to enable dynamic queries based on the data stored in the SparqlEntity. 
+	 * 
+	 */
+	public void setSparqlEntity(SparqlEntity sparqlentity);
+
+	/**
+	 * 
+	 * See @setSparqlEntity above
+	 * 
+	 * @return SparqlEntity the current data stored and used to generate the query.
+	 */
+	public SparqlEntity getSparqlEntity();
+	
+	public List<InsertSparql> getRelated();
+
+	public void addRelated(List<InsertSparql> related);
 }

@@ -1,5 +1,7 @@
 package org.glycoinfo.rdf;
 
+import org.glycoinfo.rdf.dao.SparqlEntity;
+
 /**
  * 
  * An interface used to define the parts of a sparql select query.  non-required fields should be nullable and thus blank.  
@@ -68,15 +70,16 @@ public interface SelectSparql {
 	 * 
 	 * @param select
 	 */
-	public void setSelect(String select);
+	public void setSelect(String select) throws SparqlException;
 
 	/**
 	 * 
-	 * Retrieve the where clause.
+	 * Retrieve the where clause.  Note the variables must match those in the getSelect method.
 	 * 
 	 * @return
+	 * @throws SparqlException 
 	 */
-	public String getWhere();
+	public String getWhere() throws SparqlException;
 
 	/**
 	 * 
@@ -92,7 +95,7 @@ public interface SelectSparql {
 	 * 
 	 * @return
 	 */
-	public String getGraph();
+	public String getFrom();
 
 	/**
 	 * 
@@ -100,7 +103,7 @@ public interface SelectSparql {
 	 * 
 	 * @param graph
 	 */
-	public void setGraph(String graph);
+	public void setFrom(String graph);
 	
 	/**
 	 * 
@@ -153,12 +156,40 @@ public interface SelectSparql {
 	public String getConstruct();
 	
 	public void setConstruct(String construct);
+
+	public String getLimit();
+	
+	public void setLimit(String limit);
+
+	public String getOffset();
+	
+	public void setOffset(String offset);
+
+	public void setSparql(String sparql);
 	
 	/**
 	 * 
 	 * Retrieve the overall sparql constructed from all of the parts above.
 	 * 
 	 * @return
+	 * @throws SparqlException 
 	 */
-	public String getSparql();
+	public String getSparql() throws SparqlException;
+	
+
+	/**
+	 * 
+	 * The sparqlentity is a simple Map where "value" can be retrieved based on a key.  This is mainly to represent the results of a SparqlQuery, but can be any kind of data Map.
+	 * The primary use of this is to enable dynamic queries based on the data stored in the SparqlEntity. 
+	 * 
+	 */
+	public void setSparqlEntity(SparqlEntity sparqlentity);
+
+	/**
+	 * 
+	 * See @setSparqlEntity above
+	 * 
+	 * @return SparqlEntity the current data stored and used to generate the query.
+	 */
+	public SparqlEntity getSparqlEntity();
 }

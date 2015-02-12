@@ -17,14 +17,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.qos.logback.classic.Logger;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-// @ContextConfiguration(locations = "classpath:springmvc-servlet.xml")
-@SpringApplicationConfiguration(classes = SelectInsertImplTest.class)
-@EnableAutoConfiguration
-//@ContextConfiguration
-//@ContextConfiguration(initializers = ConfigFileApplicationContextInitializer.class)
-// classes = ConvertTripleBatchConfiguration.class,
-@ComponentScan(basePackages = ("org.glycoinfo"))
-public class SelectInsertImplTest extends AbstractJUnit4SpringContextTests {
+@SpringApplicationConfiguration(classes = SesameDAOTestConfig.class)
+public class SelectInsertImplTest {
 
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger("org.glytoucan.registry.dao.test.SchemaDAOImplTest");

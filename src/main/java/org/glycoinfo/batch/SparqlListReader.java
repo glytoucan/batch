@@ -52,8 +52,8 @@ import org.springframework.util.ClassUtils;
  *
  */
 
-public class SparqlItemReader<T extends SparqlEntity> extends
-		AbstractPaginatedDataItemReader<SparqlEntity> implements
+public class SparqlListReader<T extends List<SparqlEntity>> extends
+		AbstractPaginatedDataItemReader<List<SparqlEntity>> implements
 		InitializingBean {
 
 	protected Log logger = LogFactory.getLog(getClass());
@@ -64,8 +64,8 @@ public class SparqlItemReader<T extends SparqlEntity> extends
 	@Autowired
 	private SelectSparql selectSparql;
 
-	public SparqlItemReader() {
-		setName(ClassUtils.getShortName(SparqlItemReader.class));
+	public SparqlListReader() {
+		setName(ClassUtils.getShortName(SparqlListReader.class));
 	}
 
 	public void setSelectSparql(SelectSparql read) {
@@ -85,18 +85,16 @@ public class SparqlItemReader<T extends SparqlEntity> extends
 	}
 
 	@Override
-	protected Iterator<SparqlEntity> doPageRead() {
-
-		SelectSparql selectSparql = getSelectSparql();
-		selectSparql.setOffset(Integer.toString(pageSize * page));
-		selectSparql.setLimit(Integer.toString(pageSize));
-		String q;
+	protected Iterator<List<SparqlEntity>> doPageRead() {
 		List<org.glycoinfo.rdf.dao.SparqlEntity> queryResults;
-		try {
-			q = selectSparql.getSparql();
 
-			StringBuffer query = new StringBuffer(q);
-			logger.debug("generated query:>" + query);
+		try {
+			SelectSparql selectSparql = getSelectSparql();
+			selectSparql.setOffset(Integer.toString(pageSize * page));
+			selectSparql.setLimit(Integer.toString(pageSize));
+			String q = selectSparql.getSparql();
+
+			logger.debug("generated query:>" + q);
 
 			queryResults = schemaDAO.query(selectSparql);
 		} catch (SparqlException e) {
@@ -104,7 +102,8 @@ public class SparqlItemReader<T extends SparqlEntity> extends
 			e.printStackTrace();
 			return null;
 		}
-		return queryResults.iterator();
+		// TODO hey I dont need to do this...
+		return null;
 	}
 
 	/**
