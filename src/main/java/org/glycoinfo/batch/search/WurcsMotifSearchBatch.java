@@ -13,6 +13,7 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlDAOSesameImpl;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.MotifInsertSparql;
 import org.glycoinfo.rdf.glycan.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
@@ -66,7 +67,9 @@ public class WurcsMotifSearchBatch {
 	}
 
 	SearchSparql getSearchSparql() {
-		return new SearchSparqlBean();
+		SearchSparqlBean ssb = new SearchSparqlBean();
+		ssb.setGlycoSequenceVariable(GlycoSequence.URI);
+		return ssb;
 	}
 	
 	@Bean
