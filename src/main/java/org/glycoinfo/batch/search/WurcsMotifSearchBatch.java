@@ -2,12 +2,11 @@ package org.glycoinfo.batch.search;
 
 import java.util.List;
 
-import org.glycoinfo.WURCSFramework.util.rdf.SearchSparql;
-import org.glycoinfo.WURCSFramework.util.rdf.SearchSparqlBean;
 import org.glycoinfo.batch.ListSparqlProcessor;
 import org.glycoinfo.batch.SparqlItemReader;
 import org.glycoinfo.batch.SparqlListWriter;
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
+import org.glycoinfo.batch.search.wurcs.SearchSparqlBean;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
@@ -68,7 +67,7 @@ public class WurcsMotifSearchBatch {
 
 	SearchSparql getSearchSparql() {
 		SearchSparqlBean ssb = new SearchSparqlBean();
-		ssb.setGlycoSequenceVariable(GlycoSequence.URI);
+		ssb.setGlycoSequenceUri(GlycoSequence.URI);
 		return ssb;
 	}
 	

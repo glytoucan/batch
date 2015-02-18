@@ -3,11 +3,11 @@ package org.glycoinfo.rdf.glycan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.glycoinfo.WURCSFramework.util.rdf.SearchSparql;
-import org.glycoinfo.WURCSFramework.util.rdf.SearchSparqlBean;
 import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
 import org.glycoinfo.batch.glyconvert.ConvertSelectSparql;
+import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
+import org.glycoinfo.batch.search.wurcs.SearchSparqlBean;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
 import org.glycoinfo.rdf.SparqlException;
@@ -58,7 +58,7 @@ public class MotifSparqlBeanTest {
 	@Bean
 	SearchSparql getSearchSparql() {
 		SearchSparqlBean ss = new SearchSparqlBean();
-		ss.setGlycoSequenceVariable(GlycoSequence.URI);
+		ss.setGlycoSequenceUri(GlycoSequence.URI);
 		return ss;
 	}
 
@@ -84,55 +84,6 @@ public class MotifSparqlBeanTest {
 				+ "?GlycoSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs\n}\n", getMotifSelectSparql().getSparql());
 	}
 
-	@Test
-	public void testSearchSelectSparql() throws SparqlException {
-		logger.debug(getMotifSelectSparql().getSparql());
-		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
-				+ "SELECT DISTINCT ?SaccharideURI ?PrimaryId\n"
-				+ "FROM <http://rdf.glytoucan.org>\n"
-				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
-				+ "FROM <http://www.glycoinfo.org/graph/wurcs/0.4>\n"
-				+ "WHERE {?SaccharideURI toucan:has_primary_id ?PrimaryId .\n"
-				+ "GRAPH <http://www.glycoinfo.org/graph/wurcs/0.4> {?SaccharideURI glycan:has_glycosequence ?GlycoSequenceURI .\n"
-				+ "?null wurcs:has_uniqueRES  ?uRES1, ?uRES2, ?uRES3 .\n"
-				+ "?uRES1 wurcs:is_monosaccharide <http://rdf.glycoinfo.org/glycan/wurcs/2.0/monosaccharide/x2122h-1x_1-5_2*NCC%2F3%3DO> .\n"
-				+ "?uRES2 wurcs:is_monosaccharide <http://rdf.glycoinfo.org/glycan/wurcs/2.0/monosaccharide/12112h-1b_1-5> .\n"
-				+ "?uRES3 wurcs:is_monosaccharide <http://rdf.glycoinfo.org/glycan/wurcs/2.0/monosaccharide/11221m-1a_1-5> .\n"
-				+ "# RES\n"
-				+ "?RESa wurcs:is_uniqueRES ?uRES1 .\n"
-				+ "?RESb wurcs:is_uniqueRES ?uRES2 .\n"
-				+ "?RESc wurcs:is_uniqueRES ?uRES3 .\n"
-				+ "# LIN\n"
-				+ "?gseq wurcs:has_LIN ?LINa3b1 , ?LINa4c1 . \n"
-				+ "# LIN1\n"
-				+ "  ?LINa3b1 wurcs:has_GLIPS   ?GLIPSa3 ,   ?GLIPSb1 .  \n"
-				+ "# LIN2\n"
-				+ "  ?LINa4c1 wurcs:has_GLIPS   ?GLIPSa4 ,   ?GLIPSc1 .  \n"
-				+ "\n"
-				+ " # LIN1: GLIPS1\n"
-				+ "  ?GLIPSa3 wurcs:has_GLIP ?GLIPa3 . \n"
-				+ "  ?GLIPa3 wurcs:has_SC_position 3 .\n"
-				+ "  ?GLIPa3 wurcs:has_RES ?RESa .\n"
-				+ "  ?GLIPSa3 wurcs:isFuzzy \"false\"^^xsd:boolean .\n"
-				+ "# LIN1: GLIPS2\n"
-				+ "  ?GLIPSb1 wurcs:has_GLIP ?GLIPb1 . \n"
-				+ "  ?GLIPb1 wurcs:has_SC_position 1 .\n"
-				+ "  ?GLIPb1 wurcs:has_RES ?RESb .\n"
-				+ "  ?GLIPSb1 wurcs:isFuzzy \"false\"^^xsd:boolean .\n"
-						+ "# LIN2: GLIPS1\n"
-						+ "  ?GLIPSa4 wurcs:has_GLIP ?GLIPa4 . \n"
-						+ "  ?GLIPa4 wurcs:has_SC_position 4 .\n"
-						+ "  ?GLIPa4 wurcs:has_RES ?RESa .\n"
-						+ "  ?GLIPSa4 wurcs:isFuzzy \"false\"^^xsd:boolean .\n"
-								+ "# LIN2: GLIPS2\n"
-								+ "  ?GLIPSc1 wurcs:has_GLIP ?GLIPc1 . \n"
-								+ "  ?GLIPc1 wurcs:has_SC_position 1 .\n"
-								+ "  ?GLIPc1 wurcs:has_RES ?RESc .\n"
-								+ "  ?GLIPSc1 wurcs:isFuzzy \"false\"^^xsd:boolean .\n"
-								+ "}}\n"
-								+ "", getMotifSearchSparql().getSparql());
-	}
 
 //	@Test
 //	public void testInsertSparql() {

@@ -1,7 +1,7 @@
 package org.glycoinfo.batch.search.wurcs;
 
-import org.glycoinfo.WURCSFramework.util.rdf.SearchSparql;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSFormatException;
+import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
