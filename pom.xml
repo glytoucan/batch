@@ -139,6 +139,21 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-access</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.1.2</version>
+    </dependency>
 	</dependencies>
 	<!-- <properties> <start-class>org.glycoinfo.ts.dao.SchemaDAOSesameImpl</start-class> 
 		</properties> -->
@@ -148,7 +163,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>org.glycoinfo.batch.substructure.SubstructureTripleBatch</mainClass>
+					<mainClass>org.glycoinfo.batch.search.WurcsMotifSearchBatch</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -169,7 +184,17 @@
 		</repository>
 		<repository>
 			<id>glycoinfo</id>
-			<url>http://nexus.glycoinfo.org/nexus/content/groups/public/</url>
+			<url>http://nexus.glycoinfo.org/nexus/</url>
+      <releases>
+      <enabled>false</enabled>
+      <updatePolicy>always</updatePolicy>
+      <checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+      <enabled>true</enabled>
+      <updatePolicy>always</updatePolicy>
+      <checksumPolicy>warn</checksumPolicy>
+      </snapshots>
 		</repository>
 	</repositories>
 

@@ -29,17 +29,22 @@ public class MotifSearchSparql extends SelectSparqlBean {
 
 	public MotifSearchSparql() {
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
-		this.select = "DISTINCT ?" + Saccharide.URI + " ?" + Saccharide.PrimaryId; 
+				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
+				+ "PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>";
+		this.select = "DISTINCT ?" + Saccharide.URI;
+//				+ " ?" + Saccharide.PrimaryId; 
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
-				+ "FROM <http://www.glycoinfo.org/graph/wurcs/0.4>";
+				+ "FROM <http://www.glycoinfo.org/wurcs>";
 	}
 
 	@Override
 	public String getWhere() throws SparqlException {
-		this.where = "?" + Saccharide.URI + " toucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n"
-				+ "GRAPH <http://www.glycoinfo.org/graph/wurcs/0.4> {"
+		this.where = ""
+//	"?" + Saccharide.URI + " toucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n"
+//				+ "GRAPH <http://www.glycoinfo.org/wurcs> {"
+				+ "SELECT *\n"
+				+ "WHERE {\n"
 				+ "?" + Saccharide.URI + " glycan:has_glycosequence ?" + GlycoSequence.URI + " .\n";
 				
 //				"?glycans a glycan:glycan_motif .\n"
@@ -47,13 +52,14 @@ public class MotifSearchSparql extends SelectSparqlBean {
 //				+ "?gseq glycan:has_sequence ?Seq .\n"
 //				+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct\n";
 		
-		try {
-			this.where += getSearchSparql().getExactWhere(getSparqlEntity().getValue(GlycoSequence.Sequence));
-		} catch (WURCSFormatException e) {
-			throw new SparqlException(e);
-		}
+//		try {
+			this.where += getSearchSparql().getWhere(getSparqlEntity().getValue(GlycoSequence.Sequence));
+//		} catch (WURCSFormatException e) {
+//			throw new SparqlException(e);
+//		}
 		
 		this.where += "}";
+//		this.where += "}";
 		return where;
 	}
 

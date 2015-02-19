@@ -1,10 +1,9 @@
 package org.glycoinfo.batch.search;
 
-import org.glycoinfo.WURCSFramework.wurcs.WURCSFormatException;
 
 public interface SearchSparql {
 
-	String getExactWhere(String sequence) throws WURCSFormatException;
+	String getWhere(String sequence);
 
 	public void setGlycoSequenceUri(String strGlycoSeqVariable);
 
