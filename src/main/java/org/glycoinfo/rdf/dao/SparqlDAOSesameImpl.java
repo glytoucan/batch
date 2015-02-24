@@ -24,31 +24,15 @@ import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-
-
-
-
-
-
-
-
-
-
-
 
 
 //import virtuoso.jdbc3.VirtuosoExtendedString;
 //import virtuoso.jdbc3.VirtuosoRdfBox;
 import virtuoso.sesame2.driver.VirtuosoRepository;
-import ch.qos.logback.classic.Logger;
 
 /**
  * @author aoki
@@ -184,7 +168,7 @@ public class SparqlDAOSesameImpl implements SparqlDAO {
 
 		ArrayList<SparqlEntity> results = new ArrayList<SparqlEntity>();
 		for (int row = 0; bindings.hasNext(); row++) {
-			System.out.println("RESULT " + (row + 1) + ": ");
+			logger.debug("RESULT " + (row + 1) + ": ");
 			BindingSet pairs = bindings.next();
 			List<String> names = bindings.getBindingNames();
 			Value[] rv = new Value[names.size()];
@@ -198,9 +182,9 @@ public class SparqlDAOSesameImpl implements SparqlDAO {
 
 				rv[i] = value;
 				// if(column > 0) System.out.print(", ");
-				System.out.println("\t" + name + "=" + value);
+				logger.debug("\t" + name + "=" + value);
 				// vars.add(value);
-				// if(column + 1 == names.size()) System.out.println(";");
+				// if(column + 1 == names.size()) logger.debug(";");
 				String stringvalue = null;
 				if (null == value)
 					stringvalue = "";

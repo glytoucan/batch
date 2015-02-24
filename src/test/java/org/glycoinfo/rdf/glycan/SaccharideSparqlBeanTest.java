@@ -36,23 +36,24 @@ public class SaccharideSparqlBeanTest {
 
 	@Bean
 	SaccharideInsertSparql getSaccharideInsertSparql() {
-		return new SaccharideInsertSparql();
+		SaccharideInsertSparql ins = new SaccharideInsertSparql();
+		SparqlEntity sparqlentity = new SparqlEntity();
+		sparqlentity.setValue(Saccharide.URI, "insertsacharideuri");
+		sparqlentity.setValue(GlycoSequence.URI, "glycosequenceuri");
+		sparqlentity.setValue(Saccharide.PrimaryId, "primaryid");
+		ins.setSparqlEntity(sparqlentity);
+		return ins;
 	}
 
 	@Test
 	public void testInsertSparql() {
 		logger.debug(getSaccharideInsertSparql().getSparql());
+		
 		assertEquals(
-				"PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-						+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
-						+ "SELECT ?SaccharideURI ?PrimaryId ?GlycoSequenceURI ?Sequence\n"
-						+ "FROM <http://glytoucan.org/rdf/demo/0.2>\n"
-						+ "FROM <http://glytoucan.org/rdf/demo/0.3/wurcs>\n"
-						+ " WHERE {?SaccharideURI a glycan:glycan_motif .\n"
-						+ "?SaccharideURI toucan:has_primary_id ?PrimaryId .\n"
-						+ "?SaccharideURI glycan:has_glycosequence ?GlycoSequenceURI .\n"
-						+ "?GlycoSequenceURI glycan:has_sequence ?Sequence .\n"
-						+ "?GlycoSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs\n}\n",
+				"INSERT INTO\n"
+				+ "{ insertsacharideuri a glycosequenceuri .\n"
+				+ "insertsacharideuri glytoucan:has_primary_id primaryid .\n"
+				+ " }\n",
 				getSaccharideInsertSparql().getSparql());
 	}
 }

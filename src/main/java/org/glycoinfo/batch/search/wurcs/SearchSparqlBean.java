@@ -13,7 +13,7 @@ public class SearchSparqlBean extends WURCSrdfSPARQLGLIPS_SSM_TBD implements
 		LinkedList<String> t_aOption = new LinkedList<String>();
 //		t_aOption.add("exact");
 		t_aOption.add("uri");
-		t_aOption.add("wurcs");
+//		t_aOption.add("wurcs");
 //		t_aOption.add("accession_number");
 		t_aOption.add("whereonly");
 		t_aOption.add("TEST_ID:" + "sparqlbean");

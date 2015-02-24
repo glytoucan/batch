@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.qos.logback.classic.Logger;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SesameDAOTestConfig.class)
 public class SelectInsertImplTest {
 
@@ -52,7 +51,6 @@ public class SelectInsertImplTest {
 	
 	public static final String graph = "http://www.glytoucan.org/rdf/construction";
 
-	@Test
 	public void testInsertSelectGraphconstruction() throws SparqlException {
 		schemaDAO.delete(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
@@ -63,7 +61,6 @@ public class SelectInsertImplTest {
 				+ "  ?s glytoucan:has_primary_id ?AccessionNumber . " + "}");
 	}
 
-	@Test
 	public void testInsertSelectGraphMass() throws SparqlException {
 		schemaDAO.delete(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
@@ -75,7 +72,6 @@ public class SelectInsertImplTest {
 		);
 	}
 
-	@Test
 	public void testInsertSelectGraphGlycoCT() throws SparqlException {
 		schemaDAO.delete(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
@@ -84,7 +80,6 @@ public class SelectInsertImplTest {
 				+ "   ?gseq glycan:has_sequence ?Seq .\n" + "				}\n");
 	}
 
-	@Test
 	public void testInsertSelectGraphContributor() throws SparqlException {
 		schemaDAO
 				.execute(prefix
@@ -104,7 +99,6 @@ public class SelectInsertImplTest {
 						+ "				}\n");
 	}
 
-	@Test
 	public void testInsertSelectGraphMotif() throws SparqlException {
 		schemaDAO.delete(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
@@ -117,7 +111,6 @@ public class SelectInsertImplTest {
 				+ "	           foaf:name ?MotifName .\n" + "				}\n");
 	}
 
-	@Test
 	public void testInsertSelectGraphMono() throws SparqlException {
 		schemaDAO
 				.delete(prefix

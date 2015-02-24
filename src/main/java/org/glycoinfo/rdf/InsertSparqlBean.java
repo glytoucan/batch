@@ -118,7 +118,7 @@ public class InsertSparqlBean implements InsertSparql {
 			sparqlbuf.append("{ " + getInsert() + " }\n");
 			sparqlbuf.append(getWhere() != null ? "WHERE " + getWhere() + "\n"
 					: "");
-			logger.debug(sparqlbuf.toString());
+//			logger.debug(sparqlbuf.toString());
 			return sparqlbuf.toString();
 		} else {
 			logger.debug(this.sparql.toString());

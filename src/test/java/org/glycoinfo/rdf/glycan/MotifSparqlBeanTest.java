@@ -63,12 +63,12 @@ public class MotifSparqlBeanTest {
 		logger.debug(getMotifSelectSparql().getSparql());
 		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
-				+ "SELECT ?SaccharideURI ?PrimaryId ?GlycoSequenceURI ?Sequence\n"
-				+ "FROM <http://glytoucan.org/rdf/demo/0.2>\n"
+				+ "SELECT ?MotifURI ?PrimaryId ?GlycoSequenceURI ?Sequence\n"
+				+ "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://glytoucan.org/rdf/demo/0.3/wurcs>\n"
-				+ " WHERE {?SaccharideURI a glycan:glycan_motif .\n"
-				+ "?SaccharideURI toucan:has_primary_id ?PrimaryId .\n"
-				+ "?SaccharideURI glycan:has_glycosequence ?GlycoSequenceURI .\n"
+				+ "WHERE {?MotifURI a glycan:glycan_motif .\n"
+				+ "?MotifURI toucan:has_primary_id ?PrimaryId .\n"
+				+ "?MotifURI glycan:has_glycosequence ?GlycoSequenceURI .\n"
 				+ "?GlycoSequenceURI glycan:has_sequence ?Sequence .\n"
 				+ "?GlycoSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs\n}\n", getMotifSelectSparql().getSparql());
 	}

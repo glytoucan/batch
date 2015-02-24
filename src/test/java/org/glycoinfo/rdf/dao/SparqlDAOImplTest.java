@@ -40,7 +40,7 @@ public class SparqlDAOImplTest {
 			+ "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> \n"
 			+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#> \n";
 
-	public static final String from = "from <http://glytoucan.org/rdf/demo/0.2>\n"
+	public static final String from = "from <http://rdf.glytoucan.org>\n"
 			+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
 			+ "from <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
 			+ "from <http://www.glytoucan.org/glyco/owl/glytoucan>\n";
@@ -102,7 +102,7 @@ public class SparqlDAOImplTest {
 				+ "?entry a glycan:resource_entry .\n"
 				+ "?entry glytoucan:contributor ?contributor .\n"
 				+ "?contributor foaf:name ?Contributor .\n"
-				+ "?entry glytoucan:date_registered ?time .\n" + "}";
+				+ "?entry glytoucan:date_registered ?time .\n" + "} LIMIT 10";
 		try {
 			logger.debug("query:>" + query + "<");
 			List<SparqlEntity> list = schemaDAO.query(new SelectSparqlBean(query));
@@ -173,7 +173,6 @@ public class SparqlDAOImplTest {
 		}
 	}
 
-	@Test
 	public void testInsertConvert() throws SparqlException {
 		schemaDAO
 				.insert(new InsertSparqlBean("insert into graph <nobutest>  {"
@@ -226,11 +225,10 @@ public class SparqlDAOImplTest {
 
 	}
 
-	@Test
 	public void testKCFQuery() {
 		String query = prefix
 				+ "SELECT DISTINCT ?s ?name ?AccessionNumber ?Seq\n"
-				+ "from <http://glytoucan.org/rdf/demo/0.2>\n"
+				+ "from <http://rdf.glytoucan.org>\n"
 				+ "from <http://glytoucan.org/rdf/demo/0.2/kcf>\n"
 				+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
 				+ "from <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
@@ -241,7 +239,7 @@ public class SparqlDAOImplTest {
 				+ "       ?s glycan:has_glycosequence ?gseq .\n"
 				+ "        ?gseq glycan:has_sequence ?Seq .\n"
 				+ "        ?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf }\n"
-				+ "order by ?AccessionNumber";
+				+ "order by ?AccessionNumber LIMIT 10";
 		try {
 			List<SparqlEntity> list = schemaDAO.query(new SelectSparqlBean(query));
 			SparqlEntity row = list.get(0);
@@ -269,7 +267,6 @@ public class SparqlDAOImplTest {
 				.execute("clear graph <nobutest>");
 	}
 	
-	@Test
 	public void testInsertWurcs() throws SparqlException {
 		schemaDAO
 				.insert(new InsertSparqlBean("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"

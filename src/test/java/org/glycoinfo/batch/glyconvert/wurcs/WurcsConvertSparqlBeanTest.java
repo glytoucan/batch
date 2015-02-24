@@ -3,6 +3,8 @@ package org.glycoinfo.batch.glyconvert.wurcs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
 import org.glycoinfo.batch.glyconvert.ConvertSelectSparql;
 import org.glycoinfo.conversion.GlyConvert;
@@ -30,6 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @Configuration
 @EnableAutoConfiguration
 public class WurcsConvertSparqlBeanTest {
+	protected Log logger = LogFactory.getLog(getClass());
 
 	@Bean
 	GlyConvert getGlyConvert() {
@@ -53,11 +56,13 @@ public class WurcsConvertSparqlBeanTest {
 
 	@Test
 	public void testSelectSparql() throws SparqlException {
+		logger.debug(getConvertSelectSparql().getSparql());
+		
 		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 				+ "SELECT DISTINCT ?SaccharideURI ?PrimaryId ?Sequence ?GlycanSequenceURI\n"
 				+ "FROM <http://rdf.glytoucan.org>\n"				
-				+ "WHERE { ?SaccharideURI a glycan:saccharide .\n"
+				+ "WHERE {?SaccharideURI a glycan:saccharide .\n"
 				+ "?SaccharideURI glytoucan:has_primary_id ?PrimaryId .\n"
 				+ "?SaccharideURI glycan:has_glycosequence ?GlycanSequenceURI .\n"
 				+ "?GlycanSequenceURI glycan:has_sequence ?Sequence .\n"
@@ -67,13 +72,15 @@ public class WurcsConvertSparqlBeanTest {
 	
 	@Test
 	public void testInsertSparql() {
+
 		ConvertInsertSparql convert = getConvertInsertSparql();
 		SparqlEntity se = new SparqlEntity();
 		se.setValue("SaccharideURI", "testSaccharideURI");
 //		se.setValue("SequenceURI", "<testSequenceURI>");
-		se.setValue(GlycoSequence.Sequence, "testConvertedSequence!");
+		se.setValue(ConvertInsertSparql.ConvertedSequence, "testConvertedSequence!");
 		se.setValue(Saccharide.PrimaryId, "123");
 		convert.setSparqlEntity(se);
+		logger.debug( convert.getSparql());
 		assertEquals("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
 				+ "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"

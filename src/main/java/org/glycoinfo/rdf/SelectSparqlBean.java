@@ -162,7 +162,7 @@ public class SelectSparqlBean implements SelectSparql {
 					: "");
 			sparqlbuf.append(getOffset() != null ? " OFFSET " + getOffset() + "\n"
 					: "");
-			logger.debug(sparqlbuf.toString());
+//			logger.debug(sparqlbuf.toString());
 			return sparqlbuf.toString();
 		} else {
 			logger.debug(this.sparql.toString());

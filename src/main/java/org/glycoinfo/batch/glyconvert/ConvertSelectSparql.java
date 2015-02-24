@@ -87,7 +87,7 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 				+ SaccharideURI + " glycan:has_glycosequence ?"
 				+ GlycanSequenceURI + " .\n" + "?" + GlycanSequenceURI
 				+ " glycan:has_sequence ?Sequence .\n" + "?"
-				+ GlycanSequenceURI + " glycan:carbohydrate_format_glycoct_condensed "
+				+ GlycanSequenceURI + " glycan:in_carbohydrate_format "
 				+ getFormat() + "\n";
 	}
 

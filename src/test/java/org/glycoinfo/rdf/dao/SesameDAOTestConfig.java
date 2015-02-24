@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 @Configuration
 @EnableAutoConfiguration
-public class SesameDAOTestConfig extends AbstractJUnit4SpringContextTests {
+public class SesameDAOTestConfig {
 
 	@Bean
 	SparqlDAO getSparqlDAO() {

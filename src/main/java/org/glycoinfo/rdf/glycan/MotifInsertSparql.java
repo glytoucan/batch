@@ -39,6 +39,6 @@ public class MotifInsertSparql extends InsertSparqlBean {
 	
 	@Override
 	public String getInsert() {
-		return getSparqlEntity().getValue(Saccharide.URI) + " glycan:has_motif ?" + getSparqlEntity().getValue(Motif.URI) + " .";
+		return "<" + getSparqlEntity().getValue(Saccharide.URI) + "> glycan:has_motif <" + getSparqlEntity().getValue(Motif.URI) + "> .";
 	}
 }

@@ -58,6 +58,14 @@ public class SparqlEntity {
 	public void setGraph(String graph) {
 		this.data.put("graph", graph);
 	}
+	
+	public void putAll(SparqlEntity m) { 
+		data.putAll(m.getData());
+	}
+	
+	private Map getData() {
+		return data;
+	}
 
 	@Override
 	public String toString() {
