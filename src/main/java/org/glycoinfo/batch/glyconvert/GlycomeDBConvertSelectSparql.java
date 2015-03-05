@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class ConvertSelectSparql extends SelectSparqlBean implements
+public class GlycomeDBConvertSelectSparql extends ConvertSelectSparql implements
 		GlyConvertSparql, InitializingBean {
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String Sequence = "Sequence";
@@ -33,14 +33,14 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	@Autowired
 	GlyConvert glyConvert;
 
-	public ConvertSelectSparql(String sparql) {
+	public GlycomeDBConvertSelectSparql(String sparql) {
 		super(sparql);
 	}
 
-	public ConvertSelectSparql() {
+	public GlycomeDBConvertSelectSparql() {
 		super();
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
-				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
+		this.from = "FROM <http://rdf.glycoinfo.org/glycome-db>";
+		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>";
 	}
 
 	protected Log logger = LogFactory.getLog(getClass());
@@ -56,20 +56,18 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	}
 
 	public String getFormat() {
+		// TODO fix this workaround
 		String format = getGlyConvert().getFromFormat();
+		if (format.equals("glycoct_condensed"))
+			format = "glycoct";
+
 		return "glycan:carbohydrate_format_" + format;
 	}
 
 	@Override
 	public String getSelect() {
-		return "DISTINCT ?" + SaccharideURI + " ?" + AccessionNumber
-				+ " ?" + Sequence + " ?" + GlycanSequenceURI;
-	}
-
-	@Override
-	public String getPrefix() {
-		return "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
+		return "DISTINCT ?" + SaccharideURI + " ?" + AccessionNumber + " ?"
+				+ Sequence + " ?" + GlycanSequenceURI;
 	}
 
 	/*
@@ -78,15 +76,12 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	 * @see org.glycoinfo.rdf.SelectSparqlBean#getWhere()
 	 */
 	public String getWhere() {
-		return "?" + SaccharideURI + " a glycan:saccharide .\n" + "?"
-				+ SaccharideURI
-				+ " glytoucan:has_primary_id ?" + AccessionNumber + " .\n" + "?"
-				+ SaccharideURI + " glycan:has_glycosequence ?"
-				+ GlycanSequenceURI + " .\n" + "?" + GlycanSequenceURI
-				+ " glycan:has_sequence ?Sequence .\n" + "?"
-				+ GlycanSequenceURI + " glycan:in_carbohydrate_format "
-				+ getFormat() + "\n"
-						+ getFilter();
+		return "?" + SaccharideURI + " a glycan:saccharide .\n" + 
+//	"?"	+ SaccharideURI + " glytoucan:has_primary_id ?"	+ AccessionNumber + " .\n" +
+	"BIND(STRAFTER(str(?" + SaccharideURI + "), \"http://rdf.glycome-db.org/glycan/\") AS ?" + AccessionNumber + ")\n"
+			+ "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
+				+ "?" + GlycanSequenceURI + " glycan:has_sequence ?Sequence .\n" + "?"
+				+ GlycanSequenceURI + " glycan:in_carbohydrate_format " + getFormat() + "\n";
 	}
 
 	/**
@@ -97,16 +92,13 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	 * @return
 	 */
 	public String getFilter() {
-		/* FILTER NOT EXISTS {
-?SaccharideURI glycan:has_glycosequence ?existingseq .
-?existingseq glycan:has_sequence ?someSequence .
-?existingseq glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .
-}
-*/
 		return "FILTER NOT EXISTS {\n"
-				+ "?" + SaccharideURI + " glycan:has_glycosequence ?existingseq .\n"
-				+ "?existingseq glycan:has_sequence ?someSequence .\n"
-				+ "?existingseq glycan:in_carbohydrate_format glycan:carbohydrate_format_" + getGlyConvert().getToFormat() + "\n" + "}";
+				+ "?"
+				+ SaccharideURI
+				+ " glycan:has_glycosequence ?kseq .\n"
+				+ "?kseq glycan:has_sequence ?kSeq .\n"
+				+ "?kseq glycan:in_carbohydrate_format glycan:carbohydrate_format_"
+				+ getGlyConvert().getToFormat() + "\n" + "}";
 	}
 
 	@Override
