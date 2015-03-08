@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
-import org.glycoinfo.batch.glyconvert.ConvertSelectSparql;
+import org.glycoinfo.batch.glyconvert.wurcs.WurcsConvertSelectSparql;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
 import org.glycoinfo.rdf.dao.SesameDAOTestConfig;

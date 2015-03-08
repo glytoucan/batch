@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
-import org.glycoinfo.batch.glyconvert.ConvertSelectSparql;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
 import org.glycoinfo.rdf.SparqlException;
@@ -40,8 +39,8 @@ public class WurcsConvertSparqlBeanTest {
 	}
 	
 	@Bean
-	ConvertSelectSparql getConvertSelectSparql() {
-		ConvertSelectSparql convert = new ConvertSelectSparql();
+	WurcsConvertSelectSparql getConvertSelectSparql() {
+		WurcsConvertSelectSparql convert = new WurcsConvertSelectSparql();
 		convert.setGlyConvert(getGlyConvert());
 		return convert;
 	}
