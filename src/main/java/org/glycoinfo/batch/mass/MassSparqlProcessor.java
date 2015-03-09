@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.WURCSFramework.util.WURCSImporter;
 import org.glycoinfo.WURCSFramework.util.mass.WURCSMassCalculator;
+import org.glycoinfo.WURCSFramework.util.mass.WURCSMassException;
 import org.glycoinfo.WURCSFramework.wurcs.RES;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSFormatException;
@@ -25,7 +26,7 @@ public class MassSparqlProcessor implements
 	protected Log logger = LogFactory.getLog(getClass());
 
 	@Override
-	public SparqlEntity process(final SparqlEntity sparqlEntity) throws Exception {
+	public SparqlEntity process(final SparqlEntity sparqlEntity) throws SparqlException, WURCSMassException {
 		
 		// get the sequence
 		String sequence = sparqlEntity.getValue(MassSelectSparql.Sequence);
@@ -41,7 +42,16 @@ public class MassSparqlProcessor implements
 		}
 
 		LinkedList<RES> testRESs = t_objWURCS.getRESs();
-		double testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		double testMass;
+		try {
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		} catch (WURCSMassException e) {
+			if (e.getMessage().contains("repeating unit"))
+				testMass = -1;
+			else if (e.getMessage().contains("unknown carbon length"))
+				testMass = -1;
+			else throw e;
+		}
 
 		// return
 		logger.debug("Mass of (" + sequence + ") is (" + testMass + ")");

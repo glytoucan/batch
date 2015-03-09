@@ -34,7 +34,8 @@ public class MotifSearchSparql extends SelectSparqlBean {
 //				+ " ?" + Saccharide.PrimaryId; 
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
-				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.0>";
+				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.0>\n"
+				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.0/ms>";
 	}
 
 	@Override
@@ -42,9 +43,9 @@ public class MotifSearchSparql extends SelectSparqlBean {
 		this.where = ""
 //	"?" + Saccharide.URI + " toucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n"
 //				+ "GRAPH <http://www.glycoinfo.org/wurcs> {"
-				+ "SELECT *\n"
-				+ "WHERE {\n"
-				+ "?" + Saccharide.URI + " glycan:has_glycosequence ?" + GlycoSequence.URI + " .\n";
+//				+ "SELECT *\n"
+//				+ "WHERE {\n"
+				+ "?" + Saccharide.URI + " glycan:has_glycosequence ?gseq .\n";
 				
 //				"?glycans a glycan:glycan_motif .\n"
 //				+ "?glycans glycan:has_glycosequence ?gseq .\n"
@@ -57,7 +58,7 @@ public class MotifSearchSparql extends SelectSparqlBean {
 //			throw new SparqlException(e);
 //		}
 		
-		this.where += "}";
+//		this.where += "}";
 //		this.where += "}";
 		return where;
 	}

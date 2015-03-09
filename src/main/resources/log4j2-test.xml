@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
 	<Properties>
-		<Property name="filename">target/rolling1/rollingtest.log</Property>
+<!-- 		<Property name="filename">target/rolling1/rollingtest.log</Property> -->
 	</Properties>
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
-		<File name="File" fileName="${filename}">
+		<RollingFile name="RollingFile" fileName="logs/app.log"
+			filePattern="logs/app-%d{MM-dd-yyyy}.log.gz" ignoreExceptions="false">
 			<PatternLayout>
-				<pattern>%d %p %C{1.} [%t] %m%n</pattern>
+				<Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
 			</PatternLayout>
-		</File>
+			<TimeBasedTriggeringPolicy />
+		</RollingFile>
 	</Appenders>
 	<Loggers>
 		<Root level="error">
 			<AppenderRef ref="Console" />
-			<AppenderRef ref="File" />
+			<AppenderRef ref="RollingFile" />
 		</Root>
 		<logger name="org.glycoinfo" level="debug" />
 	</Loggers>
