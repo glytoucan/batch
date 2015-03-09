@@ -6,7 +6,6 @@ import org.glycoinfo.batch.SparqlItemReader;
 import org.glycoinfo.batch.SparqlItemWriter;
 import org.glycoinfo.batch.TtlItemWriter;
 import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
-import org.glycoinfo.batch.glyconvert.ConvertSelectSparql;
 import org.glycoinfo.batch.glyconvert.ConvertSparqlProcessor;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
@@ -60,7 +59,7 @@ public class WurcsConvertTtlBatch {
 
 	@Bean
 	SelectSparql getSelectSparql() {
-		SelectSparql select = new ConvertSelectSparql();
+		SelectSparql select = new WurcsConvertSelectSparql();
 		select.setFrom("FROM <http://rdf.glytoucan.org>");
 		return select;
 	}

@@ -2,6 +2,7 @@ package org.glycoinfo.batch.glyconvert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.batch.glyconvert.wurcs.WurcsConvertSelectSparql;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.glycan.Saccharide;
@@ -23,7 +24,7 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class GlycomeDBConvertSelectSparql extends ConvertSelectSparql implements
+public class GlycomeDBConvertSelectSparql extends WurcsConvertSelectSparql implements
 		GlyConvertSparql, InitializingBean {
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String Sequence = "Sequence";

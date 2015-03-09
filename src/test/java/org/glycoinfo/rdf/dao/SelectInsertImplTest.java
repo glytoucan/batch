@@ -1,20 +1,10 @@
 package org.glycoinfo.rdf.dao;
 
 import org.glycoinfo.rdf.SparqlException;
-import org.glycoinfo.rdf.dao.SparqlDAO;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import ch.qos.logback.classic.Logger;
 
 @SpringApplicationConfiguration(classes = SesameDAOTestConfig.class)
 public class SelectInsertImplTest {

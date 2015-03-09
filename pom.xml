@@ -23,6 +23,21 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
 		</dependency>
@@ -139,6 +154,26 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.neo4j</groupId> -->
+		<!-- <artifactId>neo4j-cypher-compiler-2.1</artifactId> -->
+		<!-- <version>2.1.2</version> -->
+		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.2</version>
+		</dependency>
 	</dependencies>
 	<!-- <properties> <start-class>org.glycoinfo.ts.dao.SchemaDAOSesameImpl</start-class> 
 		</properties> -->
@@ -148,7 +183,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>org.glycoinfo.batch.search.WurcsMotifSearchBatch</mainClass>
+					<mainClass>org.glycoinfo.batch.search.wurcs.WurcsMotifSearchBatch</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -170,16 +205,16 @@
 		<repository>
 			<id>glycoinfo</id>
 			<url>http://nexus.glycoinfo.org/nexus/</url>
-      <releases>
-      <enabled>false</enabled>
-      <updatePolicy>always</updatePolicy>
-      <checksumPolicy>warn</checksumPolicy>
-      </releases>
-      <snapshots>
-      <enabled>true</enabled>
-      <updatePolicy>always</updatePolicy>
-      <checksumPolicy>warn</checksumPolicy>
-      </snapshots>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
 		</repository>
 	</repositories>
 
@@ -192,12 +227,12 @@
 
 	<distributionManagement>
 		<repository>
-			<id>nexus-glycoinfo</id>
+			<id>glycoinfo</id>
 			<name>Internal Releases</name>
 			<url>http://nexus.glycoinfo.org/nexus/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>nexus-glycoinfo</id>
+			<id>glycoinfo</id>
 			<name>Internal Release Snapshots</name>
 			<url>http://nexus.glycoinfo.org/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>

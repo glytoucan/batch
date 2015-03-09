@@ -3,7 +3,6 @@ package org.glycoinfo.batch.glyconvert.wurcs;
 import org.glycoinfo.batch.SparqlItemReader;
 import org.glycoinfo.batch.SparqlItemWriter;
 import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
-import org.glycoinfo.batch.glyconvert.ConvertSelectSparql;
 import org.glycoinfo.batch.glyconvert.ConvertSparqlProcessor;
 import org.glycoinfo.batch.glyconvert.GlycomeDBConvertInsertSparql;
 import org.glycoinfo.batch.glyconvert.GlycomeDBConvertSelectSparql;

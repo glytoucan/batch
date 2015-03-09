@@ -6,10 +6,9 @@ import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Saccharide;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import ch.qos.logback.classic.Logger;
 
 public class MotifSearchSparql extends SelectSparqlBean {
 
@@ -35,7 +34,7 @@ public class MotifSearchSparql extends SelectSparqlBean {
 //				+ " ?" + Saccharide.PrimaryId; 
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
-				+ "FROM <http://www.glycoinfo.org/wurcs>";
+				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.0>";
 	}
 
 	@Override

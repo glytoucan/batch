@@ -1,7 +1,8 @@
-package org.glycoinfo.batch.glyconvert;
+package org.glycoinfo.batch.glyconvert.wurcs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.batch.glyconvert.GlyConvertSparql;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.glycan.Saccharide;
@@ -23,7 +24,7 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class ConvertSelectSparql extends SelectSparqlBean implements
+public class WurcsConvertSelectSparql extends SelectSparqlBean implements
 		GlyConvertSparql, InitializingBean {
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String Sequence = "Sequence";
@@ -33,11 +34,11 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	@Autowired
 	GlyConvert glyConvert;
 
-	public ConvertSelectSparql(String sparql) {
+	public WurcsConvertSelectSparql(String sparql) {
 		super(sparql);
 	}
 
-	public ConvertSelectSparql() {
+	public WurcsConvertSelectSparql() {
 		super();
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
