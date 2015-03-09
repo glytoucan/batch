@@ -1,16 +1,19 @@
-package org.glycoinfo.batch.glyconvert.wurcs;
+package org.glycoinfo.batch.search.wurcs;
 
+import java.util.List;
+
+import org.glycoinfo.batch.ListSparqlProcessor;
 import org.glycoinfo.batch.SparqlItemReader;
-import org.glycoinfo.batch.SparqlItemWriter;
-import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
-import org.glycoinfo.batch.glyconvert.ConvertSparqlProcessor;
-import org.glycoinfo.conversion.GlyConvert;
-import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
+import org.glycoinfo.batch.SparqlListWriter;
+import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlDAOSesameImpl;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.GlycoSequence;
+import org.glycoinfo.rdf.glycan.MotifInsertSparql;
+import org.glycoinfo.rdf.glycan.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -31,41 +34,42 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = ("org.glycoinfo.batch.glyconvert.wurcs"))
-@SpringApplicationConfiguration(classes = WurcsConvertSparqlBatch.class)
+@ComponentScan(basePackages = ("org.glycoinfo.batch.search.wurcs"))
+@SpringApplicationConfiguration(classes = WurcsMotifSearchBatch.class)
 @EnableBatchProcessing
-public class WurcsConvertSparqlBatch {
- 
+public class WurcsMotifSearchBatch {
+
 	// graph base to set the graph to insert into. The format type (toFormat()) will be added to the end. 
 	// example: http://glytoucan.org/rdf/demo/0.7/wurcs
-	public static String graphbase = "http://rdf.glytoucan.org/sequence";
+	public static String graphbase = "http://rdf.glytoucan.org/motif";
 	private int pageSize = 10;
 
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
 		ApplicationContext ctx = SpringApplication.run(
-				WurcsConvertSparqlBatch.class, args);
-	}
-
-	@Bean
-	GlyConvert getGlyConvert() {
-		return new GlycoctToWurcsConverter();
+				WurcsMotifSearchBatch.class, args);
 	}
 
 	@Bean
 	SelectSparql getSelectSparql() {
-		SelectSparql select = new WurcsConvertSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org>");
+		SelectSparql select = new MotifSequenceSelectSparql();
+//		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
 		return select;
 	}
 
 	@Bean
 	InsertSparql getInsertSparql() {
-		ConvertInsertSparql convert = new ConvertInsertSparql();
-		convert.setGraphBase(graphbase);
-		return convert;
+		MotifInsertSparql insert = new MotifInsertSparql();
+		insert.setGraphBase(graphbase);
+		return insert;
 	}
 
+	SearchSparql getSearchSparql() {
+		SearchSparqlBean ssb = new SearchSparqlBean();
+		ssb.setGlycoSequenceUri(GlycoSequence.URI);
+		return ssb;
+	}
+	
 	@Bean
 	SparqlDAO getSparqlDAO() {
 		return new SparqlDAOSesameImpl();
@@ -85,10 +89,10 @@ public class WurcsConvertSparqlBatch {
 	}
 
 	@Bean
-	public ItemWriter<SparqlEntity> writer() {
-		SparqlItemWriter<SparqlEntity> reader = new SparqlItemWriter<SparqlEntity>();
-		reader.setInsertSparql(getInsertSparql());
-		return reader;
+	public ItemWriter<List<SparqlEntity>> writer() {
+		SparqlListWriter<List<SparqlEntity>> writer = new SparqlListWriter<List<SparqlEntity>>();
+		writer.setInsertSparql(getInsertSparql());
+		return writer;
 	}
 
 	@Bean
@@ -99,18 +103,19 @@ public class WurcsConvertSparqlBatch {
 
 	@Bean
 	public Step step1(StepBuilderFactory stepBuilderFactory,
-			ItemReader<SparqlEntity> reader, ItemWriter<SparqlEntity> writer,
-			ItemProcessor<SparqlEntity, SparqlEntity> processor) {
+			ItemReader<SparqlEntity> reader, ItemWriter<List<SparqlEntity>> writer,
+			ItemProcessor<SparqlEntity, List<SparqlEntity>> processor) {
 		return stepBuilderFactory.get("step1")
-				.<SparqlEntity, SparqlEntity> chunk(10).reader(reader)
+				.<SparqlEntity, List<SparqlEntity>> chunk(10).reader(reader)
 				.processor(processor).writer(writer).build();
 	}
 
 	@Bean
-	public ItemProcessor<SparqlEntity, SparqlEntity> processor() {
-		ConvertSparqlProcessor process = new ConvertSparqlProcessor();
-		process.setGlyConvert(getGlyConvert());
-
+	public ItemProcessor<SparqlEntity, List<SparqlEntity>> processor() {
+		ListSparqlProcessor process = new ListSparqlProcessor();
+		MotifSearchSparql motifSparql = new MotifSearchSparql();
+		motifSparql.setSearchSparql(getSearchSparql());
+		process.setSelectSparql(motifSparql);
 		return process;
 	}
 }

@@ -2,6 +2,7 @@ package org.glycoinfo.batch.glyconvert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.batch.glyconvert.wurcs.WurcsConvertSelectSparql;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.glycan.Saccharide;
@@ -23,7 +24,7 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class ConvertSelectSparql extends SelectSparqlBean implements
+public class GlycomeDBConvertSelectSparql extends WurcsConvertSelectSparql implements
 		GlyConvertSparql, InitializingBean {
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String Sequence = "Sequence";
@@ -33,13 +34,14 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	@Autowired
 	GlyConvert glyConvert;
 
-	public ConvertSelectSparql(String sparql) {
+	public GlycomeDBConvertSelectSparql(String sparql) {
 		super(sparql);
 	}
 
-	public ConvertSelectSparql() {
+	public GlycomeDBConvertSelectSparql() {
 		super();
-		this.from = "FROM <http://rdf.glytoucan.org>";
+		this.from = "FROM <http://rdf.glycoinfo.org/glycome-db>";
+		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>";
 	}
 
 	protected Log logger = LogFactory.getLog(getClass());
@@ -65,14 +67,8 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 
 	@Override
 	public String getSelect() {
-		return "DISTINCT ?" + SaccharideURI + " ?" + AccessionNumber
-				+ " ?" + Sequence + " ?" + GlycanSequenceURI;
-	}
-
-	@Override
-	public String getPrefix() {
-		return "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
+		return "DISTINCT ?" + SaccharideURI + " ?" + AccessionNumber + " ?"
+				+ Sequence + " ?" + GlycanSequenceURI;
 	}
 
 	/*
@@ -81,14 +77,12 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	 * @see org.glycoinfo.rdf.SelectSparqlBean#getWhere()
 	 */
 	public String getWhere() {
-		return "?" + SaccharideURI + " a glycan:saccharide .\n" + "?"
-				+ SaccharideURI
-				+ " glytoucan:has_primary_id ?" + AccessionNumber + " .\n" + "?"
-				+ SaccharideURI + " glycan:has_glycosequence ?"
-				+ GlycanSequenceURI + " .\n" + "?" + GlycanSequenceURI
-				+ " glycan:has_sequence ?Sequence .\n" + "?"
-				+ GlycanSequenceURI + " glycan:in_carbohydrate_format "
-				+ getFormat() + "\n";
+		return "?" + SaccharideURI + " a glycan:saccharide .\n" + 
+//	"?"	+ SaccharideURI + " glytoucan:has_primary_id ?"	+ AccessionNumber + " .\n" +
+	"BIND(STRAFTER(str(?" + SaccharideURI + "), \"http://rdf.glycome-db.org/glycan/\") AS ?" + AccessionNumber + ")\n"
+			+ "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
+				+ "?" + GlycanSequenceURI + " glycan:has_sequence ?Sequence .\n" + "?"
+				+ GlycanSequenceURI + " glycan:in_carbohydrate_format " + getFormat() + "\n";
 	}
 
 	/**

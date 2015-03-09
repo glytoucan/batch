@@ -1,4 +1,4 @@
-package org.glycoinfo.batch.glyconvert.wurcs;
+package org.glycoinfo.batch.mass;
 
 import org.glycoinfo.batch.SparqlItemReader;
 import org.glycoinfo.batch.SparqlItemWriter;
@@ -6,6 +6,8 @@ import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
 import org.glycoinfo.batch.glyconvert.ConvertSparqlProcessor;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
+import org.glycoinfo.mass.MassInsertSparql;
+import org.glycoinfo.mass.MassSelectSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
@@ -31,39 +33,34 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = ("org.glycoinfo.batch.glyconvert.wurcs"))
-@SpringApplicationConfiguration(classes = WurcsConvertSparqlBatch.class)
+@ComponentScan(basePackages = ("org.glycoinfo.batch.mass"))
+@SpringApplicationConfiguration(classes = MassCalculatorSparqlBatch.class)
 @EnableBatchProcessing
-public class WurcsConvertSparqlBatch {
+public class MassCalculatorSparqlBatch {
  
 	// graph base to set the graph to insert into. The format type (toFormat()) will be added to the end. 
-	// example: http://glytoucan.org/rdf/demo/0.7/wurcs
-	public static String graphbase = "http://rdf.glytoucan.org/sequence";
+	// example: http://rdf.glytoucan.org will become http://rdf.glytoucan.org/mass
+	public static String graphbase = "http://rdf.glytoucan.org";
 	private int pageSize = 10;
 
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
 		ApplicationContext ctx = SpringApplication.run(
-				WurcsConvertSparqlBatch.class, args);
-	}
-
-	@Bean
-	GlyConvert getGlyConvert() {
-		return new GlycoctToWurcsConverter();
+				MassCalculatorSparqlBatch.class, args);
 	}
 
 	@Bean
 	SelectSparql getSelectSparql() {
-		SelectSparql select = new WurcsConvertSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org>");
+		SelectSparql select = new MassSelectSparql();
+		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
 		return select;
 	}
 
 	@Bean
 	InsertSparql getInsertSparql() {
-		ConvertInsertSparql convert = new ConvertInsertSparql();
-		convert.setGraphBase(graphbase);
-		return convert;
+		MassInsertSparql mass = new MassInsertSparql();
+		mass.setGraphBase(graphbase);
+		return mass;
 	}
 
 	@Bean
@@ -93,7 +90,7 @@ public class WurcsConvertSparqlBatch {
 
 	@Bean
 	public Job importUserJob(JobBuilderFactory jobs, Step s1) {
-		return jobs.get("ConvertWurcs").incrementer(new RunIdIncrementer())
+		return jobs.get("MassWurcs").incrementer(new RunIdIncrementer())
 				.flow(s1).end().build();
 	}
 
@@ -108,9 +105,7 @@ public class WurcsConvertSparqlBatch {
 
 	@Bean
 	public ItemProcessor<SparqlEntity, SparqlEntity> processor() {
-		ConvertSparqlProcessor process = new ConvertSparqlProcessor();
-		process.setGlyConvert(getGlyConvert());
-
+		MassSparqlProcessor process = new MassSparqlProcessor();
 		return process;
 	}
 }

@@ -29,6 +29,7 @@ public class SaccharideInsertSparql extends InsertSparqlBean {
 	public String getSaccharideURI() {
 		return getSparqlEntity().getValue(Saccharide.URI);
 	}
+
 	/*
 	String hasImage = "glycan:has_image";
 	<http://www.glytoucan.org/glyspace/service/glycans/G00054MO/image?style=extended&format=png&notation=uoxf-color> ,

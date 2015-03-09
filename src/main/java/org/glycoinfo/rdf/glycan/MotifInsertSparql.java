@@ -10,9 +10,9 @@ import java.util.Set;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Logger;
 
 /**
  * 

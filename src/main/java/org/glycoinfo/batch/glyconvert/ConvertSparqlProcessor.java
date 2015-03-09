@@ -2,6 +2,7 @@ package org.glycoinfo.batch.glyconvert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.batch.glyconvert.wurcs.WurcsConvertSelectSparql;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.springframework.batch.item.ItemProcessor;
@@ -29,7 +30,7 @@ public class ConvertSparqlProcessor implements
 	public SparqlEntity process(final SparqlEntity sparqlEntity) throws Exception {
 		
 		// get the sequence
-		String sequence = sparqlEntity.getValue(ConvertSelectSparql.Sequence);
+		String sequence = sparqlEntity.getValue(WurcsConvertSelectSparql.Sequence);
 		
 		// convert the sequence
 		GlyConvert converter = getGlyConvert();
