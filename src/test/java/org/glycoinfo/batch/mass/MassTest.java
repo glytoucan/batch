@@ -164,6 +164,30 @@ public class MassTest {
 		System.out.println(t_objWURCS + " : " + testMass);
 		System.out.println();
 	}
+	
+	@Test
+	public void testNotMatchAsLip() throws SparqlException {
+		String input = "WURCS=2.0/5,5,4/[x1122h-1x_1-5][21122h-1a_1-5][22112h-1a_1-5][22122h-1a_1-5][12112h-1b_1-5_4,6*OC^XO*/3CO/6=O/3C]/1-2-3-4-5/a2-b1_b2-c1_b3-d1_d4-e1";
 
+		WURCSArray t_objWURCS = null;
+		WURCSImporter t_objImporter = new WURCSImporter();
+
+		try {
+			t_objWURCS = t_objImporter.extractWURCSArray(input);
+		} catch (WURCSFormatException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+
+		double testMass = 0;
+		try {
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		} catch (WURCSMassException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(t_objWURCS + " : " + testMass);
+		System.out.println();
+	}
 	
 }
