@@ -2,10 +2,11 @@ package org.glycoinfo.batch.search.wurcs;
 
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.util.rdf.WURCSrdfSPARQLGLIPS_SSM_TBD;
+import org.glycoinfo.WURCSFramework.util.rdf.WURCSSPARQLUtils_TBD;
+import org.glycoinfo.WURCSFramework.util.rdf.WURCSSPARQL_TBD;
 import org.glycoinfo.batch.search.SearchSparql;
 
-public class SearchSparqlBean extends WURCSrdfSPARQLGLIPS_SSM_TBD implements
+public class SearchSparqlBean extends WURCSSPARQL_TBD implements
 		SearchSparql {
 	String strGlycoSeqVariable;
 
@@ -17,7 +18,7 @@ public class SearchSparqlBean extends WURCSrdfSPARQLGLIPS_SSM_TBD implements
 //		t_aOption.add("accession_number");
 		t_aOption.add("whereonly");
 		t_aOption.add("TEST_ID:" + "sparqlbean");
-		return getSPARQL(a_strWURCS, t_aOption);
+		return getSPARQL(a_strWURCS, t_aOption, WURCSSPARQLUtils_TBD.m_strSearchtypeFSubM);
 	}
 
 	@Override

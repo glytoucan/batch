@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
  * @author aoki
  *
  */
-@Component
 public class WurcsConvertSelectSparql extends SelectSparqlBean implements
 		GlyConvertSparql, InitializingBean {
 	public static final String SaccharideURI = Saccharide.URI;

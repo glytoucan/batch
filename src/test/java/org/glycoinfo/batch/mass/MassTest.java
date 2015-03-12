@@ -4,10 +4,12 @@ import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.util.WURCSImporter;
 import org.glycoinfo.WURCSFramework.util.mass.WURCSMassCalculator;
+import org.glycoinfo.WURCSFramework.util.mass.WURCSMassException;
 import org.glycoinfo.WURCSFramework.wurcs.RES;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSFormatException;
 import org.glycoinfo.rdf.SparqlException;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -44,7 +46,9 @@ public class MassTest {
 
 		LinkedList<RES> testRESs = t_objWURCS.getRESs();
 		double testMass = 0;
-		testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		double mass  = 0;
+		try {
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
 		System.out.println(t_objWURCS + " : " + testMass);
 
 		testMass = WURCSMassCalculator.getMassSkeletonCode("u2122h");
@@ -52,13 +56,17 @@ public class MassTest {
 		System.out.println();
 
 		// Calcurate mass from WURCS
-		double mass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		mass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		} catch (WURCSMassException e) {
+			e.printStackTrace();
+			Assert.assertTrue(e.getMessage().contains("repeating unit"));
+		}
 		System.out.println(mass);
 
 	}
 
 	@Test
-	public void testMassCalculator2() throws SparqlException {
+	public void testMassCalculator2() throws SparqlException, WURCSMassException {
 		String input = "WURCS=2.0/3,4,3/[x2122h-1x_1-5_2*NCC/3=O_6*OSO/3=O/3=O][12112h-1b_1-5][12122h-1b_1-5_2*NCC/3=O_6*OSO/3=O/3=O]/1-2-3-2/a4-b1_b3-c1_c4-d1";
 
 		WURCSArray t_objWURCS = null;
@@ -86,7 +94,7 @@ public class MassTest {
 	}
 
 	@Test
-	public void testMassCalculator3() throws SparqlException {
+	public void testMassCalculator3() throws SparqlException, WURCSMassException {
 		String input = "WURCS=2.0/4,5,4/[11122h-1b_1-5][12122a-1b_1-5][12122h-1b_1-5][12112h-1b_1-5_3-4*OC^XO*/3CO/6=O/3C]/1-1-2-3-4/a4-b1_b3-c1_b4-d1_b6-e1";
 
 		WURCSArray t_objWURCS = null;
@@ -120,9 +128,66 @@ public class MassTest {
 		}
 
 		double testMass = 0;
-		testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		try {
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		} catch (WURCSMassException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println(t_objWURCS + " : " + testMass);
 		System.out.println();
 	}
+	
 
+	@Test
+	public void testMassCalculatorUnknownCarbonLength() throws SparqlException {
+		String input = "WURCS=2.0/2,2,2/[<0>-?b][a6d21121m-2a_2-6_5*NCC/3=O_7*NCC/3=O]/1-2/a3-b2_a1-b4~n";
+
+		WURCSArray t_objWURCS = null;
+		WURCSImporter t_objImporter = new WURCSImporter();
+
+		try {
+			t_objWURCS = t_objImporter.extractWURCSArray(input);
+		} catch (WURCSFormatException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+
+		double testMass = 0;
+		try {
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		} catch (WURCSMassException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Assert.assertTrue(e.getMessage().contains("unknown carbon length"));
+		}
+		System.out.println(t_objWURCS + " : " + testMass);
+		System.out.println();
+	}
+	
+	@Test
+	public void testNotMatchAsLip() throws SparqlException {
+		String input = "WURCS=2.0/5,5,4/[x1122h-1x_1-5][21122h-1a_1-5][22112h-1a_1-5][22122h-1a_1-5][12112h-1b_1-5_4,6*OC^XO*/3CO/6=O/3C]/1-2-3-4-5/a2-b1_b2-c1_b3-d1_d4-e1";
+
+		WURCSArray t_objWURCS = null;
+		WURCSImporter t_objImporter = new WURCSImporter();
+
+		try {
+			t_objWURCS = t_objImporter.extractWURCSArray(input);
+		} catch (WURCSFormatException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+
+		double testMass = 0;
+		try {
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		} catch (WURCSMassException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(t_objWURCS + " : " + testMass);
+		System.out.println();
+	}
+	
 }
