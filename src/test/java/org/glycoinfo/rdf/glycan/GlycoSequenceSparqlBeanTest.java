@@ -2,7 +2,9 @@ package org.glycoinfo.rdf.glycan;
 
 import static org.junit.Assert.assertEquals;
 
+import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -14,36 +16,32 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SaccharideSparqlBeanTest.class)
+@SpringApplicationConfiguration(classes = GlycoSequenceSparqlBeanTest.class)
 @Configuration
 @EnableAutoConfiguration
-public class SaccharideSparqlBeanTest {
+public class GlycoSequenceSparqlBeanTest {
 
 	public static Logger logger = (Logger) LoggerFactory
-			.getLogger(SaccharideSparqlBeanTest.class);
+			.getLogger(GlycoSequenceSparqlBeanTest.class);
 
 	@Bean
-	SaccharideInsertSparql getSaccharideInsertSparql() {
-		SaccharideInsertSparql ins = new SaccharideInsertSparql();
+	GlycoSequenceSelectSparql getGlycoSequenceSparql() {
+		GlycoSequenceSelectSparql ins = new GlycoSequenceSelectSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
-		sparqlentity.setValue(Saccharide.URI, "insertsacharideuri");
-		sparqlentity.setValue(GlycoSequence.URI, "glycosequenceuri");
-		sparqlentity.setValue(Saccharide.PrimaryId, "primaryid");
+		sparqlentity.setValue(Saccharide.PrimaryId, "G00009BX");
 		ins.setSparqlEntity(sparqlentity);
 		return ins;
 	}
 
-	
-	
 	@Test
-	public void testInsertSparql() {
-		logger.debug(getSaccharideInsertSparql().getSparql());
+	public void testSelectSparql() throws SparqlException {
+		logger.debug(getGlycoSequenceSparql().getSparql());
 		
 		assertEquals(
 				"INSERT INTO\n"
 				+ "{ insertsacharideuri a glycosequenceuri .\n"
 				+ "insertsacharideuri glytoucan:has_primary_id primaryid .\n"
 				+ " }\n",
-				getSaccharideInsertSparql().getSparql());
+				getGlycoSequenceSparql().getSparql());
 	}
 }
