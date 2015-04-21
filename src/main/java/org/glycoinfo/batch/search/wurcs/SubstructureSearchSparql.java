@@ -1,5 +1,14 @@
 package org.glycoinfo.batch.search.wurcs;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import org.glycoinfo.WURCSFramework.util.WURCSImporter;
+import org.glycoinfo.WURCSFramework.util.exchange.WURCSArrayToSequence;
+import org.glycoinfo.WURCSFramework.util.rdf.WURCSSequenceExporterSPARQL;
+import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
+import org.glycoinfo.WURCSFramework.wurcs.WURCSFormatException;
+import org.glycoinfo.WURCSFramework.wurcs.sequence.WURCSSequence;
 import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
@@ -9,38 +18,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class MotifSearchSparql extends SelectSparqlBean {
+public class SubstructureSearchSparql extends SelectSparqlBean {
 
 	public static Logger logger = (Logger) LoggerFactory
-			.getLogger(MotifSearchSparql.class);
+			.getLogger(SubstructureSearchSparql.class);
 
-	@Autowired
-	SearchSparql searchSparql;
-	
-	public SearchSparql getSearchSparql() {
-		return searchSparql;
-	}
+	WURCSSequenceExporterSPARQL exporter = new WURCSSequenceExporterSPARQL();
 
-	public void setSearchSparql(SearchSparql search) {
-		this.searchSparql = search;
-	}
-
-	public MotifSearchSparql() {
+	public SubstructureSearchSparql() {
 		this.define = "DEFINE sql:select-option \"order\"";
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 				+ "PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>";
 		this.select = "DISTINCT ?" + Saccharide.URI;
 //				+ " ?" + Saccharide.PrimaryId; 
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
-				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
-				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.0>\n"
-				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.0/ms>";
+		this.from = "FROM <http://rdf.glycoinfo.org/wurcs/seq/0.1>\n"
+				+ "FROM <http://rdf.glycoinfo.org/wurcs/seq/0.1/pos>\n"
+				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.1/ms>\n";
 	}
 
 	@Override
 	public String getWhere() throws SparqlException {
 		this.where = ""
+				
 //	"?" + Saccharide.URI + " toucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n"
 //				+ "GRAPH <http://www.glycoinfo.org/wurcs> {"
 //				+ "SELECT *\n"
@@ -51,9 +50,23 @@ public class MotifSearchSparql extends SelectSparqlBean {
 //				+ "?glycans glycan:has_glycosequence ?gseq .\n"
 //				+ "?gseq glycan:has_sequence ?Seq .\n"
 //				+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct\n";
+		WURCSImporter t_oImport = new WURCSImporter();
+		WURCSArray t_oWURCS;
+		try {
+			t_oWURCS = t_oImport.extractWURCSArray(URLDecoder.decode(getSparqlEntity().getValue(GlycoSequence.Sequence), "UTF-8"));
+		} catch (WURCSFormatException e) {
+			e.printStackTrace();
+			throw new SparqlException(e);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			throw new SparqlException(e);
+		}
+		WURCSArrayToSequence t_oA2S = new WURCSArrayToSequence();
+		t_oA2S.start(t_oWURCS);
+		WURCSSequence t_oSeq = t_oA2S.getSequence();
 		
 //		try {
-			this.where += getSearchSparql().getWhere(getSparqlEntity().getValue(GlycoSequence.Sequence));
+			this.where += exporter.getMainQuery(t_oSeq);
 //		} catch (WURCSFormatException e) {
 //			throw new SparqlException(e);
 //		}

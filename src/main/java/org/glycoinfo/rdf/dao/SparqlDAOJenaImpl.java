@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;

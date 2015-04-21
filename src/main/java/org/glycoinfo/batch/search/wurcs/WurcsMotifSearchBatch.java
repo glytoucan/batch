@@ -13,7 +13,8 @@ import org.glycoinfo.rdf.dao.SparqlDAOSesameImpl;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.MotifInsertSparql;
-import org.glycoinfo.rdf.glycan.MotifSequenceSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
+import org.glycoinfo.rdf.search.SearchSparqlBean;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -113,8 +114,7 @@ public class WurcsMotifSearchBatch {
 	@Bean
 	public ItemProcessor<SparqlEntity, List<SparqlEntity>> processor() {
 		ListSparqlProcessor process = new ListSparqlProcessor();
-		MotifSearchSparql motifSparql = new MotifSearchSparql();
-		motifSparql.setSearchSparql(getSearchSparql());
+		SubstructureSearchSparql motifSparql = new SubstructureSearchSparql();
 		process.setSelectSparql(motifSparql);
 		return process;
 	}

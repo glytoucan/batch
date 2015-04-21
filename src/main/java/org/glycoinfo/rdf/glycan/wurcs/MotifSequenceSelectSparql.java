@@ -1,4 +1,4 @@
-package org.glycoinfo.rdf.glycan;
+package org.glycoinfo.rdf.glycan.wurcs;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
-import org.glycoinfo.batch.search.wurcs.SearchSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSelectSparql;
+import org.glycoinfo.rdf.search.SearchSparqlBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

@@ -3,10 +3,10 @@ package org.glycoinfo.batch.search;
 import static org.junit.Assert.assertEquals;
 
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
-import org.glycoinfo.batch.search.wurcs.SearchSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
+import org.glycoinfo.rdf.search.SearchSparqlBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -486,4 +486,5 @@ public class SearchTest {
 //				+ "<testSequenceURI> glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n"
 //				+ "<testSequenceURI> glytoucan:is_glycosequence_of <testSaccharideURI> .\n }\n", convert.getSparql());
 //	}
+			
 }

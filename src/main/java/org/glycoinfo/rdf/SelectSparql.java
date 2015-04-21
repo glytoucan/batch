@@ -1,6 +1,12 @@
 package org.glycoinfo.rdf;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.glycoinfo.rdf.dao.SparqlEntity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 
 /**
  * 
@@ -38,7 +44,13 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
  * @author aoki
  *
  */
+@XmlRootElement (name="select-sparql")
 public interface SelectSparql {
+	
+	@JsonProperty(value="define")
+	public String getDefine();
+	
+	public void setDefine(String define);
 
 	/**
 	 * 
@@ -46,6 +58,7 @@ public interface SelectSparql {
 	 * 
 	 * @return
 	 */
+	@JsonProperty(value="prefix")
 	public String getPrefix();
 
 	/**
@@ -62,6 +75,7 @@ public interface SelectSparql {
 	 * 
 	 * @return
 	 */
+	@JsonProperty(value="select")
 	public String getSelect();
 
 	/**
@@ -79,6 +93,7 @@ public interface SelectSparql {
 	 * @return
 	 * @throws SparqlException 
 	 */
+	@JsonProperty(value="where")
 	public String getWhere() throws SparqlException;
 
 	/**
@@ -95,6 +110,7 @@ public interface SelectSparql {
 	 * 
 	 * @return
 	 */
+	@JsonProperty(value="from")
 	public String getFrom();
 
 	/**
@@ -111,6 +127,7 @@ public interface SelectSparql {
 	 * 
 	 * @return
 	 */
+	@JsonProperty(value="orderby")
 	public String getOrderBy();
 
 	/**
@@ -127,6 +144,7 @@ public interface SelectSparql {
 	 * 
 	 * @return
 	 */
+	@JsonProperty(value="groupby")
 	public String getGroupBy();
 
 	/**
@@ -143,6 +161,7 @@ public interface SelectSparql {
 	 * 
 	 * @return
 	 */
+	@JsonProperty(value="having")
 	public String getHaving();
 
 	/**
@@ -153,14 +172,17 @@ public interface SelectSparql {
 	 */
 	public void setHaving(String havingStatement);
 
+	@JsonProperty(value="construct")
 	public String getConstruct();
 	
 	public void setConstruct(String construct);
 
+	@JsonProperty(value="limit")
 	public String getLimit();
 	
 	public void setLimit(String limit);
 
+	@JsonProperty(value="offset")
 	public String getOffset();
 	
 	public void setOffset(String offset);
@@ -174,6 +196,7 @@ public interface SelectSparql {
 	 * @return
 	 * @throws SparqlException 
 	 */
+	@JsonProperty(value="sparql")
 	public String getSparql() throws SparqlException;
 	
 
@@ -191,5 +214,6 @@ public interface SelectSparql {
 	 * 
 	 * @return SparqlEntity the current data stored and used to generate the query.
 	 */
+	@JsonIgnore
 	public SparqlEntity getSparqlEntity();
 }

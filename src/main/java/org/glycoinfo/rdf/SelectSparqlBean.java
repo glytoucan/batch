@@ -1,12 +1,16 @@
 package org.glycoinfo.rdf;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SelectSparqlBean implements SelectSparql {
 
-	protected String prefix, select, where, from, orderby, groupby, construct, having,
+	protected String define, prefix, select, where, from, orderby, groupby, construct, having,
 			limit, offset;
 	StringBuffer sparql;
 	SparqlEntity sparqlEntity;
@@ -144,29 +148,40 @@ public class SelectSparqlBean implements SelectSparql {
 	public String getSparql() throws SparqlException {
 		if (null == this.sparql) {
 			StringBuffer sparqlbuf = new StringBuffer();
-			sparqlbuf.append(getPrefix() + "\n");
-			sparqlbuf.append("SELECT " + getSelect() + "\n");
-			sparqlbuf.append(getFrom() != null ? getFrom() + "\n" : "\n");
+			sparqlbuf.append(getDefine() != null ? getDefine() + " " : " ");
+			sparqlbuf.append(getPrefix() != null ? getPrefix() + " " : " ");
+			sparqlbuf.append("SELECT " + getSelect() + " ");
+			sparqlbuf.append(getFrom() != null ? getFrom() + " " : " ");
 //			sparqlbuf.append(getFrom() != null ? " FROM <" + getFrom() + ">"
 //					: "");
 			// sparqlbuf.append(matchStatement != null ? " MATCH " + matchStatement
 			// :
 			// "");
-			sparqlbuf.append(getWhere() != null ? "WHERE {" + getWhere() + "}\n"
-					: "");
+			sparqlbuf.append(getWhere() != null ? "WHERE {" + getWhere() + "} "
+					: " ");
 			// sparqlbuf.append(" RETURN ").append(returnStatement);
 			sparqlbuf.append(getOrderBy() != null ? " ORDER BY " + getOrderBy()
-					+ "\n" : "");
+					+ " " : " ");
 
-			sparqlbuf.append(getLimit() != null ? " LIMIT " + getLimit() + "\n"
-					: "");
-			sparqlbuf.append(getOffset() != null ? " OFFSET " + getOffset() + "\n"
-					: "");
+			sparqlbuf.append(getLimit() != null ? " LIMIT " + getLimit() + " "
+					: " ");
+			sparqlbuf.append(getOffset() != null ? " OFFSET " + getOffset() + " "
+					: " ");
 //			logger.debug(sparqlbuf.toString());
 			return sparqlbuf.toString();
 		} else {
 			logger.debug(this.sparql.toString());
 			return this.sparql.toString();
 		}
+	}
+
+	@Override
+	public String getDefine() {
+		return define;
+	}
+
+	@Override
+	public void setDefine(String define) {
+		this.define = define;
 	}
 }

@@ -147,12 +147,13 @@
 		<dependency>
 			<groupId>org.glycoinfo</groupId>
 			<artifactId>wurcsframework</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glycoinfo</groupId>
-			<artifactId>wurcsframework</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -247,7 +248,7 @@
 			<url>http://repo.spring.io/libs-release</url>
 		</pluginRepository>
 	</pluginRepositories>
-
+	
 	<distributionManagement>
 		<repository>
 			<id>glycoinfo</id>
@@ -258,8 +259,8 @@
 			<id>glycoinfo</id>
 			<name>Internal Release Snapshots</name>
 			<url>http://nexus.glycoinfo.org/content/repositories/snapshots/</url>
-		</snapshotRepository>
 		<!-- <site> <id>website</id> <url>file:///var/lib/tomcat7/webapps/</url> 
 			</site> -->
+		</snapshotRepository>
 	</distributionManagement>
 </project>

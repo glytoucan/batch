@@ -33,8 +33,6 @@ public class SaccharideSparqlBeanTest {
 		return ins;
 	}
 
-	
-	
 	@Test
 	public void testInsertSparql() {
 		logger.debug(getSaccharideInsertSparql().getSparql());
