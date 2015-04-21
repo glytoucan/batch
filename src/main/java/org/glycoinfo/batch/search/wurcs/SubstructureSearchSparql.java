@@ -66,7 +66,7 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 		WURCSSequence t_oSeq = t_oA2S.getSequence();
 		
 //		try {
-			this.where += exporter.getMainQuery(t_oSeq);
+			this.where += exporter.getMainQuery(t_oSeq, false);
 //		} catch (WURCSFormatException e) {
 //			throw new SparqlException(e);
 //		}
