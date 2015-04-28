@@ -4,6 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.batch.glyconvert.wurcs.WurcsConvertSelectSparql;
 import org.glycoinfo.conversion.GlyConvert;
+import org.glycoinfo.conversion.error.ConvertException;
+import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class ConvertSparqlProcessor implements
 	}
 
 	@Override
-	public SparqlEntity process(final SparqlEntity sparqlEntity) throws Exception {
+	public SparqlEntity process(final SparqlEntity sparqlEntity) throws SparqlException, ConvertException {
 		
 		// get the sequence
 		String sequence = sparqlEntity.getValue(WurcsConvertSelectSparql.Sequence);
@@ -35,10 +37,18 @@ public class ConvertSparqlProcessor implements
 		// convert the sequence
 		GlyConvert converter = getGlyConvert();
 		converter.setFromSequence(sequence);
-		String convertedSeq = converter.convert();
+		String convertedSeq = null;
+		try {
+			convertedSeq = converter.convert();
+		} catch (ConvertException e) {
+			e.printStackTrace();
+			logger.error("error processing:>" + sequence + "<");
+			throw e;
+		}
 
 		// return
 		logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
+		
 		sparqlEntity.setValue(ConvertInsertSparql.ConvertedSequence, convertedSeq);
 
 		return sparqlEntity;

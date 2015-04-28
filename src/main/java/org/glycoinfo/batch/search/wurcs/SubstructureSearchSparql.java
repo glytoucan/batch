@@ -3,11 +3,11 @@ package org.glycoinfo.batch.search.wurcs;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+import org.glycoinfo.WURCSFramework.util.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.util.WURCSImporter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSArrayToSequence;
 import org.glycoinfo.WURCSFramework.util.rdf.WURCSSequenceExporterSPARQL;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
-import org.glycoinfo.WURCSFramework.wurcs.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.wurcs.sequence.WURCSSequence;
 import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
@@ -54,10 +54,7 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 		WURCSArray t_oWURCS;
 		try {
 			t_oWURCS = t_oImport.extractWURCSArray(URLDecoder.decode(getSparqlEntity().getValue(GlycoSequence.Sequence), "UTF-8"));
-		} catch (WURCSFormatException e) {
-			e.printStackTrace();
-			throw new SparqlException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException | WURCSFormatException e) {
 			e.printStackTrace();
 			throw new SparqlException(e);
 		}

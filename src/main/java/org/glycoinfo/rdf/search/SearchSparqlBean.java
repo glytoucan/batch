@@ -4,13 +4,13 @@ import java.util.LinkedList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.glycoinfo.WURCSFramework.util.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.util.WURCSImporter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSArrayToSequence;
 import org.glycoinfo.WURCSFramework.util.rdf.WURCSSPARQLUtils_TBD;
 import org.glycoinfo.WURCSFramework.util.rdf.WURCSSPARQL_TBD;
 import org.glycoinfo.WURCSFramework.util.rdf.WURCSSequenceExporterSPARQL;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
-import org.glycoinfo.WURCSFramework.wurcs.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.wurcs.sequence.WURCSSequence;
 import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;

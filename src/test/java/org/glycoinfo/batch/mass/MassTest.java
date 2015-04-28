@@ -2,12 +2,12 @@ package org.glycoinfo.batch.mass;
 
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.util.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.util.WURCSImporter;
 import org.glycoinfo.WURCSFramework.util.mass.WURCSMassCalculator;
 import org.glycoinfo.WURCSFramework.util.mass.WURCSMassException;
 import org.glycoinfo.WURCSFramework.wurcs.RES;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
-import org.glycoinfo.WURCSFramework.wurcs.WURCSFormatException;
 import org.glycoinfo.rdf.SparqlException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class MassTest {
 			.getLogger(MassTest.class);
 
 	@Test
-	public void testMassCalculator() throws SparqlException {
+	public void testMassCalculator() throws SparqlException, WURCSFormatException {
 		String input = "WURCS=2.0/7,10,9/[x2122h-1x_1-5_2*NCC/3=O][12122h-1b_1-5_2*NCC/3=O][11122h-1b_1-5][21122h-1a_1-5][12112h-1b_1-5_2*NCC/3=O][12112h-1b_1-5][11221m-1a_1-5]/"
 				+ "1-2-3-4-2-5-4-2-6-7/" +
 				// "a4-b1_a6-j1_b4-c1_d2-e1_e4-f1_g2-h1_h4-i1_d1-c3\\c6_g1-c3\\c6";
@@ -37,12 +37,7 @@ public class MassTest {
 		WURCSArray t_objWURCS = new WURCSArray("2.0", 0, 0, 0);
 		WURCSImporter t_objImporter = new WURCSImporter();
 
-		try {
-			t_objWURCS = t_objImporter.extractWURCSArray(input);
-		} catch (WURCSFormatException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}
+		t_objWURCS = t_objImporter.extractWURCSArray(input);
 
 		LinkedList<RES> testRESs = t_objWURCS.getRESs();
 		double testMass = 0;

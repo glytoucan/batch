@@ -18,7 +18,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>org.glycoinfo.batch.glyconvert.wurcs.WurcsConvertSparqlBatch</mainClass>
+					<mainClass>org.glycoinfo.batch.mass.MassCalculatorSparqlBatch</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>

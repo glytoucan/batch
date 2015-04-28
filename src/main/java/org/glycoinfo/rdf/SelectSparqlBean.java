@@ -7,7 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+/**
+ *  * Provides a convenient base class for creating a {@link SelectSparql}
+ * instance. The implementation allows customization by overriding methods.
+ * 
+ * @author aoki
+ *
+ */
 public class SelectSparqlBean implements SelectSparql {
 
 	protected String define, prefix, select, where, from, orderby, groupby, construct, having,
