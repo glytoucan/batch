@@ -1,5 +1,8 @@
 package org.glycoinfo.batch.glyconvert;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.batch.glyconvert.wurcs.WurcsConvertSelectSparql;
@@ -49,7 +52,17 @@ public class ConvertSparqlProcessor implements
 		// return
 		logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
 		
-		sparqlEntity.setValue(ConvertInsertSparql.ConvertedSequence, convertedSeq);
+		String encoded;
+		try {
+			encoded = URLEncoder.encode(convertedSeq, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			throw new ConvertException(e);
+		}
+		
+		logger.debug("Encoded (" + convertedSeq + ") into (" + encoded + ")");
+		
+		sparqlEntity.setValue(ConvertInsertSparql.ConvertedSequence, encoded);
 
 		return sparqlEntity;
 	}
