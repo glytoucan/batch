@@ -2,17 +2,17 @@
 batch processing for the glytoucan project.  This utilizes the [spring batch framework](http://projects.spring.io/spring-batch/) for ETL processing of RDF.
 
 # Background
-Recommended to at least read through the spring batch quick start tutorial.  A concept called SparqlBeans are also used which are simply classes that store a sparql query into different methods.  It is primarily used to store the SPARQL string, however by recording (or "objectifying") them it is easier to see other examples of related RDF classes and possibly re-use/inherit for other means.  The SPARQLs used in this package are specific for the glytoucan project.
+Recommended to at least read through the spring batch quick start tutorial.  A concept called SparqlBeans are also used which are simply classes that store a sparql string, with other utilities provided as a layer between the application logic and the RDF triplestore.  By recording (or "objectifying") the SPARQL it is easier to see other examples of related RDF classes and possibly re-use/inherit for other means.  The SPARQLs used in this package are specific for the glytoucan project.
 
 # What is it?
 The SparqlItemReader and SparqlItemWriter are prepared to provide reading and writing to a triplestore using the sparql language.
 
-By providing a SparqlBean select sparql to the ItemReader, it pages through via offsets and limits in order to iterate through the results.
+By providing a SparqlBean select sparql to the ItemReader, it iterates via OFFSETs and LIMITs in order to efficiently process results.
 
-Usually the ItemReader is combined with an ItemWriter, which can then be Processed together to Read, Process, and then Write into the triplestore.
+Usually the SparqlItemReader is combined with a SparqlItemWriter, which can then be SparqlItemProcessed together to Read, Process, and then Write into the triplestore.
 
 An example can be seen in the WurcsConvertSparqlBatch process.  
-This is a Spring java-configured class which takes specific string from the RDF, runs a process to convert them, and then write the results back into the RDF:
+This is a Spring java-configured class which SELECT queries for strings from the RDF, runs a process to convert them, and then INSERTs the results back into the RDF:
 ```java
 
 // configure the conversion process to use.  
