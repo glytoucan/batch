@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Batch by glytoucan</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Batch</h1>
+        <h2>batch processing for the glytoucan project</h2>
+        <a href="https://github.com/glytoucan/batch" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="glytoucan-batch" class="anchor" href="#glytoucan-batch" aria-hidden="true"><span class="octicon octicon-link"></span></a>Glytoucan Batch</h1>
+
+<p>batch processing for the glytoucan project.  This utilizes the <a href="http://projects.spring.io/spring-batch/">spring batch framework</a> for ETL processing of RDF.</p>
+
+<h1>
+<a id="background" class="anchor" href="#background" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background</h1>
+
+<p>Recommended to at least read through the spring batch quick start tutorial.  A concept called SparqlBeans are also used which are simply classes that store a sparql string, with other utilities provided as a layer between the application logic and the RDF triplestore.  By recording (or "objectifying") the SPARQL it is easier to see other examples of related RDF classes and possibly re-use/inherit for other means.  The SPARQLs used in this package are specific for the glytoucan project.</p>
+
+<h1>
+<a id="what-is-it" class="anchor" href="#what-is-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is it?</h1>
+
+<p>The SparqlItemReader and SparqlItemWriter are prepared to provide reading and writing to a triplestore using the sparql language.</p>
+
+<p>By providing a SparqlBean select sparql to the ItemReader, it iterates via OFFSETs and LIMITs in order to efficiently process results.</p>
+
+<p>Usually the SparqlItemReader is combined with a SparqlItemWriter, which can then be SparqlItemProcessed together to Read, Process, and then Write into the triplestore.</p>
+
+<p>An example can be seen in the WurcsConvertSparqlBatch process.<br>
+This is a Spring java-configured class which SELECT queries for strings from the RDF, runs a process to convert them, and then INSERTs the results back into the RDF:</p>
+
+<div class="highlight highlight-java"><pre>
+<span class="pl-c">// configure the conversion process to use.  </span>
+<span class="pl-c">// Since there are a variety of conversion methods, a GlyConvert interface is used.</span>
+    @<span class="pl-smi">Bean</span>
+    <span class="pl-smi">GlyConvert</span> getGlyConvert() {
+        <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-smi">GlycoctToWurcsConverter</span>();
+    }
+
+<span class="pl-c">// configure the sparqlbeans, which contain the read and write sparql text.  </span>
+<span class="pl-c">// Notice how easy it is to modify the initialization of a sparql string.</span>
+    @<span class="pl-smi">Bean</span>
+    <span class="pl-smi">SelectSparql</span> getSelectSparql() {
+        <span class="pl-smi">SelectSparql</span> select <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">WurcsConvertSelectSparql</span>();
+        select<span class="pl-k">.</span>setFrom(<span class="pl-s"><span class="pl-pds">"</span>FROM &lt;http://rdf.glytoucan.org&gt; FROM &lt;http://rdf.glytoucan.org/sequence/wurcs&gt;<span class="pl-pds">"</span></span>);
+        <span class="pl-k">return</span> select;
+    }
+
+    @<span class="pl-smi">Bean</span>
+    <span class="pl-smi">InsertSparql</span> getInsertSparql() {
+        <span class="pl-smi">ConvertInsertSparql</span> convert <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">ConvertInsertSparql</span>();
+        convert<span class="pl-k">.</span>setGraphBase(graphbase);
+        <span class="pl-k">return</span> convert;
+    }
+
+<span class="pl-c">// the sparql item reader is configured, specifying page size and the select.</span>
+    @<span class="pl-smi">Bean</span>
+    <span class="pl-k">public</span> <span class="pl-k">ItemReader&lt;<span class="pl-smi">SparqlEntity</span>&gt;</span> reader() {
+        <span class="pl-k">SparqlItemReader&lt;<span class="pl-smi">SparqlEntity</span>&gt;</span> reader <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">SparqlItemReader&lt;<span class="pl-smi">SparqlEntity</span>&gt;</span>();
+        reader<span class="pl-k">.</span>setSelectSparql(getSelectSparql());
+        reader<span class="pl-k">.</span>setPageSize(pageSize);
+        <span class="pl-k">return</span> reader;
+    }
+
+<span class="pl-c">// the item writer is also configured as normal.  </span>
+    @<span class="pl-smi">Bean</span>
+    <span class="pl-k">public</span> <span class="pl-k">ItemWriter&lt;<span class="pl-smi">SparqlEntity</span>&gt;</span> writer() {
+        <span class="pl-k">SparqlItemWriter&lt;<span class="pl-smi">SparqlEntity</span>&gt;</span> reader <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">SparqlItemWriter&lt;<span class="pl-smi">SparqlEntity</span>&gt;</span>();
+        reader<span class="pl-k">.</span>setInsertSparql(getInsertSparql());
+        <span class="pl-k">return</span> reader;
+    }
+
+<span class="pl-c">// finally, a specific processor can be passed in order to execute the conversion for each item read.</span>
+    @<span class="pl-smi">Bean</span>
+    <span class="pl-k">public</span> <span class="pl-k">ItemProcessor&lt;<span class="pl-smi">SparqlEntity</span>, <span class="pl-smi">SparqlEntity</span>&gt;</span> processor() {
+        <span class="pl-smi">ConvertSparqlProcessor</span> process <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">ConvertSparqlProcessor</span>();
+        process<span class="pl-k">.</span>setGlyConvert(getGlyConvert());
+
+        <span class="pl-k">return</span> process;
+    }
+</pre></div>
+
+<h1>
+<a id="credit" class="anchor" href="#credit" aria-hidden="true"><span class="octicon octicon-link"></span></a>Credit</h1>
+
+<p>This development is funded by the Integrated Database Project by MEXT (Ministry of Education, Culture, Sports, Science &amp; Technology) 
+and the Program for Coordination Toward Integration of Related Databases by JST (Japan Science and Technology Agency) as part of the <a href="http://www.glytoucan.org">International Glycan Registry project</a>.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/glytoucan/batch/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/glytoucan/batch/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/glytoucan/batch"></a> is maintained by <a href="https://github.com/glytoucan">glytoucan</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
