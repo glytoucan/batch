@@ -43,9 +43,12 @@ public class MassSparqlProcessor implements
 		double testMass = 0;
 		if (null != sequence && sequence.length() > 0) {
 			try {
-				t_objWURCS = t_objImporter.extractWURCSArray(sequence);
+				t_objWURCS = t_objImporter.extractWURCSArray(URLDecoder.decode(sequence, "UTF-8"));
 			} catch (WURCSFormatException e) {
 				throw new SparqlException(e);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			LinkedList<RES> testRESs = t_objWURCS.getRESs();
 			try {
