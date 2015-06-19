@@ -15,7 +15,7 @@ An example can be seen in the WurcsConvertSparqlBatch process.
 This is a Spring java-configured class which SELECT queries for strings from the RDF, runs a process to convert them, and then INSERTs the results back into the RDF:
 ```java
 
-// configure the conversion process to use.  
+// configure the conversion process to use.
 // Since there are a variety of conversion methods, a GlyConvert interface is used.
 	@Bean
 	GlyConvert getGlyConvert() {
