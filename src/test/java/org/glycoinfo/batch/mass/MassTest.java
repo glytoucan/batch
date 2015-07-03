@@ -2,12 +2,12 @@ package org.glycoinfo.batch.mass;
 
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.util.WURCSFormatException;
-import org.glycoinfo.WURCSFramework.util.WURCSImporter;
-import org.glycoinfo.WURCSFramework.util.mass.WURCSMassCalculator;
-import org.glycoinfo.WURCSFramework.util.mass.WURCSMassException;
-import org.glycoinfo.WURCSFramework.wurcs.RES;
-import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
+import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
+import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
+import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassCalculator;
+import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
+import org.glycoinfo.WURCSFramework.wurcs.array.RES;
+import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
 import org.glycoinfo.rdf.SparqlException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,7 +34,8 @@ public class MassTest {
 				// "a4-b1_a6-j1_b4-c1_d2-e1_e4-f1_g2-h1_h4-i1_d1-c3\\c6_g1-c3\\c6";
 				"a4-b1_a6-j1_b4-c1_d2-e1_e4-f1_g2-h1_h4-i1_d1-c3_g1-c6*S*~10:100";
 
-		WURCSArray t_objWURCS = new WURCSArray("2.0", 0, 0, 0);
+//		WURCSArray t_objWURCS = new WURCSArray("2.0", 0, 0, 0);
+		WURCSArray t_objWURCS = new WURCSArray("2.0", 0, 0 , 0 , false);
 		WURCSImporter t_objImporter = new WURCSImporter();
 
 		t_objWURCS = t_objImporter.extractWURCSArray(input);

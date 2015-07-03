@@ -6,12 +6,12 @@ import java.util.LinkedList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.WURCSFramework.util.WURCSFormatException;
-import org.glycoinfo.WURCSFramework.util.WURCSImporter;
-import org.glycoinfo.WURCSFramework.util.mass.WURCSMassCalculator;
-import org.glycoinfo.WURCSFramework.util.mass.WURCSMassException;
-import org.glycoinfo.WURCSFramework.wurcs.RES;
-import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
+import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
+import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
+import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassCalculator;
+import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
+import org.glycoinfo.WURCSFramework.wurcs.array.RES;
+import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.mass.MassSelectSparql;

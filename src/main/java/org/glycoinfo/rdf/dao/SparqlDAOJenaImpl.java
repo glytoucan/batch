@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.http.impl.auth.HttpAuthenticator;
+import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
@@ -14,26 +17,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import virtuoso.jena.driver.VirtGraph;
-import virtuoso.jena.driver.VirtuosoQueryExecution;
-import virtuoso.jena.driver.VirtuosoQueryExecutionFactory;
-
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.update.UpdateAction;
+import com.hp.hpl.jena.update.UpdateExecutionFactory;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateProcessor;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 
 /**
  * @author aoki
  *
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class SparqlDAOJenaImpl implements SparqlDAO {
-	public static Logger logger=(Logger) LoggerFactory.getLogger("org.glytoucan.registry.dao.SchemaDAOImpl");
+	
+	public static Logger logger=(Logger) LoggerFactory.getLogger("org.glytoucan.registry.dao.SparqlDAOJenaImpl");
 
 	TripleStoreProperties datasource;
+	String graph = null;
 
 	public TripleStoreProperties getTripleStoreProperties() {
 		return datasource;
@@ -43,109 +53,85 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 		this.datasource = datasource;
 	}
 
-	VirtGraph set = new VirtGraph ("jdbc:virtuoso://superdell:1111", "dba", "dba");
+	public List<SparqlEntity> query(String select) {
+		SimpleAuthenticator authenticator = new SimpleAuthenticator("admin", "pw123".toCharArray());
+		PreemptiveBasicAuthenticator basicAuth = new PreemptiveBasicAuthenticator(authenticator);
+		
+        Query query = QueryFactory.create(select); //s2 = the query above
+		QueryExecution qe = QueryExecutionFactory.sparqlService("http://localhost:3030/a/sparql",
+		                                                            query);
 
-	public List<SparqlEntity> getAllClass() {
-		Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s a <http://www.w3.org/2002/07/owl#Class> } } limit 100");
-		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create (sparql, set);
-		ResultSet results = vqe.execSelect();
-		ArrayList al = new ArrayList();
-//		while (results.hasNext()) {
-//			QuerySolution result = results.nextSolution();
-//			SchemaEntity
-//
-//		    al.add(s);
-//		    logger.debug( " { " + s + " . }");
-//		}
-		return al;
-	}
+//		qef = new QueryExecutionFactoryRetry(qef, 5, 10000);
+		
+		// Add delay in order to be nice to the remote server (delay in milli seconds)
+//		qef = new QueryExecutionFactoryDelay(qef, 5000);
 
-	public List<SparqlEntity> getDomain(String subject) {
-		Query sparql = QueryFactory.create("SELECT * WHERE  { ?s ?p ?o } limit 100");
-		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create (sparql, set);
-		ResultSet results = vqe.execSelect();
-		ArrayList al = new ArrayList();
-//		while (results.hasNext()) {
-//			QuerySolution result = results.nextSolution();
-////		    RDFNode graph = result.get("graph");
-//			SchemaEntity s = ;
-//		    al.add(s);
-//		    logger.debug( " { " + s + " " + p + " " + o + " . }");
-//		}
-		return al;
-	}
+		// Set up a cache
+		// Cache entries are valid for 1 day
+		long timeToLive = 24l * 60l * 60l * 1000l; 
+		
+		// This creates a 'cache' folder, with a database file named 'sparql.db'
+		// Technical note: the cacheBackend's purpose is to only deal with streams,
+		// whereas the frontend interfaces with higher level classes - i.e. ResultSet and Model
 
-	public List<SparqlEntity> getRange(String subject) {
-		Query sparql = QueryFactory.create("SELECT * WHERE  { ?s ?p ?o } limit 100");
-		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create (sparql, set);
-		ResultSet results = vqe.execSelect();
-		ArrayList al = new ArrayList();
-//		while (results.hasNext()) {
-//			QuerySolution result = results.nextSolution();
-////		    RDFNode graph = result.get("graph");
-//		    RDFNode s = result.get("s");
-//		    RDFNode p = result.get("p");
-//		    RDFNode o = result.get("o");
-//
-//		    al.add(s);
-//		    logger.debug( " { " + s + " " + p + " " + o + " . }");
-//		}
-		return al;
+//		CacheBackend cacheBackend = CacheCoreH2.create("sparql", timeToLive, true);
+//		CacheFrontend cacheFrontend = new CacheFrontendImpl(cacheBackend);		
+//		qef = new QueryExecutionFactoryCacheEx(qef, cacheFrontend);
+ 
+		
+
+//		QueryExecutionFactoryHttp foo = qef.unwrap(QueryExecutionFactoryHttp.class);
+//		System.out.println(foo);
+		
+		// Add pagination
+//		qef = new QueryExecutionFactoryPaginated(qef, 900);
+
+		// Create a QueryExecution object from a query string ...
+//		QueryExecution qe = qef.createQueryExecution(select);
+		
+		// and run it.
+		ResultSet rs = qe.execSelect();
+//		logger.debug(ResultSetFormatter.asText(rs));
+//        ResultSetFormatter.out(System.out, rs, query);
+		List<SparqlEntity> results = new ArrayList<SparqlEntity>();
+		if (!rs.hasNext())
+			logger.debug("no results");
+		logger.debug(">" + rs.getRowNumber() + "<");
+//		OntModel ontology; //replace with your method for creating an OntModel
+		
+		while (rs.hasNext()) {
+		   QuerySolution row = rs.next();
+		   Iterator<String> columns = row.varNames();
+		   SparqlEntity se = new SparqlEntity();
+		   while (columns.hasNext()) {
+			  String column = columns.next();
+		      RDFNode cell = row.get(column);
+
+		      if (cell.isResource()) {
+		    	  Resource resource =  cell.asResource();
+		    	  //do something maybe with the OntModel???
+		    	  if (resource.isLiteral())
+		    		  se.setValue(column, resource.asLiteral().getString());
+		    	  else
+		    		  se.setValue(column, resource.toString());
+		      }
+		      else if (cell.isLiteral()) {
+		    	  se.setValue(column, cell.asLiteral().getString());
+		      } else if (cell.isAnon()) {
+		    	  se.setValue(column, "anon");
+		      } else {
+		    	  se.setValue(column, cell.toString());
+		      }
+		   }
+		   results.add(se);
+		}
+		return results; 
 	}
 	
-	public List<SparqlEntity> query(String subject) {
-		Query sparql = QueryFactory.create(subject);
-		sparql.setLimit(1000);
-		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create (sparql, set);
-		ResultSet results = vqe.execSelect();
-		ArrayList al = new ArrayList();
-		List columns = results.getResultVars();
-		while (results.hasNext()) {
-			QuerySolution result = results.nextSolution();
-			logger.debug(results.getResultVars().toString());
-//		    RDFNode graph = result.get("graph");
-			SparqlEntity spo = new SparqlEntity();
-			spo.setColumns(columns);
-			for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
-				String col = (String) iterator.next();
-			    spo.setValue(col, result.get(col).toString());
-			}
-
-		    al.add(spo);
-		    logger.debug( " { " + spo + " . }");
-		}
-		return al;
-	}
-	
-	public List<SparqlEntity> query(String subject, String baseURI) {
-		Query sparql = QueryFactory.create(subject, baseURI);
-		sparql.setLimit(1000);
-		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create (sparql, set);
-		ResultSet results = vqe.execSelect();
-		ArrayList al = new ArrayList();
-		List columns = results.getResultVars();
-		while (results.hasNext()) {
-			QuerySolution result = results.nextSolution();
-			logger.debug(results.getResultVars().toString());
-//		    RDFNode graph = result.get("graph");
-			SparqlEntity spo = new SparqlEntity();
-			spo.setColumns(columns);
-			for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
-				String col = (String) iterator.next();
-			    spo.setValue(col, result.get(col).toString());
-			}
-
-		    al.add(spo);
-		    logger.debug( " { " + spo + " . }");
-		}
-		return al;
-	}
-
 	public List<SparqlEntity> insert(String graph, String insert, boolean clear) {
 		return null;
 	}
 
-	@Override
 	public void setTripleStoreProperties(TripleStoreProperties ts)
 			throws SparqlException {
 		
@@ -171,7 +157,29 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 	}
 
 	@Override
-	public void execute(String string) throws SparqlException {
-		// TODO
+	public void execute(String execute) throws SparqlException {
+		UpdateRequest queryObj=UpdateFactory.create(execute);
+	    UpdateProcessor qexec=UpdateExecutionFactory.createRemoteForm(queryObj,"http://localhost:3030/a/update");
+//	    queryObj.
+	    qexec.execute();
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+	}
+
+	public String getGraph() {
+		return graph;
+	}
+
+	public void setGraph(String graph) {
+		this.graph = graph;
+	}
+
+	@Override
+	public int load(String file) throws SparqlException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

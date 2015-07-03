@@ -31,6 +31,8 @@ public class ClassHandler {
 
 	private String className;
 	
+	private String uriBase;
+	
 	public ClassHandler() {
 	}
 	
@@ -52,6 +54,13 @@ public class ClassHandler {
 		return domains;
 	}
 
+	/**
+	 *
+	 * Short prefix name of this class.  Used when defining the short name of the prefix.   
+	 * 
+	 * @return String short prefix name.
+	 *
+	 */
 	public String getPrefix() {
 		return prefix;
 	}
@@ -60,6 +69,13 @@ public class ClassHandler {
 		this.prefix = prefix;
 	}
 
+	/**
+	 * 
+	 * Return the Prefix IRI of this class.  Used when defining the Ontology uri, such as http://purl.jp/bio/12/glyco/glycan#.
+	 * 
+	 * @return String name of class.
+	 * 
+	 */
 	public String getPrefixIri() {
 		return prefixIri;
 	}
@@ -68,12 +84,34 @@ public class ClassHandler {
 		this.prefixIri = prefixIri;
 	}
 
+	/**
+	 * 
+	 * Return the name of this class.  Useful for shortening references such as in schema:Person.
+	 * 
+	 * @return String name of class.
+	 * 
+	 */
 	public String getClassName() {
 		return className;
 	}
 
 	public void setClassName(String className) {
 		this.className = className;
+	}
+	
+	/**
+	 * 
+	 * Return the base Uri to be used for this class.  Used when definining the URI for an instance of this class.
+	 * 
+	 * @return String name of class.
+	 * 
+	 */
+	public String getUriBase() {
+		return uriBase;
+	}
+
+	public void setUriBase(String uriBase) {
+		this.uriBase = uriBase;
 	}
 
 	public void setSparqlDAO(SparqlDAO sparqlDAO) {

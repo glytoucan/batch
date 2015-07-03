@@ -18,6 +18,6 @@ public class DomainSchemaSelectSparql extends SchemaSelectSparql {
 */
 	public DomainSchemaSelectSparql(ClassHandler classHandler) {
 		super(classHandler);
-		super.where+="?result rdfs:domain " + SchemaSparqlFormatter.getPrefixClassName(classHandler) + ".\n";
+		super.where+="?result rdfs:domain " + SchemaSparqlFormatter.getPrefixClassName(classHandler) + " .\n";
 	}
 }

@@ -9,10 +9,6 @@ import org.glycoinfo.rdf.utils.TripleStoreProperties;
 
 public interface SparqlDAO {
 
-	TripleStoreProperties getTripleStoreProperties() throws SparqlException;
-
-	void setTripleStoreProperties(TripleStoreProperties ts) throws SparqlException;
-
 	List<SparqlEntity> query(SelectSparql select) throws SparqlException;
 
 	void insert(InsertSparql insert) throws SparqlException;
@@ -20,4 +16,7 @@ public interface SparqlDAO {
 	void delete(String string) throws SparqlException;
 
 	void execute(String string) throws SparqlException;
+	
+	int load(String file) throws SparqlException;
+
 }

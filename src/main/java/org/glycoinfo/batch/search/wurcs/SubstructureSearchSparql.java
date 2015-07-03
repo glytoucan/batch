@@ -3,12 +3,15 @@ package org.glycoinfo.batch.search.wurcs;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import org.glycoinfo.WURCSFramework.util.WURCSFormatException;
-import org.glycoinfo.WURCSFramework.util.WURCSImporter;
+import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
+import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSArrayToSequence;
-import org.glycoinfo.WURCSFramework.util.rdf.WURCSSequenceExporterSPARQL;
-import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
+import org.glycoinfo.WURCSFramework.util.exchange.WURCSArrayToSequence2;
+import org.glycoinfo.WURCSFramework.util.rdf.WURCSSequence2ExporterSPARQL;
+import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
+import org.glycoinfo.WURCSFramework.wurcs.rdf.WURCSSequence2ExporterRDFModel;
 import org.glycoinfo.WURCSFramework.wurcs.sequence.WURCSSequence;
+import org.glycoinfo.WURCSFramework.wurcs.sequence2.WURCSSequence2;
 import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
@@ -23,7 +26,7 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(SubstructureSearchSparql.class);
 
-	WURCSSequenceExporterSPARQL exporter = new WURCSSequenceExporterSPARQL();
+//	WURCSSequenceExporterSPARQL exporter = new WURCSSequenceExporterSPARQL();
 
 	public SubstructureSearchSparql() {
 		this.define = "DEFINE sql:select-option \"order\"";
@@ -39,7 +42,6 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 	@Override
 	public String getWhere() throws SparqlException {
 		this.where = ""
-				
 //	"?" + Saccharide.URI + " toucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n"
 //				+ "GRAPH <http://www.glycoinfo.org/wurcs> {"
 //				+ "SELECT *\n"
@@ -58,15 +60,29 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 			e.printStackTrace();
 			throw new SparqlException(e);
 		}
-		WURCSArrayToSequence t_oA2S = new WURCSArrayToSequence();
+//		WURCSArrayToSequence t_oA2S = new WURCSArrayToSequence();
+//		t_oA2S.start(t_oWURCS);
+
+		WURCSArrayToSequence2 t_oA2S = new WURCSArrayToSequence2();
 		t_oA2S.start(t_oWURCS);
-		WURCSSequence t_oSeq = t_oA2S.getSequence();
+		WURCSSequence2 t_oSeq = t_oA2S.getSequence();
+
+		WURCSSequence2ExporterSPARQL t_oExport = new WURCSSequence2ExporterSPARQL();
+
+		// Set option for SPARQL query generator
+		t_oExport.setCountOption(true); // True: Count result
+		//t_oExport.addTergetGraphURI("<http://rdf.glycoinfo.org/wurcs/seq>"); // Add your terget graph
+		//t_oExport.setMSGraphURI("<http://rdf.glycoinfo.org/wurcs/0.5.1/ms>"); // Set your monosaccharide graph
+		t_oExport.hideComments(true); // Hide all comments in query
+//		t_oExport.setSearchSupersumption(true); // Search supersumption of monosaccharide
+
+		t_oExport.start(t_oSeq);
+		String t_strSPARQL = t_oExport.getWhere();
+
+		logger.debug("WHERE of substructure:>" +  t_strSPARQL + "<");
+
 		
-//		try {
-			this.where += exporter.getMainQuery(t_oSeq, false);
-//		} catch (WURCSFormatException e) {
-//			throw new SparqlException(e);
-//		}
+			this.where += t_strSPARQL;
 		
 //		this.where += "}";
 //		this.where += "}";

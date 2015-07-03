@@ -3,31 +3,111 @@
  */
 package org.glycoinfo.rdf.dao;
 
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
+import org.openrdf.query.GraphQuery;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.Update;
+import org.openrdf.query.UpdateExecutionException;
+import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.helpers.StatementCollector;
+import org.openrdf.spring.SesameConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bigdata.rdf.sail.BigdataSail;
+import com.bigdata.rdf.sail.BigdataSailRepository;
+
+
+
+
+
+
+
+import com.bigdata.rdf.sail.remote.BigdataSailFactory;
+import com.bigdata.rdf.sail.remote.BigdataSailRemoteRepository;
+import com.bigdata.rdf.store.BDS;
+import com.bigdata.service.AbstractTransactionService;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //import virtuoso.jdbc3.VirtuosoExtendedString;
@@ -37,29 +117,31 @@ import virtuoso.sesame2.driver.VirtuosoRepository;
 /**
  * @author aoki
  */
-@Repository
 //@SuppressWarnings({ "unchecked", "rawtypes" })
 public class SparqlDAOSesameImpl implements SparqlDAO {
 
 	public static Logger logger = (Logger) LoggerFactory
-			.getLogger("org.glytoucan.registry.dao.SchemaDAOSesameImpl");
+			.getLogger("org.glytoucan.registry.dao.SparqlDAOSesameImpl");
 
 	@Autowired
-	TripleStoreProperties datasource;
+	protected SesameConnectionFactory sesameConnectionFactory;
 	
-	public static String prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> \n"
-			+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-			+ "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \n"
-			+ "PREFIX sio: <http://semanticscience.org/resource/> \n"
-			+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#> \n";
-
-//	@ConfigurationProperties(prefix="spring.triplestore")
-	public TripleStoreProperties getTripleStoreProperties() {
-		return datasource;
+	/**
+     * Load a document into a repository.
+     * 
+	 * @throws SparqlException 
+     */
+    public void load() throws SparqlException {
+    	load(getLoadFilePath());
+    }
+    
+	private String getBaseUri() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public void setTripleSource(TripleStoreProperties datasource) {
-		this.datasource = datasource;
+	private String getLoadFilePath() {
+		return "/home/aoki/workspace/rdfs";
 	}
 
 	public List<SparqlEntity> getAllClass() {
@@ -116,56 +198,60 @@ public class SparqlDAOSesameImpl implements SparqlDAO {
 		return al;
 	}
 
-	public List<SparqlEntity> query(String subject) throws SparqlException {
-		org.openrdf.repository.Repository repository = new VirtuosoRepository(
-				datasource.getUrl(), 
-				datasource.getUsername(),
-				datasource.getPassword());
-		RepositoryConnection con = null;
-		List<SparqlEntity> al = null;
+	public List<SparqlEntity> query(String query) throws SparqlException {
+		
+        try {
+        
+//            repo.initialize();
+            // demonstrate some basic functionality
+//            final URI MIKE = new URIImpl(
+//                    "http://www.bigdata.com/rdf#Mike");
+//            sampleCode.loadSomeData(repo);
+//            System.out.println("Loaded sample data.");
+//            sampleCode.readSomeData(repo, MIKE);
+//            sampleCode.executeSelectQuery(repo,
+//                    "select ?p ?o where { <" + MIKE.toString()
+//                            + "> ?p ?o . }", QueryLanguage.SPARQL);
+//            System.out.println("Did SELECT query.");
+//            sampleCode.executeConstructQuery(repo,
+//                    "construct { <" + MIKE.toString()
+//                            + "> ?p ?o . } where { <" + MIKE.toString()
+//                            + "> ?p ?o . }", QueryLanguage.SPARQL);
+//            System.out.println("Did CONSTRUCT query.");
+//            executeFreeTextQuery(repo);
+            
+//            executeSelectQuery(repo, query, QueryLanguage.SPARQL);
+            // run one of the LUBM tests
+            // sampleCode.doU10(); // I see loaded: 1752215 in 116563 millis: 15032 stmts/sec, what do you see?
+            // sampleCode.doU1();
+            List<SparqlEntity> al = null;
 
-		try {
-			con = repository.getConnection();
-			con.setAutoCommit(true);
+    		RepositoryConnection connection = sesameConnectionFactory.getConnection();
+    			try {
+    				al = doTupleQuery(connection, query);
+    			} catch (MalformedQueryException | QueryEvaluationException e) {
+    				e.printStackTrace();
+    				throw new SparqlException(e);
+    			}
+    			return al;
+        
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    } finally {
+    }
 
-			// // test ask query
-			// String ask = "ask { ?s <http://mso.monrai.com/foaf/name> ?o }";
-			// doQuery(con, ask);
+return null;
 
-			// test add data to the repository
-			String query = null;
-
-			// test query data
-			// query = "SELECT distinct ?s WHERE {[] a ?s} LIMIT 100";
-			query = subject;
-			// try {
-			// log("Loading data from URL: " + strurl);
-			// con.add(url, "", RDFFormat.RDFXML, context);
-			try {
-				al = doTupleQuery(con, query);
-			} catch (MalformedQueryException | QueryEvaluationException e) {
-				e.printStackTrace();
-				throw new SparqlException(e);
-			}
-
-		} catch (RepositoryException e) {
-			logger.debug("Error[" + e + "]");
-			e.printStackTrace();
-			throw new SparqlException(e);
-		}
-
-		SparqlEntity spo = new SparqlEntity();
-
-		return al;
 	}
 
-	private static List<SparqlEntity> doTupleQuery(RepositoryConnection con,
+	public static List<SparqlEntity> doTupleQuery(RepositoryConnection con,
 			String query) throws RepositoryException, MalformedQueryException,
 			QueryEvaluationException {
 		TupleQuery resultsTable = con.prepareTupleQuery(QueryLanguage.SPARQL,
 				query);
-		TupleQueryResult bindings = resultsTable.evaluate();
 
+		TupleQueryResult bindings = resultsTable.evaluate();
+		
 		ArrayList<SparqlEntity> results = new ArrayList<SparqlEntity>();
 		for (int row = 0; bindings.hasNext(); row++) {
 			logger.debug("RESULT " + (row + 1) + ": ");
@@ -174,7 +260,6 @@ public class SparqlDAOSesameImpl implements SparqlDAO {
 			Value[] rv = new Value[names.size()];
 
 			SparqlEntity values = new SparqlEntity();
-			values.setColumns(names);
 			for (int i = 0; i < names.size(); i++) {
 				String name = names.get(i);
 				Value value = pairs.getValue(name);
@@ -197,81 +282,54 @@ public class SparqlDAOSesameImpl implements SparqlDAO {
 		}
 		return results;
 	}
-
-	public List<SparqlEntity> insert(String graph, String insert, boolean clear) throws SQLException {
-		try {
-			Class.forName(datasource.getDriverClassName());
-			Connection connection = DriverManager.getConnection(
-					datasource.getUrl(), datasource.getUsername(),
-					datasource.getPassword());
-			java.sql.Statement stmt = connection.createStatement();
-			ResultSet rs = null;
-			if (clear) {
-				stmt.execute("sparql clear graph <" + graph + ">");
-				rs = stmt.getResultSet();
-				while (rs.next())
-					;
-			}
-
-			logger.debug("sparql " + prefix + "insert into graph <" + graph + "> " + "{ " + insert + " }");
-			stmt.execute("sparql " + prefix + "insert into graph <" + graph + "> " + "{ " + insert + " }");
-			rs = stmt.getResultSet();
-			while (rs.next())
-				logger.debug(rs.toString());
-
-			connection.close();
-		} catch (ClassNotFoundException  e) {
-			e.printStackTrace();
-			logger.debug("class not found, check config" + e.getMessage());
-		}
-		return null;
-	}
-
+	
+	@Transactional
 	public void delete(String statement) throws SparqlException {
 		execute(statement);
 	}
 	
+	@Transactional
 	public void execute(String statement) throws SparqlException {
+		RepositoryConnection connection = sesameConnectionFactory.getConnection();
+
+		logger.debug("executing update:>" + statement + "<");
+		Update update;
 		try {
-			Class.forName(datasource.getDriverClassName());
-			Connection connection = DriverManager.getConnection(
-					datasource.getUrl(), datasource.getUsername(),
-					datasource.getPassword());
-			java.sql.Statement stmt = connection.createStatement();
-			ResultSet rs = null;
-
-			logger.debug("sparql " + statement);
-			stmt.execute("sparql " + statement);
-			rs = stmt.getResultSet();
-			while (rs.next())
-				logger.debug(rs.toString());
-
-			connection.close();
-		} catch (ClassNotFoundException  e) {
-			logger.debug("class not found, check config" + e.getMessage());
-			throw new SparqlException(e);
-		} catch (SQLException e) {
+			update = connection.prepareUpdate(QueryLanguage.SPARQL, statement);
+			update.execute();
+		} catch (RepositoryException | MalformedQueryException | UpdateExecutionException e) {
 			throw new SparqlException(e);
 		}
 	}
 
 	@Override
-	public void setTripleStoreProperties(TripleStoreProperties ts)
-			throws SparqlException {
-	}
-
-	@Override
+	@Transactional
 	public List<SparqlEntity> query(SelectSparql select) throws SparqlException {
 		return query(select.getSparql());
 	}
 
+	@Transactional
 	public void insert(String insert) throws SparqlException {
 		execute(insert);
 	}
 
 	@Override
+	@Transactional
 	public void insert(InsertSparql insert)
 			throws SparqlException {
 		insert(insert.getSparql());
+	}
+
+	@Override
+	@Transactional
+	public int load(String file) throws SparqlException {
+		RepositoryConnection connection = sesameConnectionFactory.getConnection();
+		
+       	try {
+			connection.add(new File(file), getBaseUri(), RDFFormat.RDFXML);
+		} catch (RDFParseException | RepositoryException | IOException e) {
+			throw new SparqlException(e);
+		}
+       	return 0;
 	}
 }

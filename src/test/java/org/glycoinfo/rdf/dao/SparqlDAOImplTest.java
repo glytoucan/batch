@@ -5,24 +5,23 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SesameDAOTestConfig.class)
+@SpringApplicationConfiguration(classes = VirtSesameDAOTestConfig.class)
 public class SparqlDAOImplTest {
 
-	public static Logger logger = (Logger) LoggerFactory
-			.getLogger("org.glytoucan.registry.dao.test.SchemaDAOImplTest");
+	public static Log logger = (Log) LogFactory
+			.getLog("org.glytoucan.registry.dao.test.SchemaDAOImplTest");
 
 	@Autowired
 	SparqlDAO schemaDAO;
@@ -52,12 +51,16 @@ public class SparqlDAOImplTest {
 
 	@Test
 	public void testQuery() {
-		String query = "SELECT * WHERE { GRAPH ?graph { ?s a ?type } } LIMIT 100";
+//		String query = "SELECT ?s ?v ?type WHERE { ?s ?v ?type . } LIMIT 100";
+		String query = "SELECT  ?s ?v ?o WHERE\n" +
+                "  { ?s ?v ?o . }\n" +
+                "LIMIT   5\n" +
+                "";
 		try {
 			List<SparqlEntity> list = schemaDAO.query(new SelectSparqlBean(query));
 			SparqlEntity row = list.get(0);
 			logger.debug("Node:>" + row.getValue("s"));
-			logger.debug("graph:>" + row.getValue("graph"));
+			logger.debug("graph:>" + row.getValue("type"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertFalse("Exception occurred while querying schema.", true);
@@ -122,12 +125,12 @@ public class SparqlDAOImplTest {
 	@Test
 	public void testInsert() throws SparqlException {
 		schemaDAO
-				.insert(new InsertSparqlBean("insert into graph <nobutest>  { <aa> <bb> \"cc\" . \n"
-								+ "<xx> <yy> <zz> . \n"
-								+ "<mm> <nn> \"Some long literal with language\"@en . \n"
-								+ "<oo> <pp> \"12345\"^^<http://www.w3.org/2001/XMLSchema#int>\n }"));
-		String query = prefix + "SELECT ?s ?v ?o\n" + "from <nobutest>\n"
-				+ "WHERE { ?s ?v ?o }";
+				.insert(new InsertSparqlBean("insert data { graph <http://bluetree.jp/nobutest> { <http://bluetree.jp/nobutest/aa> <http://bluetree.jp/nobutest/bb> \"cc\" . \n"
+								+ "<http://bluetree.jp/nobutest/xx> <http://bluetree.jp/nobutest/yy> <http://bluetree.jp/nobutest/zz> . \n"
+								+ "<http://bluetree.jp/nobutest/mm> <http://bluetree.jp/nobutest/nn> \"Some long literal with language\"@en . \n"
+								+ "<http://bluetree.jp/nobutest/oo> <http://bluetree.jp/nobutest/pp> \"12345\"^^<http://www.w3.org/2001/XMLSchema#int>\n  } }"));
+		String query = prefix + "SELECT ?s ?v ?o\n" + "from <http://bluetree.jp/nobutest>\n"
+				+ "WHERE { ?s ?v ?o } limit 10";
 
 		try {
 			logger.debug("query:>" + query);
@@ -148,7 +151,7 @@ public class SparqlDAOImplTest {
 	@Test
 	public void testConvertQuery() {
 		String query = prefix
-				+ "SELECT DISTINCT ?s ?AccessionNumber ?Seq ?type\n" + from
+				+ "SELECT DISTINCT ?s ?AccessionNumber ?Seq ?type\n" 
 				+ "WHERE {" + "?s a glycan:saccharide . "
 				+ "?s glytoucan:has_primary_id ?AccessionNumber . "
 				+ "?s glycan:has_glycosequence ?gseq . "
@@ -173,6 +176,7 @@ public class SparqlDAOImplTest {
 		}
 	}
 
+	@Test
 	public void testInsertConvert() throws SparqlException {
 		schemaDAO
 				.insert(new InsertSparqlBean("insert into graph <nobutest>  {"
@@ -257,14 +261,14 @@ public class SparqlDAOImplTest {
 	public void testDelete() throws SparqlException {
 		schemaDAO
 				.delete("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
-						+ "DELETE DATA FROM <http://glytoucan.org/rdf/demo/0.8> {"
-						+ "<http://www.glycoinfo.org/rdf/glycan/G00021MO/sequence> glycan:has_sequence \"RES\\n1b:x-dglc-HEX-x:x\\n2s:sulfate\\n3s:n-acetyl\\n4b:a-dido-HEX-1:5|6:a\\n5s:sulfate\\n6b:b-dglc-HEX-1:5\\n7s:sulfate\\n8s:n-acetyl\\n9b:a-dido-HEX-1:5|6:a\\n10s:sulfate\\n11s:sulfate\\nLIN\\n1:1o(-1+-1)2n\\n2:1d(2+1)3n\\n3:1o(4+1)4d\\n4:4o(2+-1)5n\\n5:4o(4+1)6d\\n6:6o(-1+-1)7n\\n7:6d(2+1)8n\\n8:6o(4+1)9d\\n9:6o(6+1)10n\\n10:1o(6+1)11n\"^^xsd:string . }");
+						+ "DELETE DATA { graph <http://bluetree.jp/nobutest> {"
+						+ "<http://bluetree.jp/nobutest/aa> <http://bluetree.jp/nobutest/bb> \"cc\" . } }");
 	}
 
 	@Test
 	public void testClearGraph() throws SparqlException {
 		schemaDAO
-				.execute("clear graph <nobutest>");
+				.execute("clear graph <http://bluetree.jp/nobutest>");
 	}
 	
 	public void testInsertWurcs() throws SparqlException {

@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.Set;
 
 import org.glycoinfo.rdf.InsertSparqlBean;
+import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.UriProvider;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.schema.SchemaSparqlFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Component
-public class InsertScint extends InsertSparqlBean {
+//@Component
+public class InsertScint extends InsertSparqlBean implements UriProvider {
 	
-	@Autowired
-	@Qualifier(value = "ClassHandler")
-	ClassHandler classHandler;
-	
+	private ClassHandler classHandler;
+
 	public ClassHandler getClassHandler() {
 		return classHandler;
 	}
@@ -28,18 +28,12 @@ public class InsertScint extends InsertSparqlBean {
 		init();
 	}
 
-	public InsertScint() {
+	public InsertScint(String graph) {
+		this.graph = graph;
 	}
 	
-	void init() {
+	public void init() {
 		this.prefix = SchemaSparqlFormatter.getPrefixDefinition(getClassHandler()) + "\n";
-		this.graph = "http://rdf.glytoucan.org/users";
-//		List<String> domains = null;
-//		try {
-//			domains = classHandler.getDomains();
-//		} catch (SparqlException e) {
-//			this.insert = "error in getDomains";
-//		}
 	}
 
 	@Override
@@ -50,39 +44,29 @@ public class InsertScint extends InsertSparqlBean {
 	
 	public void update() {
 		if (getSparqlEntity() != null) {
-			this.insert="";
-//			this.where = SchemaSparqlFormatter.getCommonClassWhere(classHandler) + " \n";
+			this.insert=SchemaSparqlFormatter.getAInsert(getUri(), classHandler);
 			Set<String> columns = getSparqlEntity().getColumns();
 	
+			List<String> domains;
+			try {
+				domains = classHandler.getDomains();
+				if (!domains.contains(columns)) {
+					logger.warn("not all columns contained in actual domains");
+				}
+			} catch (SparqlException e) {
+				e.printStackTrace();
+			}
+
 			for (String column : columns) {
-				this.insert += SchemaSparqlFormatter.getInsert(classHandler, column, getSparqlEntity().getValue(column)) + " \n";
+				if (column.equals(SelectSparql.PRIMARY_KEY))
+					continue;
+				this.insert += SchemaSparqlFormatter.getInsert(getUri(), classHandler, column, getSparqlEntity().getObjectValue(column));
 			}
 		}
 	}
-	
 
-	//	@Override
-//	public String getPrefix() {
-//		return SchemaSparqlFormatter.getPrefixDefinition(getClassHandler());
-//	}
-
-//	@Override
-//	public String getSelect()  {
-//		String select = "";
-//		List<String> domains = null;
-//		try {
-//			domains = classHandler.getDomains();
-//		} catch (SparqlException e) {
-//			select = "error in getDomains";
-//		}
-//		for (String domain : domains) {
-//			select += ("?" + SchemaSparqlFormatter.getDomainName(getClassHandler(), domain)) + " ";
-//		}
-//		return select;
-//	}
-
-//	@Override
-//	public String getWhere() {
-//		return SchemaSparqlFormatter.getCommonClassWhere(classHandler) + " \n";
-//	}
+	@Override
+	public String getUri() {
+		return SchemaSparqlFormatter.getUri(classHandler, getSparqlEntity().getObjectValue(SelectSparql.PRIMARY_KEY));
+	}
 }

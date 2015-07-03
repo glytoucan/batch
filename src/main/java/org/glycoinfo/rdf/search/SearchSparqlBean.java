@@ -4,13 +4,10 @@ import java.util.LinkedList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.glycoinfo.WURCSFramework.util.WURCSFormatException;
-import org.glycoinfo.WURCSFramework.util.WURCSImporter;
+import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
+import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSArrayToSequence;
-import org.glycoinfo.WURCSFramework.util.rdf.WURCSSPARQLUtils_TBD;
-import org.glycoinfo.WURCSFramework.util.rdf.WURCSSPARQL_TBD;
-import org.glycoinfo.WURCSFramework.util.rdf.WURCSSequenceExporterSPARQL;
-import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
+import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
 import org.glycoinfo.WURCSFramework.wurcs.sequence.WURCSSequence;
 import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
@@ -26,7 +23,7 @@ public class SearchSparqlBean extends
 		SelectSparqlBean implements SearchSparql {
 	String strGlycoSeqVariable;
 
-	WURCSSequenceExporterSPARQL exporter = new WURCSSequenceExporterSPARQL();
+//	WURCSSequenceExporterSPARQL exporter = new WURCSSequenceExporterSPARQL();
 	
 	public SearchSparqlBean() {
 		super();
@@ -62,7 +59,8 @@ public class SearchSparqlBean extends
 		t_oA2S.start(t_oWURCS);
 		WURCSSequence t_oSeq = t_oA2S.getSequence();
 		
-		return exporter.getMainQuery(t_oSeq);
+//		return exporter.getMainQuery(t_oSeq);
+		return null;
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class MassSelectSparql extends SelectSparqlBean implements InitializingBe
 				+ "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
 				+ "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n"
 				+ "?" + GlycanSequenceURI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs\n"
-						+ getFilter()
+//						+ getFilter()
 				;
 	}
 
