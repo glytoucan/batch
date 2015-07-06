@@ -54,22 +54,33 @@ public class MassSparqlProcessor implements
 			try {
 				testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
 			} catch (WURCSMassException e) {
-				if (e.getMessage().contains("repeating unit"))
+				if (e.getMessage().contains("repeating unit")) {
 					testMass = -1;
-				else if (e.getMessage().contains("unknown carbon length"))
+					sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate repeating units");
+				}
+				else if (e.getMessage().contains("unknown carbon length")) {
 					testMass = -2;
+					sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate unknown carbon length");
+				}
 				else if (e.getMessage().contains(
-						"Cannot calculate linkage with probability"))
+						"Cannot calculate linkage with probability")) {
 					testMass = -3;
+					sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate linkages with probability");
+				}
 				else
 					throw e;
 			}
-		} else
+		} else  {
 			testMass = -4; // glycoct could not be converted to wurcs
+			sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate: no sequence");
+		}
 
 		// return
 		logger.debug("Mass of (" + sequence + ") is (" + testMass + ")");
-		sparqlEntity.setValue(MassInsertSparql.Mass, Double.toString(testMass));
+		if (testMass > -1) {
+			sparqlEntity.setValue(MassInsertSparql.Mass, Double.toString(testMass));
+			sparqlEntity.setValue(MassInsertSparql.MassLabel, Double.toString(testMass));
+		}
 
 		return sparqlEntity;
 	}

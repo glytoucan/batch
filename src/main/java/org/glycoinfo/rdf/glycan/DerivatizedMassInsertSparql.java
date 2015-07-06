@@ -1,5 +1,7 @@
 package org.glycoinfo.rdf.glycan;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.glycoinfo.rdf.InsertSparql;
@@ -10,6 +12,7 @@ public class DerivatizedMassInsertSparql extends InsertSparqlBean {
 	String type = "a glycan:saccharide";
 	String hasPrimaryId = "glytoucan:has_primary_id";
 	public static String Mass = "Mass";
+	public static String MassLabel = "MassLabel";
 
 	public DerivatizedMassInsertSparql() {
 		this.prefix="PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
@@ -24,8 +27,12 @@ public class DerivatizedMassInsertSparql extends InsertSparqlBean {
 		String saccharideURI = getSaccharideURI();
 		String rdf = saccharideURI + " glytoucan:has_derivatized_mass " + getURI() + " .\n" +
 				getURI() + " a glytoucan:derivatized_mass .\n" +
-				getURI() + " glytoucan:has_derivatization_type glytoucan:derivatization_type_none .\n" +
-				getURI() + " glytoucan:has_mass \"" + getSparqlEntity().getValue(Mass) + "\"^^xsd:double .\n";
+				getURI() + " glytoucan:has_derivatization_type glytoucan:derivatization_type_none .\n"
+						+ getURI() + " rdfs:label \"" + getSparqlEntity().getValue(MassLabel) + "\"^^xsd:string .\n";
+
+				if (getSparqlEntity().getValue(Mass) != null)
+					rdf += getURI() + " glytoucan:has_mass \"" + getSparqlEntity().getValue(Mass) + "\"^^xsd:double .\n";
+				
 		return rdf;
 	}
 
@@ -34,6 +41,11 @@ public class DerivatizedMassInsertSparql extends InsertSparqlBean {
 	}
 
 	public String getURI() {
-		return "<http://rdf.glycoinfo.org/derivatization_type_node/" + getSparqlEntity().getValue(Mass) + ">";
+		try {
+			return "<http://rdf.glycoinfo.org/derivatization_type_node/" + URLEncoder.encode(getSparqlEntity().getValue(MassLabel), "UTF-8") + ">";
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 }
