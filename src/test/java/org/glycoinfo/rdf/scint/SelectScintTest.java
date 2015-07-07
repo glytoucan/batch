@@ -72,7 +72,7 @@ public class SelectScintTest {
 		scint.setSparqlDAO(sparqlDAO);
 		return scint; 
 	}
-	
+
 	ClassHandler getDateTimeClassHandler() throws SparqlException {
 		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "DateTime");
 		scint.setSparqlDAO(sparqlDAO);
@@ -82,7 +82,6 @@ public class SelectScintTest {
 	@Bean(name = "selectscintperson")
 	SelectScint getSelectPersonScint() throws SparqlException {
 		SelectScint select = new SelectScint();
-		
 		select.setClassHandler(getPersonClassHandler());
 		return select;
 	}
@@ -93,7 +92,6 @@ public class SelectScintTest {
 		insert.setClassHandler(getPersonClassHandler());
 		return insert;
 	}
-	
 	
 	@Bean(name = "selectscintregisteraction")
 	SelectScint getSelectRegisterActionScint() throws SparqlException {
@@ -111,7 +109,7 @@ public class SelectScintTest {
 	
 	@Test
 	public void testSelectDomain() throws SparqlException {
-		SparqlEntity sparqlentity = new SparqlEntity("123");
+		SparqlEntity sparqlentity = new SparqlEntity("person123");
 		sparqlentity.setValue("familyName", "");
 		sparqlentity.setValue("givenName", "");
 		sparqlentity.setValue("email", "support@glytoucan.org");
@@ -128,11 +126,13 @@ public class SelectScintTest {
 
 	@Test
 	public void testInsertDomain() throws SparqlException {
-		SparqlEntity sparqlentity = new SparqlEntity("123");
+		SparqlEntity sparqlentity = new SparqlEntity("person123");
 		sparqlentity.setValue("familyName", "Aoki");
 		sparqlentity.setValue("givenName", "Nobu");
 		sparqlentity.setValue("email", "support@glytoucan.org");
+//		insertScintPerson.setClassHandler(getPersonClassHandler());
 		insertScintPerson.setSparqlEntity(sparqlentity);
+
 		logger.debug(insertScintPerson.getSparql());
 		sparqlDAO.insert(insertScintPerson);
 	}
@@ -177,8 +177,16 @@ public class SelectScintTest {
 		
 		// set the datetime class to be the startTime range for the registeraction domain.
 		sparqlentityRegisterAction.setValue("startTime", dateTimeSelect);
+		
+		SparqlEntity sparqlEntityPerson = new SparqlEntity("person123");
+		SelectScint personSelect = new SelectScint();
+		personSelect.setClassHandler(getPersonClassHandler());
+		personSelect.setSparqlEntity(sparqlEntityPerson);
+		
+		sparqlentityRegisterAction.setValue("participant", personSelect);
 
 		// set the sparqlentity for the registeraction. 
+		insertScintRegisterAction.setClassHandler(getRegisterActionClassHandler());
 		insertScintRegisterAction.setSparqlEntity(sparqlentityRegisterAction);
 		logger.debug(insertScintRegisterAction.getSparql());
 		

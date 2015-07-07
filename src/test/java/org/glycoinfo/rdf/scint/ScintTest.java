@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import scala.reflect.internal.Trees.Select;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {ScintTest.class, SesameDAOTestConfig.class})
