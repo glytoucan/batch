@@ -288,5 +288,12 @@
 				<spring.mainClass>org.glycoinfo.batch.glyconvert.wurcs.GlycomeDBWurcsConvertSparqlBatch</spring.mainClass>
 			</properties>
 		</profile>
+		<profile>
+			<id>kcf</id>
+			<properties>
+				<spring.mainClass>org.glycoinfo.batch.convert.kcf.KcfConvertTripleBatch</spring.mainClass>
+			</properties>
+		</profile>
+
 	</profiles>
 </project>
