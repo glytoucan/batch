@@ -41,7 +41,9 @@ public class SparqlEntity {
 	}
 
 	public String getValue(String key) {
-		return data.get(key).toString();
+		if (null != data.get(key))
+			return data.get(key).toString();
+		return null;
 	}
 	
 	public Object setValue(String key, String value) {
@@ -71,7 +73,15 @@ public class SparqlEntity {
 		data.putAll(m.getData());
 	}
 	
-	private Map getData() {
+	public void putAll(Map<String, ?> m) { 
+		data.putAll(m);
+	}
+	
+	public Object remove(String key) {
+		return data.remove(key);
+	}
+	
+	private Map<String, Object> getData() {
 		return data;
 	}
 

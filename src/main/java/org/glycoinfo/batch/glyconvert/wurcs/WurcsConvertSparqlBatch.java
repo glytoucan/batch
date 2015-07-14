@@ -9,9 +9,14 @@ import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
-import org.glycoinfo.rdf.dao.SparqlDAOSesameImpl;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
+import org.glycoinfo.rdf.dao.virt.VirtRepositoryConnectionFactory;
+import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -28,6 +33,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import virtuoso.sesame2.driver.VirtuosoRepository;
 
 @Configuration
 @EnableAutoConfiguration
@@ -68,7 +75,7 @@ public class WurcsConvertSparqlBatch {
 
 	@Bean
 	SparqlDAO getSparqlDAO() {
-		return new SparqlDAOSesameImpl();
+		return new SparqlDAOVirtSesameImpl();
 	}
 
 	@Bean
@@ -112,5 +119,23 @@ public class WurcsConvertSparqlBatch {
 		process.setGlyConvert(getGlyConvert());
 
 		return process;
+	}
+	
+	@Bean
+	VirtSesameConnectionFactory getSesameConnectionFactory() {
+		return new VirtRepositoryConnectionFactory(getRepository());
+	}
+	
+	@Bean
+	public Repository getRepository() {
+		return new VirtuosoRepository(
+				getTripleStoreProperties().getUrl(), 
+				getTripleStoreProperties().getUsername(),
+				getTripleStoreProperties().getPassword());
+	}
+
+	@Bean
+	VirtSesameTransactionManager transactionManager() throws RepositoryException {
+		return new VirtSesameTransactionManager(getSesameConnectionFactory());
 	}
 }

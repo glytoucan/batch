@@ -41,34 +41,43 @@ public class MassSparqlProcessor implements
 		logger.debug("processing:>" + sequence + "<");
 		// check for inconvertible glycoct
 		double testMass = 0;
+		boolean cancalculate = true;
+		
 		if (null != sequence && sequence.length() > 0) {
 			try {
-				t_objWURCS = t_objImporter.extractWURCSArray(URLDecoder.decode(sequence, "UTF-8"));
+				String decodedSequence = URLDecoder.decode(sequence, "UTF-8");
+				logger.debug("processing decoded:>" + decodedSequence + "<");
+				
+				t_objWURCS = t_objImporter.extractWURCSArray(decodedSequence);
 			} catch (WURCSFormatException e) {
-				throw new SparqlException(e);
+				sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate invalid format");
+				cancalculate = false;
+//				throw new SparqlException(e);
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			LinkedList<RES> testRESs = t_objWURCS.getRESs();
-			try {
-				testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
-			} catch (WURCSMassException e) {
-				if (e.getMessage().contains("repeating unit")) {
-					testMass = -1;
-					sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate repeating units");
+			if (cancalculate) {
+
+				try {
+					testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+				} catch (WURCSMassException e) {
+					if (e.getMessage().contains("repeating unit")) {
+						testMass = -1;
+						sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate repeating units");
+					}
+					else if (e.getMessage().contains("unknown carbon length")) {
+						testMass = -2;
+						sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate unknown carbon length");
+					}
+					else if (e.getMessage().contains(
+							"Cannot calculate linkage with probability")) {
+						testMass = -3;
+						sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate linkages with probability");
+					}
+					else
+						throw e;
 				}
-				else if (e.getMessage().contains("unknown carbon length")) {
-					testMass = -2;
-					sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate unknown carbon length");
-				}
-				else if (e.getMessage().contains(
-						"Cannot calculate linkage with probability")) {
-					testMass = -3;
-					sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate linkages with probability");
-				}
-				else
-					throw e;
 			}
 		} else  {
 			testMass = -4; // glycoct could not be converted to wurcs

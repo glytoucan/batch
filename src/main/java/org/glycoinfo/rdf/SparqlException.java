@@ -10,4 +10,8 @@ public class SparqlException extends Exception {
 	public SparqlException(Exception e) {
 		super(e);
 	}
+	
+	public SparqlException(String message) {
+		super(message);
+	}
 }
