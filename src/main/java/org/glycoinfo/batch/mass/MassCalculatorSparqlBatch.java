@@ -2,17 +2,13 @@ package org.glycoinfo.batch.mass;
 
 import org.glycoinfo.batch.SparqlItemReader;
 import org.glycoinfo.batch.SparqlItemWriter;
-import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
-import org.glycoinfo.batch.glyconvert.ConvertSparqlProcessor;
-import org.glycoinfo.conversion.GlyConvert;
-import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.mass.MassSelectSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
-import org.glycoinfo.rdf.dao.SparqlDAOVirtSesameImpl;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
 import org.glycoinfo.rdf.dao.virt.VirtRepositoryConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;

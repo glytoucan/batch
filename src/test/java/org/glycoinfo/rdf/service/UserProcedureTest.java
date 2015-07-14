@@ -113,14 +113,51 @@ public class UserProcedureTest {
 	@Test
 	public void testUser() throws SparqlException {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue("id", "person456");
+		se.setValue(SelectScint.PRIMARY_KEY, "person789");
+		se.setValue("email", "person789@person.com");
+		se.setValue("givenName", "person");
+		se.setValue("familyName", "789");
+		se.setValue("verifiedEmail", "true");
+		userProcedure.setSparqlEntity(se);
+		userProcedure.addUser();
+
+		se.setValue("member", "");
+		se.setValue("contributor", "");
+		se.remove("verifiedEmail");
+
+		SelectScint personScint = getSelectPersonScint();
+		personScint.setSparqlEntity(se);
+		List<SparqlEntity> results = sparqlDAO.query(personScint);
+		
+		Assert.assertFalse(results.size() == 0);
+		for (SparqlEntity sparqlEntity : results) {
+			logger.debug(sparqlEntity.toString());
+			Assert.assertNotNull(sparqlEntity.getValue("contributor"));
+			Assert.assertNotNull(sparqlEntity.getValue("member"));
+		}
+	}
+
+	@Test
+	public void testUserNotVerified() throws SparqlException {
+		SparqlEntity se = new SparqlEntity("person456");
 		se.setValue("email", "person456@person.com");
 		se.setValue("givenName", "person");
 		se.setValue("familyName", "456");
 		se.setValue("verifiedEmail", "false");
 		userProcedure.setSparqlEntity(se);
 		userProcedure.addUser();
+		se.setValue("member", "");
+		se.remove("verifiedEmail");
+		
+		SelectScint personScint = getSelectPersonScint();
+		personScint.setSparqlEntity(se);
+		List<SparqlEntity> results = sparqlDAO.query(personScint);
+		
+		Assert.assertFalse(results.size() == 0);
+		for (SparqlEntity sparqlEntity : results) {
+			logger.debug(sparqlEntity.toString());
+			Assert.assertNull(sparqlEntity.getValue("contributor"));
+			Assert.assertNotNull(sparqlEntity.getValue("member"));
+		}
 	}
-
-	
 }

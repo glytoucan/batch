@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.glycoinfo.rdf.dao.SparqlEntity;
 
@@ -22,7 +23,7 @@ public class SparqlEntityValueConverter extends JsonSerializer<SparqlEntity> {
 			SerializerProvider provider) throws IOException,
 			JsonGenerationException {
         jgen.writeStartObject();
-        List<String> columns = schema.getColumns();
+        Set<String> columns = schema.getColumns();
         for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
 			String column = (String) iterator.next();
 	        jgen.writeStringField(column, schema.getValue(column));

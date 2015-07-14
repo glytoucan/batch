@@ -15,9 +15,7 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.glycan.Saccharide;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wordnik.swagger.annotations.ApiModel;
 
-@ApiModel (value="Search Substructure SPARQL", description="SPARQL query generated to find substructures.")
 @XmlRootElement (name="select-search-sparql")
 public class SearchSparqlBean extends
 		SelectSparqlBean implements SearchSparql {

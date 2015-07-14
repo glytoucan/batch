@@ -49,9 +49,9 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 			List<String> domains;
 			try {
 				domains = classHandler.getDomains();
-				if (!domains.contains(columns)) {
-					logger.warn("not all columns contained in domains");
-				}
+//				if (!domains.contains(columns)) {
+//					logger.warn("not all columns contained in domains");
+//				} doesnt work since columns may not be full uri
 			} catch (SparqlException e) {
 				e.printStackTrace();
 			}

@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class InsertScint extends InsertSparqlBean implements UriProvider {
-	
+
 	private ClassHandler classHandler;
 
 	public ClassHandler getClassHandler() {
@@ -28,6 +28,9 @@ public class InsertScint extends InsertSparqlBean implements UriProvider {
 		init();
 	}
 
+	public InsertScint() {
+	}
+	
 	public InsertScint(String graph) {
 		this.graph = graph;
 	}
@@ -44,25 +47,30 @@ public class InsertScint extends InsertSparqlBean implements UriProvider {
 	
 	public void update() {
 		if (getSparqlEntity() != null) {
-			this.insert=SchemaSparqlFormatter.getAInsert(getUri(), classHandler);
-			Set<String> columns = getSparqlEntity().getColumns();
-	
-			List<String> domains;
-			try {
+			if (classHandler != null) {
+				
+				this.insert=SchemaSparqlFormatter.getAInsert(getUri(), classHandler);
+				List<String> domains;
+				try {
+				Set<String> columns = getSparqlEntity().getColumns();
 				domains = classHandler.getDomains();
-				if (!domains.contains(columns)) {
-					logger.warn("not all columns contained in actual domains");
+	
+				for (String column : columns) {
+					if (column.equals(SelectSparql.PRIMARY_KEY))
+						continue;
+					if (!domains.contains(column)) {
+						// TODO: this doesnt take into consideration subClass relationships
+						logger.warn("field:>" + column + "< is not a predicate of this class>" + classHandler.getClassName() + "<");
+					}
+					this.insert += SchemaSparqlFormatter.getInsert(getUri(), classHandler, column, getSparqlEntity().getObjectValue(column));
 				}
-			} catch (SparqlException e) {
-				e.printStackTrace();
-			}
-
-			for (String column : columns) {
-				if (column.equals(SelectSparql.PRIMARY_KEY))
-					continue;
-				this.insert += SchemaSparqlFormatter.getInsert(getUri(), classHandler, column, getSparqlEntity().getObjectValue(column));
-			}
-		}
+				} catch (SparqlException e) {
+					e.printStackTrace();
+				}
+			} else
+				logger.warn("please set classHandler to autofill sparql");
+		} else
+			logger.warn("no SparqlEntity.  Needed for primary key and columns.");
 	}
 
 	@Override

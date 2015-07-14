@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.glycoinfo.rdf.schema.DomainSchemaSelectSparql;
+import org.glycoinfo.rdf.schema.SchemaSparqlFormatter;
 
 @Component
 public class ClassHandler {
@@ -20,7 +21,7 @@ public class ClassHandler {
 			.getLogger("org.glycoinfo.rdf.scint.Scint");
 	
 	@Autowired
-	SparqlDAO schemaDAO;
+	SparqlDAO sparqlDAO;
 
 	// domains and ranges are the properties and class names in a list.
 	List<String> domains, ranges;
@@ -43,13 +44,18 @@ public class ClassHandler {
 	}
 
 	public List<String> getDomains() throws SparqlException {
+		// TODO: this doesnt take into consideration subClass relationships
 		SelectSparql domainselect = new DomainSchemaSelectSparql(this);
 		logger.debug(domainselect.getSparql());
-		List<SparqlEntity> results = schemaDAO.query(domainselect);
+		List<SparqlEntity> results = sparqlDAO.query(domainselect);
 		if (domains==null)
 			domains = new ArrayList<String>();
 		for (SparqlEntity sparqlEntity : results) {
-			domains.add(sparqlEntity.getValue("result"));
+
+			String result = SchemaSparqlFormatter.getDomainName(this, sparqlEntity.getValue("result"));
+			logger.debug("result:>" + result + "<");
+
+			domains.add(result);
 		}
 		return domains;
 	}
@@ -115,6 +121,6 @@ public class ClassHandler {
 	}
 
 	public void setSparqlDAO(SparqlDAO sparqlDAO) {
-		this.schemaDAO = sparqlDAO;
+		this.sparqlDAO = sparqlDAO;
 	}
 }

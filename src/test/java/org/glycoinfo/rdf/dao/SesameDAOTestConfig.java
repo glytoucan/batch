@@ -1,5 +1,7 @@
 package org.glycoinfo.rdf.dao;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 public class SesameDAOTestConfig {
+	protected transient Log logger = LogFactory.getLog(getClass());
 	
     @Value("${triplestore.sesame.url}")
     private String url;
@@ -38,6 +41,8 @@ public class SesameDAOTestConfig {
 
 	@Bean
 	public Repository getRepository() {
+        logger.debug("url" + url);
+
 		return new HTTPRepository(url);
 	}
 	
