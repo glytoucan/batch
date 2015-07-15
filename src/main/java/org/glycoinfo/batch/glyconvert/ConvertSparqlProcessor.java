@@ -46,7 +46,10 @@ public class ConvertSparqlProcessor implements
 		} catch (ConvertException e) {
 			e.printStackTrace();
 			logger.error("error processing:>" + sequence + "<");
-			throw e;
+			if (e.getMessage() != null && e.getMessage().length() > 0)
+				convertedSeq=e.getMessage();
+			else
+				throw e;
 		}
 
 		// return
