@@ -78,20 +78,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bigdata.rdf.sail.BigdataSail;
-import com.bigdata.rdf.sail.BigdataSailRepository;
-
-
-
-
-
-
-
-import com.bigdata.rdf.sail.remote.BigdataSailFactory;
-import com.bigdata.rdf.sail.remote.BigdataSailRemoteRepository;
-import com.bigdata.rdf.store.BDS;
-import com.bigdata.service.AbstractTransactionService;
-
 
 
 
@@ -199,6 +185,7 @@ public class SparqlDAOSesameImpl implements SparqlDAO {
 	}
 
 	public List<SparqlEntity> query(String query) throws SparqlException {
+		logger.debug(query);
 		
         try {
         
