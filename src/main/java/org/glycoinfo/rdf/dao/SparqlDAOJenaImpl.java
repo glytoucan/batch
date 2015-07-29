@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.http.impl.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
