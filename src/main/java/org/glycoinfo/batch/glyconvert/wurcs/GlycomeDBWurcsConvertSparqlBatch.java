@@ -41,7 +41,7 @@ public class GlycomeDBWurcsConvertSparqlBatch {
 	// graph base to set the graph to insert into. The format type (toFormat()) will be added to the end. 
 	// example: http://glytoucan.org/rdf/demo/0.7/wurcs
 	public static String graphbase = "http://rdf.glycoinfo.org/glycome-db/sequence";
-	private int pageSize = 10;
+	private int pageSize = 10000;
 
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")

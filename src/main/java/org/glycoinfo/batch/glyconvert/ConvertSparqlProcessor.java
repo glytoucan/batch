@@ -10,6 +10,7 @@ import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,31 +42,45 @@ public class ConvertSparqlProcessor implements
 		GlyConvert converter = getGlyConvert();
 		converter.setFromSequence(sequence);
 		String convertedSeq = null;
+		String errorMessage = null;
 		try {
 			convertedSeq = converter.convert();
 		} catch (ConvertException e) {
 			e.printStackTrace();
 			logger.error("error processing:>" + sequence + "<");
 			if (e.getMessage() != null && e.getMessage().length() > 0)
-				convertedSeq=e.getMessage();
+				errorMessage=e.getMessage();
 			else
 				throw e;
 		}
 
-		// return
-		logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
+		if (null != convertedSeq) {
+			// return
+			logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
+			
+			String encoded;
+			try {
+				encoded = URLEncoder.encode(convertedSeq, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				throw new ConvertException(e);
+			}
 		
-		String encoded;
-		try {
-			encoded = URLEncoder.encode(convertedSeq, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			throw new ConvertException(e);
+			logger.debug("Encoded (" + convertedSeq + ") into (" + encoded + ")");
+			sparqlEntity.setValue(ConvertInsertSparql.ConvertedSequence, encoded);
 		}
-		
-		logger.debug("Encoded (" + convertedSeq + ") into (" + encoded + ")");
-		
-		sparqlEntity.setValue(ConvertInsertSparql.ConvertedSequence, encoded);
+
+		if (null != errorMessage) {
+			String encodedErrorMessage;
+			try {
+				encodedErrorMessage = URLEncoder.encode(errorMessage, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				throw new ConvertException(e);
+			}
+
+			sparqlEntity.setValue(GlycoSequence.ErrorMessage, encodedErrorMessage);
+		}
 
 		return sparqlEntity;
 	}

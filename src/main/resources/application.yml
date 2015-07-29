@@ -11,3 +11,6 @@ spring:
         username: dba
         password: dba
         graph: graph
+logging.path: ./log
+logging.file: debug.log
+logging.level.org.glycoinfo: DEBUG    

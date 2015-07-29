@@ -47,8 +47,10 @@ public class GlycoSequenceInsertSparql extends InsertSparqlBean implements
 	public String getInsert() {
 		String saccharideURI = getSaccharideURI();
 		String rdf = saccharideURI + " glycan:has_glycosequence " + getGlycanSequenceUri() + " .\n" + 
-				getGlycanSequenceUri()	+ " glycan:has_sequence \""	+ getSparqlEntity().getValue(GlycoSequence.Sequence) + "\"^^xsd:string .\n" 
-				+ getGlycanSequenceUri() + " glycan:in_carbohydrate_format " + getFormat() + " .\n"
+		(getSparqlEntity().getValue(GlycoSequence.Sequence) != null? getGlycanSequenceUri()	+ " glycan:has_sequence \""	+ getSparqlEntity().getValue(GlycoSequence.Sequence) + "\"^^xsd:string .\n" : "") +
+		(getSparqlEntity().getValue(GlycoSequence.Sequence) != null? getGlycanSequenceUri()	+ " rdfs:label \""	+ getSparqlEntity().getValue(GlycoSequence.Sequence) + "\"^^xsd:string .\n" : "")
+				+ getGlycanSequenceUri() + " glycan:in_carbohydrate_format " + getFormat() + " .\n" +
+		(getSparqlEntity().getValue(GlycoSequence.ErrorMessage) != null? getGlycanSequenceUri()	+ " rdfs:label \""	+ getSparqlEntity().getValue(GlycoSequence.ErrorMessage) + "\"^^xsd:string .\n" : "")
 				+ getGlycanSequenceUri() + " glytoucan:is_glycosequence_of " + saccharideURI + " .\n";
 
 		// String rdf = saccharideURI +
