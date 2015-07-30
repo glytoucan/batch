@@ -51,8 +51,8 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 	}
 
 	public List<SparqlEntity> query(String select) {
-		SimpleAuthenticator authenticator = new SimpleAuthenticator("admin", "pw123".toCharArray());
-		PreemptiveBasicAuthenticator basicAuth = new PreemptiveBasicAuthenticator(authenticator);
+//		SimpleAuthenticator authenticator = new SimpleAuthenticator("admin", "pw123".toCharArray());
+//		PreemptiveBasicAuthenticator basicAuth = new PreemptiveBasicAuthenticator(authenticator);
 		
         Query query = QueryFactory.create(select); //s2 = the query above
 		QueryExecution qe = QueryExecutionFactory.sparqlService("http://localhost:3030/a/sparql",
