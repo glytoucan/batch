@@ -77,7 +77,8 @@ public class GlycomeDBConvertSelectSparql extends WurcsConvertSelectSparql imple
 	 * @see org.glycoinfo.rdf.SelectSparqlBean#getWhere()
 	 */
 	public String getWhere() {
-		return "?" + SaccharideURI + " a glycan:saccharide .\n" + 
+		return 
+				//"?" + SaccharideURI + " a glycan:saccharide .\n" + 
 //	"?"	+ SaccharideURI + " glytoucan:has_primary_id ?"	+ AccessionNumber + " .\n" +
 	"BIND(STRAFTER(str(?" + SaccharideURI + "), \"http://rdf.glycome-db.org/glycan/\") AS ?" + AccessionNumber + ")\n"
 			+ "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
