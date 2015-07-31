@@ -10,6 +10,18 @@
 	    </layout>
 	</appender>
 
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
+	   <param name="append" value="false" />
+	   <param name="maxFileSize" value="100MB" />
+	   <param name="maxBackupIndex" value="5" />
+	   <!-- For Tomcat -->
+	   <param name="file" value="./logs/app.log" />
+	   <layout class="org.apache.log4j.PatternLayout">
+		<param name="ConversionPattern" 
+			value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+	   </layout>
+	</appender>
+
   <logger name="org.glycoinfo">
     <level value="debug"/> 
   </logger>
@@ -17,6 +29,7 @@
 	<root>
 		<level value="ERROR" />
 		<appender-ref ref="console" />
+		<appender-ref ref="file" />
 	</root>
  
 </log4j:configuration>
