@@ -29,7 +29,7 @@ public class GlycoSequenceInsertSparql extends InsertSparqlBean implements
 
 	public String getGlycanSequenceUri() {
 		// getSparqlEntity().getValue(ConvertSelectSparql.GlycanSequenceURI)
-		return "<http://www.glycoinfo.org/rdf/glycan/"
+		return "<http://rdf.glycoinfo.org/glycan/"
 				+ getSparqlEntity().getValue(Saccharide.PrimaryId)
 				+ "/"
 				+ getSparqlEntity()
