@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.batch.glyconvert.wurcs.WurcsConvertSelectSparql;
 import org.glycoinfo.conversion.GlyConvert;
-import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,10 +79,12 @@ public class GlycomeDBConvertSelectSparql extends WurcsConvertSelectSparql imple
 		return 
 				//"?" + SaccharideURI + " a glycan:saccharide .\n" + 
 //	"?"	+ SaccharideURI + " glytoucan:has_primary_id ?"	+ AccessionNumber + " .\n" +
-	"BIND(STRAFTER(str(?" + SaccharideURI + "), \"http://rdf.glycome-db.org/glycan/\") AS ?" + AccessionNumber + ")\n"
-			+ "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
+				"?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n" 
+                + "BIND(STRAFTER(str(?" + SaccharideURI + "), \"http://rdf.glycome-db.org/glycan/\") AS ?" + AccessionNumber + ")\n"
 				+ "?" + GlycanSequenceURI + " glycan:has_sequence ?Sequence .\n" + "?"
-				+ GlycanSequenceURI + " glycan:in_carbohydrate_format " + getFormat() + "\n";
+				+ GlycanSequenceURI + " glycan:in_carbohydrate_format " + getFormat();
+//		+"\n"+ getFilter();
+
 	}
 
 	/**
