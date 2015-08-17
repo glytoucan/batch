@@ -1,16 +1,11 @@
 package org.glycoinfo.rdf.service;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 
-import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SesameDAOTestConfig;
 import org.glycoinfo.rdf.dao.SparqlDAO;
-import org.glycoinfo.rdf.dao.SparqlDAOSesameImpl;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
@@ -20,13 +15,11 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
@@ -160,4 +153,16 @@ public class UserProcedureTest {
 			Assert.assertNotNull(sparqlEntity.getValue("member"));
 		}
 	}
+	
+	@Test
+	public void testGetUser() throws SparqlException {
+		List<SparqlEntity> results = userProcedure.getUser("aokinobu@gmail.com");
+		Assert.assertFalse(results.size() == 0);
+		for (SparqlEntity sparqlEntity : results) {
+			logger.debug(sparqlEntity.toString());
+			Assert.assertNull(sparqlEntity.getValue("member"));
+			Assert.assertNotNull(sparqlEntity.getValue("contributor"));
+		}
+	}
+
 }

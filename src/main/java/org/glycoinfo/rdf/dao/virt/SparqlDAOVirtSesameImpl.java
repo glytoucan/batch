@@ -3,10 +3,6 @@
  */
 package org.glycoinfo.rdf.dao.virt;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,24 +24,13 @@ import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.spring.SesameConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-
-
-
-
-
 import org.springframework.transaction.annotation.Transactional;
-
-
-
 //import virtuoso.jdbc3.VirtuosoExtendedString;
 //import virtuoso.jdbc3.VirtuosoRdfBox;
-import virtuoso.sesame2.driver.VirtuosoRepository;
 
 /**
  * @author aoki
@@ -158,6 +143,7 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 			// try {
 			// log("Loading data from URL: " + strurl);
 			// con.add(url, "", RDFFormat.RDFXML, context);
+			logger.debug("query:>" + query);
 			try {
 				al = doTupleQuery(con, query);
 			} catch (MalformedQueryException | QueryEvaluationException e) {

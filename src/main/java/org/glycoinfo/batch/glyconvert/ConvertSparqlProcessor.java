@@ -13,9 +13,6 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-import org.springframework.test.context.ContextConfiguration;
 
 public class ConvertSparqlProcessor implements
 		ItemProcessor<SparqlEntity, SparqlEntity> {
@@ -59,12 +56,13 @@ public class ConvertSparqlProcessor implements
 			logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
 			
 			String encoded;
-			try {
-				encoded = URLEncoder.encode(convertedSeq, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-				throw new ConvertException(e);
-			}
+//			try {
+//				encoded = URLEncoder.encode(convertedSeq, "UTF-8");
+				encoded = convertedSeq;
+//			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
+//				throw new ConvertException(e);
+//			}
 		
 			logger.debug("Encoded (" + convertedSeq + ") into (" + encoded + ")");
 			sparqlEntity.setValue(ConvertInsertSparql.ConvertedSequence, encoded);

@@ -2,12 +2,9 @@ package org.glycoinfo.rdf.glycan;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
-import org.glycoinfo.rdf.glycan.Saccharide;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -49,11 +46,10 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 
 	@Override
 	public String getWhere() throws SparqlException {
-		this.where = "?" + SaccharideURI + " a glycan:saccharide .\n" 
+		this.where = "?" + SaccharideURI + " a glycan:saccharide .\n"
 				+ "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n"
 				+ "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
 				+ "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n"
-				+ "?" + GlycanSequenceURI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs\n"
 //						+ getFilter()
 				;
 		return where;
@@ -78,7 +74,7 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		Assert.state(getPrefix() != null, "A ident is required");
+		Assert.state(getPrefix() != null, "A prefix is required");
 		Assert.state(getSelect() != null, "A select is required");
 	}
 }

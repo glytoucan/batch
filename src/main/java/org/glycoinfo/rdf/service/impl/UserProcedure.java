@@ -1,11 +1,10 @@
 package org.glycoinfo.rdf.service.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
-import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -46,11 +45,11 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		return scint; 
 	}
 	
-	ClassHandler getRegisterActionClassHandler() throws SparqlException {
-		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "RegisterAction");
-		scint.setSparqlDAO(sparqlDAO);
-		return scint; 
-	}
+//	ClassHandler getRegisterActionClassHandler() throws SparqlException {
+//		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "RegisterAction");
+//		scint.setSparqlDAO(sparqlDAO);
+//		return scint; 
+//	}
 	
 	ClassHandler getDateTimeClassHandler() throws SparqlException {
 		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "DateTime");
@@ -105,7 +104,6 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		// otherwise just a member.
 		sparqlentityPerson.setValue("member", organizationSelect);
-		
 		insertScintPerson.setSparqlEntity(sparqlentityPerson);
 		sparqlDAO.insert(insertScintPerson);
 		
@@ -139,6 +137,19 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		insertScintRegisterAction.setSparqlEntity(sparqlentityRegisterAction);
 		
 		sparqlDAO.insert(insertScintRegisterAction);
+	}
+	
+	@Override
+	public List<SparqlEntity> getUser(String email) throws SparqlException {
+
+		SparqlEntity userSE = new SparqlEntity();
+		userSE.setValue("email", email);
+
+		// Select Person
+		SelectScint personScint = new SelectScint();
+		personScint.setClassHandler(getPersonClassHandler());
+		personScint.setSparqlEntity(userSE);
+		return sparqlDAO.query(personScint);
 	}
 
 	@Override

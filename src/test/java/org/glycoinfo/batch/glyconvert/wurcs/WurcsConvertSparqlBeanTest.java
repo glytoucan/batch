@@ -1,7 +1,6 @@
 package org.glycoinfo.batch.glyconvert.wurcs;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,21 +8,14 @@ import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
 import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
 import org.glycoinfo.rdf.SparqlException;
-import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
-import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
-import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.stereotype.Repository;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @EnableAutoConfiguration
 public class WurcsConvertSparqlBeanTest {
 	protected Log logger = LogFactory.getLog(getClass());
+
 
 	@Bean
 	GlyConvert getGlyConvert() {
@@ -127,6 +120,11 @@ public class WurcsConvertSparqlBeanTest {
 				+ "<http://rdf.glycome-db.org/glycan/5963/wurcs/2.0> glycan:has_sequence \"testConvertedSequence!\"^^xsd:string .\n"
 				+ "<http://rdf.glycome-db.org/glycan/5963/wurcs/2.0> glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n"
 				+ "<http://rdf.glycome-db.org/glycan/5963/wurcs/2.0> glytoucan:is_glycosequence_of <testSaccharideURI> .\n }\n", convert.getSparql());
+	}
+	
+	@Test
+	public void testSelect() {
+		
 	}
 /*	
 	PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>

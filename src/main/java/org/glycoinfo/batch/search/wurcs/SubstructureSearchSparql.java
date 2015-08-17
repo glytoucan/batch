@@ -5,24 +5,20 @@ import java.net.URLDecoder;
 
 import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
-import org.glycoinfo.WURCSFramework.util.exchange.WURCSArrayToSequence;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSArrayToSequence2;
 import org.glycoinfo.WURCSFramework.util.rdf.WURCSSequence2ExporterSPARQL;
 import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
-import org.glycoinfo.WURCSFramework.wurcs.rdf.WURCSSequence2ExporterRDFModel;
-import org.glycoinfo.WURCSFramework.wurcs.sequence.WURCSSequence;
 import org.glycoinfo.WURCSFramework.wurcs.sequence2.WURCSSequence2;
-import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
-import org.glycoinfo.rdf.glycan.Saccharide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class SubstructureSearchSparql extends SelectSparqlBean {
 
+	public static final String SubstructureSearchSaccharideURI = "glycan";
+	
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(SubstructureSearchSparql.class);
 
@@ -32,21 +28,21 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 		this.define = "DEFINE sql:select-option \"order\"";
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>";
-		this.select = "DISTINCT ?" + Saccharide.URI;
+		this.select = "DISTINCT ?" + SubstructureSearchSaccharideURI;
 //				+ " ?" + Saccharide.PrimaryId; 
-		this.from = "FROM <http://rdf.glycoinfo.org/wurcs/seq/0.1>\n"
-				+ "FROM <http://rdf.glycoinfo.org/wurcs/seq/0.1/pos>\n"
+		this.from = "FROM <http://rdf.glycoinfo.org/wurcs/seq/0.3>\n"
+				+ "FROM <http://rdf.glycoinfo.org/wurcs/seq/0.3/pos>\n"
 				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.1/ms>\n";
 	}
 
 	@Override
 	public String getWhere() throws SparqlException {
-		this.where = ""
+		this.where = "";
 //	"?" + Saccharide.URI + " toucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n"
 //				+ "GRAPH <http://www.glycoinfo.org/wurcs> {"
 //				+ "SELECT *\n"
 //				+ "WHERE {\n"
-				+ "?" + Saccharide.URI + " glycan:has_glycosequence ?gseq .\n";
+//				+ "?" + Saccharide.URI + " glycan:has_glycosequence ?gseq .\n";
 				
 //				"?glycans a glycan:glycan_motif .\n"
 //				+ "?glycans glycan:has_glycosequence ?gseq .\n"

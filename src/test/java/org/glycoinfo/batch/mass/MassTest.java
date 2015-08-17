@@ -1,5 +1,6 @@
 package org.glycoinfo.batch.mass;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
@@ -47,8 +48,9 @@ public class MassTest {
 			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
 		System.out.println(t_objWURCS + " : " + testMass);
 
-		testMass = WURCSMassCalculator.getMassSkeletonCode("u2122h");
+		BigDecimal skCodeMass = WURCSMassCalculator.getMassSkeletonCode("u2122h");
 		System.out.println(testMass);
+		System.out.println(skCodeMass);
 		System.out.println();
 
 		// Calcurate mass from WURCS
@@ -79,8 +81,9 @@ public class MassTest {
 		testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
 		System.out.println(t_objWURCS + " : " + testMass);
 
-		testMass = WURCSMassCalculator.getMassSkeletonCode("u2122h");
+		BigDecimal skCodeMass = WURCSMassCalculator.getMassSkeletonCode("u2122h");
 		System.out.println(testMass);
+		System.out.println(skCodeMass);
 		System.out.println();
 
 		// Calcurate mass from WURCS

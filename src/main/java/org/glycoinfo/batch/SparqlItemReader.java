@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.SelectSparql;
-import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -88,7 +87,7 @@ public class SparqlItemReader<T extends SparqlEntity> extends
 	protected Iterator<SparqlEntity> doPageRead() {
 
 		SelectSparql selectSparql = getSelectSparql();
-		selectSparql.setOffset(Integer.toString(pageSize * page));
+		selectSparql.setOffset(Integer.toString((pageSize * page) + 1));
 		selectSparql.setLimit(Integer.toString(pageSize));
 		String q;
 		List<org.glycoinfo.rdf.dao.SparqlEntity> queryResults;
