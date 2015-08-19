@@ -60,7 +60,7 @@ public class GlycoSequenceSparqlBeanTest {
 	public void testSelectToWurcsSparql() throws SparqlException, UnsupportedEncodingException {
 		GlycoSequenceToWurcsSelectSparql s = new GlycoSequenceToWurcsSelectSparql("glycoct");
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(GlycoSequenceToWurcsSelectSparql.FormatSequence, "RES\n1b:a-dgal-HEX-1:5\n2s:n-acetyl\n3b:b-dgal-HEX-1:5\n4b:b-dglc-HEX-1:5\n5s:n-acetyl\n6b:b-dgal-HEX-1:5\n7b:a-lgal-HEX-1:5|6:d\n8b:b-dglc-HEX-1:5\n9s:n-acetyl\n10b:b-dglc-HEX-1:5\n11s:n-acetyl\n12b:b-dgal-HEX-1:5\n13b:a-lgal-HEX-1:5|6:d\nLIN\n1:1d(2+1)2n\n2:1o(3+1)3d\n3:3o(3+1)4d\n4:4d(2+1)5n\n5:4o(4+1)6d\n6:6o(2+1)7d\n7:3o(6+1)8d\n8:8d(2+1)9n\n9:1o(6+1)10d\n10:10d(2+1)11n\n11:10o(4+1)12d\n12:12o(2+1)13d");
+		se.setValue(GlycoSequenceToWurcsSelectSparql.FromSequence, "RES\n1b:a-dgal-HEX-1:5\n2s:n-acetyl\n3b:b-dgal-HEX-1:5\n4b:b-dglc-HEX-1:5\n5s:n-acetyl\n6b:b-dgal-HEX-1:5\n7b:a-lgal-HEX-1:5|6:d\n8b:b-dglc-HEX-1:5\n9s:n-acetyl\n10b:b-dglc-HEX-1:5\n11s:n-acetyl\n12b:b-dgal-HEX-1:5\n13b:a-lgal-HEX-1:5|6:d\nLIN\n1:1d(2+1)2n\n2:1o(3+1)3d\n3:3o(3+1)4d\n4:4d(2+1)5n\n5:4o(4+1)6d\n6:6o(2+1)7d\n7:3o(6+1)8d\n8:8d(2+1)9n\n9:1o(6+1)10d\n10:10d(2+1)11n\n11:10o(4+1)12d\n12:12o(2+1)13d");
 		s.setSparqlEntity(se);
 		logger.debug(s.getSparql());
 		
@@ -87,7 +87,7 @@ public class GlycoSequenceSparqlBeanTest {
 		SparqlEntity se = new SparqlEntity();
 		String glycoct = "RES\n1b:a-dgal-HEX-1:5\n2s:n-acetyl\n3b:b-dgal-HEX-1:5\n4b:b-dglc-HEX-1:5\n5s:n-acetyl\n6b:b-dgal-HEX-1:5\n7b:a-lgal-HEX-1:5|6:d\n8b:b-dglc-HEX-1:5\n9s:n-acetyl\n10b:b-dglc-HEX-1:5\n11s:n-acetyl\n12b:b-dgal-HEX-1:5\n13b:a-lgal-HEX-1:5|6:d\nLIN\n1:1d(2+1)2n\n2:1o(3+1)3d\n3:3o(3+1)4d\n4:4d(2+1)5n\n5:4o(4+1)6d\n6:6o(2+1)7d\n7:3o(6+1)8d\n8:8d(2+1)9n\n9:1o(6+1)10d\n10:10d(2+1)11n\n11:10o(4+1)12d\n12:12o(2+1)13d";
 		String input = glycoct.replace("\n", "\\n");
-		se.setValue(GlycoSequenceToWurcsSelectSparql.FormatSequence, input);
+		se.setValue(GlycoSequenceToWurcsSelectSparql.FromSequence, input);
 		s.setSparqlEntity(se);
 		logger.debug(s.getSparql());
 
@@ -108,7 +108,7 @@ public class GlycoSequenceSparqlBeanTest {
 				+ "LIN\\n"
 				+ "1:1d(2+1)2n\\n"
 				+ "2:1o(3+1)3d";
-		se.setValue(GlycoSequenceToWurcsSelectSparql.FormatSequence, glycoct);
+		se.setValue(GlycoSequenceToWurcsSelectSparql.FromSequence, glycoct);
 		s.setSparqlEntity(se);
 		logger.debug(s.getSparql());
 
@@ -129,7 +129,7 @@ public class GlycoSequenceSparqlBeanTest {
 				+ "LIN\\n"
 				+ "1:1d(2+1)2n\\n"
 				+ "2:1o(3+1)3d";
-		se.setValue(GlycoSequenceToWurcsSelectSparql.FormatSequence, glycoct);
+		se.setValue(GlycoSequenceToWurcsSelectSparql.FromSequence, glycoct);
 		s.setSparqlEntity(se);
 		logger.debug(s.getSparql());
 
@@ -144,7 +144,7 @@ public class GlycoSequenceSparqlBeanTest {
 		SparqlEntity se = new SparqlEntity();
 		String glycoct = "RES\n1b:a-dgal-HEX-1:5\n2s:n-acetyl\n3b:b-dgal-HEX-1:5\n4b:b-dglc-HEX-1:5\n5s:n-acetyl\n6b:b-dgal-HEX-1:5\n7b:a-lgal-HEX-1:5|6:d\n8b:b-dglc-HEX-1:5\n9s:n-acetyl\n10b:b-dglc-HEX-1:5\n11s:n-acetyl\n12b:b-dgal-HEX-1:5\n13b:a-lgal-HEX-1:5|6:d\nLIN\n1:1d(2+1)2n\n2:1o(3+1)3d\n3:3o(3+1)4d\n4:4d(2+1)5n\n5:4o(4+1)6d\n6:6o(2+1)7d\n7:3o(6+1)8d\n8:8d(2+1)9n\n9:1o(6+1)10d\n10:10d(2+1)11n\n11:10o(4+1)12d\n12:12o(2+1)13d";
 		String input = glycoct.replace("\n", "\\n");
-		se.setValue(GlycoSequenceToWurcsSelectSparql.FormatSequence, input);
+		se.setValue(GlycoSequenceToWurcsSelectSparql.FromSequence, input);
 		s.setSparqlEntity(se);
 		logger.debug(s.getSparql());
 
