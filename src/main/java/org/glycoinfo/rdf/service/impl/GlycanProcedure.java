@@ -41,7 +41,28 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 //	@Qualifier(value = "insertscintregisteraction")
 //	InsertScint insertScintRegisterAction;
 	
-	String sequence, image, id, sequenceResult; 
+	String sequence, image, id, sequenceResult, contributor;
+	
+	/**
+	 * 
+	 * {@PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> .}
+{@PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#> .}
+{@PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#> .}
+
+<http://rdf.glycoinfo.org/glycan/G00054MO>
+	a	glycan:saccharide ;
+	glycan:has_resource_entry
+		<http://www.glytoucan.org/Structures/Glycans/G00054MO> .
+		
+	 * <http://rdf.glycoinfo.org/Structures/Glycans/e06b141de8d13adfa0c3ad180b9eae06>
+        a                          glycan:resource_entry ;
+        glycan:in_glycan_database  glytoucan:database_glytoucan ;
+        glytoucan:contributor      <http://rdf.glytoucan/contributor/userId/1> ;
+        glytoucan:date_registered  "2014-10-20 06:47:31.204"^^xsd:dateTimeStamp .
+     *
+	 * @return
+	 * @throws SparqlException
+	 */
 
 	ClassHandler getPersonClassHandler() throws SparqlException {
 		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "Person");
@@ -257,9 +278,13 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		this.sequence=sequence;
 	}
 
+	/**
+	 * @see org.glytoucan.ws.controller.RegistriesController#complete(javax.servlet.http.HttpServletRequest)
+	 */
 	@Override
-	public void register(String sequence) throws SparqlException {
-		
+	public String register(String sequence) throws SparqlException {
+		setSequence(sequence);
+		return register();
 	}
 
 	public String getImage() {
@@ -291,16 +316,22 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	}
 
 	@Override
-	public void register(List<String> inputs) throws SparqlException {
+	public List<String> register(List<String> inputs) throws SparqlException {
+		List<String> results = new ArrayList<String>();
 		for (Iterator iterator = inputs.iterator(); iterator.hasNext();) {
 			String string = (String) iterator.next();
-			register(string);
+			String result = register(string);
+			results.add(result);
 		}
+		return results;
 	}
-
+	
+	/**
+	 * 
+	 * @see org.glycoinfo.rdf.service.GlycanProcedure#register()
+	 */
 	@Override
-	public void check(List<String> inputs) {
-		
-		
+	public String register() {
+		return null;
 	}
 }

@@ -1,5 +1,8 @@
 package org.glycoinfo.rdf.service;
 
+import java.security.NoSuchAlgorithmException;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.glycoinfo.batch.glyconvert.wurcs.sparql.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
@@ -157,39 +160,30 @@ LIN
 		Assert.assertEquals("G00031MO", se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
 	}
 
-//	@Test
-//	public void testUserNotVerified() throws SparqlException {
-//		SparqlEntity se = new SparqlEntity("person456");
-//		se.setValue("email", "person456@person.com");
-//		se.setValue("givenName", "person");
-//		se.setValue("familyName", "456");
-//		se.setValue("verifiedEmail", "false");
-//		userProcedure.setSparqlEntity(se);
-//		userProcedure.addUser();
-//		se.setValue("member", "");
-//		se.remove("verifiedEmail");
-//		
-//		SelectScint personScint = getSelectPersonScint();
-//		personScint.setSparqlEntity(se);
-//		List<SparqlEntity> results = sparqlDAO.query(personScint);
-//		
-//		Assert.assertFalse(results.size() == 0);
-//		for (SparqlEntity sparqlEntity : results) {
-//			logger.debug(sparqlEntity.toString());
-//			Assert.assertNull(sparqlEntity.getValue("contributor"));
-//			Assert.assertNotNull(sparqlEntity.getValue("member"));
-//		}
-//	}
-//	
-//	@Test
-//	public void testGetUser() throws SparqlException {
-//		List<SparqlEntity> results = userProcedure.getUser("aokinobu@gmail.com");
-//		Assert.assertFalse(results.size() == 0);
-//		for (SparqlEntity sparqlEntity : results) {
-//			logger.debug(sparqlEntity.toString());
-//			Assert.assertNull(sparqlEntity.getValue("member"));
-//			Assert.assertNotNull(sparqlEntity.getValue("contributor"));
-//		}
-//	}
+	@Test
+	public void testRegisterNew() throws SparqlException, NoSuchAlgorithmException {
+		
+		String sequence="RES\n"
+				+ "1b:x-dglc-HEX-1:5|1:a\n"
+				+ "2b:b-dgal-HEX-1:5\n"
+				+ "LIN\n"
+				+ "1:1o(4+1)2d";
+		String hashtext = DigestUtils.md5Hex(sequence);
+		Assert.assertEquals("e06b141de8d13adfa0c3ad180b9eae06", hashtext);
 
+		glycanProcedure.setSequence(sequence);
+		String se = glycanProcedure.register();
+
+		logger.debug(se);
+//		Assert.assertNotNull(se);
+		
+		hashtext = DigestUtils.md5Hex("WURCS=2.0/4,4,3/[u2122h][a2112h-1b_1-5][a2112h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O]/1-2-3-4/a4-b1_b3-c1_c3-d1");
+		Assert.assertEquals("497ea4c9a0680f9aa7d6541dca211967", hashtext);
+		logger.debug(hashtext);
+
+		//		WURCS=2.0/4,4,3/[u2122h_2*NCC/3=O_6*OSO/3=O/3=O_?*OSO/3=O/3=O][a1212A-1a_1-5_2*OSO/3=O/3=O][a2122h-1b_1-5_2*NCC/3=O_6*OSO/3=O/3=O_?*OSO/3=O/3=O][a1212A-1a_1-5]/1-2-3-4/a4-b1_b4-c1_c4-d1
+		hashtext = DigestUtils.md5Hex("WURCS=2.0/4,4,3/[u2122h_2*NCC/3=O_6*OSO/3=O/3=O_?*OSO/3=O/3=O][a1212A-1a_1-5_2*OSO/3=O/3=O][a2122h-1b_1-5_2*NCC/3=O_6*OSO/3=O/3=O_?*OSO/3=O/3=O][a1212A-1a_1-5]/1-2-3-4/a4-b1_b4-c1_c4-d1");
+		logger.debug(hashtext);
+		Assert.assertEquals("331ebfcfc29a997790a7a4f1671a9882", hashtext);
+	}
 }

@@ -13,7 +13,7 @@ public interface GlycanProcedure {
 	public static final String CouldNotConvert = "could not convert";	
 
 	public SparqlEntity search() throws SparqlException, ConvertException;
-	public void register(String sequence) throws SparqlException;
+	public String register(String sequence) throws SparqlException;
 	
 	public void setSequence(String sequence);
 	
@@ -25,9 +25,11 @@ public interface GlycanProcedure {
 	
 	public String getImage();
 	
-	public void register(List<String> inputs) throws SparqlException;
+	public List<String> register(List<String> inputs) throws SparqlException;
 	
-	public void check(List<String> inputs);
-
 	List<SparqlEntity> search(List<String> input) throws SparqlException;
+
+	public String register();
+	
+	
 }
