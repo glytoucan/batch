@@ -5,7 +5,6 @@ import java.util.List;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
-import org.glycoinfo.rdf.utils.TripleStoreProperties;
 
 public interface SparqlDAO {
 
@@ -13,10 +12,11 @@ public interface SparqlDAO {
 
 	void insert(InsertSparql insert) throws SparqlException;
 
-	void delete(String string) throws SparqlException;
+	void delete(InsertSparql string) throws SparqlException;
 
-	void execute(String string) throws SparqlException;
+	void execute(InsertSparql string) throws SparqlException;
 	
 	int load(String file) throws SparqlException;
+
 
 }

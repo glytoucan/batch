@@ -1,18 +1,26 @@
 package org.glycoinfo.rdf.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.batch.glyconvert.wurcs.sparql.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.conversion.GlyConvertDetect;
 import org.glycoinfo.conversion.error.ConvertException;
+import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
+import org.glycoinfo.rdf.glycan.Saccharide;
+import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
+import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
+import org.glycoinfo.rdf.service.ContributorProcedure;
+import org.glycoinfo.rdf.utils.AccessionNumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +28,22 @@ import org.springframework.stereotype.Service;
 public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedure {
 
 	public static Log logger = (Log) LogFactory.getLog(GlycanProcedure.class);
-	
-	
+
 	@Autowired
 	SparqlDAO sparqlDAO;
 
-//	@Autowired
-//	@Qualifier(value = "selectscintglycosequence")
-//	SelectScint selectScintPerson;
+	@Autowired
+	SaccharideInsertSparql saccharideInsertSparql;
+	
+	@Autowired
+	ContributorProcedure contributorProcedure;
+	
+	@Autowired
+	ResourceEntryInsertSparql resourceEntryInsertSparql;
+
+	@Autowired
+	SelectSparql glycoSequenceContributorSelectSparql;
+	
 //
 //	@Autowired
 //	@Qualifier(value = "insertscintperson")
@@ -202,7 +218,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	 * @see org.glycoinfo.rdf.service.GlycanProcedure#search()
 	 */
 	@Override
-	public SparqlEntity search() throws SparqlException, ConvertException {
+	public SparqlEntity searchBySequence() throws SparqlException, ConvertException {
 		
 		String sequence = getSequence().trim();
 		logger.debug("sequence:>"+sequence+"<");
@@ -260,7 +276,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			SparqlEntity se = new SparqlEntity();
 			
 			try {
-				se = search();
+				se = searchBySequence();
 			} catch (ConvertException e) {
 				logger.debug("convertexception seq:>" + getSequence());
 				logger.debug("convertexception msg:>" + e.getMessage());
@@ -328,10 +344,70 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	
 	/**
 	 * 
+	 * @throws SparqlException 
 	 * @see org.glycoinfo.rdf.service.GlycanProcedure#register()
 	 */
 	@Override
-	public String register() {
+	public String register() throws SparqlException {
+		
+		if (StringUtils.isBlank(contributor)) {
+			throw new SparqlException("Contributor name cannot be blank");
+		}
+		
+		String accessionNumber = "G" + AccessionNumberGenerator.generateRandomString(7);
+		SparqlEntity result = searchByAccessionNumber(accessionNumber);
+		while (result != null && StringUtils.isNotBlank(result.getValue(Saccharide.PrimaryId))) {
+			logger.debug("rerolling... " + result.getValue(Saccharide.PrimaryId));
+			
+			result = searchByAccessionNumber(accessionNumber);
+		}
+		
+		logger.debug("setting accession#:>" + accessionNumber + "<");
+		
+		setId(accessionNumber);
+		SparqlEntity sparqlentity = new SparqlEntity();
+		sparqlentity.setValue(Saccharide.PrimaryId, accessionNumber);
+		
+		saccharideInsertSparql.setSparqlEntity(sparqlentity);
+		sparqlDAO.insert(saccharideInsertSparql);
+
+		contributorProcedure.setName(contributor);
+		String id = contributorProcedure.addContributor();
+		
+		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.AccessionNumber, accessionNumber);
+		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.ContributorId, id);
+		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.DataSubmittedDate, new Date());
+		
+//		resourceEntryInsertSparql.setSparqlEntity(reisSE);
+		sparqlDAO.insert(resourceEntryInsertSparql);
+		
+		return accessionNumber;
+	}
+
+	@Override
+	public void deleteByAccessionNumber(String accessionNumber) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public SparqlEntity searchByAccessionNumber(String accessionNumber) throws SparqlException {
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(Saccharide.PrimaryId, accessionNumber);
+		glycoSequenceContributorSelectSparql.setSparqlEntity(se);
+		List<SparqlEntity> list = sparqlDAO.query(glycoSequenceContributorSelectSparql);
+		if (list.iterator().hasNext())
+			return list.iterator().next();
 		return null;
+	}
+
+	@Override
+	public String getContributor() {
+		return contributor;
+	}
+
+	@Override
+	public void setContributor(String name) {
+		this.contributor=name;
 	}
 }

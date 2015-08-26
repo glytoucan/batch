@@ -1,6 +1,5 @@
 package org.glycoinfo.rdf.dao;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,11 +7,9 @@ import java.util.List;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
-import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -20,11 +17,8 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.update.UpdateAction;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
@@ -148,12 +142,12 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 		insert(insert.getSparql());
 	}
 
-	@Override
-	public void delete(String string) throws SparqlException {
-		execute(string);
-	}
-
-	@Override
+//	@Override
+//	public void delete(String string) throws SparqlException {
+//		execute(string);
+//	}
+//
+//	@Override
 	public void execute(String execute) throws SparqlException {
 		UpdateRequest queryObj=UpdateFactory.create(execute);
 	    UpdateProcessor qexec=UpdateExecutionFactory.createRemoteForm(queryObj,"http://localhost:3030/a/update");
@@ -178,5 +172,18 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 	public int load(String file) throws SparqlException {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+
+	@Override
+	public void delete(InsertSparql string) throws SparqlException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void execute(InsertSparql string) throws SparqlException {
+		// TODO Auto-generated method stub
+		
 	}
 }

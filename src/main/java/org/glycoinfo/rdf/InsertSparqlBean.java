@@ -111,14 +111,17 @@ public class InsertSparqlBean implements InsertSparql {
 		if (this.sparql == null) {
 			StringBuffer sparqlbuf = new StringBuffer();
 			sparqlbuf.append(getPrefix() != null ? getPrefix() : "");
-			sparqlbuf.append("INSERT DATA\n");
+			if (getFormat().equals(InsertSparql.SPARQL)) {
+				sparqlbuf.append("INSERT DATA\n");
 			sparqlbuf.append(getGraph() != null ? "{ GRAPH <" + getGraph()
 					+ ">\n" : "");
 			// sparqlbuf.append(getUsing());
 			sparqlbuf.append("{ " + getInsert() + " }\n");
 			sparqlbuf.append(getGraph() != null ? "}\n" : "");
-			sparqlbuf.append(getWhere() != null ? "WHERE " + getWhere() + "\n"
-					: "");
+			sparqlbuf.append(getWhere() != null ? "WHERE " + getWhere() + "\n" : "");
+			} else {
+				sparqlbuf.append(getInsert());
+			}
 //			logger.debug(sparqlbuf.toString());
 			return sparqlbuf.toString();
 		} else {
@@ -140,5 +143,10 @@ public class InsertSparqlBean implements InsertSparql {
 	@Override
 	public String toString() {
 		return getSparql();
+	}
+
+	@Override
+	public String getFormat() {
+		return InsertSparql.SPARQL;
 	}
 }

@@ -27,6 +27,7 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 	public static final String GlycanSequenceURI = "GlycanSequenceURI";
 	public static final String AccessionNumber = Saccharide.PrimaryId;
 
+	private boolean whereset = false;
 	public GlycoSequenceSelectSparql(String sparql) {
 		super(sparql);
 	}
@@ -35,7 +36,7 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 		super();
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
-		this.select = "DISTINCT ?" + Sequence + "\n"; 
+		this.select = "DISTINCT ?" + Sequence + "\n";
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n";
 		this.where = "?" + SaccharideURI + " a glycan:saccharide .\n" 
@@ -53,8 +54,12 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 
 	@Override
 	public String getWhere() throws SparqlException {
-		if (null != getSparqlEntity() && null != getSparqlEntity().getValue(Saccharide.PrimaryId))
-			this.where += "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n";
+		if (!whereset) {
+			if (null != getSparqlEntity() && null != getSparqlEntity().getValue(Saccharide.PrimaryId))
+				this.where += "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n";
+			whereset = true;
+		}
+		
 		return where;
 	}
 

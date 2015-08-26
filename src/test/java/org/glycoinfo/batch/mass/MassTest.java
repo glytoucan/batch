@@ -45,7 +45,7 @@ public class MassTest {
 		double testMass = 0;
 		double mass  = 0;
 		try {
-			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS).doubleValue();
 		System.out.println(t_objWURCS + " : " + testMass);
 
 		BigDecimal skCodeMass = WURCSMassCalculator.getMassSkeletonCode("u2122h");
@@ -54,7 +54,7 @@ public class MassTest {
 		System.out.println();
 
 		// Calcurate mass from WURCS
-		mass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		mass = WURCSMassCalculator.calcMassWURCS(t_objWURCS).doubleValue();
 		} catch (WURCSMassException e) {
 			e.printStackTrace();
 			Assert.assertTrue(e.getMessage().contains("repeating unit"));
@@ -78,7 +78,7 @@ public class MassTest {
 		}
 
 		double testMass = 0;
-		testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS).doubleValue();
 		System.out.println(t_objWURCS + " : " + testMass);
 
 		BigDecimal skCodeMass = WURCSMassCalculator.getMassSkeletonCode("u2122h");
@@ -87,7 +87,7 @@ public class MassTest {
 		System.out.println();
 
 		// Calcurate mass from WURCS
-		double mass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		double mass = WURCSMassCalculator.calcMassWURCS(t_objWURCS).doubleValue();
 		System.out.println(mass);
 
 	}
@@ -107,7 +107,7 @@ public class MassTest {
 		}
 
 		double testMass = 0;
-		testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+		testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS).doubleValue();
 		System.out.println(t_objWURCS + " : " + testMass);
 		System.out.println();
 	}
@@ -128,7 +128,7 @@ public class MassTest {
 
 		double testMass = 0;
 		try {
-			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS).doubleValue();
 		} catch (WURCSMassException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -154,7 +154,7 @@ public class MassTest {
 
 		double testMass = 0;
 		try {
-			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS).doubleValue();
 		} catch (WURCSMassException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -180,7 +180,7 @@ public class MassTest {
 
 		double testMass = 0;
 		try {
-			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
+			testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS).doubleValue();
 		} catch (WURCSMassException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

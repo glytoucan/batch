@@ -2,41 +2,54 @@ package org.glycoinfo.rdf.glycan;
 
 import java.util.ArrayList;
 
+import org.apache.commons.lang.xwork.StringUtils;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
 
-public class SaccharideInsertSparql extends InsertSparqlBean {
+/**
+ * 
+ * Insert core data for a Saccharide.  If Saccharide.PrimaryId exists, it will be added with glytoucan:has_primary_id predicate.
+ * 
+ * @prefix dc: <http://purl.org/dc/elements/1.1/> .
+ * @prefix dcterms: <http://purl.org/dc/terms/> .
+ * @prefix glycan: <http://purl.jp/bio/12/glyco/glycan#> .
+ * @prefix foaf: <http://xmlns.com/foaf/0.1/#>
+ * 
+ * <http://rdf.glycoinfo.org/glycan/331ebfcfc29a997790a7a4f1671a9882>
+ *     a    glycan:saccharide ;
+ *
+ * @author aoki
+ *
+ */
+public class SaccharideInsertSparql extends InsertSparqlBean implements Saccharide {
 
 	String type = "a glycan:saccharide";
 	String hasPrimaryId = "glytoucan:has_primary_id";
-	
+
+	void init() {
+		this.prefix="prefix glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
+				+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
+	}
 	public SaccharideInsertSparql() {
+		init();
 	}
 	
 	public SaccharideInsertSparql(GlycoSequenceInsertSparql sequence) {
+		init();
 		ArrayList<InsertSparql> list = new ArrayList<InsertSparql>();
 		list.add(sequence);
 		addRelated(list);
 	}
 	
 	public String getInsert() {
-		String saccharideURI = getSaccharideURI();
-		String rdf = saccharideURI + " a " + getSparqlEntity().getValue(GlycoSequence.URI) + " .\n" + 
-				saccharideURI + " glytoucan:has_primary_id " + getSparqlEntity().getValue(Saccharide.PrimaryId) + " .\n";
-		return rdf;
-	}
-	
-	public String getSaccharideURI() {
-		return getSparqlEntity().getValue(Saccharide.URI);
+		if (StringUtils.isNotBlank(getSparqlEntity().getValue(PrimaryId))) {
+			this.insert = getSaccharideURI() + " a glycan:saccharide .\n"
+					+ getSaccharideURI() + " glytoucan:has_primary_id \"" + getSparqlEntity().getValue(PrimaryId) + "\"^^xsd:string .\n";
+		}
+		return this.insert;
 	}
 
-	/*
-	String hasImage = "glycan:has_image";
-	<http://www.glytoucan.org/glyspace/service/glycans/G00054MO/image?style=extended&format=png&notation=uoxf-color> ,
-	<http://www.glytoucan.org/glyspace/service/glycans/G00054MO/image?style=extended&format=png&notation=iupac> , 
-	<http://www.glytoucan.org/glyspace/service/glycans/G00054MO/image?style=extended&format=png&notation=cfgbw> , 
-	<http://www.glytoucan.org/glyspace/service/glycans/G00054MO/image?style=extended&format=png&notation=cfg-uoxf> ,
-	<http://www.glytoucan.org/glyspace/service/glycans/G00054MO/image?style=extended&format=png&notation=cfg> ,
-	<http://www.glytoucan.org/glyspace/service/glycans/G00054MO/image?style=extended&format=png&notation=uoxf> .
-	*/
+	public String getSaccharideURI() {
+		return "<http://rdf.glycoinfo.org/glycan/" + getSparqlEntity().getValue(PrimaryId) + ">";
+	}
 }

@@ -1,4 +1,4 @@
-package org.glycoinfo.batch.glyconvert.wurcs;
+package org.glycoinfo.rdf.glycan.wurcs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

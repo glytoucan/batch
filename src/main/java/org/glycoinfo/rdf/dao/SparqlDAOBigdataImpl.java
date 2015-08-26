@@ -4,38 +4,15 @@
 package org.glycoinfo.rdf.dao;
 
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
-import org.glycoinfo.rdf.utils.TripleStoreProperties;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
 import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.URIImpl;
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
-import org.openrdf.query.GraphQuery;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
@@ -43,39 +20,12 @@ import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
-import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.helpers.StatementCollector;
 import org.openrdf.spring.SesameConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //import com.bigdata.rdf.sail.BigdataSail;
 //import com.bigdata.rdf.sail.BigdataSailRepository;
 //
@@ -89,24 +39,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import com.bigdata.rdf.sail.remote.BigdataSailRemoteRepository;
 //import com.bigdata.rdf.store.BDS;
 //import com.bigdata.service.AbstractTransactionService;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //import virtuoso.jdbc3.VirtuosoExtendedString;
 //import virtuoso.jdbc3.VirtuosoRdfBox;
-import virtuoso.sesame2.driver.VirtuosoRepository;
 
 /**
  * @author aoki
@@ -331,5 +265,17 @@ return null;
 	public int load(String file) throws SparqlException {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void delete(InsertSparql string) throws SparqlException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void execute(InsertSparql string) throws SparqlException {
+		// TODO Auto-generated method stub
+		
 	}
 }

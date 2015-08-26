@@ -1,5 +1,6 @@
 package org.glycoinfo.rdf.dao;
 
+import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,37 +43,37 @@ public class SelectInsertImplTest {
 	public static final String graph = "http://www.glytoucan.org/rdf/construction";
 
 	public void testInsertSelectGraphconstruction() throws SparqlException {
-		schemaDAO.delete(prefix + "\n" + "INSERT\n"
+		schemaDAO.delete(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "  ?s a glycan:saccharide .\n"
 				+ "  ?s glytoucan:has_primary_id ?AccessionNumber .\n"
 				+ "  }\n" + "}\n" + using + "WHERE {\n"
 				+ "  ?s a glycan:saccharide.\n"
-				+ "  ?s glytoucan:has_primary_id ?AccessionNumber . " + "}");
+				+ "  ?s glytoucan:has_primary_id ?AccessionNumber . " + "}"));
 	}
 
 	public void testInsertSelectGraphMass() throws SparqlException {
-		schemaDAO.delete(prefix + "\n" + "INSERT\n"
+		schemaDAO.delete(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "?s glytoucan:has_mass ?Mass ." + "}}\n" + using + "WHERE {\n"
 				+ "?s glytoucan:has_derivatized_mass ?dmass .\n"
 				+ "				    ?dmass a ?dmassType ;\n"
 				+ "				           glytoucan:has_mass ?Mass .\n" + "				}\n"
 
-		);
+		));
 	}
 
 	public void testInsertSelectGraphGlycoCT() throws SparqlException {
-		schemaDAO.delete(prefix + "\n" + "INSERT\n"
+		schemaDAO.delete(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "	  ?s glycan:has_sequence ?Seq .\n" + "					}}\n" + using
 				+ "WHERE {\n" + "	  ?s glycan:has_glycosequence ?gseq .\n"
-				+ "   ?gseq glycan:has_sequence ?Seq .\n" + "				}\n");
+				+ "   ?gseq glycan:has_sequence ?Seq .\n" + "				}\n"));
 	}
 
 	public void testInsertSelectGraphContributor() throws SparqlException {
 		schemaDAO
-				.execute(prefix
+				.execute(new InsertSparqlBean(prefix
 						+ "\n"
 						+ "INSERT\n"
 						+ "{ GRAPH <http://www.glytoucan.org/rdf/construction> {\n"
@@ -86,11 +87,11 @@ public class SelectInsertImplTest {
 						+ "			    	         glytoucan:date_registered ?ContributionTime ;\n"
 						+ "			    	         glytoucan:contributor ?c .\n"
 						+ "			    	    ?c foaf:name ?Contributor .\n"
-						+ "				}\n");
+						+ "				}\n"));
 	}
 
 	public void testInsertSelectGraphMotif() throws SparqlException {
-		schemaDAO.delete(prefix + "\n" + "INSERT\n"
+		schemaDAO.delete(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "				?s glycan:has_motif ?motif .\n"
 				+ "						   ?motif a glycan:glycan_motif ;\n"
@@ -98,12 +99,12 @@ public class SelectInsertImplTest {
 				+ "					}\n" + using + "WHERE {\n"
 				+ "					    ?s glycan:has_motif ?motif .\n"
 				+ "	    ?motif a glycan:glycan_motif ;\n"
-				+ "	           foaf:name ?MotifName .\n" + "				}\n");
+				+ "	           foaf:name ?MotifName .\n" + "				}\n"));
 	}
 
 	public void testInsertSelectGraphMono() throws SparqlException {
 		schemaDAO
-				.delete(prefix
+				.delete(new InsertSparqlBean(prefix
 						+ "\n"
 						+ "INSERT\n"
 						+ "{ GRAPH <"+graph+"> {\n"
@@ -126,6 +127,6 @@ public class SelectInsertImplTest {
 						+ "			            ?msdb glycan:has_alias_name ?name .\n"
 						+ "						?msdb glycan:is_primary_name true .\n"
 						+ "						?msdb glycan:has_monosaccharide_notation_scheme glycan:monosaccharide_notation_scheme_carbbank   .\n"
-						+ "				}\n");
+						+ "				}\n"));
 	}
 }

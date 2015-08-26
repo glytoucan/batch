@@ -85,4 +85,8 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 	public String getUri() {
 		return SchemaSparqlFormatter.getUri(classHandler, getSparqlEntity().getObjectValue(SelectSparql.PRIMARY_KEY));
 	}
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+	}
 }

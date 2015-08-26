@@ -1,12 +1,10 @@
 package org.glycoinfo.rdf;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.Assert;
 /**
  *  * Provides a convenient base class for creating a {@link SelectSparql}
  * instance. The implementation allows customization by overriding methods.
@@ -14,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author aoki
  *
  */
-public class SelectSparqlBean implements SelectSparql {
+public class SelectSparqlBean implements SelectSparql, InitializingBean {
 
 	protected String define, prefix, select, where, from, orderby, groupby, construct, having,
 			limit, offset;
@@ -163,7 +161,7 @@ public class SelectSparqlBean implements SelectSparql {
 			// sparqlbuf.append(matchStatement != null ? " MATCH " + matchStatement
 			// :
 			// "");
-			sparqlbuf.append(getWhere() != null ? "WHERE {" + getWhere() + "} "
+			sparqlbuf.append(getWhere() != null ? "WHERE {\n" + getWhere() + "} "
 					: " ");
 			// sparqlbuf.append(" RETURN ").append(returnStatement);
 			sparqlbuf.append(getOrderBy() != null ? " ORDER BY " + getOrderBy()
@@ -189,5 +187,10 @@ public class SelectSparqlBean implements SelectSparql {
 	@Override
 	public void setDefine(String define) {
 		this.define = define;
+	}
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.state(getSelect() != null, "A select is required");
 	}
 }

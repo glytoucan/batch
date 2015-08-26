@@ -253,4 +253,17 @@ return null;
 		}
        	return 0;
 	}
+
+
+	@Override
+	public void delete(InsertSparql string) throws SparqlException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void execute(InsertSparql string) throws SparqlException {
+		// TODO Auto-generated method stub
+		
+	}
 }

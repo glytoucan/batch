@@ -12,7 +12,8 @@ public interface GlycanProcedure {
 	public static final String NotRegistered = "not registered";
 	public static final String CouldNotConvert = "could not convert";	
 
-	public SparqlEntity search() throws SparqlException, ConvertException;
+	public SparqlEntity searchBySequence() throws SparqlException, ConvertException;
+
 	public String register(String sequence) throws SparqlException;
 	
 	public void setSequence(String sequence);
@@ -24,12 +25,18 @@ public interface GlycanProcedure {
 	public String getId();
 	
 	public String getImage();
-	
+
+	public String getContributor();
+
+	public void setContributor(String name);
+
 	public List<String> register(List<String> inputs) throws SparqlException;
 	
 	List<SparqlEntity> search(List<String> input) throws SparqlException;
 
-	public String register();
+	public String register() throws SparqlException;
+
+	public void deleteByAccessionNumber(String accessionNumber);
 	
-	
+	public SparqlEntity searchByAccessionNumber(String accessionNumber) throws SparqlException;
 }

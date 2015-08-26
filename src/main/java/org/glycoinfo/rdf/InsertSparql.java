@@ -55,6 +55,9 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
  */
 public interface InsertSparql {
 
+	public static final String SPARQL = "SPARQL";
+	public static final String Turtle = "Turtle";
+
 	/**
 	 * 
 	 * Insert command.
@@ -162,4 +165,6 @@ public interface InsertSparql {
 	public List<InsertSparql> getRelated();
 
 	public void addRelated(List<InsertSparql> related);
+	
+	public String getFormat();
 }

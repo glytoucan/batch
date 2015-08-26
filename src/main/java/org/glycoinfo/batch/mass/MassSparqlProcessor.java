@@ -1,8 +1,8 @@
 package org.glycoinfo.batch.mass;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
-import java.util.LinkedList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,18 +10,12 @@ import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassCalculator;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
-import org.glycoinfo.WURCSFramework.wurcs.array.RES;
 import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
-import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.mass.MassSelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-import org.springframework.test.context.ContextConfiguration;
 
 public class MassSparqlProcessor implements
 		ItemProcessor<SparqlEntity, SparqlEntity> {
@@ -40,7 +34,7 @@ public class MassSparqlProcessor implements
 
 		logger.debug("processing:>" + sequence + "<");
 		// check for inconvertible glycoct
-		double testMass = 0;
+		BigDecimal testMass = new BigDecimal(0);
 		boolean cancalculate = true;
 		
 		if (null != sequence && sequence.length() > 0) {
@@ -63,16 +57,16 @@ public class MassSparqlProcessor implements
 					testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
 				} catch (WURCSMassException e) {
 					if (e.getMessage().contains("repeating unit")) {
-						testMass = -1;
+						testMass = new BigDecimal(-1);
 						sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate repeating units");
 					}
 					else if (e.getMessage().contains("unknown carbon length")) {
-						testMass = -2;
+						testMass = new BigDecimal(-2);
 						sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate unknown carbon length");
 					}
 					else if (e.getMessage().contains(
 							"Cannot calculate linkage with probability")) {
-						testMass = -3;
+						testMass = new BigDecimal(-3);
 						sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate linkages with probability");
 					}
 					else
@@ -80,15 +74,15 @@ public class MassSparqlProcessor implements
 				}
 			}
 		} else  {
-			testMass = -4; // glycoct could not be converted to wurcs
+			testMass = new BigDecimal(-4); // glycoct could not be converted to wurcs
 			sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate: no sequence");
 		}
 
 		// return
 		logger.debug("Mass of (" + sequence + ") is (" + testMass + ")");
-		if (testMass > -1) {
-			sparqlEntity.setValue(MassInsertSparql.Mass, Double.toString(testMass));
-			sparqlEntity.setValue(MassInsertSparql.MassLabel, Double.toString(testMass));
+		if (testMass.intValue() > -1) {
+			sparqlEntity.setValue(MassInsertSparql.Mass, testMass);
+			sparqlEntity.setValue(MassInsertSparql.MassLabel, testMass);
 		}
 
 		return sparqlEntity;

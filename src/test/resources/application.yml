@@ -14,3 +14,5 @@ spring:
 triplestore:
   sesame:
     url: http://localhost:5358/openrdf-sesame/repositories/testnative
+logging:
+    level: org.glycoinfo=DEBUG

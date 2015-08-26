@@ -3,6 +3,8 @@
  */
 package org.glycoinfo.rdf.dao.virt;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,9 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
+import org.openrdf.model.Resource;
 import org.openrdf.model.Value;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -24,6 +28,8 @@ import org.openrdf.query.Update;
 import org.openrdf.query.UpdateExecutionException;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,50 +205,64 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 		}
 		return results;
 	}
-	@Transactional
-	public List<SparqlEntity> insert(String graph, String insert) throws SparqlException {
-//			Class.forName(datasource.getDriverClassName());
-//			Connection connection = DriverManager.getConnection(
-//					datasource.getUrl(), datasource.getUsername(),
-//					datasource.getPassword());
-			RepositoryConnection connection = sesameConnectionFactory.getConnection();
 
-//			TupleQuery resultsTable = connection.prepareTupleQuery(QueryLanguage.SPARQL,
-//					query);
-			String insertstatement = prefix + "insert into graph <" + graph + "> " + "{ " + insert + " }"; 
-			logger.debug(insertstatement);
-			Update update;
-			try {
-				update = connection.prepareUpdate(QueryLanguage.SPARQL, insertstatement);
-			} catch (RepositoryException | MalformedQueryException e) {
-				e.printStackTrace();
-				throw new SparqlException(e);
-			}
-			return null;
-	}
+//	@Transactional
+//	public List<SparqlEntity> insert(String graph, String insert) throws SparqlException {
+//		return insert(QueryLanguage.SPARQL.toString(), graph, insert);
+//	}
+	
+//	@Transactional
+//	public List<SparqlEntity> insert(String format, String graph, String insert) throws SparqlException {
+//			RepositoryConnection connection = sesameConnectionFactory.getConnection();
+//
+//			if (format.equals(QueryLanguage.SPARQL)) {
+//				String insertstatement = prefix + "insert into graph <" + graph + "> " + "{ " + insert + " }"; 
+//				logger.debug(insertstatement);
+//				Update update;
+//				try {
+//					update = connection.prepareUpdate(QueryLanguage.SPARQL, insertstatement);
+//				} catch (RepositoryException | MalformedQueryException e) {
+//					e.printStackTrace();
+//					throw new SparqlException(e);
+//				}
+//			}
+//			return null;
+//	}
 
 	@Transactional
-	public void delete(String statement) throws SparqlException {
+	public void delete(InsertSparql statement) throws SparqlException {
 		execute(statement);
 	}
 	
+	@Override
 	@Transactional
-	public void execute(String statement) throws SparqlException {
+	public void execute(InsertSparql insert) throws SparqlException {
 		RepositoryConnection connection = sesameConnectionFactory.getConnection();
 
+		String format = insert.getFormat();
+		String statement = insert.getSparql();
+		logger.debug("format:>"+format);
 		logger.debug(statement);
-		Update update;
+		
 		try {
-			update = connection.prepareUpdate(QueryLanguage.SPARQL, statement);
-			update.execute();
-			BindingSet bindings = update.getBindings();
-			ArrayList<SparqlEntity> results = new ArrayList<SparqlEntity>();
-			bindings.iterator();
-			for (Binding binding : bindings) {
-				logger.debug("binding Name:>" + binding.getName());
-				logger.debug("binding Value:>" + binding.getValue());
+			if (format.equals(InsertSparql.SPARQL)) {
+				Update update;
+				update = connection.prepareUpdate(QueryLanguage.SPARQL, statement);
+				update.execute();
+				BindingSet bindings = update.getBindings();
+				ArrayList<SparqlEntity> results = new ArrayList<SparqlEntity>();
+				bindings.iterator();
+				for (Binding binding : bindings) {
+					logger.debug("binding Name:>" + binding.getName());
+					logger.debug("binding Value:>" + binding.getValue());
+				}
+			} else if (format.equals(InsertSparql.Turtle)) {
+				StringReader reader = new StringReader(statement);
+				ValueFactory f = connection.getValueFactory();
+				Resource res = f.createURI(insert.getGraph());
+				connection.add(reader, "", RDFFormat.TURTLE, res);
 			}
-		} catch (RepositoryException | MalformedQueryException | UpdateExecutionException e) {
+		} catch (RepositoryException | MalformedQueryException | UpdateExecutionException | RDFParseException | IOException e) {
 			e.printStackTrace();
 			throw new SparqlException(e);
 		}
@@ -258,15 +278,11 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 		return query(select.getSparql());
 	}
 
-	public void insert(String insert) throws SparqlException {
-		execute(insert);
-	}
-
 	@Override
 	@Transactional
 	public void insert(InsertSparql insert)
 			throws SparqlException {
-		insert(insert.getSparql());
+		execute(insert);
 	}
 
 	@Override

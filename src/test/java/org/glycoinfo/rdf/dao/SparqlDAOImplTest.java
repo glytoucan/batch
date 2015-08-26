@@ -260,15 +260,15 @@ public class SparqlDAOImplTest {
 	@Test
 	public void testDelete() throws SparqlException {
 		schemaDAO
-				.delete("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
+				.delete(new InsertSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
 						+ "DELETE DATA { graph <http://bluetree.jp/nobutest> {"
-						+ "<http://bluetree.jp/nobutest/aa> <http://bluetree.jp/nobutest/bb> \"cc\" . } }");
+						+ "<http://bluetree.jp/nobutest/aa> <http://bluetree.jp/nobutest/bb> \"cc\" . } }"));
 	}
 
 	@Test
 	public void testClearGraph() throws SparqlException {
 		schemaDAO
-				.execute("clear graph <http://bluetree.jp/nobutest>");
+				.execute(new InsertSparqlBean("clear graph <http://bluetree.jp/nobutest>"));
 	}
 	
 	public void testInsertWurcs() throws SparqlException {
