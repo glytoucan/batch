@@ -89,7 +89,6 @@ public class MassTest {
 		// Calcurate mass from WURCS
 		double mass = WURCSMassCalculator.calcMassWURCS(t_objWURCS).doubleValue();
 		System.out.println(mass);
-
 	}
 
 	@Test

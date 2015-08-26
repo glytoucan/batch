@@ -54,15 +54,12 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 
 	@Override
 	public String getWhere() throws SparqlException {
-		if (!whereset) {
-			if (null != getSparqlEntity() && null != getSparqlEntity().getValue(Saccharide.PrimaryId))
-				this.where += "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n";
-			whereset = true;
-		}
+		String whereCopy = this.where;
+		if (null != getSparqlEntity() && null != getSparqlEntity().getValue(Saccharide.PrimaryId))
+			whereCopy += "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n";
 		
-		return where;
+		return whereCopy;
 	}
-
 
 	protected Log logger = LogFactory.getLog(getClass());
 

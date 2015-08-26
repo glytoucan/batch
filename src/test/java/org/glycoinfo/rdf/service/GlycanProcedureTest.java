@@ -29,6 +29,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
@@ -100,6 +101,7 @@ public class GlycanProcedureTest {
 	GlycanProcedure glycanProcedure;
 
 	@Bean(name = "glycanProcedure")
+	@Scope("prototype")
 	GlycanProcedure getGlycanProcedure() throws SparqlException {
 		GlycanProcedure glycan = new org.glycoinfo.rdf.service.impl.GlycanProcedure();
 		return glycan;
@@ -143,6 +145,7 @@ public class GlycanProcedureTest {
 	}
 	
 	@Bean
+	@Scope("prototype")
 	SelectSparql glycoSequenceContributorSelectSparql() {
 		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
 		sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
@@ -247,6 +250,17 @@ LIN
 		String se = glycanProcedure.register();
 
 		logger.debug(se);
+//		Assert.assertNotNull(se);
+		
+	}
+	
+	@Test
+	public void testSequenceScope() throws SparqlException, NoSuchAlgorithmException {
+		
+		SparqlEntity se = glycanProcedure.searchByAccessionNumber("G00026MO");
+		logger.debug(se.getValue("Mass"));
+		se = glycanProcedure.searchByAccessionNumber("G00031MO");
+		logger.debug(se.getValue("Mass"));
 //		Assert.assertNotNull(se);
 		
 	}
