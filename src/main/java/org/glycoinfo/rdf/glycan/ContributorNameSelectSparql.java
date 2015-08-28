@@ -21,9 +21,9 @@ where {
 	 * 
 	 */
 	public ContributorNameSelectSparql() {
-		this.prefix = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
-				+ "PREFIX dcterms: <http://purl.org/dc/terms/>\n"
-				+ "PREFIX foaf: <http://xmlns.com/foaf/0.1/#>\n";
+//		this.prefix = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+//				+ "PREFIX dcterms: <http://purl.org/dc/terms/>\n"
+//				+ "PREFIX foaf: <http://xmlns.com/foaf/0.1/#>\n";
 		this.select = "?" + Contributor.Id + "\n";
 		this.where 
 			= "?o a foaf:Person .\n"

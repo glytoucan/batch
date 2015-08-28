@@ -66,7 +66,7 @@ public class SaccharideSparqlBeanTest {
 	}
 	
 	@Test
-	public void testInsertSparql() {
+	public void testInsertSparql() throws SparqlException {
 		logger.debug(getSaccharideInsertSparql().getSparql());
 		
 		assertEquals(

@@ -65,7 +65,7 @@ public class WurcsConvertGlycomeDBSparqlBeanTest {
 	}
 
 	@Test
-	public void testGlycomeDBInsertSparql() {
+	public void testGlycomeDBInsertSparql() throws SparqlException {
 
 		ConvertInsertSparql convert = getConvertInsertSparql();
 		SparqlEntity se = new SparqlEntity();

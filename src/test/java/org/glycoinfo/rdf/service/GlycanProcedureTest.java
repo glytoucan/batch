@@ -1,20 +1,25 @@
 package org.glycoinfo.rdf.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.glycoinfo.conversion.error.ConvertException;
+import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
+import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
+import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFInsertSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
@@ -140,7 +145,7 @@ public class GlycanProcedureTest {
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(ResourceEntryInsertSparql.Database, "glytoucan");
 		resourceEntryInsertSparql.setSparqlEntity(se);
-		resourceEntryInsertSparql.setGraph("FROM <" + graph + ">");
+		resourceEntryInsertSparql.setGraph(graph);
 		return resourceEntryInsertSparql;
 	}
 	
@@ -152,6 +157,23 @@ public class GlycanProcedureTest {
 		return sb;
 	}
 
+	
+	@Bean
+	WurcsRDFInsertSparql wurcsRDFInsertSparql() {
+		WurcsRDFInsertSparql wrdf = new WurcsRDFInsertSparql();
+		wrdf.setSparqlEntity(new SparqlEntity());
+		wrdf.setGraph("http://rdf.glytoucan.org/sequence/wurcs");
+		return wrdf;
+	}
+	
+	@Bean
+	InsertSparql glycoSequenceInsert() {
+		GlycoSequenceInsertSparql gsis = new GlycoSequenceInsertSparql();
+		gsis.setSparqlEntity(new SparqlEntity());
+		gsis.setGraphBase("http://rdf.glytoucan.org/sequence");
+		return gsis;
+	}
+	
 	
 //	@Test(expected=SparqlException.class)
 //	public void testInsufficientUser() throws SparqlException {
@@ -239,19 +261,61 @@ LIN
 	@Test
 	public void testRegisterNew() throws SparqlException, NoSuchAlgorithmException {
 		
-		String sequence="RES\n"
-				+ "1b:x-dglc-HEX-1:5|1:a\n"
-				+ "2b:b-dgal-HEX-1:5\n"
-				+ "LIN\n"
-				+ "1:1o(4+1)2d";
+		String sequence="WURCS=2.0/4,4,3/[u2122h][a2112h-1b_1-5][a2112h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O]/1-2-3-4/a4-b1_b3-c1_c3-d1";
 
 		glycanProcedure.setSequence(sequence);
 		glycanProcedure.setContributor("testname");
 		String se = glycanProcedure.register();
 
+		/*
+		PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+			PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>
+			SELECT distinct ?glycoseq ?accessionNo ?sequence 
+			#?WURCS_label  
+			?res
+			#?Contributor
+			WHERE { 
+			       ?s a glycan:saccharide .
+			       ?s glytoucan:has_primary_id ?accessionNo .
+			       ?s glytoucan:has_primary_id "G03828HN" .
+			       ?s glycan:has_glycosequence ?glycoseq .
+			       ?glycoseq glycan:has_sequence ?sequence .
+			#       ?glycoseq rdfs:label ?WURCS_label .
+			       ?glycoseq glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .
+			        ?s glycan:has_resource_entry ?res .
+			#        ?res a glycan:resource_entry ;
+			#        glytoucan:date_registered ?ContributionTime ;
+			#         glytoucan:contributor ?c .
+			#        ?c foaf:name ?Contributor .
+			}*/
 		logger.debug(se);
+		String query = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
+				+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
+				+ "SELECT distinct ?glycoseq ?accessionNo ?sequence\n"
+				+ "?WURCS_label\n"
+				+ "?res\n"
+				+ "?Contributor\n"
+				+ "WHERE {\n"
+				+ "?s a glycan:saccharide .\n"
+				+ "?s glytoucan:has_primary_id ?accessionNo .\n"
+				+ "?s glytoucan:has_primary_id \"" + se + "\" .\n"
+				+ "?s glycan:has_glycosequence ?glycoseq .\n"
+				+ "?glycoseq glycan:has_sequence ?sequence .\n"
+				+ "?glycoseq rdfs:label ?WURCS_label .\n"
+				+ "?glycoseq glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n"
+				+ "?s glycan:has_resource_entry ?res .\n"
+				+ "?res a glycan:resource_entry ;\n"
+				+ "glytoucan:date_registered ?ContributionTime ;\n"
+				+ "glytoucan:contributor ?c .\n"
+				+ "?c foaf:name ?Contributor .}";
+
+		List<SparqlEntity> results = sparqlDAO.query(new SelectSparqlBean(query));
+		Assert.assertTrue(results.size()>0);
+		SparqlEntity first = results.iterator().next();
+		logger.debug(first.getValue("glycoseq"));
+		logger.debug(first.getValue("accessionNo"));
+		logger.debug(first.getValue("Contributor"));
 //		Assert.assertNotNull(se);
-		
 	}
 	
 	@Test
@@ -264,4 +328,5 @@ LIN
 //		Assert.assertNotNull(se);
 		
 	}
+	
 }

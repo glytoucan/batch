@@ -103,11 +103,12 @@ public class InsertSparqlBean implements InsertSparql {
 	 * 
 	 * prefix + "\n" + "INSERT\n" + "{ GRAPH <"+graph+"> {\n" + insert + "  }\n"
 	 * + "}\n" + using + "WHERE {\n" + where + "}"
+	 * @throws SparqlException 
 	 * 
 	 * @see org.glycoinfo.rdf.InsertSparql#getSparql()
 	 */
 	@Override
-	public String getSparql() {
+	public String getSparql() throws SparqlException {
 		if (this.sparql == null) {
 			StringBuffer sparqlbuf = new StringBuffer();
 			sparqlbuf.append(getPrefix() != null ? getPrefix() : "");
@@ -142,7 +143,14 @@ public class InsertSparqlBean implements InsertSparql {
 
 	@Override
 	public String toString() {
-		return getSparql();
+		try {
+			return getSparql();
+		} catch (SparqlException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 
 	@Override

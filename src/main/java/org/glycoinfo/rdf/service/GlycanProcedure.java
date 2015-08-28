@@ -1,6 +1,8 @@
 package org.glycoinfo.rdf.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
@@ -30,7 +32,7 @@ public interface GlycanProcedure {
 
 	public void setContributor(String name);
 
-	public List<String> register(List<String> inputs) throws SparqlException;
+	public Map<String, String> register(List<String> inputs) throws SparqlException;
 	
 	List<SparqlEntity> search(List<String> input) throws SparqlException;
 
@@ -39,4 +41,8 @@ public interface GlycanProcedure {
 	public void deleteByAccessionNumber(String accessionNumber);
 	
 	public SparqlEntity searchByAccessionNumber(String accessionNumber) throws SparqlException;
+
+	public List<SparqlEntity> getGlycans() throws SparqlException;
+
+	public  Map<String, String> addGlycoSequence(ArrayList<String> origList) throws SparqlException, ConvertException;
 }

@@ -2,18 +2,23 @@ package org.glycoinfo.rdf.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.conversion.GlyConvertDetect;
 import org.glycoinfo.conversion.error.ConvertException;
+import org.glycoinfo.rdf.InsertSparql;
+import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
@@ -43,6 +48,12 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 
 	@Autowired
 	SelectSparql glycoSequenceContributorSelectSparql;
+
+	@Autowired
+	InsertSparql wurcsRDFInsertSparql;
+
+	@Autowired
+	InsertSparql glycoSequenceInsert;
 	
 //
 //	@Autowired
@@ -57,7 +68,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 //	@Qualifier(value = "insertscintregisteraction")
 //	InsertScint insertScintRegisterAction;
 	
-	String sequence, image, id, sequenceResult, contributor;
+	String sequence, image, id, sequenceResult, contributor, format;
 	
 	/**
 	 * 
@@ -92,6 +103,14 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 //		return scint; 
 //	}
 	
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
 	ClassHandler getDateTimeClassHandler() throws SparqlException {
 		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "DateTime");
 		scint.setSparqlDAO(sparqlDAO);
@@ -248,6 +267,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			logger.debug("converting:>" + sequence + "<");
 			glyconvert.setFromSequence(sequence);
 			String wurcs = glyconvert.convert();
+			setFormat(glyconvert.getFromFormat());
 			se.setValue(GlycoSequenceToWurcsSelectSparql.Sequence, wurcs);
 			se.setValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber, NotRegistered);
 		} else {
@@ -332,12 +352,12 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	}
 
 	@Override
-	public List<String> register(List<String> inputs) throws SparqlException {
-		List<String> results = new ArrayList<String>();
+	public Map<String, String> register(List<String> inputs) throws SparqlException {
+		Map<String, String> results = new HashMap<String, String>();
 		for (Iterator iterator = inputs.iterator(); iterator.hasNext();) {
 			String string = (String) iterator.next();
 			String result = register(string);
-			results.add(result);
+			results.put(result, string);
 		}
 		return results;
 	}
@@ -374,12 +394,28 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		contributorProcedure.setName(contributor);
 		String id = contributorProcedure.addContributor();
 		
+		resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.URI, saccharideInsertSparql);
 		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.AccessionNumber, accessionNumber);
 		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.ContributorId, id);
 		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.DataSubmittedDate, new Date());
 		
 //		resourceEntryInsertSparql.setSparqlEntity(reisSE);
 		sparqlDAO.insert(resourceEntryInsertSparql);
+		
+		
+		logger.debug("registering into wurcsRDF:" + accessionNumber + ":" + getSequence());
+		
+		if (null == wurcsRDFInsertSparql.getSparqlEntity())
+			wurcsRDFInsertSparql.setSparqlEntity(new SparqlEntity());
+		
+		wurcsRDFInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, accessionNumber);
+		wurcsRDFInsertSparql.getSparqlEntity().setValue(GlycoSequence.Sequence, getSequence());
+		sparqlDAO.insert(wurcsRDFInsertSparql);
+		
+		InsertSparqlBean insLabel = new InsertSparqlBean();
+		insLabel.setGraph(wurcsRDFInsertSparql.getGraph());
+		insLabel.setInsert("<http://rdf.glycoinfo.org/glycan/" + accessionNumber + "/wurcs/2.0> rdfs:label \"" + getSequence() + "\"^^xsd:string .");
+		sparqlDAO.insert(insLabel);
 		
 		return accessionNumber;
 	}
@@ -409,5 +445,28 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Override
 	public void setContributor(String name) {
 		this.contributor=name;
+	}
+
+	@Override
+	public List<SparqlEntity> getGlycans() throws SparqlException {
+		return sparqlDAO.query(glycoSequenceContributorSelectSparql);
+	}
+
+	@Override
+	public Map<String, String> addGlycoSequence(ArrayList<String> origList) throws SparqlException, ConvertException {
+		Map results = new HashMap<String, String>();
+		for (String string : origList) {
+			setSequence(string);
+			SparqlEntity idResults = searchBySequence();
+
+			glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId, idResults.getValue(Saccharide.PrimaryId));
+			glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Sequence, string);
+			glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, getFormat());
+			logger.debug("adding:" + idResults.getValue(Saccharide.PrimaryId) + " with >" + string + "< in " + getFormat() + " format.");
+			sparqlDAO.insert(glycoSequenceInsert);
+			
+			results.put(idResults.getValue(Saccharide.PrimaryId), string);
+		}
+		return results;
 	}
 }

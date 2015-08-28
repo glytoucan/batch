@@ -1,8 +1,6 @@
 package org.glycoinfo.rdf.dao;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,7 +79,7 @@ public class SparqlEntity {
 		return data.remove(key);
 	}
 	
-	private Map<String, Object> getData() {
+	public Map<String, Object> getData() {
 		return data;
 	}
 

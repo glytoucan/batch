@@ -7,10 +7,14 @@ import org.springframework.util.Assert;
 /**
  * 
  * An abstract class used to specify the insert command for when a
- * GlycanSequence is to be inserted after conversion. For example: glycoct
+ * GlycanSequence is to be inserted after conversion.  For example: glycoct
  * converted into wurcs.
  * 
+ * Required fields are: Saccharide.PrimaryId, GlycoSequence.Format, and GlycoSequence.Sequence.  GlycoSequence.ErrorMessage is optional to add an rdfs:label.
  * @author aoki
+ *
+ * This work is licensed under the Creative Commons Attribution 4.0 International License. 
+ * To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
  *
  */
 public class GlycoSequenceInsertSparql extends InsertSparqlBean implements

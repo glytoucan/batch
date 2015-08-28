@@ -143,8 +143,9 @@ public interface InsertSparql {
 	 * Retrieve the overall sparql constructed from all of the parts above.
 	 * 
 	 * @return
+	 * @throws SparqlException 
 	 */
-	public String getSparql();
+	public String getSparql() throws SparqlException;
 	
 	/**
 	 * 

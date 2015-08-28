@@ -53,7 +53,10 @@ public class ResourceEntrySparqlBeanTest {
 	public void testInsert() throws SparqlException, UnsupportedEncodingException {
 		sparqlDAO.insert(getResourceEntrySparql());
 		
-		List<SparqlEntity> list = sparqlDAO.query(new SelectSparqlBean(getResourceEntrySparql().getPrefix() + "select ?date where {?resource a glycan:resource_entry . ?resource glycan:in_glycan_database glycan:database_glytoucan . ?resource dcterms:identifier \"G00TESTDATA\"^^xsd:string . ?resource dcterms:dataSubmitted ?date . ?resource dc:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/" + "1234" + ">}"));
+		List<SparqlEntity> list = sparqlDAO.query(new SelectSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
+				+ "select ?date where {?resource a glycan:resource_entry . ?resource glycan:in_glycan_database glycan:database_glytoucan . ?resource dcterms:identifier \"G00TESTDATA\"^^xsd:string . ?resource dcterms:dataSubmitted ?date . ?resource dc:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/" + "1234" + ">}"));
+		if (list.size() < 1)
+			Assert.fail("no results");
 		for (SparqlEntity sparqlEntity : list) {
 			Assert.assertEquals("Thu Jan 01 09:00:00 JST 1970", sparqlEntity.getValue("date"));
 		}

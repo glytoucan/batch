@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.apache.commons.lang.xwork.StringUtils;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
+import org.glycoinfo.rdf.UriProvider;
 
 /**
  * 
@@ -21,7 +22,7 @@ import org.glycoinfo.rdf.InsertSparqlBean;
  * @author aoki
  *
  */
-public class SaccharideInsertSparql extends InsertSparqlBean implements Saccharide {
+public class SaccharideInsertSparql extends InsertSparqlBean implements Saccharide, UriProvider {
 
 	String type = "a glycan:saccharide";
 	String hasPrimaryId = "glytoucan:has_primary_id";
@@ -44,7 +45,7 @@ public class SaccharideInsertSparql extends InsertSparqlBean implements Sacchari
 	public String getInsert() {
 		if (StringUtils.isNotBlank(getSparqlEntity().getValue(PrimaryId))) {
 			this.insert = getSaccharideURI() + " a glycan:saccharide .\n"
-					+ getSaccharideURI() + " glytoucan:has_primary_id \"" + getSparqlEntity().getValue(PrimaryId) + "\"^^xsd:string .\n";
+					+ getSaccharideURI() + " glytoucan:has_primary_id \"" + getSparqlEntity().getValue(PrimaryId) + "\" .\n";
 		}
 		return this.insert;
 	}
@@ -52,4 +53,10 @@ public class SaccharideInsertSparql extends InsertSparqlBean implements Sacchari
 	public String getSaccharideURI() {
 		return "<http://rdf.glycoinfo.org/glycan/" + getSparqlEntity().getValue(PrimaryId) + ">";
 	}
+
+	@Override
+	public String getUri() {
+		return getSaccharideURI();
+	}
+	
 }

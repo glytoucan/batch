@@ -11,6 +11,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
+import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,9 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	@Autowired
 	@Qualifier(value = "insertscintregisteraction")
 	InsertScint insertScintRegisterAction;
+	
+	@Autowired
+	ContributorProcedure contributorProcedure;
 
 	ClassHandler getPersonClassHandler() throws SparqlException {
 		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "Person");
@@ -137,6 +141,9 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		insertScintRegisterAction.setSparqlEntity(sparqlentityRegisterAction);
 		
 		sparqlDAO.insert(insertScintRegisterAction);
+		
+		contributorProcedure.setName(getSparqlEntity().getValue(org.glycoinfo.rdf.service.UserProcedure.givenName));
+		contributorProcedure.addContributor();
 	}
 	
 	@Override

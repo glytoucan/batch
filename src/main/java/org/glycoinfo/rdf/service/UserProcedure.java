@@ -6,6 +6,13 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 
 public interface UserProcedure {
+	public static final String givenName = "givenName";
+	public static final String id = "id";
+	public static final String familyName = "familyName";
+	public static final String gender = "gender";
+	public static final String picture= "picture";
+	public static final String email="email", verifiedEmail="verifiedEmail";
+	
 	public void addUser() throws SparqlException;
 	
 	public void setSparqlEntity(SparqlEntity s);

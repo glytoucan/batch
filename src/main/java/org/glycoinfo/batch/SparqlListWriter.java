@@ -81,9 +81,10 @@ public class SparqlListWriter<T extends List<SparqlEntity>> implements
 	 * @param items
 	 *            the list of items to be persisted.
 	 * @throws SQLException
+	 * @throws SparqlException 
 	 */
 	protected void doWrite(List<? extends List<SparqlEntity>> items)
-			throws SQLException {
+			throws SQLException, SparqlException {
 		for (List<SparqlEntity> t : items) {
 			logger.debug(t);
 
