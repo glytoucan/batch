@@ -253,12 +253,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		
 		// check RDF for wurcs
 		logger.debug("searching for:>" + sparqlSequence + "<");
-		GlycoSequenceToWurcsSelectSparql select = new GlycoSequenceToWurcsSelectSparql();
-		SparqlEntity se = new SparqlEntity();
-		se.setValue(GlycoSequenceToWurcsSelectSparql.FromSequence, sparqlSequence);
-		select.setSparqlEntity(se);
-		
-		List<SparqlEntity> list = sparqlDAO.query(select);
+		List<SparqlEntity> list = searchSequence(sparqlSequence);
 		logger.debug(list);
 		if (list != null && list.size() < 1) {
 			// if not wurcs, convert
@@ -267,19 +262,34 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			logger.debug("converting:>" + sequence + "<");
 			glyconvert.setFromSequence(sequence);
 			String wurcs = glyconvert.convert();
-			setFormat(glyconvert.getFromFormat());
-			se.setValue(GlycoSequenceToWurcsSelectSparql.Sequence, wurcs);
-			se.setValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber, NotRegistered);
-		} else {
-			if (list != null && list.size() > 1)
-				logger.warn("found more than one WURCS!");
-			se = list.get(0);
-			se.setValue(Image, "/glyspace/service/glycans/" + se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber) + "/image?style=extended&format=png&notation=cfg");
-			se.setValue(GlycoSequenceToWurcsSelectSparql.FromSequence, sparqlSequence);
+			logger.debug("converted:>" + wurcs + "<");
+			list = searchSequence(wurcs);
+			
+			if (list != null && list.size() < 1) {
+				se.setValue(Sequence, wurcs);
+				se.setValue(AccessionNumber, NotRegistered);
+				setFormat(glyconvert.getFromFormat());
+				return se;
+			}
 		}
+		if (list != null && list.size() > 1)
+		logger.warn("found more than one WURCS!");
+		se = list.get(0);
+		
+		se.setValue(Image, "/glyspace/service/glycans/" + se.getValue(AccessionNumber) + "/image?style=extended&format=png&notation=cfg");
+		se.setValue(FromSequence, sparqlSequence);
 		return se;
 	}
 	
+	private List<SparqlEntity> searchSequence(String sparqlSequence) throws SparqlException {
+		GlycoSequenceToWurcsSelectSparql select = new GlycoSequenceToWurcsSelectSparql();
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(FromSequence, sparqlSequence);
+		select.setSparqlEntity(se);
+		
+		return sparqlDAO.query(select);
+	}
+
 	@Override
 	public List<SparqlEntity> search(List<String> input) throws SparqlException {
 		List<SparqlEntity> list = new ArrayList<SparqlEntity>();
@@ -300,8 +310,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			} catch (ConvertException e) {
 				logger.debug("convertexception seq:>" + getSequence());
 				logger.debug("convertexception msg:>" + e.getMessage());
-				se.setValue(GlycoSequenceToWurcsSelectSparql.FromSequence, getSequence());
-				se.setValue(GlycoSequenceToWurcsSelectSparql.Sequence, CouldNotConvertHeader + e.getMessage());
+				se.setValue(FromSequence, getSequence());
+				se.setValue(Sequence, CouldNotConvertHeader + e.getMessage());
 			}
 			
 			list.add(se);
@@ -402,7 +412,6 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 //		resourceEntryInsertSparql.setSparqlEntity(reisSE);
 		sparqlDAO.insert(resourceEntryInsertSparql);
 		
-		
 		logger.debug("registering into wurcsRDF:" + accessionNumber + ":" + getSequence());
 		
 		if (null == wurcsRDFInsertSparql.getSparqlEntity())
@@ -453,20 +462,11 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	}
 
 	@Override
-	public Map<String, String> addGlycoSequence(ArrayList<String> origList) throws SparqlException, ConvertException {
-		Map results = new HashMap<String, String>();
-		for (String string : origList) {
-			setSequence(string);
-			SparqlEntity idResults = searchBySequence();
-
-			glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId, idResults.getValue(Saccharide.PrimaryId));
-			glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Sequence, string);
-			glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, getFormat());
-			logger.debug("adding:" + idResults.getValue(Saccharide.PrimaryId) + " with >" + string + "< in " + getFormat() + " format.");
-			sparqlDAO.insert(glycoSequenceInsert);
-			
-			results.put(idResults.getValue(Saccharide.PrimaryId), string);
-		}
-		return results;
+	public void registerGlycoSequence() throws SparqlException {
+		logger.debug("adding:" + getId() + " with >" + getSequence() + "< in " + getFormat() + " format.");
+		glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId, getId());
+		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Sequence, getSequence());
+		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, getFormat());
+		sparqlDAO.insert(glycoSequenceInsert);
 	}
 }

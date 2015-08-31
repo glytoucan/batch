@@ -1,18 +1,24 @@
 package org.glycoinfo.rdf.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.Saccharide;
 
 public interface GlycanProcedure {
 	public static final String Image = "image"; 
 	public static final String CouldNotConvertHeader = "Failed Conversion:";
 	public static final String NotRegistered = "not registered";
-	public static final String CouldNotConvert = "could not convert";	
+	public static final String CouldNotConvert = "could not convert";
+	public static final String AccessionNumber = Saccharide.PrimaryId;
+	public static final String Sequence = "Sequence";
+	public static final String FromSequence = "FromSequence";
+	public static final String Format = "Format";
+	public static final String Id = "Id";
+	
 
 	public SparqlEntity searchBySequence() throws SparqlException, ConvertException;
 
@@ -44,5 +50,9 @@ public interface GlycanProcedure {
 
 	public List<SparqlEntity> getGlycans() throws SparqlException;
 
-	public  Map<String, String> addGlycoSequence(ArrayList<String> origList) throws SparqlException, ConvertException;
+	void registerGlycoSequence() throws SparqlException;
+
+	public void setFormat(String value);
+
+	public void setId(String value);
 }
