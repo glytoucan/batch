@@ -30,9 +30,8 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 				+ "PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>";
 		this.select = "DISTINCT ?" + SubstructureSearchSaccharideURI;
 //				+ " ?" + Saccharide.PrimaryId; 
-		this.from = "FROM <http://rdf.glycoinfo.org/wurcs/seq/0.3>\n"
-				+ "FROM <http://rdf.glycoinfo.org/wurcs/seq/0.3/pos>\n"
-				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.1/ms>\n";
+		this.from = "FROM <http://rdf.glycoinfo.org/wurcs/ms/0.2>\n"
+				+ "FROM <http://rdf.glycoinfo.org/wurcs/seq/0.3/glytoucan/20150728>\n";
 	}
 
 	@Override
@@ -67,11 +66,11 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 
 		// Set option for SPARQL query generator
 		t_oExport.setCountOption(true); // True: Count result
-		//t_oExport.addTergetGraphURI("<http://rdf.glycoinfo.org/wurcs/seq>"); // Add your terget graph
+		t_oExport.addTargetGraphURI("<http://rdf.glycoinfo.org/wurcs/seq/0.3/glytoucan/20150728>"); // Add your terget graph
 		//t_oExport.setMSGraphURI("<http://rdf.glycoinfo.org/wurcs/0.5.1/ms>"); // Set your monosaccharide graph
 		t_oExport.hideComments(true); // Hide all comments in query
 //		t_oExport.setSearchSupersumption(true); // Search supersumption of monosaccharide
-
+		t_oExport.setMSGraphURI("<http://rdf.glycoinfo.org/wurcs/ms/0.2>");
 		t_oExport.start(t_oSeq);
 		String t_strSPARQL = t_oExport.getWhere();
 
