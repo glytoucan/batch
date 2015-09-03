@@ -18,6 +18,8 @@ public interface GlycanProcedure {
 	public static final String FromSequence = "FromSequence";
 	public static final String Format = "Format";
 	public static final String Id = "Id";
+	public static final String ResultSequence = "ResultSequence";
+
 	
 
 	public SparqlEntity searchBySequence() throws SparqlException, ConvertException;

@@ -266,7 +266,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			list = searchSequence(wurcs);
 			
 			if (list != null && list.size() < 1) {
-				se.setValue(Sequence, wurcs);
+				se.setValue(ResultSequence, wurcs);
 				se.setValue(AccessionNumber, NotRegistered);
 				setFormat(glyconvert.getFromFormat());
 				return se;
@@ -420,6 +420,9 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		wurcsRDFInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, accessionNumber);
 		wurcsRDFInsertSparql.getSparqlEntity().setValue(GlycoSequence.Sequence, getSequence());
 		sparqlDAO.insert(wurcsRDFInsertSparql);
+		
+		// reasoning needed?
+		// https://bitbucket.org/issaku/sparql/wiki/CONSTRUCT%20%E3%81%A7position%E3%82%92%E4%BB%98%E4%B8%8E%20%EF%BC%88WURCSSequence%EF%BC%89
 		
 		InsertSparqlBean insLabel = new InsertSparqlBean();
 		insLabel.setGraph(wurcsRDFInsertSparql.getGraph());
