@@ -51,12 +51,12 @@ public class SaccharideInsertSparql extends InsertSparqlBean implements Sacchari
 	}
 
 	public String getSaccharideURI() {
-		return "<http://rdf.glycoinfo.org/glycan/" + getSparqlEntity().getValue(PrimaryId) + ">";
+		return "<" + getUri() + ">";
 	}
 
 	@Override
 	public String getUri() {
-		return getSaccharideURI();
+		return "http://rdf.glycoinfo.org/glycan/" + getSparqlEntity().getValue(PrimaryId); 
 	}
 	
 }

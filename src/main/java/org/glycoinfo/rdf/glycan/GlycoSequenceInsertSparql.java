@@ -1,8 +1,7 @@
 package org.glycoinfo.rdf.glycan;
 
+import org.apache.commons.lang3.StringUtils;
 import org.glycoinfo.rdf.InsertSparqlBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.Assert;
 
 /**
  * 
@@ -17,8 +16,19 @@ import org.springframework.util.Assert;
  * To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
  *
  */
-public class GlycoSequenceInsertSparql extends InsertSparqlBean implements
-		InitializingBean {
+public class GlycoSequenceInsertSparql extends InsertSparqlBean {
+	
+	
+	String graphBase;
+	
+	public String getGraphBase() {
+		return graphBase;
+	}
+
+	public void setGraphBase(String graphBase) {
+		this.graphBase = graphBase;
+	}
+
 	public GlycoSequenceInsertSparql(String sparql) {
 		super(sparql);
 	}
@@ -53,22 +63,21 @@ public class GlycoSequenceInsertSparql extends InsertSparqlBean implements
 		String rdf = saccharideURI + " glycan:has_glycosequence " + getGlycanSequenceUri() + " .\n" + 
 		(getSparqlEntity().getValue(GlycoSequence.Sequence) != null? getGlycanSequenceUri()	+ " glycan:has_sequence \""	+ getSparqlEntity().getValue(GlycoSequence.Sequence) + "\"^^xsd:string .\n" : "") +
 		(getSparqlEntity().getValue(GlycoSequence.Sequence) != null? getGlycanSequenceUri()	+ " rdfs:label \""	+ getSparqlEntity().getValue(GlycoSequence.Sequence) + "\"^^xsd:string .\n" : "")
-				+ getGlycanSequenceUri() + " glycan:in_carbohydrate_format " + getFormat() + " .\n" +
-		(getSparqlEntity().getValue(GlycoSequence.ErrorMessage) != null? getGlycanSequenceUri()	+ " rdfs:label \""	+ getSparqlEntity().getValue(GlycoSequence.ErrorMessage) + "\"^^xsd:string .\n" : "")
-				+ getGlycanSequenceUri() + " glytoucan:is_glycosequence_of " + saccharideURI + " .\n";
+				+ getGlycanSequenceUri() + " glycan:in_carbohydrate_format " + getCarbFormat() + " .\n" +
+		(getSparqlEntity().getValue(GlycoSequence.ErrorMessage) != null? getGlycanSequenceUri()	+ " rdfs:label \""	+ getSparqlEntity().getValue(GlycoSequence.ErrorMessage) + "\"^^xsd:string .\n" : "");
 
 		// String rdf = saccharideURI +
 		// " glycan:has_glycosequence ?glycanSeqUri .\n"
 		// + "?glycanSeqUri glycan:has_sequence \"" + getSequence() +
 		// "\"^^xsd:string .\n"
-		// + "?glycanSeqUri glycan:in_carbohydrate_format " + getFormat() +
+		// + "?glycanSeqUri glycan:in_carbohydrate_format " + getCarbFormat() +
 		// " .\n"
 		// + "?glycanSeqUri glytoucan:is_glycosequence_of " + saccharideURI +
 		// " .\n";
 		return rdf;
 	}
 
-	public String getFormat() {
+	public String getCarbFormat() {
 		return "glycan:carbohydrate_format_"
 				+ getSparqlEntity()
 						.getValue(GlycoSequence.Format);
@@ -98,20 +107,20 @@ public class GlycoSequenceInsertSparql extends InsertSparqlBean implements
 	// "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct \n"
 	// + getFilter() + " }\n";
 	// }
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		Assert.state(getGraphBase() != null, "A graphbase is required");
-	}
-
 	
 	public String getTtl() {
 		String rdf = getSaccharideURI() + " glycan:has_glycosequence " + getGlycanSequenceUri() + " .\n" + 
 				getGlycanSequenceUri()	+ " glycan:has_sequence \""	+ getSparqlEntity().getValue(GlycoSequence.Sequence) + "\"^^xsd:string .\n" 
-				+ getGlycanSequenceUri() + " glycan:in_carbohydrate_format " + getFormat() + " .\n"
+				+ getGlycanSequenceUri() + " glycan:in_carbohydrate_format " + getCarbFormat() + " .\n"
 				+ getGlycanSequenceUri() + " glytoucan:is_glycosequence_of " + getSaccharideURI() + " .\n";
 		return rdf;
-	
+	}
+
+	@Override
+	public String getGraph() {
+		if (StringUtils.isBlank(super.getGraph()))
+			return getGraphBase() + "/" + getSparqlEntity().getValue(GlycoSequence.Format);
+		return super.getGraph();
 	}
 	
 	// public String getFilter() {
@@ -119,6 +128,7 @@ public class GlycoSequenceInsertSparql extends InsertSparqlBean implements
 	// + "?s glycan:has_glycosequence ?kseq .\n"
 	// + "?kseq glycan:has_sequence ?kSeq .\n"
 	// + "?kseq glycan:in_carbohydrate_format glycan:carbohydrate_format_"
-	// + getFormat() + "\n" + "}";
+	// + () + "\n" + "}";
 	// }
+	
 }

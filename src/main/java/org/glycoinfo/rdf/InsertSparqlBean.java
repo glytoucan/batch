@@ -30,7 +30,7 @@ public class InsertSparqlBean implements InsertSparql {
 	public InsertSparqlBean() {
 	}
 
-	public String getInsert() {
+	public String getInsert() throws SparqlException {
 		return insert;
 	}
 

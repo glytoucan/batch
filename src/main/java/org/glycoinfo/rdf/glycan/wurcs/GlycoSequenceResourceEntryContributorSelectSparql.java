@@ -39,12 +39,14 @@ public class GlycoSequenceResourceEntryContributorSelectSparql extends GlycoSequ
 				+ "?GlycanSequenceGlycoCTURI glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct .\n"
 				+ "?GlycanSequenceGlycoCTURI glycan:has_sequence ?GlycoCTSequence .\n"
 				+ "?" + SaccharideURI + " glycan:has_resource_entry ?resource .\n"
-				+ "?resource glycan:in_glycan_database  glytoucan:database_glytoucan .\n"
+				+ "?resource glycan:in_glycan_database glytoucan:database_glytoucan .\n"
 				+ "?resource glytoucan:contributor ?contributorURI .\n"
 				+ "?contributorURI foaf:name ?" + Contributor + " .\n"
 				+ "?resource glytoucan:date_registered ?DateRegistered .\n"
+				+ "OPTIONAL {\n"
 				+ "?" + SaccharideURI + " glytoucan:has_derivatized_mass ?derivMass .\n"
 				+ "?derivMass glytoucan:has_mass ?" + Mass + " .\n"
+				+ "}\n"
 				;
 	}
 	

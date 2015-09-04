@@ -10,8 +10,13 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
+import org.glycoinfo.batch.mass.MassSparqlProcessor;
 import org.glycoinfo.conversion.GlyConvertDetect;
 import org.glycoinfo.conversion.error.ConvertException;
+import org.glycoinfo.conversion.util.DetectFormat;
+import org.glycoinfo.mass.MassInsertSparql;
+import org.glycoinfo.mass.MassSelectSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SelectSparql;
@@ -54,6 +59,9 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 
 	@Autowired
 	InsertSparql glycoSequenceInsert;
+	
+	@Autowired
+	MassInsertSparql massInsertSparql;
 	
 //
 //	@Autowired
@@ -266,6 +274,9 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			list = searchSequence(wurcs);
 			
 			if (list != null && list.size() < 1) {
+				if (null == se)
+					se = new SparqlEntity();
+				se.setValue(Sequence, wurcs);
 				se.setValue(ResultSequence, wurcs);
 				se.setValue(AccessionNumber, NotRegistered);
 				setFormat(glyconvert.getFromFormat());
@@ -276,7 +287,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		logger.warn("found more than one WURCS!");
 		se = list.get(0);
 		
-		se.setValue(Image, "/glyspace/service/glycans/" + se.getValue(AccessionNumber) + "/image?style=extended&format=png&notation=cfg");
+		se.setValue(Image, "/glycans/" + se.getValue(AccessionNumber) + "/image?style=extended&format=png&notation=cfg");
 		se.setValue(FromSequence, sparqlSequence);
 		return se;
 	}
@@ -303,6 +314,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			logger.debug("sequence:>"+sequence+"<");
 			
 			setSequence(sequence.trim());
+
 			SparqlEntity se = new SparqlEntity();
 			
 			try {
@@ -310,10 +322,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			} catch (ConvertException e) {
 				logger.debug("convertexception seq:>" + getSequence());
 				logger.debug("convertexception msg:>" + e.getMessage());
-				se.setValue(FromSequence, getSequence());
 				se.setValue(Sequence, CouldNotConvertHeader + e.getMessage());
 			}
 			
+			se.setValue(FromSequence, getSequence());
 			list.add(se);
 		}
 		return list;
@@ -380,6 +392,17 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Override
 	public String register() throws SparqlException {
 		
+		// check if it doesn't exist.
+		try {
+			SparqlEntity se = searchBySequence();
+			if (null != se && se.getValue(AccessionNumber) != null && !se.getValue(AccessionNumber).equals(NotRegistered))
+				throw new SparqlException(AlreadyRegistered + " as:>" + se.getValue(AccessionNumber) + "<");
+		} catch (ConvertException e) {
+			e.printStackTrace();
+			// this should be impossible
+			throw new SparqlException(e);
+		}
+		
 		if (StringUtils.isBlank(contributor)) {
 			throw new SparqlException("Contributor name cannot be blank");
 		}
@@ -429,7 +452,30 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		insLabel.setInsert("<http://rdf.glycoinfo.org/glycan/" + accessionNumber + "/wurcs/2.0> rdfs:label \"" + getSequence() + "\"^^xsd:string .");
 		sparqlDAO.insert(insLabel);
 		
+		SparqlEntity massEntity = calculateMass(sequence);
+		
+		massEntity.setValue(Saccharide.URI, saccharideInsertSparql);
+		massInsertSparql.setSparqlEntity(massEntity);
+		sparqlDAO.insert(massInsertSparql);
+		
 		return accessionNumber;
+	}
+
+	private SparqlEntity calculateMass(String sequence2) {
+		MassSparqlProcessor processor = new MassSparqlProcessor();
+		SparqlEntity sparqlEntity = new SparqlEntity();
+		sparqlEntity.setValue(MassSelectSparql.Sequence, sequence2);
+		SparqlEntity se;
+		try {
+			se = processor.process(sparqlEntity);
+		} catch (SparqlException | WURCSMassException e) {
+			e.printStackTrace();
+			logger.debug("could not calculate mass");
+			se = new SparqlEntity();
+			se.setValue(MassInsertSparql.Mass, 0);
+			se.setValue(MassInsertSparql.MassLabel, "error calculating mass:>" + e.getMessage() + "<");
+		}
+		return se;
 	}
 
 	@Override
@@ -470,6 +516,21 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId, getId());
 		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Sequence, getSequence());
 		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, getFormat());
+
+		SaccharideInsertSparql sis = new SaccharideInsertSparql();
+		sis.setSparqlEntity(glycoSequenceInsert.getSparqlEntity());
+
+		glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.URI, sis.getUri());
+		
 		sparqlDAO.insert(glycoSequenceInsert);
+	}
+
+	@Override
+	public String register(String orig, String newStructure) throws SparqlException {
+		setId(register(newStructure));
+		setSequence(orig);
+		setFormat(DetectFormat.detect(orig));
+		registerGlycoSequence();
+		return getId();
 	}
 }

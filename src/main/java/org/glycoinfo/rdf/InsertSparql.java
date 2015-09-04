@@ -63,8 +63,9 @@ public interface InsertSparql {
 	 * Insert command.
 	 * 
 	 * @return
+	 * @throws SparqlException 
 	 */
-	public String getInsert();
+	public String getInsert() throws SparqlException;
 
 	/**
 	 * 

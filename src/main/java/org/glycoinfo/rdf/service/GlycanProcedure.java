@@ -13,6 +13,7 @@ public interface GlycanProcedure {
 	public static final String CouldNotConvertHeader = "Failed Conversion:";
 	public static final String NotRegistered = "not registered";
 	public static final String CouldNotConvert = "could not convert";
+	public static final String AlreadyRegistered = "already registered";
 	public static final String AccessionNumber = Saccharide.PrimaryId;
 	public static final String Sequence = "Sequence";
 	public static final String FromSequence = "FromSequence";
@@ -57,4 +58,6 @@ public interface GlycanProcedure {
 	public void setFormat(String value);
 
 	public void setId(String value);
+
+	public String register(String string, String string2) throws SparqlException;
 }

@@ -38,7 +38,8 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 	void init() {
 		this.prefix="prefix glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "prefix dc: <http://purl.org/dc/elements/1.1/>\n"
-				+ "prefix dcterms: <http://purl.org/dc/terms/>\n";
+				+ "prefix dcterms: <http://purl.org/dc/terms/>\n"
+				+ "prefix glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
     }
 
 	public ResourceEntryInsertSparql() {
@@ -47,7 +48,7 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 	}
 	
 	public String getURI() {
-		return "<http://rdf.glycoinfo.org/resource-entry/" + getSparqlEntity().getValue(AccessionNumber) + ">";
+		return "http://rdf.glycoinfo.org/resource-entry/" + getSparqlEntity().getValue(AccessionNumber);
 	}
 
 	public String getInsert()  {
@@ -63,15 +64,15 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 		String saccharideRelation = null;
 		if (null != getSparqlEntity().getValue(Saccharide.URI)) {
 			UriProvider saccharideUri = (UriProvider) getSparqlEntity().getObjectValue(Saccharide.URI);
-			saccharideRelation = saccharideUri.getUri() + " glycan:has_resource_entry " + getURI() + " .\n";
+			saccharideRelation = "<" + saccharideUri.getUri() + "> glycan:has_resource_entry <" + getURI() + "> .\n";
 		}
 		this.insert = (StringUtils.isBlank(saccharideRelation)? "" : saccharideRelation)
-				+ getURI() + " a " + "glycan:resource_entry .\n"
-				+ getURI() + " glycan:in_glycan_database glycan:database_" + getSparqlEntity().getValue(Database) + " .\n"
-				+ getURI() + " dcterms:identifier \"" + getSparqlEntity().getValue(AccessionNumber) + "\"^^xsd:string .\n"
-				+ getURI() + " rdfs:seeAlso <https://glytoucan.org/Structures/Glycans/" + getSparqlEntity().getValue(AccessionNumber) + "> .\n"
-				+ getURI() + " glytoucan:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(ContributorId) + "> .\n"
-				+ getURI() + " glytoucan:date_registered \"" + dateTimeStamp((Date) getSparqlEntity().getObjectValue(DataSubmittedDate)) + "\"^^xsd:dateTimeStamp ."; 
+				+ "<" + getURI() + ">" + " a " + "glycan:resource_entry .\n"
+				+ "<" + getURI() + ">" + " glycan:in_glycan_database glytoucan:database_" + getSparqlEntity().getValue(Database) + " .\n"
+				+ "<" + getURI() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(AccessionNumber) + "\"^^xsd:string .\n"
+				+ "<" + getURI() + ">" + " rdfs:seeAlso <https://glytoucan.org/Structures/Glycans/" + getSparqlEntity().getValue(AccessionNumber) + "> .\n"
+				+ "<" + getURI() + ">" + " glytoucan:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(ContributorId) + "> .\n"
+				+ "<" + getURI() + ">" + " glytoucan:date_registered \"" + dateTimeStamp((Date) getSparqlEntity().getObjectValue(DataSubmittedDate)) + "\"^^xsd:dateTimeStamp ."; 
 		return this.insert;
 	}
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.glycoinfo.conversion.error.ConvertException;
+import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
@@ -153,7 +154,7 @@ public class GlycanProcedureTest {
 	@Scope("prototype")
 	SelectSparql glycoSequenceContributorSelectSparql() {
 		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
-		sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
+		sb.setFrom("FROM <" + graph + ">\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.test.glytoucan.org/mass>");
 		return sb;
 	}
 
@@ -170,10 +171,16 @@ public class GlycanProcedureTest {
 	InsertSparql glycoSequenceInsert() {
 		GlycoSequenceInsertSparql gsis = new GlycoSequenceInsertSparql();
 		gsis.setSparqlEntity(new SparqlEntity());
-		gsis.setGraphBase("http://rdf.glytoucan.org/sequence");
+		gsis.setGraph(graph);
 		return gsis;
 	}
-	
+
+	@Bean
+	MassInsertSparql massInsertSparql() {
+		MassInsertSparql mass = new MassInsertSparql();
+		mass.setGraphBase(graph);
+		return mass;
+	}
 	
 //	@Test(expected=SparqlException.class)
 //	public void testInsufficientUser() throws SparqlException {
@@ -258,7 +265,7 @@ LIN
 		Assert.assertEquals("331ebfcfc29a997790a7a4f1671a9882", hashtext);
 	}
 	
-	@Test
+	@Test(expected=SparqlException.class)
 	public void testRegisterNew() throws SparqlException, NoSuchAlgorithmException {
 		
 		String sequence="WURCS=2.0/4,4,3/[u2122h][a2112h-1b_1-5][a2112h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O]/1-2-3-4/a4-b1_b3-c1_c3-d1";
@@ -329,4 +336,38 @@ LIN
 		
 	}
 	
+	@Test
+	public void testRegisterNew3() throws SparqlException, NoSuchAlgorithmException, ConvertException {
+		String sequence = "RES\\n"
+				+ "1b:x-dglc-HEX-1:5\\n"
+				+ "2b:x-dglc-HEX-1:5\\n"
+				+ "3b:x-dglc-HEX-1:5\\n"
+				+ "4s:n-acetyl\\n"
+				+ "5s:n-acetyl\\n"
+				+ "LIN\\n"
+				+ "1:1o(-1+1)2d\\n"
+				+ "2:2o(-1+1)3d\\n"
+				+ "3:3d(2+1)4n\\n"
+				+ "4:1d(2+1)5n\\n";
+		logger.debug("sequence:>" + sequence + "<");
+		glycanProcedure.setSequence(sequence);
+		SparqlEntity se = glycanProcedure.searchBySequence();
+
+		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycanProcedure.ResultSequence));
+		Assert.assertNotNull(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycanProcedure.FromSequence));
+
+		String wurcs = se.getValue(GlycanProcedure.ResultSequence);
+		
+		logger.debug("wurcs:>" + wurcs + "<");
+		glycanProcedure.setContributor("test");
+		
+		glycanProcedure.setSequence(sequence);
+		String id = glycanProcedure.register(sequence, wurcs);
+		se = glycanProcedure.searchByAccessionNumber(id);
+		Assert.assertNotNull(se.getValue("Mass"));
+		
+		logger.debug(se.toString());
+	}
 }

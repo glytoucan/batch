@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.1.8.RELEASE</version>
+		<version>1.2.5.RELEASE</version>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -299,6 +299,5 @@
 				<spring.mainClass>org.glycoinfo.batch.convert.kcf.KcfConvertTripleBatch</spring.mainClass>
 			</properties>
 		</profile>
-
 	</profiles>
 </project>
