@@ -42,7 +42,7 @@ public class SparqlListProcessor implements
 		this.sparql = select;
 	}
 
-//	@Autowired(required = true)
+	@Autowired(required = true)
 	SparqlDAO dao;
 
 	SparqlDAO getSparqlDAO() {
@@ -50,6 +50,7 @@ public class SparqlListProcessor implements
 	}
 
 	SparqlEntityConverter<SparqlEntity> converter;
+	SparqlEntityConverter<SparqlEntity> postConverter;
 
 	public SparqlEntityConverter<SparqlEntity> getConverter() {
 		return converter;
@@ -58,19 +59,37 @@ public class SparqlListProcessor implements
 	public void setConverter(SparqlEntityConverter<SparqlEntity> converter) {
 		this.converter = converter;
 	}
-
+	
+	
+	private SparqlEntityConverter<SparqlEntity> getPostConverter() {
+		return postConverter;
+	}
+	
+	public void setPostConverter(SparqlEntityConverter<SparqlEntity> converter) {
+		this.postConverter = converter;
+	}
+	
 	@Override
 	public List<SparqlEntity> process(final SparqlEntity sparqlEntity)
 			throws Exception {
 		logger.debug("PROCESSING:>" + sparqlEntity + "<");
 		SelectSparql select = getSelectSparql();
 		if (null != getConverter())
-			select.setSparqlEntity(getConverter().converter(sparqlEntity));
+			select.setSparqlEntity(getConverter().convert(sparqlEntity));
 		else
 			select.setSparqlEntity(sparqlEntity);
 
 		logger.debug("processor query:>" + select.getSparql() + "<");
 		List<SparqlEntity> list = getSparqlDAO().query(select);
+		
+		if (null != getPostConverter()) {
+			List<SparqlEntity> postList = new ArrayList<SparqlEntity>();
+			for (SparqlEntity postSE : list) {
+				postList.add(getPostConverter().convert(postSE));
+			}
+			list = postList;
+		}
+			
 		if (putall) {
 			ArrayList<SparqlEntity> newList = new ArrayList();
 			for (SparqlEntity sparqlEntity2 : list) {

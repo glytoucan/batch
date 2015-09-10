@@ -1,10 +1,6 @@
 package org.glycoinfo.rdf.glycan.wurcs;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.glycoinfo.rdf.SelectSparqlBean;
-import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Motif;
 import org.glycoinfo.rdf.glycan.Saccharide;
@@ -18,7 +14,7 @@ public class MotifSequenceSelectSparql extends SelectSparqlBean {
 			.getLogger(MotifSequenceSelectSparql.class);
 
 	public MotifSequenceSelectSparql() {
-		this.select = "?" + Motif.URI + " ?" + Saccharide.PrimaryId + " ?" + GlycoSequence.URI + " ?" + GlycoSequence.Sequence;
+		this.select = "?" + Motif.URI + " ?" + Saccharide.PrimaryId + " ?" + GlycoSequence.URI + " ?" + GlycoSequence.Sequence + " ?" + Motif.ReducingEnd + "\n";
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
@@ -27,6 +23,7 @@ public class MotifSequenceSelectSparql extends SelectSparqlBean {
 		= "?" + Motif.URI + " a glycan:glycan_motif .\n"
 		+ "?" + Motif.URI + " toucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n"
 		+ "?" + Motif.URI + " glycan:has_glycosequence ?" + GlycoSequence.URI + " .\n"
+		+ "?" + Motif.URI + " toucan:is_reducing_end ?" + Motif.ReducingEnd + " .\n"
 		+ "?" + GlycoSequence.URI + " glycan:has_sequence ?" + GlycoSequence.Sequence + " .\n"
 		+ "?" + GlycoSequence.URI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs ."; //" + this.format + "
 	}

@@ -26,7 +26,6 @@ public class GlycoSequenceToWurcsSelectSparql extends GlycoSequenceSelectSparql 
 
 	public GlycoSequenceToWurcsSelectSparql() {
 		super();
-		this.select += "?" + AccessionNumber + "\n";
 		this.where += "?" + SaccharideURI + " glycan:has_glycosequence ?" + FormatGlycoSequenceURI + " .\n";
 		this.where += "?" + SaccharideURI + " glytoucan:has_primary_id ?" + AccessionNumber + " .\n";
 	}

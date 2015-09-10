@@ -6,7 +6,7 @@ import org.glycoinfo.rdf.utils.SparqlEntityConverter;
 public class ConvertSparqlConverter implements SparqlEntityConverter<KcfConvertSparql> {
 
 	@Override
-	public KcfConvertSparql converter(SparqlEntity e) {
+	public KcfConvertSparql convert(SparqlEntity e) {
 		KcfConvertSparql converted = new KcfConvertSparql();
 		converted.setIdent(e.getValue("AccessionNumber"));
 //		converted.setGlycanUri(e.getValue("s"));

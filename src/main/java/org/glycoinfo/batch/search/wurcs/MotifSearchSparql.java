@@ -1,29 +1,16 @@
 package org.glycoinfo.batch.search.wurcs;
 
-import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class MotifSearchSparql extends SelectSparqlBean {
 
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(MotifSearchSparql.class);
-
-	@Autowired
-	SearchSparql searchSparql;
-	
-	public SearchSparql getSearchSparql() {
-		return searchSparql;
-	}
-
-	public void setSearchSparql(SearchSparql search) {
-		this.searchSparql = search;
-	}
 
 	public MotifSearchSparql() {
 		this.define = "DEFINE sql:select-option \"order\"";
@@ -51,9 +38,10 @@ public class MotifSearchSparql extends SelectSparqlBean {
 //				+ "?glycans glycan:has_glycosequence ?gseq .\n"
 //				+ "?gseq glycan:has_sequence ?Seq .\n"
 //				+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct\n";
-		
+		SubstructureSearchSparql substructureSearchSparql = new SubstructureSearchSparql();
+		substructureSearchSparql.getSparqlEntity().setValue(GlycoSequence.Sequence, getSparqlEntity().getValue(GlycoSequence.Sequence));
 //		try {
-			this.where += getSearchSparql().getWhere(getSparqlEntity().getValue(GlycoSequence.Sequence));
+			this.where += substructureSearchSparql.getWhere();
 //		} catch (WURCSFormatException e) {
 //			throw new SparqlException(e);
 //		}

@@ -3,6 +3,7 @@ package org.glycoinfo.rdf.glycan.wurcs;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
@@ -91,4 +92,27 @@ public class GlycoSequenceWurcsBeanTest {
 		return wrss;
 	}
 	
+	
+	@Test
+	@Transactional
+	public void testInsertMS() throws SparqlException, UnsupportedEncodingException {
+
+		sparqlDAO.insert(wurcsRDFMSInsertSparql());
+		
+		List<SparqlEntity> list = sparqlDAO.query(wurcsRDFSelectSparql());
+		if (list.iterator().hasNext()) {
+			SparqlEntity se = list.iterator().next();
+			logger.debug(se.getValue(SaccharideSelectSparql.SaccharideURI));
+		}
+	}
+
+	private InsertSparql wurcsRDFMSInsertSparql() {
+		WurcsRDFMSInsertSparql wrss = new WurcsRDFMSInsertSparql();
+		wrss.setGraph("http://rdf.test.glycoinfo.org");
+		SparqlEntity se = new SparqlEntity();
+//		se.setValue(Saccharide.PrimaryId, "G00012MO");
+		se.setValue(GlycoSequence.Sequence, "WURCS=2.0/4,4,3/[u2122h][a2112h-1b_1-5][a2112h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O]/1-2-3-4/a4-b1_b3-c1_c3-d1");
+		wrss.setSparqlEntity(se);
+		return wrss;
+	}
 }

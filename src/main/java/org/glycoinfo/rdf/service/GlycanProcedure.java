@@ -1,14 +1,16 @@
 package org.glycoinfo.rdf.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;
 
-public interface GlycanProcedure {
+public interface GlycanProcedure extends GlyConvert {
 	public static final String Image = "image"; 
 	public static final String CouldNotConvertHeader = "Failed Conversion:";
 	public static final String NotRegistered = "not registered";
@@ -41,6 +43,8 @@ public interface GlycanProcedure {
 
 	public void setContributor(String name);
 
+	public void setBatch(boolean batch);
+	
 	public Map<String, String> register(List<String> inputs) throws SparqlException;
 	
 	List<SparqlEntity> search(List<String> input) throws SparqlException;
@@ -51,7 +55,7 @@ public interface GlycanProcedure {
 	
 	public SparqlEntity searchByAccessionNumber(String accessionNumber) throws SparqlException;
 
-	public List<SparqlEntity> getGlycans() throws SparqlException;
+	public List<SparqlEntity> getGlycans(String offset, String limit) throws SparqlException;
 
 	void registerGlycoSequence() throws SparqlException;
 
@@ -60,4 +64,6 @@ public interface GlycanProcedure {
 	public void setId(String value);
 
 	public String register(String string, String string2) throws SparqlException;
+
+	public ArrayList<SparqlEntity> findMotifs(String wurcs) throws SparqlException;
 }

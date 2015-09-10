@@ -8,6 +8,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
@@ -30,8 +32,6 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +45,8 @@ import org.springframework.transaction.annotation.Transactional;
 //@SuppressWarnings({ "unchecked", "rawtypes" })
 public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 
-	public static Logger logger = (Logger) LoggerFactory
-			.getLogger("org.glytoucan.registry.dao.SparqlDAOVirtSesameImpl");
+	public static Log logger = (Log) LogFactory
+			.getLog("org.glytoucan.registry.dao.SparqlDAOVirtSesameImpl");
 
 	@Autowired(required=false)
 	TripleStoreProperties datasource;
@@ -237,6 +237,8 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 	@Override
 	@Transactional
 	public void execute(InsertSparql insert) throws SparqlException {
+		logger.debug(insert);
+
 		RepositoryConnection connection = sesameConnectionFactory.getConnection();
 
 		String format = insert.getFormat();

@@ -4,5 +4,5 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 
 public interface SparqlEntityConverter<T> {
 	
-	public T converter(SparqlEntity e);
+	public T convert(SparqlEntity e);
 }

@@ -20,7 +20,7 @@ public class InsertSparqlBean implements InsertSparql {
 	String graphbase;
 
 	StringBuffer sparql;
-	SparqlEntity sparqlEntity;
+	SparqlEntity sparqlEntity = new SparqlEntity();
 	ArrayList<InsertSparql> related;
 
 	public InsertSparqlBean(String sparql) {

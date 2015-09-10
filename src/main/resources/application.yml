@@ -8,9 +8,17 @@ spring:
         driverClassName: virtuoso.jdbc4.Driver
         dialect: sparqs
         url: jdbc:virtuoso://test.ts.glytoucan.org:1111
+        #url: jdbc:virtuoso://glycoinfo:1111
         username: dba
         password: dba
         graph: graph
-logging.path: ./log
-logging.file: debug.log
-logging.level.org.glycoinfo: DEBUG    
+logging:
+  path: ./log
+  file: debug.log
+  level.org.glycoinfo: DEBUG
+#tempgraph: http://rdf.glycoinfo.org
+
+wurcs:
+  graph:
+    target: <http://rdf.glycoinfo.org/wurcs/seq/0.3/glytoucan/20150902>
+    ms: <http://rdf.glycoinfo.org/wurcs/ms/0.2>

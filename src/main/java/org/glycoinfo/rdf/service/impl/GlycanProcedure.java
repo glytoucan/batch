@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
 import org.glycoinfo.batch.mass.MassSparqlProcessor;
+import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.conversion.GlyConvertDetect;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.conversion.util.DetectFormat;
@@ -28,6 +29,7 @@ import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.utils.AccessionNumberGenerator;
@@ -38,6 +40,21 @@ import org.springframework.stereotype.Service;
 public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedure {
 
 	public static Log logger = (Log) LogFactory.getLog(GlycanProcedure.class);
+	
+	GlyConvertDetect glyConvertDetect = new GlyConvertDetect();
+	
+	boolean isBatch;
+
+	public boolean isBatch() {
+		return isBatch;
+	}
+
+	public void setBatch(boolean isBatch) {
+		this.isBatch = isBatch;
+	}
+	
+//    @Value("${tempgraph}")
+//    private String tempgraph;
 
 	@Autowired
 	SparqlDAO sparqlDAO;
@@ -55,14 +72,26 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	SelectSparql glycoSequenceContributorSelectSparql;
 
 	@Autowired
+	SelectSparql listAllGlycoSequenceContributorSelectSparql;
+	
+	@Autowired
 	InsertSparql wurcsRDFInsertSparql;
+	
+	@Autowired
+	InsertSparql wurcsRDFMSInsertSparql;
 
 	@Autowired
 	InsertSparql glycoSequenceInsert;
 	
 	@Autowired
 	MassInsertSparql massInsertSparql;
-	
+
+	@Autowired
+	SubstructureSearchSparql substructureSearchSparql;
+
+	@Autowired
+	MotifSequenceSelectSparql motifSequenceSelectSparql;
+
 //
 //	@Autowired
 //	@Qualifier(value = "insertscintperson")
@@ -265,30 +294,31 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		logger.debug(list);
 		if (list != null && list.size() < 1) {
 			// if not wurcs, convert
-			GlyConvertDetect glyconvert = new GlyConvertDetect();
-			glyconvert.setToformat("wurcs");
+			glyConvertDetect.setToformat("wurcs");
 			logger.debug("converting:>" + sequence + "<");
-			glyconvert.setFromSequence(sequence);
-			String wurcs = glyconvert.convert();
+			setFromSequence(sequence);
+			String wurcs = convert();
 			logger.debug("converted:>" + wurcs + "<");
 			list = searchSequence(wurcs);
 			
 			if (list != null && list.size() < 1) {
 				if (null == se)
 					se = new SparqlEntity();
+				se.setValue(FromSequence, sequence);
 				se.setValue(Sequence, wurcs);
 				se.setValue(ResultSequence, wurcs);
 				se.setValue(AccessionNumber, NotRegistered);
-				setFormat(glyconvert.getFromFormat());
+				setFormat(getFromFormat());
 				return se;
 			}
 		}
+		
 		if (list != null && list.size() > 1)
-		logger.warn("found more than one WURCS!");
+			logger.warn("found more than one WURCS!");
 		se = list.get(0);
 		
 		se.setValue(Image, "/glycans/" + se.getValue(AccessionNumber) + "/image?style=extended&format=png&notation=cfg");
-		se.setValue(FromSequence, sparqlSequence);
+		se.setValue(FromSequence, sequence);
 		return se;
 	}
 	
@@ -391,74 +421,86 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	 */
 	@Override
 	public String register() throws SparqlException {
-		
+		SparqlEntity sparqlentity = new SparqlEntity();
+		String accessionNumber = null;
+
 		// check if it doesn't exist.
 		try {
-			SparqlEntity se = searchBySequence();
-			if (null != se && se.getValue(AccessionNumber) != null && !se.getValue(AccessionNumber).equals(NotRegistered))
+			sparqlentity = searchBySequence();
+			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null && !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) 
+			{
+				// TODO: check if exists 
 				throw new SparqlException(AlreadyRegistered + " as:>" + se.getValue(AccessionNumber) + "<");
+			} else
+				setSequence(sparqlentity.getValue(GlycanProcedure.Sequence));
 		} catch (ConvertException e) {
 			e.printStackTrace();
 			// this should be impossible
 			throw new SparqlException(e);
 		}
-		
-		if (StringUtils.isBlank(contributor)) {
-			throw new SparqlException("Contributor name cannot be blank");
-		}
-		
-		String accessionNumber = "G" + AccessionNumberGenerator.generateRandomString(7);
-		SparqlEntity result = searchByAccessionNumber(accessionNumber);
-		while (result != null && StringUtils.isNotBlank(result.getValue(Saccharide.PrimaryId))) {
-			logger.debug("rerolling... " + result.getValue(Saccharide.PrimaryId));
-			
-			result = searchByAccessionNumber(accessionNumber);
-		}
-		
-		logger.debug("setting accession#:>" + accessionNumber + "<");
-		
-		setId(accessionNumber);
-		SparqlEntity sparqlentity = new SparqlEntity();
-		sparqlentity.setValue(Saccharide.PrimaryId, accessionNumber);
-		
-		saccharideInsertSparql.setSparqlEntity(sparqlentity);
-		sparqlDAO.insert(saccharideInsertSparql);
 
-		contributorProcedure.setName(contributor);
-		String id = contributorProcedure.addContributor();
+		if (!isBatch) {
+			if (StringUtils.isBlank(contributor)) {
+				throw new SparqlException("Contributor name cannot be blank");
+			}
+			
+			accessionNumber = "G" + AccessionNumberGenerator.generateRandomString(7);
+			SparqlEntity result = searchByAccessionNumber(accessionNumber);
+			while (result != null && StringUtils.isNotBlank(result.getValue(Saccharide.PrimaryId))) {
+				logger.debug("rerolling... " + result.getValue(Saccharide.PrimaryId));
+				
+				result = searchByAccessionNumber(accessionNumber);
+			}
+			
+			logger.debug("setting accession#:>" + accessionNumber + "<");
+			
+			setId(accessionNumber);
+			sparqlentity.setValue(Saccharide.PrimaryId, accessionNumber);
+			
+			saccharideInsertSparql.setSparqlEntity(sparqlentity);
+			sparqlDAO.insert(saccharideInsertSparql);
+	
+			contributorProcedure.setName(contributor);
+			String id = contributorProcedure.addContributor();
 		
-		resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.URI, saccharideInsertSparql);
-		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.AccessionNumber, accessionNumber);
-		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.ContributorId, id);
-		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.DataSubmittedDate, new Date());
-		
-//		resourceEntryInsertSparql.setSparqlEntity(reisSE);
-		sparqlDAO.insert(resourceEntryInsertSparql);
-		
-		logger.debug("registering into wurcsRDF:" + accessionNumber + ":" + getSequence());
-		
-		if (null == wurcsRDFInsertSparql.getSparqlEntity())
-			wurcsRDFInsertSparql.setSparqlEntity(new SparqlEntity());
-		
-		wurcsRDFInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, accessionNumber);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.URI, saccharideInsertSparql);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.AccessionNumber, accessionNumber);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.ContributorId, id);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.DataSubmittedDate, new Date());
+				
+	//		resourceEntryInsertSparql.setSparqlEntity(reisSE);
+			sparqlDAO.insert(resourceEntryInsertSparql);
+			
+			logger.debug("registering into wurcsRDF:" + accessionNumber + ":" + getSequence());
+	
+		}
+		addWurcs();
+		return getId();
+	}
+
+	public void addWurcs() throws SparqlException {
+		logger.debug("registering wurcs:>" + getId());
+		wurcsRDFInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, getId());
 		wurcsRDFInsertSparql.getSparqlEntity().setValue(GlycoSequence.Sequence, getSequence());
 		sparqlDAO.insert(wurcsRDFInsertSparql);
-		
+
+		wurcsRDFMSInsertSparql.getSparqlEntity().setValue(GlycoSequence.Sequence, getSequence());
+		sparqlDAO.insert(wurcsRDFMSInsertSparql);
+
 		// reasoning needed?
 		// https://bitbucket.org/issaku/sparql/wiki/CONSTRUCT%20%E3%81%A7position%E3%82%92%E4%BB%98%E4%B8%8E%20%EF%BC%88WURCSSequence%EF%BC%89
-		
+
 		InsertSparqlBean insLabel = new InsertSparqlBean();
 		insLabel.setGraph(wurcsRDFInsertSparql.getGraph());
-		insLabel.setInsert("<http://rdf.glycoinfo.org/glycan/" + accessionNumber + "/wurcs/2.0> rdfs:label \"" + getSequence() + "\"^^xsd:string .");
+		insLabel.setInsert("<http://rdf.glycoinfo.org/glycan/" + getId() + "/wurcs/2.0> rdfs:label \"" + getSequence() + "\"^^xsd:string .");
 		sparqlDAO.insert(insLabel);
 		
 		SparqlEntity massEntity = calculateMass(sequence);
 		
+		saccharideInsertSparql.setSparqlEntity(wurcsRDFInsertSparql.getSparqlEntity());
 		massEntity.setValue(Saccharide.URI, saccharideInsertSparql);
 		massInsertSparql.setSparqlEntity(massEntity);
 		sparqlDAO.insert(massInsertSparql);
-		
-		return accessionNumber;
 	}
 
 	private SparqlEntity calculateMass(String sequence2) {
@@ -506,8 +548,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	}
 
 	@Override
-	public List<SparqlEntity> getGlycans() throws SparqlException {
-		return sparqlDAO.query(glycoSequenceContributorSelectSparql);
+	public List<SparqlEntity> getGlycans(String offset, String limit) throws SparqlException {
+		listAllGlycoSequenceContributorSelectSparql.setLimit(limit);
+		listAllGlycoSequenceContributorSelectSparql.setOffset(offset);
+		return sparqlDAO.query(listAllGlycoSequenceContributorSelectSparql);
 	}
 
 	@Override
@@ -533,4 +577,62 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		registerGlycoSequence();
 		return getId();
 	}
+	
+	@Override
+	public String convert() throws ConvertException {
+		return glyConvertDetect.convert();
+	}
+
+	@Override
+	public void setFromSequence(String from) {
+		glyConvertDetect.setFromSequence(from);
+	}
+
+	@Override
+	public String getFromSequence() {
+		return glyConvertDetect.getFromSequence();
+	}
+
+	@Override
+	public String getToSequence() {
+		return glyConvertDetect.getToSequence();
+	}
+
+	@Override
+	public String getFromFormat() {
+		return glyConvertDetect.getFromFormat();
+	}
+
+	@Override
+	public String getToFormat() {
+		return glyConvertDetect.getToFormat();
+	}
+
+	@Override
+	public ArrayList<SparqlEntity> findMotifs(String acc) throws SparqlException {
+		motifSequenceSelectSparql.setOrderBy("?PrimaryId");
+		List<SparqlEntity> motifList = sparqlDAO.query(motifSequenceSelectSparql);
+
+		ArrayList<SparqlEntity> results = new ArrayList<SparqlEntity>();
+		for (SparqlEntity motifSparqlEntity : motifList) {
+			String motifSequence = motifSparqlEntity.getValue(GlycoSequence.Sequence);
+			String motifId = motifSparqlEntity.getValue(GlycoSequence.AccessionNumber);
+			SparqlEntity se = new SparqlEntity();
+			
+			se.setValue(GlycoSequence.Sequence, motifSequence);
+			se.setValue(GlycoSequence.AccessionNumber, acc);
+			substructureSearchSparql.setSparqlEntity(se);
+			List<SparqlEntity> listResult = sparqlDAO.query(substructureSearchSparql);
+			logger.debug("checking motif:>" + motifId);
+			logger.debug("listResult:>" + listResult);
+			if (!listResult.isEmpty()) {
+				logger.debug("adding!" + motifId);
+				results.add(motifSparqlEntity);
+			}
+		}
+		
+		return results;
+	}
+	
+	
 }

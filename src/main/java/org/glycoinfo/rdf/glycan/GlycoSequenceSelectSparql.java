@@ -1,5 +1,6 @@
 package org.glycoinfo.rdf.glycan;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.SelectSparqlBean;
@@ -20,11 +21,10 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class GlycoSequenceSelectSparql extends SelectSparqlBean implements InitializingBean {
+public class GlycoSequenceSelectSparql extends SelectSparqlBean implements InitializingBean, GlycoSequence {
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String Sequence = "Sequence";
 	public static final String GlycanSequenceURI = "GlycanSequenceURI";
-	public static final String AccessionNumber = Saccharide.PrimaryId;
 
 	public GlycoSequenceSelectSparql(String sparql) {
 		super(sparql);
@@ -34,7 +34,8 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 		super();
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
-		this.select = "DISTINCT ?" + Sequence;
+		this.select = "DISTINCT ?" + Sequence + "\n"
+				+ "?" + AccessionNumber + "\n";
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
 	}
@@ -46,15 +47,20 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 
 	@Override
 	public String getWhere() throws SparqlException {
-		this.where = "?" + SaccharideURI + " a glycan:saccharide .\n"
-				+ "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n"
-				+ "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
-				+ "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n"
-//						+ getFilter()
-				;
-		return where;
-	}
+		String whereTmp = "?" + SaccharideURI + " a glycan:saccharide .\n"
+		+ "?" + SaccharideURI + " glytoucan:has_primary_id ?" + AccessionNumber + " .\n";
 
+		if (StringUtils.isNotBlank(getSparqlEntity().getValue(Saccharide.PrimaryId))) {
+			whereTmp += "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n";
+		}
+		whereTmp += "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
+			+ "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n";
+
+		if (StringUtils.isNotBlank(getSparqlEntity().getValue(GlycoSequence.Format))) {
+			whereTmp += "?" + GlycanSequenceURI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_" + getSparqlEntity().getValue(GlycoSequence.Format) + " .\n";
+		}
+		return whereTmp;
+	}
 
 	protected Log logger = LogFactory.getLog(getClass());
 

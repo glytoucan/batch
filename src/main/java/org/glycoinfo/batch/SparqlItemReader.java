@@ -13,6 +13,7 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.data.AbstractPaginatedDataItemReader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
@@ -61,6 +62,7 @@ public class SparqlItemReader<T extends SparqlEntity> extends
 	private SparqlDAO schemaDAO;
 
 	@Autowired
+	@Qualifier("itemReaderSelectSparql")
 	private SelectSparql selectSparql;
 
 	public SparqlItemReader() {
@@ -87,7 +89,7 @@ public class SparqlItemReader<T extends SparqlEntity> extends
 	protected Iterator<SparqlEntity> doPageRead() {
 
 		SelectSparql selectSparql = getSelectSparql();
-		selectSparql.setOffset(Integer.toString((pageSize * page) + 1));
+		selectSparql.setOffset(Integer.toString((pageSize * page)));
 		selectSparql.setLimit(Integer.toString(pageSize));
 		String q;
 		List<org.glycoinfo.rdf.dao.SparqlEntity> queryResults;

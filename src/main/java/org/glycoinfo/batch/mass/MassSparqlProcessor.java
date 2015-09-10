@@ -1,8 +1,6 @@
 package org.glycoinfo.batch.mass;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,17 +37,17 @@ public class MassSparqlProcessor implements
 		
 		if (null != sequence && sequence.length() > 0) {
 			try {
-				String decodedSequence = URLDecoder.decode(sequence, "UTF-8");
-				logger.debug("processing decoded:>" + decodedSequence + "<");
+//				String decodedSequence = URLDecoder.decode(sequence, "UTF-8");
+//				logger.debug("processing decoded:>" + decodedSequence + "<");
 				
-				t_objWURCS = t_objImporter.extractWURCSArray(decodedSequence);
+				t_objWURCS = t_objImporter.extractWURCSArray(sequence);
 			} catch (WURCSFormatException e) {
 				sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate invalid format");
 				cancalculate = false;
 //				throw new SparqlException(e);
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+//			} catch (UnsupportedEncodingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
 			}
 			if (cancalculate) {
 

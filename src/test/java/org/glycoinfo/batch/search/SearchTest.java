@@ -3,10 +3,10 @@ package org.glycoinfo.batch.search;
 import static org.junit.Assert.assertEquals;
 
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
+import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
-import org.glycoinfo.rdf.search.SearchSparqlBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -28,14 +28,12 @@ public class SearchTest {
 	@Bean
 	MotifSearchSparql getMotifSearchSparql() {
 		MotifSearchSparql search = new MotifSearchSparql();
-		search.setSearchSparql(getSearchSparql());		
 		return search;
 	}
 	
 	@Bean
-	SearchSparql getSearchSparql() {
-		SearchSparql search =  new SearchSparqlBean();
-		search.setGlycoSequenceUri(GlycoSequence.URI);
+	SubstructureSearchSparql getSearchSparql() {
+		SubstructureSearchSparql search =  new SubstructureSearchSparql();
 		return search;
 	}
 	

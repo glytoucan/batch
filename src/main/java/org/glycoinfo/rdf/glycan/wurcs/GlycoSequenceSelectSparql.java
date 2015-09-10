@@ -36,10 +36,12 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 		super();
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
-		this.select = "DISTINCT ?" + Sequence + "\n";
+		this.select = "DISTINCT ?" + Sequence + "\n"
+				+ "?" + AccessionNumber + "\n";
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n";
-		this.where = "?" + SaccharideURI + " a glycan:saccharide .\n" 
+		this.where = "?" + SaccharideURI + " a glycan:saccharide .\n"
+				+ "?" + SaccharideURI + " glytoucan:has_primary_id ?" + AccessionNumber + " .\n"
 				+ "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
 				+ "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n"
 				+ "?" + GlycanSequenceURI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n"

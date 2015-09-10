@@ -1,9 +1,11 @@
 package org.glycoinfo.rdf.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.InsertSparql;
@@ -17,10 +19,13 @@ import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
+import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFInsertSparql;
+import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
@@ -180,6 +185,33 @@ public class GlycanProcedureTest {
 		MassInsertSparql mass = new MassInsertSparql();
 		mass.setGraphBase(graph);
 		return mass;
+	}
+	
+	@Bean
+	SelectSparql listAllGlycoSequenceContributorSelectSparql() {
+		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
+		sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>");
+		return sb;
+	}
+
+	@Bean
+	MotifSequenceSelectSparql motifSequenceSelectSparql() {
+		MotifSequenceSelectSparql select = new MotifSequenceSelectSparql();
+//		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
+		return select;
+	}
+	
+	@Bean
+	SubstructureSearchSparql substructureSearchSparql() {
+		SubstructureSearchSparql ssb = new SubstructureSearchSparql();
+		return ssb;
+	}
+	
+	@Bean
+	WurcsRDFMSInsertSparql wurcsRDFMSInsertSparql() {
+		WurcsRDFMSInsertSparql wrdf = new WurcsRDFMSInsertSparql();
+		wrdf.setGraph("http://rdf.glytoucan.org/wurcs/ms");
+		return wrdf;
 	}
 	
 //	@Test(expected=SparqlException.class)
@@ -369,5 +401,43 @@ LIN
 		Assert.assertNotNull(se.getValue("Mass"));
 		
 		logger.debug(se.toString());
+	}
+	
+	@Test
+	public void testListAll() throws SparqlException, NoSuchAlgorithmException {
+		List<SparqlEntity> se = glycanProcedure.getGlycans("100", "100");
+		
+		logger.debug(se.toString());
+//		Assert.assertNotNull(se);
+		
+	}
+	
+	@Test
+	public void testFindingMotifs() throws SparqlException {
+		
+		// structure should have motifs : G99992LL
+		String acc = "WURCS=2.0/6,10,9/[a2122h-1x_1-5_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O][Aad21122h-2a_2-6_5*NCC/3=O]/1-2-3-4-2-5-6-4-2-5/a4-b1_b4-c1_d2-e1_e4-f1_f6-g2_h2-i1_i4-j1_c?-d1_c?-h1";
+		acc = "G95954RU";
+
+		// find motifs for it
+		ArrayList<SparqlEntity> list = glycanProcedure.findMotifs(acc);
+
+		ArrayList<String> compare = new ArrayList<String>();
+		for (SparqlEntity sparqlEntity : list) {
+			String id = sparqlEntity.getValue(Saccharide.PrimaryId);
+			compare.add(id);
+		}
+		
+		// check results
+		
+		ArrayList<String> correct = new ArrayList<String>();
+		correct.add("G00034MO");
+		correct.add("G00042MO");
+		correct.add("G00032MO");
+		correct.add("G00055MO");
+		correct.add("G00068MO");
+		
+		logger.debug(compare.toString());
+		Assert.assertTrue(compare.containsAll(correct));
 	}
 }

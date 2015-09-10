@@ -2,12 +2,10 @@ package org.glycoinfo.rdf.glycan;
 
 import static org.junit.Assert.assertEquals;
 
-import org.glycoinfo.batch.search.SearchSparql;
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSelectSparql;
-import org.glycoinfo.rdf.search.SearchSparqlBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -40,16 +38,9 @@ public class MotifSparqlBeanTest {
 		// G00047MO
 		se.setValue(GlycoSequence.Sequence, "WURCS=2.0/3,3,2/[x2122h-1x_1-5_2*NCC/3=O][12112h-1b_1-5][11221m-1a_1-5]/1-2-3/a3-b1_a4-c1");
 		motfs.setSparqlEntity(se);
-		motfs.setSearchSparql(getSearchSparql());
 		return motfs;
 	}
 	
-	@Bean
-	SearchSparql getSearchSparql() {
-		SearchSparqlBean ss = new SearchSparqlBean();
-		ss.setGlycoSequenceUri(GlycoSequence.URI);
-		return ss;
-	}
 
 //	@Bean
 //	ConvertInsertSparql getConvertInsertSparql() {

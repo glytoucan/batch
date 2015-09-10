@@ -16,3 +16,7 @@ triplestore:
     url: http://localhost:5358/openrdf-sesame/repositories/testnative
 logging:
     level: org.glycoinfo=DEBUG
+wurcs:
+  graph:
+    target: <http://rdf.glycoinfo.org/wurcs/seq/0.3/glytoucan/20150902>
+    ms: <http://rdf.glycoinfo.org/wurcs/ms/0.2>

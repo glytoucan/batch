@@ -299,5 +299,11 @@
 				<spring.mainClass>org.glycoinfo.batch.convert.kcf.KcfConvertTripleBatch</spring.mainClass>
 			</properties>
 		</profile>
+		<profile>
+			<id>rdf</id>
+			<properties>
+				<spring.mainClass>org.glycoinfo.batch.glytoucan.GlycoCTProcessBatch</spring.mainClass>
+			</properties>
+		</profile>
 	</profiles>
 </project>

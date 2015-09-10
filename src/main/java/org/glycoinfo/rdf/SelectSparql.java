@@ -3,11 +3,9 @@ package org.glycoinfo.rdf;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.scint.ClassHandler;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRawValue;
 
 /**
  * 
@@ -49,6 +47,8 @@ import com.fasterxml.jackson.annotation.JsonRawValue;
 public interface SelectSparql {
 	
 	public static String PRIMARY_KEY = "primary_key";
+	public static String TRUE = "1";
+	public static String FALSE = "0";
 	
 	@JsonProperty(value="define")
 	public String getDefine();

@@ -1,15 +1,6 @@
 package org.glycoinfo.rdf.glycan;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
-import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author aoki
  *
  */
-public class MotifInsertSparql extends InsertSparqlBean {
+public class MotifInsertSparql extends InsertSparqlBean implements Motif {
 
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(MotifInsertSparql.class);
