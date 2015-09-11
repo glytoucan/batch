@@ -33,7 +33,6 @@ public class GlycoSequenceToWurcsSelectSparql extends GlycoSequenceSelectSparql 
 	public GlycoSequenceToWurcsSelectSparql(String format) throws SparqlException {
 		super();
 		this.format = format;
-		this.select += "?" + AccessionNumber + "\n";
 		this.where += "?" + SaccharideURI + " glycan:has_glycosequence ?" + FormatGlycoSequenceURI + " .\n"
 				+ "?" + FormatGlycoSequenceURI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_" + format + " . \n";
 		this.where += "?" + SaccharideURI + " glytoucan:has_primary_id ?" + AccessionNumber + " .\n";

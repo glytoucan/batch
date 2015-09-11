@@ -13,6 +13,7 @@ public interface UserProcedure {
 	public static final String picture= "picture";
 	public static final String email="email", verifiedEmail="verifiedEmail";
 	
+	
 	public void addUser() throws SparqlException;
 	
 	public void setSparqlEntity(SparqlEntity s);

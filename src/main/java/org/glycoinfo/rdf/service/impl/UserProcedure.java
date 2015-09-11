@@ -5,6 +5,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.mail.Message;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -14,11 +20,16 @@ import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
+	Log logger = LogFactory.getLog(UserProcedure.class);
+	
 	String[] requiredFields = {SelectScint.PRIMARY_KEY, "email", "givenName", "familyName", "verifiedEmail"};
 	
 	@Autowired
@@ -42,6 +53,9 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	
 	@Autowired
 	ContributorProcedure contributorProcedure;
+
+	@Autowired(required=false)
+	JavaMailSender mailSender;
 
 	ClassHandler getPersonClassHandler() throws SparqlException {
 		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "Person");
@@ -82,7 +96,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 			throw new SparqlException("PRIMARY_KEY is >" + personUID + "<");
 		}
 
-		SparqlEntity sparqlentityPerson = new SparqlEntity(personUID);
+		final SparqlEntity sparqlentityPerson = new SparqlEntity(personUID);
 		
 		for (String field : requiredFields) {
 			if (field.equals("verifiedEmail"))
@@ -101,7 +115,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		SparqlEntity sparqlentityOrganization = new SparqlEntity("glytoucan");
 		organizationSelect.setSparqlEntity(sparqlentityOrganization);
 		
-		String verified = getSparqlEntity().getValue("verifiedEmail");
+		String verified = getSparqlEntity().getValue(verifiedEmail);
 		if (verified != null && verified.equals("true")) {
 			sparqlentityPerson.setValue("contributor", organizationSelect);
 		}
@@ -144,6 +158,28 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		contributorProcedure.setName(getSparqlEntity().getValue(org.glycoinfo.rdf.service.UserProcedure.givenName));
 		contributorProcedure.addContributor();
+		
+		
+        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+
+        	public void prepare(MimeMessage mimeMessage) throws Exception {
+
+                mimeMessage.setRecipient(Message.RecipientType.TO,
+                        new InternetAddress(sparqlentityPerson.getValue(email)));
+                mimeMessage.setFrom(new InternetAddress("admin@glytoucan.org"));
+                mimeMessage.setSubject("registration:" + sparqlentityPerson.getValue(givenName) + " " + sparqlentityPerson.getValue(email));
+                mimeMessage.setText(
+                        "new user info:\nFirst Name:" + sparqlentityPerson.getValue(givenName) + "\nLast Name:"
+                            + sparqlentityPerson.getValue(familyName) + "\nemail:" + sparqlentityPerson.getValue(email) + "\nverified:" + sparqlentityPerson.getValue(verifiedEmail));
+            }
+        };
+
+        try {
+            this.mailSender.send(preparator);
+        }
+        catch (MailException ex) {
+            logger.error(ex.getMessage());
+        }
 	}
 	
 	@Override
