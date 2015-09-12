@@ -1,2 +1,2 @@
 #!/bin/sh
-mvn -DskipTests=true deploy -P jar
+mvn -DskipTests=true deploy -P wurcs
