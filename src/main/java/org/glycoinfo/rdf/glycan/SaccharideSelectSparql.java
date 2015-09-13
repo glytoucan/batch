@@ -37,9 +37,8 @@ public class SaccharideSelectSparql extends SelectSparqlBean {
 	}
 	
 	public String getPrimaryId() {
-		return "\"" + getSparqlEntity().getValue(Saccharide.PrimaryId) + "\"^^xsd:string";
+		return "\"" + getSparqlEntity().getValue(Saccharide.PrimaryId) + "\"";
 	}
-
 
 	@Override
 	public String getWhere() throws SparqlException {
