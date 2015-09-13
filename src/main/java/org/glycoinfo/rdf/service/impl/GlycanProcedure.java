@@ -31,6 +31,7 @@ import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.utils.AccessionNumberGenerator;
@@ -79,7 +80,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	InsertSparql wurcsRDFInsertSparql;
 	
 	@Autowired
-	InsertSparql wurcsRDFMSInsertSparql;
+	WurcsRDFMSInsertSparql wurcsRDFMSInsertSparql;
 
 	@Autowired
 	InsertSparql glycoSequenceInsert;
