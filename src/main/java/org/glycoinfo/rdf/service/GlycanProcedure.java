@@ -66,4 +66,6 @@ public interface GlycanProcedure extends GlyConvert {
 	public String register(String string, String string2) throws SparqlException;
 
 	public ArrayList<SparqlEntity> findMotifs(String wurcs) throws SparqlException;
+
+	boolean checkExists(String id) throws SparqlException;
 }

@@ -28,6 +28,7 @@ import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
+import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
@@ -91,6 +92,9 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 
 	@Autowired
 	MotifSequenceSelectSparql motifSequenceSelectSparql;
+
+	@Autowired
+	SaccharideSelectSparql saccharideSelectSparql;
 
 //
 //	@Autowired
@@ -634,5 +638,13 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		return results;
 	}
 	
-	
+	@Override
+	public boolean checkExists(String id) throws SparqlException {
+		SparqlEntity se = new SparqlEntity();
+		
+		se.setValue(Saccharide.PrimaryId, id);
+		saccharideSelectSparql.setSparqlEntity(se);
+		List<SparqlEntity> listResult = sparqlDAO.query(saccharideSelectSparql);
+		return !(listResult.isEmpty());
+	}
 }
