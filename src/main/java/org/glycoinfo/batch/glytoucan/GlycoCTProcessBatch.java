@@ -19,6 +19,7 @@ import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
+import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFInsertSparql;
@@ -240,6 +241,13 @@ public class GlycoCTProcessBatch {
 	MotifSequenceSelectSparql motifSequenceSelectSparql() {
 		MotifSequenceSelectSparql select = new MotifSequenceSelectSparql();
 //		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
+		return select;
+	}
+	
+	@Bean
+	SaccharideSelectSparql saccharideSelectSparql() {
+		SaccharideSelectSparql select = new SaccharideSelectSparql();
+		select.setFrom("FROM <http://rdf.glytoucan.org>\n");
 		return select;
 	}
 
