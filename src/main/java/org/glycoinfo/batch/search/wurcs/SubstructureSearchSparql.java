@@ -101,6 +101,7 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 
 		WURCSArrayToSequence2 t_oA2S = new WURCSArrayToSequence2();
 		t_oA2S.start(t_oWURCS);
+		
 		WURCSSequence2 t_oSeq = t_oA2S.getSequence();
 
 		WURCSSequence2ExporterSPARQL t_oExport = new WURCSSequence2ExporterSPARQL();
@@ -110,7 +111,7 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 		t_oExport.addTargetGraphURI(getGraphtarget()); // Add your terget graph
 		//t_oExport.setMSGraphURI("<http://rdf.glycoinfo.org/wurcs/0.5.1/ms>"); // Set your monosaccharide graph
 		t_oExport.hideComments(true); // Hide all comments in query
-//		t_oExport.setSearchSupersumption(true); // Search supersumption of monosaccharide
+		t_oExport.setSearchSupersumption(true); // Search supersumption of monosaccharide
 		t_oExport.setMSGraphURI(getGraphms());
 		String reducing = getSparqlEntity().getValue(Motif.ReducingEnd);
 		if (StringUtils.isNotBlank(reducing) && reducing.equals(SelectSparql.TRUE))

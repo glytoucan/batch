@@ -76,11 +76,11 @@ public class GlycoSequenceWurcsBeanTest {
 
 		sparqlDAO.insert(wurcsRDFInsertSparql());
 		
-		List<SparqlEntity> list = sparqlDAO.query(wurcsRDFSelectSparql());
-		if (list.iterator().hasNext()) {
-			SparqlEntity se = list.iterator().next();
-			logger.debug(se.getValue(SaccharideSelectSparql.SaccharideURI));
-		}
+//		List<SparqlEntity> list = sparqlDAO.query(wurcsRDFSelectSparql());
+//		if (list.iterator().hasNext()) {
+//			SparqlEntity se = list.iterator().next();
+//			logger.debug(se.getValue(SaccharideSelectSparql.SaccharideURI));
+//		}
 	}
 
 	private SelectSparql wurcsRDFSelectSparql() {
@@ -115,4 +115,25 @@ public class GlycoSequenceWurcsBeanTest {
 		wrss.setSparqlEntity(se);
 		return wrss;
 	}
+	
+	@Test
+	@Transactional
+	public void testSelectMS() throws SparqlException, UnsupportedEncodingException {
+		List<SparqlEntity> list = sparqlDAO.query(monosaccharideSelectSparql());
+		if (list.size() < 1)
+			Assert.fail();
+		for (SparqlEntity sparqlEntity : list) {
+			logger.debug(sparqlEntity.getValue(monosaccharideSelectSparql().MonosaccharideDBURI));
+		}
+	}
+	
+	@Bean
+	MonosaccharideSelectSparql monosaccharideSelectSparql() {
+		MonosaccharideSelectSparql sb = new MonosaccharideSelectSparql();
+		SparqlEntity sparqlentity = new SparqlEntity();
+		sparqlentity.setValue(Saccharide.PrimaryId, "G00031MO");
+		sb.setSparqlEntity(sparqlentity);
+		return sb;
+	}
+
 }

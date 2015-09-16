@@ -53,9 +53,9 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	
 	@Autowired
 	ContributorProcedure contributorProcedure;
-
-	@Autowired(required=false)
-	JavaMailSender mailSender;
+	
+	@Autowired
+	MailService mailService;
 
 	ClassHandler getPersonClassHandler() throws SparqlException {
 		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "Person");
@@ -89,6 +89,11 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		if (!columns.containsAll(Arrays.asList(requiredFields))) {
 			throw new SparqlException("not all required fields are supplied");
 		}
+		
+		String email = getSparqlEntity().getValue("email");
+		List usersWithEmail = getUser(email);
+		if (usersWithEmail.size() > 0)  // if this email exists, already registered, dont need to add.
+			return;
 
 		String personUID = getSparqlEntity().getValue(SelectScint.PRIMARY_KEY);
 		// check for primary key of user.  (should be at least at UUID)
@@ -159,29 +164,12 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		contributorProcedure.setName(getSparqlEntity().getValue(org.glycoinfo.rdf.service.UserProcedure.givenName));
 		contributorProcedure.addContributor();
 		
-		
-        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+		String name = getSparqlEntity().getValue("givenName");
 
-        	public void prepare(MimeMessage mimeMessage) throws Exception {
-
-                mimeMessage.setRecipient(Message.RecipientType.TO,
-                        new InternetAddress(sparqlentityPerson.getValue(email)));
-                mimeMessage.setFrom(new InternetAddress("admin@glytoucan.org"));
-                mimeMessage.setSubject("registration:" + sparqlentityPerson.getValue(givenName) + " " + sparqlentityPerson.getValue(email));
-                mimeMessage.setText(
-                        "new user info:\nFirst Name:" + sparqlentityPerson.getValue(givenName) + "\nLast Name:"
-                            + sparqlentityPerson.getValue(familyName) + "\nemail:" + sparqlentityPerson.getValue(email) + "\nverified:" + sparqlentityPerson.getValue(verifiedEmail));
-            }
-        };
-
-        try {
-            this.mailSender.send(preparator);
-        }
-        catch (MailException ex) {
-            logger.error(ex.getMessage());
-        }
+		mailService.newRegistration(email, name);
+		mailService.newRegistrationAdmin(sparqlEntityPerson);
 	}
-	
+
 	@Override
 	public List<SparqlEntity> getUser(String email) throws SparqlException {
 
