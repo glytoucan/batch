@@ -37,7 +37,7 @@ public class ResourceEntrySparqlBeanTest {
 	ResourceEntryInsertSparql getResourceEntrySparql() {
 		ResourceEntryInsertSparql ins = new ResourceEntryInsertSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
-		sparqlentity.setValue(ResourceEntry.AccessionNumber, "G00TESTDATA");
+		sparqlentity.setValue(ResourceEntry.Identifier, "G00TESTDATA");
 		sparqlentity.setValue(Saccharide.PrimaryId, "TEST");
 		sparqlentity.setValue(ResourceEntry.ContributorId, "1234");
 		sparqlentity.setValue(ResourceEntry.Database, "glytoucan");
@@ -47,6 +47,16 @@ public class ResourceEntrySparqlBeanTest {
 		ins.setGraph("http://test");
 		return ins;
 	}
+	
+	@Bean
+	ResourceEntrySelectSparql resourceEntrySelectSparql() {
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(ResourceEntry.Identifier, "252275760");
+		ResourceEntrySelectSparql re = new ResourceEntrySelectSparql();
+		re.setSparqlEntity(se);
+		return re;
+	}
+
 
 	@Test
 	@Transactional
@@ -59,6 +69,17 @@ public class ResourceEntrySparqlBeanTest {
 			Assert.fail("no results");
 		for (SparqlEntity sparqlEntity : list) {
 			Assert.assertEquals("Thu Jan 01 09:00:00 JST 1970", sparqlEntity.getValue("date"));
+		}
+	}
+	
+	@Test
+	public void testSelect() throws SparqlException, UnsupportedEncodingException {
+		List<SparqlEntity> list = sparqlDAO.query(resourceEntrySelectSparql());
+		
+		if (list.size() < 1)
+			Assert.fail("no results");
+		for (SparqlEntity sparqlEntity : list) {
+			Assert.assertEquals("252275760", sparqlEntity.getValue(ResourceEntry.Identifier));
 		}
 	}
 }

@@ -34,8 +34,7 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 		super();
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
-		this.select = "DISTINCT ?" + Sequence + "\n"
-				+ "?" + AccessionNumber + "\n";
+		this.select = "DISTINCT ?" + Sequence + "\n";
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
 	}
@@ -47,12 +46,7 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 
 	@Override
 	public String getWhere() throws SparqlException {
-		String whereTmp = "?" + SaccharideURI + " a glycan:saccharide .\n"
-		+ "?" + SaccharideURI + " glytoucan:has_primary_id ?" + AccessionNumber + " .\n";
-
-		if (StringUtils.isNotBlank(getSparqlEntity().getValue(Saccharide.PrimaryId))) {
-			whereTmp += "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n";
-		}
+		String whereTmp = super.getWhere();
 		whereTmp += "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
 			+ "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n";
 

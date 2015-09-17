@@ -483,7 +483,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			String id = contributorProcedure.addContributor();
 		
 			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.URI, saccharideInsertSparql);
-			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.AccessionNumber, accessionNumber);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, accessionNumber);
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.ContributorId, id);
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.DataSubmittedDate, new Date());
 				

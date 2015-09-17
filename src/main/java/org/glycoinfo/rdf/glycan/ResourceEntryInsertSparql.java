@@ -48,7 +48,7 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 	}
 	
 	public String getURI() {
-		return "http://rdf.glycoinfo.org/resource-entry/" + getSparqlEntity().getValue(AccessionNumber);
+		return "http://rdf.glycoinfo.org/resource-entry/" + getSparqlEntity().getValue(Saccharide.PrimaryId);
 	}
 
 	public String getInsert()  {
@@ -69,8 +69,8 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 		this.insert = (StringUtils.isBlank(saccharideRelation)? "" : saccharideRelation)
 				+ "<" + getURI() + ">" + " a " + "glycan:resource_entry .\n"
 				+ "<" + getURI() + ">" + " glycan:in_glycan_database glytoucan:database_" + getSparqlEntity().getValue(Database) + " .\n"
-				+ "<" + getURI() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(AccessionNumber) + "\"^^xsd:string .\n"
-				+ "<" + getURI() + ">" + " rdfs:seeAlso <https://glytoucan.org/Structures/Glycans/" + getSparqlEntity().getValue(AccessionNumber) + "> .\n"
+				+ "<" + getURI() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(Identifier) + "\" .\n"
+				+ "<" + getURI() + ">" + " rdfs:seeAlso <https://glytoucan.org/Structures/Glycans/" + getSparqlEntity().getValue(Identifier) + "> .\n"
 				+ "<" + getURI() + ">" + " glytoucan:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(ContributorId) + "> .\n"
 				+ "<" + getURI() + ">" + " glytoucan:date_registered \"" + dateTimeStamp((Date) getSparqlEntity().getObjectValue(DataSubmittedDate)) + "\"^^xsd:dateTimeStamp ."; 
 		return this.insert;
