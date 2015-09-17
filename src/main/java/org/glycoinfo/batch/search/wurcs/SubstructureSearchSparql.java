@@ -58,7 +58,7 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 	
 	@Override
 	public String getFrom() {
-		return "FROM <http://rdf.glycoinfo.org/wurcs/ms/0.2>\n"
+		return "FROM " + getGraphms() + "\n"
 				+ "FROM " + getGraphtarget() + "\n"
 				+ "FROM <http://rdf.glytoucan.org>\n";
 	}

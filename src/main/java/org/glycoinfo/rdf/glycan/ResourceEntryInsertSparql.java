@@ -48,7 +48,7 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 	}
 	
 	public String getURI() {
-		return "http://rdf.glycoinfo.org/resource-entry/" + getSparqlEntity().getValue(Saccharide.PrimaryId);
+		return "http://rdf.glycoinfo.org/resource-entry/" + getSparqlEntity().getValue(Identifier);
 	}
 
 	public String getInsert()  {

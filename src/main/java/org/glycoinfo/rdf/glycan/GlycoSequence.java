@@ -7,5 +7,6 @@ public interface GlycoSequence extends ClassLabel {
 	public static final String Sequence = "Sequence";
 	public static final String URI = "GlycoSequenceURI";
 	public static final String AccessionNumber = Saccharide.PrimaryId;
-
+	public static final String SaccharideURI = Saccharide.URI;
+	public static final String GlycanSequenceURI = "GlycanSequenceURI";
 }

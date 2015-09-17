@@ -37,6 +37,15 @@ public class GlycoSequenceWurcsBeanTest {
 	SparqlDAO sparqlDAO;
 
 	@Bean
+	ComponentGroupSelectSparql componentGroupSelectSparql() {
+		ComponentGroupSelectSparql cgs = new ComponentGroupSelectSparql();
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(Saccharide.PrimaryId, "G00030MO");
+		cgs.setSparqlEntity(se);
+		return cgs;
+	}
+	
+	@Bean
 	GlycoSequenceResourceEntryContributorSelectSparql getGlycoSequenceResourceEntryContributorSelectSparql() {
 		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
@@ -106,6 +115,17 @@ public class GlycoSequenceWurcsBeanTest {
 		}
 	}
 
+	@Test
+	@Transactional
+	public void testSelectComponentGroup() throws SparqlException, UnsupportedEncodingException {
+		List<SparqlEntity> list = sparqlDAO.query(componentGroupSelectSparql());
+		if (list.iterator().hasNext()) {
+			SparqlEntity se = list.iterator().next();
+			logger.debug(se.getValue("count"));
+		}
+	}
+
+	
 	private InsertSparql wurcsRDFMSInsertSparql() {
 		WurcsRDFMSInsertSparql wrss = new WurcsRDFMSInsertSparql();
 		wrss.setGraph("http://rdf.test.glycoinfo.org");

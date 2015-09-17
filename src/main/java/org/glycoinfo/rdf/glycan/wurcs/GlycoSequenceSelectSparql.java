@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
@@ -21,11 +22,7 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class GlycoSequenceSelectSparql extends SelectSparqlBean implements InitializingBean {
-	public static final String SaccharideURI = Saccharide.URI;
-	public static final String Sequence = "Sequence";
-	public static final String GlycanSequenceURI = "GlycanSequenceURI";
-	public static final String AccessionNumber = Saccharide.PrimaryId;
+public class GlycoSequenceSelectSparql extends SelectSparqlBean implements InitializingBean, GlycoSequence {
 
 	private boolean whereset = false;
 	public GlycoSequenceSelectSparql(String sparql) {

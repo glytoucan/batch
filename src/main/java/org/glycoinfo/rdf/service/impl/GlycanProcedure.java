@@ -29,6 +29,7 @@ import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Monosaccharide;
+import org.glycoinfo.rdf.glycan.ResourceEntry;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
@@ -450,8 +451,9 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			{
 				// TODO: check if exists 
 				throw new SparqlException(AlreadyRegistered + " as:>" + se.getValue(AccessionNumber) + "<");
-			} else
+			} else {
 				setSequence(sparqlentity.getValue(GlycanProcedure.Sequence));
+			}
 		} catch (ConvertException e) {
 			e.printStackTrace();
 			// this should be impossible
@@ -483,10 +485,11 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			String id = contributorProcedure.addContributor();
 		
 			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.URI, saccharideInsertSparql);
-			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, accessionNumber);
-			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.ContributorId, id);
-			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntryInsertSparql.DataSubmittedDate, new Date());
-				
+			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Identifier, accessionNumber);
+			
+			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.ContributorId, id);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.DataSubmittedDate, new Date());
+
 	//		resourceEntryInsertSparql.setSparqlEntity(reisSE);
 			sparqlDAO.insert(resourceEntryInsertSparql);
 			
@@ -682,5 +685,20 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		saccharideSelectSparql.setSparqlEntity(se);
 		List<SparqlEntity> listResult = sparqlDAO.query(saccharideSelectSparql);
 		return !(listResult.isEmpty());
+	}
+
+	@Override
+	public List<SparqlEntity> substructureSearch(String sequence, String limit,
+			String offset) throws SparqlException {
+		
+		// wurcs to sparql
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(GlycoSequence.Sequence, sequence);
+		SubstructureSearchSparql sss = substructureSearchSparql;
+		sss.setLimit(limit);
+		sss.setOffset(offset);
+		sss.setSparqlEntity(se);
+		
+		return sparqlDAO.query(sss);
 	}
 }

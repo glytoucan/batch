@@ -57,6 +57,8 @@ public interface GlycanProcedure extends GlyConvert {
 
 	public List<SparqlEntity> getGlycans(String offset, String limit) throws SparqlException;
 
+	public List<SparqlEntity> substructureSearch(String sequence, String limit, String offset) throws SparqlException;
+
 	void registerGlycoSequence() throws SparqlException;
 
 	public void setFormat(String value);

@@ -2,6 +2,7 @@ package org.glycoinfo.rdf.glycan.wurcs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -34,10 +35,17 @@ public class GlycoSequenceResourceEntryContributorSelectSparql extends GlycoSequ
 						+ "?" + Contributor + "\n"
 						+ "?GlycoCTSequence" + "\n"
 						+ "?DateRegistered" + "\n";
-		
-		this.where += "?" + SaccharideURI + " glycan:has_glycosequence ?GlycanSequenceGlycoCTURI .\n"
+	}
+	
+	
+	
+	@Override
+	public String getWhere() throws SparqlException {
+		return super.getWhere() + " OPTIONAL {\n"
+				+ "?" + SaccharideURI + " glycan:has_glycosequence ?GlycanSequenceGlycoCTURI .\n"
 				+ "?GlycanSequenceGlycoCTURI glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct .\n"
 				+ "?GlycanSequenceGlycoCTURI glycan:has_sequence ?GlycoCTSequence .\n"
+				+ "}\n"
 				+ "?" + SaccharideURI + " glycan:has_resource_entry ?resource .\n"
 				+ "?resource glycan:in_glycan_database glytoucan:database_glytoucan .\n"
 				+ "?resource glytoucan:contributor ?contributorURI .\n"
@@ -48,8 +56,10 @@ public class GlycoSequenceResourceEntryContributorSelectSparql extends GlycoSequ
 				+ "?derivMass glytoucan:has_mass ?" + Mass + " .\n"
 				+ "}\n"
 				;
-	}
-	
+		}
+
+
+
 	protected Log logger = LogFactory.getLog(getClass());
 
 	@Override
