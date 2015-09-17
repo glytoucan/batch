@@ -21,4 +21,9 @@ public interface UserProcedure {
 	public SparqlEntity getSparqlEntity();
 
 	List<SparqlEntity> getUser(String email) throws SparqlException;
+	
+	public boolean isSendEmail();
+
+	public void setSendEmail(boolean sendEmail);
+
 }

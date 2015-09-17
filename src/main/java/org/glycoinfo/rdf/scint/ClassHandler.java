@@ -54,6 +54,8 @@ public class ClassHandler {
 
 			String result = SchemaSparqlFormatter.getDomainName(this, sparqlEntity.getValue("result"));
 			logger.debug("result:>" + result + "<");
+			if (null == result)
+				continue;
 
 			domains.add(result);
 		}

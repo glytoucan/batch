@@ -6,9 +6,12 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SesameDAOTestConfig;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
+import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
+import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {UserProcedureTest.class, SesameDAOTestConfig.class})
+@SpringApplicationConfiguration(classes = {UserProcedureTest.class, VirtSesameTransactionConfig.class, GlycanProcedureConfig.class })
 @ComponentScan(basePackages = {"org.glycoinfo.rdf.service", "org.glycoinfo.rdf.scint"})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf"}, excludeFilters={
 //		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=Configuration.class)})
@@ -94,6 +97,12 @@ public class UserProcedureTest {
 		UserProcedure user = new org.glycoinfo.rdf.service.impl.UserProcedure();
 		return user;
 	}
+	
+	@Bean(name = "contributorProcedure")
+	ContributorProcedure getContributorProcedure() throws SparqlException {
+		ContributorProcedure cp = new ContributorProcedureRdf();
+		return cp;
+	}
 
 	@Test(expected=SparqlException.class)
 	public void testInsufficientUser() throws SparqlException {
@@ -111,6 +120,7 @@ public class UserProcedureTest {
 		se.setValue("givenName", "person");
 		se.setValue("familyName", "789");
 		se.setValue("verifiedEmail", "true");
+		userProcedure.setSendEmail(false);
 		userProcedure.setSparqlEntity(se);
 		userProcedure.addUser();
 

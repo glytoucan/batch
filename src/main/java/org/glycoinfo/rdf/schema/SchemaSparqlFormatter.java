@@ -5,11 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.UriProvider;
 import org.glycoinfo.rdf.scint.ClassHandler;
 
 public class SchemaSparqlFormatter {
+	
+	public static final Log logger = LogFactory.getLog(SchemaSparqlFormatter.class);
 
 	public static String getPrefixClassName(ClassHandler classHandler) {
 		return classHandler.getPrefix() + ":" + classHandler.getClassName();
@@ -22,6 +26,10 @@ public class SchemaSparqlFormatter {
 	public static String getDomainName(ClassHandler classHandler, String uri) {
 		// uri = http://schema.org/additionalName
 		// prefix = http://schema.org/
+		if (!uri.contains(classHandler.getPrefixIri())) {
+			logger.debug("uri:>" + uri + "< not :>" + classHandler.getPrefixIri() + "<");
+			return null;
+		}
 		return uri.substring(classHandler.getPrefixIri().length(), uri.length());
 		// additionalName
 	}
