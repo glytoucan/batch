@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class GlycoSequenceSelectSparql extends SelectSparqlBean implements InitializingBean, GlycoSequence {
+public class GlycoSequenceSelectSparql extends SaccharideSelectSparql implements InitializingBean, GlycoSequence {
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String Sequence = "Sequence";
 	public static final String GlycanSequenceURI = "GlycanSequenceURI";
