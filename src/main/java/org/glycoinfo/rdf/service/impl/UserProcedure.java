@@ -31,7 +31,17 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	Log logger = LogFactory.getLog(UserProcedure.class);
 	
 	String[] requiredFields = {SelectScint.PRIMARY_KEY, "email", "givenName", "familyName", "verifiedEmail"};
+
+	boolean sendEmail;
 	
+	public boolean isSendEmail() {
+		return sendEmail;
+	}
+
+	public void setSendEmail(boolean sendEmail) {
+		this.sendEmail = sendEmail;
+	}
+
 	@Autowired
 	SparqlDAO sparqlDAO;
 	
@@ -52,6 +62,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	InsertScint insertScintRegisterAction;
 	
 	@Autowired
+	@Qualifier(value = "contributorProcedure")
 	ContributorProcedure contributorProcedure;
 	
 	@Autowired
@@ -166,8 +177,10 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		String name = getSparqlEntity().getValue("givenName");
 
+		if (isSendEmail()) {
 		mailService.newRegistration(email, name);
 		mailService.newRegistrationAdmin(sparqlEntityPerson);
+		}
 	}
 
 	@Override
