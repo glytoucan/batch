@@ -39,25 +39,25 @@ public class WurcsRDFInsertSparql extends InsertSparqlBean {
 			e.printStackTrace();
 			throw new SparqlException(e);
 		}
-//		TreeSet<String> t_setUniqueMSs = new TreeSet<String>();
-//
-//		// Collect unique MSs
-//		WURCSExporter t_oExport = new WURCSExporter();
-//		WURCSArray t_oArray = t_oFactory.getArray();
-//		for ( UniqueRES t_oURES : t_oArray.getUniqueRESs() ) {
-//			String t_strMS = t_oExport.getUniqueRESString(t_oURES);
-//			if ( t_setUniqueMSs.contains(t_strMS) ) continue;
-//			t_setUniqueMSs.add(t_strMS);
-//		}
-//
-//		System.out.println(sequence);
-//		String t_strAccessionNumber = id;
-//
-//		// Generate RDF strings (ver 0.5.1)
-//		WURCSRDFModelGlycan051 t_oRDFExport2 = new WURCSRDFModelGlycan051( t_strAccessionNumber, t_oArray, false );
-//		
-//		
-//		String wurcsrdf = t_oRDFExport2.get_RDF("TURTLE") ;
+		TreeSet<String> t_setUniqueMSs = new TreeSet<String>();
+
+		// Collect unique MSs
+		WURCSExporter t_oExport = new WURCSExporter();
+		WURCSArray t_oArray = t_oFactory.getArray();
+		for ( UniqueRES t_oURES : t_oArray.getUniqueRESs() ) {
+			String t_strMS = t_oExport.getUniqueRESString(t_oURES);
+			if ( t_setUniqueMSs.contains(t_strMS) ) continue;
+			t_setUniqueMSs.add(t_strMS);
+		}
+
+		System.out.println(sequence);
+		String t_strAccessionNumber = id;
+
+		// Generate RDF strings (ver 0.5.1)
+		WURCSRDFModelGlycan051 t_oRDFExport2 = new WURCSRDFModelGlycan051( t_strAccessionNumber, t_oArray, false );
+		
+		
+		String wurcsrdf = t_oRDFExport2.get_RDF("TURTLE") ;
 		
 		
 		// For using WURCSSequence
@@ -65,7 +65,7 @@ public class WurcsRDFInsertSparql extends InsertSparqlBean {
 
 		WURCSSequence2ExporterRDFModel t_oSeq2Export = new WURCSSequence2ExporterRDFModel( id, t_oSeq2, false );
 
-		String wurcsrdf = t_oSeq2Export.get_RDF("TURTLE");
+		 wurcsrdf += t_oSeq2Export.get_RDF("TURTLE");
 		logger.debug(wurcsrdf);
 		
 		
