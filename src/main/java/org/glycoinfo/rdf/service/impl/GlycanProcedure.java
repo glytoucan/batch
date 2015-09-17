@@ -1,5 +1,7 @@
 package org.glycoinfo.rdf.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
 import org.glycoinfo.batch.mass.MassSparqlProcessor;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
+import org.glycoinfo.client.MSdbClient;
 import org.glycoinfo.conversion.GlyConvertDetect;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.conversion.util.DetectFormat;
@@ -25,17 +28,22 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
+import org.glycoinfo.rdf.glycan.Monosaccharide;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
+import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.WurcsMonosaccharide;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.utils.AccessionNumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -97,6 +105,12 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Autowired
 	SaccharideSelectSparql saccharideSelectSparql;
 
+	@Autowired
+	MonosaccharideSelectSparql monosaccharideSelectSparql;
+		
+	@Autowired
+	public MSInsertSparql msInsertSparql;
+	
 //
 //	@Autowired
 //	@Qualifier(value = "insertscintperson")
@@ -477,7 +491,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			sparqlDAO.insert(resourceEntryInsertSparql);
 			
 			logger.debug("registering into wurcsRDF:" + accessionNumber + ":" + getSequence());
-	
+
 		}
 		addWurcs();
 		return getId();
@@ -499,6 +513,27 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		insLabel.setGraph(wurcsRDFInsertSparql.getGraph());
 		insLabel.setInsert("<http://rdf.glycoinfo.org/glycan/" + getId() + "/wurcs/2.0> rdfs:label \"" + getSequence() + "\"^^xsd:string .");
 		sparqlDAO.insert(insLabel);
+		
+//		SparqlEntity msSE = new SparqlEntity();
+//		msSE.setValue(WurcsMonosaccharide.PrimaryId, getId());
+//		monosaccharideSelectSparql.setSparqlEntity(msSE);
+//		List<SparqlEntity> msReslist = sparqlDAO.query(monosaccharideSelectSparql);
+//		for (SparqlEntity msResSE : msReslist) {
+//			String wurcsMSUri = msResSE.getValue(WurcsMonosaccharide.WurcsMonosaccharideURI);
+////			http://rdf.glycoinfo.org/glycan/wurcs/2.0/monosaccharide/a2112h-1a_1-5_2*NCC%2F3%3DO
+//			logger.debug("wurcsMSUri:>" + wurcsMSUri);
+//			String key = wurcsMSUri.replace("http://rdf.glycoinfo.org/glycan/wurcs/2.0/monosaccharide/", "");
+//			try {
+//				key = URLDecoder.decode(key, "UTF-8");
+//			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
+//			}
+//			SparqlEntity msISE = new SparqlEntity();
+//			logger.debug("key:>" + key);
+//			msISE.setValue(Monosaccharide.Residue, key);
+//			msInsertSparql.setSparqlEntity(msISE);
+//			sparqlDAO.insert(msInsertSparql);
+//		}
 		
 		SparqlEntity massEntity = calculateMass(sequence);
 		

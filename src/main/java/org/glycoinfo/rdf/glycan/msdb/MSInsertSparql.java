@@ -82,104 +82,105 @@ public class MSInsertSparql extends InsertSparqlBean {
 
         String res = getSparqlEntity().getValue(Monosaccharide.Residue);
 		
-		try {
-			res = URLEncoder.encode(res, "UTF-8");
-		} catch (UnsupportedEncodingException e2) {
-			throw new SparqlException(e2);
-		}
-
-        String url = "http://www.monosaccharidedb.org/rdf/monosaccharide.action?name=" + res;
-        Model model = ModelFactory.createDefaultModel();
-        try{
-        	model.read(url, null, "TTL");
-        }catch(Throwable th){
-        }
-        
-        String dec_url = url;
-        try {
-			dec_url = java.net.URLDecoder.decode(dec_url,"UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
-        
-        Model model_x = ModelFactory.createDefaultModel();
-        model_x.setNsPrefix("glycan", "http://purl.jp/bio/12/glyco/glycan#");
-//        model_x.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
-//        model_x.setNsPrefix("owl", "http://www.w3.org/2002/07/owl#");
-        model.add(model.createResource(url), model.createProperty("http://www.w3.org/2002/07/owl#sameAs"), model.createResource(dec_url));
-		StmtIterator sit = model.listStatements();
-		List<Triple> triples = new ArrayList<Triple>();
-		while(sit.hasNext()){
-			Statement st = sit.next();
-			Resource s = st.getSubject();
-			Property p = st.getPredicate();
-			RDFNode o = st.getObject();
-			String prop_str = p.getURI();
-			//属性の種類を調べて型を合わせる
-			for( int i=0; i<props.length; i++ ){
-				if( props[i][0].equals(prop_str) ){
-					String o_str = o.toString();
-					if( "URL".equals(props[i][1]) ){
-						o = model.createResource(o_str);
-					}else if( "URI".equals(props[i][1]) ){
-						String[] strs = o_str.split(":");
-						String ns_url = model.getNsPrefixURI(strs[0]);
-						o_str = ns_url+strs[1];
-						o = model.createResource(o_str);
-					}else if( "INT".equals(props[i][1]) ){
-						if( !MSInsertSparql.numCheck(o_str) ){
-							o_str = "0";
-						}
-						o = model.createTypedLiteral(o_str, XSDDatatype.XSDinteger);
-					}else if( "BOOL".equals(props[i][1]) ){
-//						if( "true".equals(o_str) ){
-//							o = model.createTypedLiteral(true);
-//						}else{
-//							o = model.createTypedLiteral(false);
-//						}
-//						o = model.createLiteral(o_str);
-						o = model.createTypedLiteral(o_str, XSDDatatype.XSDboolean);
-					}else if( "DOUBLE".equals(props[i][1]) ){
-//						o = model.createTypedLiteral(Double.valueOf(o_str));
-//						o = model.createLiteral(o_str);
-						o = model.createTypedLiteral(o_str, XSDDatatype.XSDdouble);
-					}else if( "STRING".equals(props[i][1]) ){
-					}else if( "UNKNOWN".equals(props[i][1]) ){
-					}
-				}
-			}
-			if( s != null && p != null && o != null ){
-				triples.add(new Triple(s.asNode(), p.asNode(), o.asNode()));
-				model_x.add(s, p, o);
-			}
-		}
-		if( triples.size() > 0 ){
-//			triples.add(new Triple(model_x.createResource(url).asNode(), model_x.createProperty(model_x.getNsPrefixURI("owl")+"sameAs").asNode(), model_x.createResource(dec_url).asNode()));
-//			model_x.add(model_x.createResource(url), model_x.createProperty(model_x.getNsPrefixURI("owl")+"sameAs"), model_x.createResource(dec_url));
-//			virt_opt = new VirtGraph(virt_ms_graph, virt_host, virt_user, virt_pass);
-//			GraphUtil.add(virt_opt, triples);
-//			virt_opt.close();
-			try {
-//				String file_name = url.substring(url.lastIndexOf("/"));
-//				file_name = file_name.replace("/monosaccharide.action?", "");
-//				FileOutputStream ttl_out = new FileOutputStream(file_name+".ttl");
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				model_x.write(baos, "TURTLE");
-				baos.close();
-				String output = baos.toString();
-				logger.debug("output:>" + output);
-				rdf = output;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
 //		try {
-//			rdf = msdbClient.getTtl(res);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			throw new SparqlException(e);
+//			res = URLEncoder.encode(res, "UTF-8");
+//		} catch (UnsupportedEncodingException e2) {
+//			throw new SparqlException(e2);
 //		}
+//
+//        String url = "http://www.monosaccharidedb.org/rdf/monosaccharide.action?name=" + res;
+//        logger.debug("url:>" + url);
+//        Model model = ModelFactory.createDefaultModel();
+//        try{
+//        	model.read(url, null, "TTL");
+//        }catch(Throwable th){
+//        }
+//        
+//        String dec_url = url;
+//        try {
+//			dec_url = java.net.URLDecoder.decode(dec_url,"UTF-8");
+//		} catch (UnsupportedEncodingException e1) {
+//			e1.printStackTrace();
+//		}
+//        
+//        Model model_x = ModelFactory.createDefaultModel();
+//        model_x.setNsPrefix("glycan", "http://purl.jp/bio/12/glyco/glycan#");
+////        model_x.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
+////        model_x.setNsPrefix("owl", "http://www.w3.org/2002/07/owl#");
+//        model.add(model.createResource(url), model.createProperty("http://www.w3.org/2002/07/owl#sameAs"), model.createResource(dec_url));
+//		StmtIterator sit = model.listStatements();
+//		List<Triple> triples = new ArrayList<Triple>();
+//		while(sit.hasNext()){
+//			Statement st = sit.next();
+//			Resource s = st.getSubject();
+//			Property p = st.getPredicate();
+//			RDFNode o = st.getObject();
+//			String prop_str = p.getURI();
+//			//属性の種類を調べて型を合わせる
+//			for( int i=0; i<props.length; i++ ){
+//				if( props[i][0].equals(prop_str) ){
+//					String o_str = o.toString();
+//					if( "URL".equals(props[i][1]) ){
+//						o = model.createResource(o_str);
+//					}else if( "URI".equals(props[i][1]) ){
+//						String[] strs = o_str.split(":");
+//						String ns_url = model.getNsPrefixURI(strs[0]);
+//						o_str = ns_url+strs[1];
+//						o = model.createResource(o_str);
+//					}else if( "INT".equals(props[i][1]) ){
+//						if( !MSInsertSparql.numCheck(o_str) ){
+//							o_str = "0";
+//						}
+//						o = model.createTypedLiteral(o_str, XSDDatatype.XSDinteger);
+//					}else if( "BOOL".equals(props[i][1]) ){
+////						if( "true".equals(o_str) ){
+////							o = model.createTypedLiteral(true);
+////						}else{
+////							o = model.createTypedLiteral(false);
+////						}
+////						o = model.createLiteral(o_str);
+//						o = model.createTypedLiteral(o_str, XSDDatatype.XSDboolean);
+//					}else if( "DOUBLE".equals(props[i][1]) ){
+////						o = model.createTypedLiteral(Double.valueOf(o_str));
+////						o = model.createLiteral(o_str);
+//						o = model.createTypedLiteral(o_str, XSDDatatype.XSDdouble);
+//					}else if( "STRING".equals(props[i][1]) ){
+//					}else if( "UNKNOWN".equals(props[i][1]) ){
+//					}
+//				}
+//			}
+//			if( s != null && p != null && o != null ){
+//				triples.add(new Triple(s.asNode(), p.asNode(), o.asNode()));
+//				model_x.add(s, p, o);
+//			}
+//		}
+//		if( triples.size() > 0 ){
+////			triples.add(new Triple(model_x.createResource(url).asNode(), model_x.createProperty(model_x.getNsPrefixURI("owl")+"sameAs").asNode(), model_x.createResource(dec_url).asNode()));
+////			model_x.add(model_x.createResource(url), model_x.createProperty(model_x.getNsPrefixURI("owl")+"sameAs"), model_x.createResource(dec_url));
+////			virt_opt = new VirtGraph(virt_ms_graph, virt_host, virt_user, virt_pass);
+////			GraphUtil.add(virt_opt, triples);
+////			virt_opt.close();
+//			try {
+////				String file_name = url.substring(url.lastIndexOf("/"));
+////				file_name = file_name.replace("/monosaccharide.action?", "");
+////				FileOutputStream ttl_out = new FileOutputStream(file_name+".ttl");
+//				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//				model_x.write(baos, "TURTLE");
+//				baos.close();
+//				String output = baos.toString();
+//				logger.debug("output:>" + output);
+//				rdf = output;
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+
+		try {
+			rdf = msdbClient.getTtl(res);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new SparqlException(e);
+		}
 
 		return rdf;
 	}

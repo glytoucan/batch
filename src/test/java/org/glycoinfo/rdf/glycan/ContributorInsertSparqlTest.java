@@ -9,6 +9,7 @@ import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.junit.Assert;
@@ -30,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {ContributorInsertSparqlTest.class})
+@SpringApplicationConfiguration(classes = {ContributorInsertSparqlTest.class, VirtSesameDAOTestConfig.class })
 @ComponentScan(basePackages = {"org.glytoucan.ws"})
 @EnableAutoConfiguration
 public class ContributorInsertSparqlTest {
@@ -62,11 +63,13 @@ public class ContributorInsertSparqlTest {
 		sparqlDAO.insert(getInsertSparql());
 		
 		List<SparqlEntity> list = sparqlDAO.query(new SelectSparqlBean(getInsertSparql().getPrefix()
-				+ "select ?name where { ?s a foaf:Person . ?s dcterms:identifier \"1234\"^^xsd:int . ?s foaf:name ?name .}"));
+				+ "select ?name from <http://test> where { ?s a foaf:Person . ?s dcterms:identifier \"1234\"^^xsd:int . ?s foaf:name ?name .}"));
 		
 		for (SparqlEntity sparqlEntity : list) {
 			String output = sparqlEntity.getValue("name");
 			Assert.assertEquals("testname", output);
 		}
 	}
+	
+	
 }

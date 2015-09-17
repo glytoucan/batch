@@ -1,10 +1,20 @@
 package org.glycoinfo.rdf.glycan.wurcs;
 
+import java.util.TreeSet;
+
+import org.glycoinfo.WURCSFramework.util.WURCSException;
+import org.glycoinfo.WURCSFramework.util.WURCSFactory;
+import org.glycoinfo.WURCSFramework.util.array.WURCSExporter;
 import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
+import org.glycoinfo.WURCSFramework.wurcs.array.UniqueRES;
 import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
 import org.glycoinfo.WURCSFramework.wurcs.rdf.WURCSExporterRDF;
+import org.glycoinfo.WURCSFramework.wurcs.rdf.WURCSRDFModelGlycan051;
+import org.glycoinfo.WURCSFramework.wurcs.rdf.WURCSSequence2ExporterRDFModel;
+import org.glycoinfo.WURCSFramework.wurcs.sequence2.WURCSSequence2;
 import org.glycoinfo.rdf.InsertSparqlBean;
+import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Saccharide;
 
@@ -16,21 +26,49 @@ public class WurcsRDFInsertSparql extends InsertSparqlBean {
 	}
 	
 	@Override
-	public String getInsert()  {
+	public String getInsert() throws SparqlException  {
 		WURCSImporter ws = new WURCSImporter();
 		WURCSExporterRDF rdf = new WURCSExporterRDF();
 		String sequence = getSparqlEntity().getValue(GlycoSequence.Sequence);
 		String id = getSparqlEntity().getValue(Saccharide.PrimaryId);
-		WURCSArray wurcs = null;
+
+		WURCSFactory t_oFactory;
 		try {
-			wurcs = ws.extractWURCSArray(sequence);
-		} catch (WURCSFormatException e) {
+			t_oFactory = new WURCSFactory(sequence);
+		} catch (WURCSException e) {
 			e.printStackTrace();
-			logger.debug(e.getMessage());
+			throw new SparqlException(e);
 		}
-		rdf.setWURCSrdfTriple(id, wurcs, false);
-		String wurcsrdf = rdf.getWURCS_RDF();
+//		TreeSet<String> t_setUniqueMSs = new TreeSet<String>();
+//
+//		// Collect unique MSs
+//		WURCSExporter t_oExport = new WURCSExporter();
+//		WURCSArray t_oArray = t_oFactory.getArray();
+//		for ( UniqueRES t_oURES : t_oArray.getUniqueRESs() ) {
+//			String t_strMS = t_oExport.getUniqueRESString(t_oURES);
+//			if ( t_setUniqueMSs.contains(t_strMS) ) continue;
+//			t_setUniqueMSs.add(t_strMS);
+//		}
+//
+//		System.out.println(sequence);
+//		String t_strAccessionNumber = id;
+//
+//		// Generate RDF strings (ver 0.5.1)
+//		WURCSRDFModelGlycan051 t_oRDFExport2 = new WURCSRDFModelGlycan051( t_strAccessionNumber, t_oArray, false );
+//		
+//		
+//		String wurcsrdf = t_oRDFExport2.get_RDF("TURTLE") ;
+		
+		
+		// For using WURCSSequence
+		WURCSSequence2 t_oSeq2 = t_oFactory.getSequence();
+
+		WURCSSequence2ExporterRDFModel t_oSeq2Export = new WURCSSequence2ExporterRDFModel( id, t_oSeq2, false );
+
+		String wurcsrdf = t_oSeq2Export.get_RDF("TURTLE");
 		logger.debug(wurcsrdf);
+		
+		
 //		String withPrefix = prefix + wurcsrdf;
 //		return withPrefix;
 //		sbMS.append(rdf.getWURCS_monosaccharide_RDF());

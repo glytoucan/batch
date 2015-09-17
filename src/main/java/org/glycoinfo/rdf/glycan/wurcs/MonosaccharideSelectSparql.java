@@ -30,6 +30,26 @@ where {
 ?glycan glycan:has_glycosequence ?gseq .
 ?gseq wurcs:has_monosaccharide	?ms .
 }
+
+	 *
+PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>
+PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>
+ SELECT DISTINCT ?Sequence
+?PrimaryId
+ ?WurcsMonosaccharideURI FROM <http://rdf.glytoucan.org>
+FROM <http://rdf.glytoucan.org/sequence/wurcs>
+FROM <http://rdf.glytoucan.org/wurcs/ms>
+ WHERE {
+?SaccharideURI a glycan:saccharide .
+?SaccharideURI glytoucan:has_primary_id ?PrimaryId .
+?SaccharideURI glycan:has_glycosequence ?GlycanSequenceURI .
+?GlycanSequenceURI glycan:has_sequence ?Sequence .
+?GlycanSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .
+?SaccharideURI glytoucan:has_primary_id "G11301TD" .
+?GlycanSequenceURI  wurcs:has_monosaccharide ?WurcsMonosaccharideURI .
+}    
+
 	 */
 	public MonosaccharideSelectSparql() {
 		this.prefix = super.getPrefix() + "PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>\n";

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
+import org.glycoinfo.client.MSdbClient;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.InsertSparql;
@@ -21,8 +22,11 @@ import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
+import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
+import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
@@ -30,6 +34,7 @@ import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
+import org.glycoinfo.rdf.service.impl.MailService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +47,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -162,7 +168,6 @@ public class GlycanProcedureTest {
 		sb.setFrom("FROM <" + graph + ">\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.test.glytoucan.org/mass>");
 		return sb;
 	}
-
 	
 	@Bean
 	WurcsRDFInsertSparql wurcsRDFInsertSparql() {
@@ -212,6 +217,38 @@ public class GlycanProcedureTest {
 		WurcsRDFMSInsertSparql wrdf = new WurcsRDFMSInsertSparql();
 		wrdf.setGraph("http://rdf.glytoucan.org/wurcs/ms");
 		return wrdf;
+	}
+	
+	@Bean
+	SaccharideSelectSparql saccharideSelectSparql() {
+		SaccharideSelectSparql select = new SaccharideSelectSparql();
+		select.setFrom("FROM <http://rdf.glytoucan.org>\n");
+		return select;
+	}
+
+	
+	@Bean
+	MailService mailService() {
+		return new MailService();
+	}
+	
+	@Bean
+	MSdbClient msdbClient() {
+		return new MSdbClient();
+	}
+	
+	@Bean
+	MonosaccharideSelectSparql monosaccharideSelectSparql() {
+		MonosaccharideSelectSparql sb = new MonosaccharideSelectSparql();
+		sb.setFrom(sb.getFrom() + "FROM <http://rdf.test.glytoucan.org>\n");
+		return sb;
+	}
+	
+	@Bean
+	public MSInsertSparql msInsertSparql() {
+		MSInsertSparql wrss = new MSInsertSparql();
+		wrss.setGraph("http://rdf.test.glytoucan.org/msdb");
+		return wrss;
 	}
 	
 //	@Test(expected=SparqlException.class)
@@ -369,6 +406,7 @@ LIN
 	}
 	
 	@Test
+	@Transactional
 	public void testRegisterNew3() throws SparqlException, NoSuchAlgorithmException, ConvertException {
 		String sequence = "RES\\n"
 				+ "1b:x-dglc-HEX-1:5\\n"

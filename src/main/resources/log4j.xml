@@ -29,7 +29,6 @@
 		<level value="debug" />
 	</logger>
 
-
 	<logger name="org.glycoinfo.rdf.glycan">
 		<appender-ref ref="console" />
 		<appender-ref ref="file" />

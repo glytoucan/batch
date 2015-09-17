@@ -38,16 +38,7 @@ public class MonosaccharideBeanTest {
 	
 	@Autowired
 	SparqlDAO sparqlDAO;
-	
-	@Bean
-	MSdbClient msdbClient() {
-		return new MSdbClient();
-	}
-	
-	@Autowired
-	public MSInsertSparql msInsertSparql;
-
-	
+		
 	@Test
 	@Transactional
 	public void testInsertMS3() throws SparqlException, UnsupportedEncodingException {
@@ -217,6 +208,14 @@ public class MonosaccharideBeanTest {
 //		}
 	}
 	
+	@Bean
+	MSdbClient msdbClient() {
+		return new MSdbClient();
+	}
+	
+	@Autowired
+	public MSInsertSparql msInsertSparql;
+
 	
 	@Bean
 	public MSInsertSparql msInsertSparql() {

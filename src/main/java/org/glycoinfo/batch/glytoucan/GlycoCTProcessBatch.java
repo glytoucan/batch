@@ -2,6 +2,7 @@ package org.glycoinfo.batch.glytoucan;
 
 import org.glycoinfo.batch.SparqlItemReader;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
+import org.glycoinfo.client.MSdbClient;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
@@ -17,10 +18,14 @@ import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
+import org.glycoinfo.rdf.glycan.Monosaccharide;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
+import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
+import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
@@ -39,6 +44,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -250,5 +256,22 @@ public class GlycoCTProcessBatch {
 		select.setFrom("FROM <http://rdf.glytoucan.org>\n");
 		return select;
 	}
-
+	
+	@Bean
+	MonosaccharideSelectSparql monosaccharideSelectSparql() {
+		MonosaccharideSelectSparql sb = new MonosaccharideSelectSparql();
+		return sb;
+	}
+	
+	@Bean
+	MSdbClient msdbClient() {
+		return new MSdbClient();
+	}
+	
+	@Bean
+	public MSInsertSparql msInsertSparql() {
+		MSInsertSparql wrss = new MSInsertSparql();
+		wrss.setGraph("http://rdf.glytoucan.org/msdb");
+		return wrss;
+	}
 }

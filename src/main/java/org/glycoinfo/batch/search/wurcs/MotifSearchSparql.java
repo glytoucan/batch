@@ -2,6 +2,7 @@ package org.glycoinfo.batch.search.wurcs;
 
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.slf4j.Logger;
@@ -39,7 +40,9 @@ public class MotifSearchSparql extends SelectSparqlBean {
 //				+ "?gseq glycan:has_sequence ?Seq .\n"
 //				+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct\n";
 		SubstructureSearchSparql substructureSearchSparql = new SubstructureSearchSparql();
-		substructureSearchSparql.getSparqlEntity().setValue(GlycoSequence.Sequence, getSparqlEntity().getValue(GlycoSequence.Sequence));
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(GlycoSequence.Sequence, getSparqlEntity().getValue(GlycoSequence.Sequence));
+		substructureSearchSparql.setSparqlEntity(se);
 //		try {
 			this.where += substructureSearchSparql.getWhere();
 //		} catch (WURCSFormatException e) {

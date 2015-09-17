@@ -7,7 +7,8 @@ spring:
     triplestore:
         driverClassName: virtuoso.jdbc4.Driver
         dialect: sparqs
-        url: jdbc:virtuoso://test.ts.glytoucan.org:1111
+        #url: jdbc:virtuoso://test.ts.glytoucan.org:1111
+        url: jdbc:virtuoso://localhost:1112
         username: dba
         password: dba
         graph: graph
@@ -20,3 +21,18 @@ wurcs:
   graph:
     target: <http://rdf.glycoinfo.org/wurcs/seq/0.3/glytoucan/20150902>
     ms: <http://rdf.glycoinfo.org/wurcs/ms/0.2>
+
+
+mail:
+  address:
+    from: support@glytoucan.org
+    admin: admin@glytoucan.org
+  subject:
+    newRegistration: Your registration to the Glycan Repository, GlyTouCan
+    notifyRegistration: NEW registration:>
+  body:
+    newRegistration: newRegistration.vm
+    notifyRegistration: notifyRegistration.vm
+
+msDb:
+  rdf: http://www.monosaccharidedb.org/rdf/monosaccharide.action?name=

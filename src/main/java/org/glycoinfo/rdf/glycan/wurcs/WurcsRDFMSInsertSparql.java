@@ -29,7 +29,7 @@ public class WurcsRDFMSInsertSparql extends InsertSparqlBean {
 	public String getInsert() throws SparqlException  {
 		
 		// Output prefix
-		Boolean t_bPrefix = true;
+		Boolean t_bPrefix = false;
 
 //		WURCSImporter ws = new WURCSImporter();
 //		WURCSExporterRDF rdf = new WURCSExporterRDF();
