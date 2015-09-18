@@ -24,6 +24,7 @@ import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
+import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceFilterNoWurcsSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
@@ -73,10 +74,10 @@ public class GlycoCTProcessBatch {
 
 	@Bean(name="itemReaderSelectSparql")
 	SelectSparql getSelectSparql() {
-		SelectSparql select = new GlycoSequenceSelectSparql();
+		SelectSparql select = new GlycoSequenceFilterNoWurcsSelectSparql();
 		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\n");
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(GlycoSequence.Format, "glycoct");
+//		se.setValue(GlycoSequence.Format, "glycoct");
 		select.setSparqlEntity(se);
 		return select;
 	}
