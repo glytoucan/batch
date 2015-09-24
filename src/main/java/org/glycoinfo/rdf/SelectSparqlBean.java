@@ -17,7 +17,7 @@ public class SelectSparqlBean implements SelectSparql, InitializingBean {
 	protected String define, prefix, select, where, from, orderby, groupby, construct, having,
 			limit, offset;
 	StringBuffer sparql;
-	SparqlEntity sparqlEntity;
+	SparqlEntity sparqlEntity = new SparqlEntity();
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 

@@ -2,29 +2,50 @@ package org.glycoinfo.batch.search;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
+import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
+import org.glycoinfo.rdf.glycan.Saccharide;
+import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceSelectSparql;
+import org.glycoinfo.rdf.service.GlycanProcedure;
+import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SearchTest.class)
+@SpringApplicationConfiguration(classes = { SearchTest.class, GlycanProcedureConfig.class, VirtSesameTransactionConfig.class } )
 @Configuration
 @EnableAutoConfiguration
 public class SearchTest {
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(SearchTest.class);
 
+	@Autowired
+	GlycanProcedure glycanProcedure;
+	
+	@Autowired
+	SparqlDAO sparqlDAO;
+	
 	@Bean
 	MotifSearchSparql getMotifSearchSparql() {
 		MotifSearchSparql search = new MotifSearchSparql();
@@ -484,5 +505,85 @@ public class SearchTest {
 //				+ "<testSequenceURI> glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n"
 //				+ "<testSequenceURI> glytoucan:is_glycosequence_of <testSaccharideURI> .\n }\n", convert.getSparql());
 //	}
+			@Test
+			@Transactional
+			public void testRegisterAndSelect() throws SparqlException {
+				String sequence = "RES\\n"
+						+ "1b:x-dman-HEX-1:5";
+				logger.debug("sequence:>" + sequence + "<");
+				glycanProcedure.setSequence(sequence);
+				glycanProcedure.setContributor("test");
+				glycanProcedure.setBatch(false);
+				String id = glycanProcedure.register();
+				
+				SparqlEntity se = new SparqlEntity();
+				se.setValue(Saccharide.PrimaryId, id);
+				
+				SaccharideSelectSparql select = new SaccharideSelectSparql();
+				select.setFrom("FROM <http://rdf.glytoucan.org>\n");
+				select.setSparqlEntity(se);
+
+				List<SparqlEntity> sachList = sparqlDAO.query(select);
+				
+				logger.debug("size:>" + sachList.size());				
+
+				GlycoSequenceSelectSparql glycoSelect = new GlycoSequenceSelectSparql();
+				glycoSelect.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\n");
+				glycoSelect.setSparqlEntity(se);
+
+				List<SparqlEntity> glycosachList = sparqlDAO.query(glycoSelect);
+				
+				logger.debug(glycosachList.toString());
+				logger.debug("size:>" + glycosachList.size());				
+				
+				org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql gSelect = new org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql();
+				gSelect.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\n");
+				gSelect.setSparqlEntity(se);
+
+				List<SparqlEntity> gList = sparqlDAO.query(gSelect);
+				
+				logger.debug(gList.toString());
+				logger.debug("size:>" + gList.size());				
+				
+				se = glycanProcedure.searchByAccessionNumber(id);
+				Assert.assertNotNull(se.getValue("Mass"));
+				
+				logger.debug(se.toString());
+				
+				sequence = se.getValue(GlycoSequence.Sequence);
+				List<SparqlEntity> list = glycanProcedure.substructureSearch(sequence, "1", "0");
+				Assert.assertNotNull(se.getValue(SubstructureSearchSparql.SubstructureSearchSaccharideURI));
+
+			}
 			
+			@Test
+			public void testCodePoints() {
+				String test = "this is a | Test & needs to be translated into C0depoint!";
+				StringBuilder sb = new StringBuilder();
+				
+				sb.appendCodePoint('|');
+				
+				logger.debug(sb.toString());				
+//				String converted = test.replaceAll("\\|", sb.toString());
+//				str.replaceAll("[|]","pipe");
+				
+//				String converted = StringEscapeUtils.escapeJava(test);
+				
+				String converted = "";
+				converted = test.replaceAll("[|]", unicodeEscaped('|'));
+				converted = converted.replaceAll("[&]", unicodeEscaped('&'));
+
+				logger.debug(converted);
+			}
+			
+			  public static String unicodeEscaped(char ch) {
+			      if (ch < 0x10) {
+			          return "\\u000" + Integer.toHexString(ch);
+			      } else if (ch < 0x100) {
+			          return "\\u00" + Integer.toHexString(ch);
+			      } else if (ch < 0x1000) {
+			          return "\\u0" + Integer.toHexString(ch);
+			      }
+			      return "\\u" + Integer.toHexString(ch);
+			  }
 }

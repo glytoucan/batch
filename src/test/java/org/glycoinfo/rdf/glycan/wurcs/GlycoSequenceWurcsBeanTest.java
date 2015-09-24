@@ -91,6 +91,8 @@ public class GlycoSequenceWurcsBeanTest {
 //			logger.debug(se.getValue(SaccharideSelectSparql.SaccharideURI));
 //		}
 	}
+	
+//	WURCS=2.0/6,13,12/[a2122h-1x_1-5_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a2112h-1b_1-5][Aad21122h-2a_2-6_5*NCC/3=O]/1-2-3-4-2-5-6-2-5-6-4-4-4/a4-b1_b4-c1_c3-d1_c6-k1_d2-e1_d4-h1_e4-f1_h4-i1_k3-l1_k6-m1_g2-f3|f6_j2-i3|i6
 
 	private SelectSparql wurcsRDFSelectSparql() {
 		WurcsRDFSelectSparql wrss = new WurcsRDFSelectSparql();
@@ -114,7 +116,24 @@ public class GlycoSequenceWurcsBeanTest {
 			logger.debug(se.getValue(SaccharideSelectSparql.SaccharideURI));
 		}
 	}
+	
+	@Test
+	@Transactional
+	public void testInsertMSBrokenSparql() throws SparqlException, UnsupportedEncodingException {
+		InsertSparql wris = wurcsRDFMSInsertSparql();
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(GlycoSequence.Sequence, "WURCS=2.0/7,14,13/[a2122h-1x_1-5_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a2112h-1b_1-5][a1221m-1a_1-5][Aad21122h-2a_2-6_5*NCC/3=O]/1-2-3-4-2-5-2-5-6-4-2-5-6-7/a4-b1_a6-m1_b4-c1_c3-d1_c6-j1_d2-e1_d4-g1_e4-f1_g4-h1_h2-i1_j2-k1_k4-l1_n2-a3|b3|c3|d3|e3|f3|g3|h3|i3|j3|k3|l3|m3}");
+		wris.setSparqlEntity(se);
 
+		sparqlDAO.insert(wris);
+		
+		List<SparqlEntity> list = sparqlDAO.query(wurcsRDFSelectSparql());
+		if (list.iterator().hasNext()) {
+			se = list.iterator().next();
+			logger.debug(se.getValue(SaccharideSelectSparql.SaccharideURI));
+		}
+	}
+	
 	@Test
 	@Transactional
 	public void testSelectComponentGroup() throws SparqlException, UnsupportedEncodingException {
@@ -155,5 +174,17 @@ public class GlycoSequenceWurcsBeanTest {
 		sb.setSparqlEntity(sparqlentity);
 		return sb;
 	}
-
+	
+	@Test
+	public void testFilter() throws SparqlException {
+		GlycoSequenceFilterNoWurcsSelectSparql gsf = new GlycoSequenceFilterNoWurcsSelectSparql();
+//		gsf.setLimit("1");
+		List<SparqlEntity> list = sparqlDAO.query(gsf);
+		if (list.size() < 1)
+			Assert.fail();
+		logger.debug(list.size() + "");
+		for (SparqlEntity sparqlEntity : list) {
+			logger.debug(sparqlEntity.getValue(GlycoSequence.Sequence));
+		}
+	}
 }

@@ -60,12 +60,17 @@ public class WurcsRDFInsertSparql extends InsertSparqlBean {
 		String wurcsrdf = t_oRDFExport2.get_RDF("TURTLE") ;
 		
 		
+		wurcsrdf = wurcsrdf.replaceAll("[|]", unicodeEscaped('|'));
+
 		// For using WURCSSequence
 		WURCSSequence2 t_oSeq2 = t_oFactory.getSequence();
 
 		WURCSSequence2ExporterRDFModel t_oSeq2Export = new WURCSSequence2ExporterRDFModel( id, t_oSeq2, false );
 
-		 wurcsrdf += t_oSeq2Export.get_RDF("TURTLE");
+		String wurcsseq2 = t_oSeq2Export.get_RDF("TURTLE");
+		
+		wurcsseq2 = wurcsseq2.replaceAll("[|]", unicodeEscaped('|'));
+		wurcsrdf += wurcsseq2;
 		logger.debug(wurcsrdf);
 		
 		
@@ -79,4 +84,15 @@ public class WurcsRDFInsertSparql extends InsertSparqlBean {
 //	public String getFormat() {
 //		return InsertSparql.Turtle;
 //	}
+	
+	  public static String unicodeEscaped(char ch) {
+	      if (ch < 0x10) {
+	          return "\\u000" + Integer.toHexString(ch);
+	      } else if (ch < 0x100) {
+	          return "\\u00" + Integer.toHexString(ch);
+	      } else if (ch < 0x1000) {
+	          return "\\u0" + Integer.toHexString(ch);
+	      }
+	      return "\\u" + Integer.toHexString(ch);
+	  }
 }
