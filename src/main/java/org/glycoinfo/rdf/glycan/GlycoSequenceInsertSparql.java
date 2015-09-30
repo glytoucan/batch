@@ -38,7 +38,10 @@ public class GlycoSequenceInsertSparql extends InsertSparqlBean {
 	}
 
 	public String getSaccharideURI() {
-		return "<" + getSparqlEntity().getValue(Saccharide.URI) + ">";
+		if (null != getSparqlEntity().getValue(Saccharide.URI))
+			return "<" + getSparqlEntity().getValue(Saccharide.URI) + ">";
+		else 
+			return "<http://rdf.glycoinfo.org/glycan/" + getSparqlEntity().getValue(Saccharide.PrimaryId) + ">";
 	}
 
 	public String getGlycanSequenceUri() {

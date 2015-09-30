@@ -127,8 +127,8 @@ public class SparqlDAOImplTest {
 		schemaDAO
 				.insert(new InsertSparqlBean("insert data { \n"
 						+ "graph <http://bluetree.jp/nobutest> {\n"
-						+ "<http://bluetree.jp/nobutest/aa" + unicodeEscaped('|') + "> <http://bluetree.jp/nobutest/b&b> \"c" + unicodeEscaped('?') + "c\" . \n"
-						+ "<http://bluetree.jp/nobutest/xx" + unicodeEscaped('?') + "f=s"+ unicodeEscaped('|') + "f> <http://bluetree.jp/nobutest/yy> <http://bluetree.jp/nobutest/zz> . \n"
+						+ "<http://bluetree.jp/nobutest/aa\\u007c> <http://bluetree.jp/nobutest/b\\u0026b> \"c?c\" . \n"
+//						+ "<http://bluetree.jp/nobutest/xx" + unicodeEscaped('?') + "f=s"+ unicodeEscaped('|') + "f> <http://bluetree.jp/nobutest/yy> <http://bluetree.jp/nobutest/zz> . \n"
 						+ "<http://bluetree.jp/nobutest/mm> <http://bluetree.jp/nobutest/nn> \"Some\\nlong\\nliteral\\nwith language\" . \n"
 						+ "<http://bluetree.jp/nobutest/oo> <http://bluetree.jp/nobutest/pp> \"12345\"^^<http://www.w3.org/2001/XMLSchema#int>\n  "
 						+ "}\n"

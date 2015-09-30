@@ -5,7 +5,6 @@ import java.util.TreeSet;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.util.WURCSFactory;
 import org.glycoinfo.WURCSFramework.util.array.WURCSExporter;
-import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
 import org.glycoinfo.WURCSFramework.wurcs.array.UniqueRES;
 import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
@@ -60,7 +59,7 @@ public class WurcsRDFInsertSparql extends InsertSparqlBean {
 		String wurcsrdf = t_oRDFExport2.get_RDF("TURTLE") ;
 		
 		
-		wurcsrdf = wurcsrdf.replaceAll("[|]", unicodeEscaped('|'));
+//		wurcsrdf = wurcsrdf.replaceAll("[|]", unicodeEscaped('|'));
 
 		// For using WURCSSequence
 		WURCSSequence2 t_oSeq2 = t_oFactory.getSequence();
@@ -69,7 +68,7 @@ public class WurcsRDFInsertSparql extends InsertSparqlBean {
 
 		String wurcsseq2 = t_oSeq2Export.get_RDF("TURTLE");
 		
-		wurcsseq2 = wurcsseq2.replaceAll("[|]", unicodeEscaped('|'));
+//		wurcsseq2 = wurcsseq2.replaceAll("[|]", unicodeEscaped('|'));
 		wurcsrdf += wurcsseq2;
 		logger.debug(wurcsrdf);
 		

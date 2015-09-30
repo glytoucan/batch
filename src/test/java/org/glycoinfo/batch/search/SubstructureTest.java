@@ -6,7 +6,9 @@ import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
+import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -18,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SearchTest.class)
+@SpringApplicationConfiguration(classes = { SearchTest.class, GlycanProcedureConfig.class, VirtSesameTransactionConfig.class })
 @Configuration
 @EnableAutoConfiguration
 public class SubstructureTest {
@@ -30,7 +32,6 @@ public class SubstructureTest {
 		SubstructureSearchSparql search = new SubstructureSearchSparql();
 		return search;
 	}
-	
 	
 	@Test
 	public void testSelectSparql() throws SparqlException {

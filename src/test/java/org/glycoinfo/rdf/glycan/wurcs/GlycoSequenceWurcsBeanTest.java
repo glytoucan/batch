@@ -36,6 +36,9 @@ public class GlycoSequenceWurcsBeanTest {
 	@Autowired
 	SparqlDAO sparqlDAO;
 
+	@Autowired
+	WurcsRDFInsertSparql wurcsRDFInsertSparqlNew;
+
 	@Bean
 	ComponentGroupSelectSparql componentGroupSelectSparql() {
 		ComponentGroupSelectSparql cgs = new ComponentGroupSelectSparql();
@@ -62,6 +65,19 @@ public class GlycoSequenceWurcsBeanTest {
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(Saccharide.PrimaryId, "G00012MO");
 		se.setValue(GlycoSequence.Sequence, "WURCS=2.0/4,4,3/[u2122h][a2112h-1b_1-5][a2112h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O]/1-2-3-4/a4-b1_b3-c1_c3-d1");
+		wrdf.setSparqlEntity(se);
+		
+		wrdf.setGraph("http://test");
+		return wrdf;
+	}
+
+	
+	@Bean
+	WurcsRDFInsertSparql wurcsRDFInsertSparqlNew() {
+		WurcsRDFInsertSparql wrdf = new WurcsRDFInsertSparql();
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(Saccharide.PrimaryId, "G00012MO");
+		se.setValue(GlycoSequence.Sequence, "WURCS=2.0/2,2,1/[a1122h-1x_1-5][a2112h-1x_1-5_2*NCC/3=O]/1-2/a?-b1");
 		wrdf.setSparqlEntity(se);
 		
 		wrdf.setGraph("http://test");
@@ -186,5 +202,11 @@ public class GlycoSequenceWurcsBeanTest {
 		for (SparqlEntity sparqlEntity : list) {
 			logger.debug(sparqlEntity.getValue(GlycoSequence.Sequence));
 		}
+	}
+	
+	@Test
+	@Transactional
+	public void testInsertRdf() throws SparqlException, UnsupportedEncodingException {
+		logger.debug(wurcsRDFInsertSparqlNew.getSparql());
 	}
 }

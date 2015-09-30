@@ -15,12 +15,8 @@ import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
-import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
-import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
-import org.glycoinfo.rdf.glycan.Monosaccharide;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
-import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
@@ -45,7 +41,6 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -159,7 +154,7 @@ public class GlycoCTProcessBatch {
 	@Bean
 	SaccharideInsertSparql getSaccharideInsertSparql() {
 		SaccharideInsertSparql sis = new SaccharideInsertSparql();
-		sis.setGraph(graph);
+		sis.setGraph(graph + "/sequence/wurcs");
 		return sis;
 	}
 	
@@ -172,7 +167,7 @@ public class GlycoCTProcessBatch {
 	@Bean
 	ContributorInsertSparql getContributorInsertSparql() {
 		ContributorInsertSparql c = new ContributorInsertSparql();
-		c.setGraph(graph);
+		c.setGraph(graph + "/users");
 		return c;
 	}
 	
@@ -189,7 +184,7 @@ public class GlycoCTProcessBatch {
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(ResourceEntryInsertSparql.Database, "glytoucan");
 		resourceEntryInsertSparql.setSparqlEntity(se);
-		resourceEntryInsertSparql.setGraph(graph);
+		resourceEntryInsertSparql.setGraph(graph + "/users");
 		return resourceEntryInsertSparql;
 	}
 
@@ -212,7 +207,7 @@ public class GlycoCTProcessBatch {
 	InsertSparql glycoSequenceInsert() {
 		GlycoSequenceInsertSparql gsis = new GlycoSequenceInsertSparql();
 		gsis.setSparqlEntity(new SparqlEntity());
-		gsis.setGraph("http://rdf.glytoucan.org");
+		gsis.setGraph("http://rdf.glytoucan.org/sequence/wurcs");
 		return gsis;
 	}
 	

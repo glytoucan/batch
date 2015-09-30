@@ -25,21 +25,16 @@ public class MotifSequenceSelectSparql extends SelectSparqlBean {
 		+ "?" + Motif.URI + " glycan:has_glycosequence ?" + GlycoSequence.URI + " .\n"
 		+ "?" + Motif.URI + " toucan:is_reducing_end ?" + Motif.ReducingEnd + " .\n"
 		+ "?" + GlycoSequence.URI + " glycan:has_sequence ?" + GlycoSequence.Sequence + " .\n"
-		+ "?" + GlycoSequence.URI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs ."; //" + this.format + "
+		+ "?" + GlycoSequence.URI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs ."
+				+ getFilter() 
+		; //" + this.format + "
+		
+		this.orderby = "?" + Saccharide.PrimaryId;
 	}
 
-//	@Override
-//	public String getInsert() {
-//		// insert the substructure rdf
-//		// if it's a motif, add the has_motif rdf
-//		StringBuffer insert = new StringBuffer();
-//		for (String string : subIriList) {
-//			insert.append("<" + getSupIri() + "> glycan:has_motif <" + string + "> .\n");
-//			insert.append("<" + getSupIri() + "> glycan:has_substructure <" + string + "> .\n");
-//			insert.append("<" + string + "> glycan:has_superstructure <" + getSupIri() + "> .\n");
-//		}
-//		return insert.toString();
-//	}
+	public String getFilter() {
+		return "FILTER ( ?PrimaryId != \"G00022MO\" )";
+	}
 
 //	@Override
 //	public void setInsert(String insert) {

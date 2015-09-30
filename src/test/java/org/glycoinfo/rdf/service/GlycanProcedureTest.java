@@ -335,7 +335,7 @@ LIN
 	}
 	
 	@Test(expected=SparqlException.class)
-	public void testRegisterNew() throws SparqlException, NoSuchAlgorithmException {
+	public void testRegisterNew() throws SparqlException, NoSuchAlgorithmException, ConvertException {
 		
 		String sequence="WURCS=2.0/4,4,3/[u2122h][a2112h-1b_1-5][a2112h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O]/1-2-3-4/a4-b1_b3-c1_c3-d1";
 
@@ -350,7 +350,7 @@ LIN
 			#?WURCS_label  
 			?res
 			#?Contributor
-			WHERE { 
+			WHERE {
 			       ?s a glycan:saccharide .
 			       ?s glytoucan:has_primary_id ?accessionNo .
 			       ?s glytoucan:has_primary_id "G03828HN" .
@@ -440,6 +440,66 @@ LIN
 		
 		logger.debug(se.toString());
 	}
+	
+	@Test
+	@Transactional
+	public void testRegisterG98132BH() throws SparqlException, NoSuchAlgorithmException, ConvertException {
+		String sequence = "RES\\n"
+				+ "1b:x-dglc-HEX-1:5\\n"
+				+ "2s:n-acetyl\\n"
+				+ "3b:b-dglc-HEX-1:5\\n"
+				+ "4s:n-acetyl\\n"
+				+ "5b:b-dman-HEX-1:5\\n"
+				+ "6b:a-dman-HEX-1:5\\n"
+				+ "7b:b-dglc-HEX-1:5\\n"
+				+ "8s:n-acetyl\\n"
+				+ "9b:b-dgal-HEX-1:5\\n"
+				+ "10b:b-dglc-HEX-1:5\\n"
+				+ "11s:n-acetyl\\n"
+				+ "12b:b-dgal-HEX-1:5\\n"
+				+ "13b:a-dman-HEX-1:5\\n"
+				+ "14b:b-dglc-HEX-1:5\\n"
+				+ "15s:n-acetyl\\n"
+				+ "16b:a-lgal-HEX-1:5|6:d\\n"
+				+ "LIN\\n"
+				+ "1:1d(2+1)2n\\n"
+				+ "2:1o(4+1)3d\\n"
+				+ "3:3d(2+1)4n\\n"
+				+ "4:3o(4+1)5d\\n"
+				+ "5:5o(3+1)6d\\n"
+				+ "6:6o(2+1)7d\\n"
+				+ "7:7d(2+1)8n\\n"
+				+ "8:7o(4+1)9d\\n"
+				+ "9:6o(4+1)10d\\n"
+				+ "10:10d(2+1)11n\\n"
+				+ "11:10o(4+1)12d\\n"
+				+ "12:5o(6+1)13d\\n"
+				+ "13:13o(2|6+1)14d\\n"
+				+ "14:14d(2+1)15n\\n"
+				+ "15:1o(6+1)16d\\n";
+
+		logger.debug("sequence:>" + sequence + "<");
+		glycanProcedure.setSequence(sequence);
+		SparqlEntity se = glycanProcedure.searchBySequence();
+
+		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycanProcedure.ResultSequence));
+		Assert.assertNotNull(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycanProcedure.FromSequence));
+
+		String wurcs = se.getValue(GlycanProcedure.ResultSequence);
+		
+		logger.debug("wurcs:>" + wurcs + "<");
+		glycanProcedure.setContributor("test");
+		
+		glycanProcedure.setSequence(sequence);
+		String id = glycanProcedure.register(sequence, wurcs);
+		se = glycanProcedure.searchByAccessionNumber(id);
+		Assert.assertNotNull(se.getValue("Mass"));
+		
+		logger.debug(se.toString());
+	}
+	
 	
 	@Test
 	public void testListAll() throws SparqlException, NoSuchAlgorithmException {

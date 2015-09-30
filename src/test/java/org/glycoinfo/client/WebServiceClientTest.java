@@ -6,10 +6,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.glycoinfo.batch.glytoucan.GlycoCTProcessBatch;
-import org.glycoinfo.client.GlyspaceClient;
-import org.glycoinfo.client.MSdbClient;
-import org.glycoinfo.rdf.glycan.ContributorInsertSparqlTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {WebServiceClientTest.class})
@@ -55,7 +50,7 @@ public class WebServiceClientTest {
 	@Test
 	public void imageTest() throws Exception {
 		GlyspaceClient gsClient = new GlyspaceClient();
-		String image = gsClient.getImage("https://test.glytoucan.org", "RES\\n"
+		String image = gsClient.getImage("http://localhost:8081", "RES\\n"
 				+ "1b:x-dgal-HEX-1:5\\n"
 				+ "2b:x-dman-HEX-1:5\\n"
 				+ "3s:n-acetyl\\n"
@@ -69,7 +64,7 @@ public class WebServiceClientTest {
 	@Test
 	public void imageTestmanglc() throws Exception {
 		GlyspaceClient gsClient = new GlyspaceClient();
-		String image = gsClient.getImage("https://test.glytoucan.org", "RES\\n"
+		String image = gsClient.getImage("http://beta.glytoucan.org", "RES\\n"
 				+ "1b:x-dman-HEX-1:5\\n"
 				+ "2b:x-dglc-HEX-1:5\\n"
 				+ "LIN\\n"
@@ -81,7 +76,7 @@ public class WebServiceClientTest {
 	@Test
 	public void testRead() throws IOException {
 	    /* Test image to string and string to image start */
-        BufferedImage img = ImageIO.read(new File("/tmp/download.png"));
+        BufferedImage img = ImageIO.read(new File("/home/aoki/workspace/rdf.glytoucan/src/test/resources/image.png"));
         BufferedImage newImg;
         String imgstr;
 		GlyspaceClient gsClient = new GlyspaceClient();

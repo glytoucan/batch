@@ -39,7 +39,8 @@ public class GlyspaceClient {
 	protected Log logger = LogFactory.getLog(getClass());
 
 	public String getImage(String hostname, String sequence) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-		String url = hostname + "/glyspace/service/glycans/image/glycan?format=png&notation=cfg&style=extended";
+//		String url = hostname + "/glyspace/service/glycans/image/glycan?format=png&notation=cfg&style=extended";
+		String url = hostname + "/glycans/image/glycan?format=png&notation=cfg&style=extended";
 	
 		SSLContextBuilder builder = new SSLContextBuilder();
 	    builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
@@ -60,11 +61,13 @@ public class GlyspaceClient {
 		data.put("encoding", "glycoct");
 		ObjectMapper mapper = new ObjectMapper();
 		String output = mapper.writeValueAsString(data);
-		String output2 = "{\"encoding\":\"glycoct\",\"structure\":\"" + sequence + "\"}"; 
+		String output2 = "{\"format\":\"glycoct\",\"sequence\":\"" + sequence + "\"}"; 
 		logger.debug("output:"+output);
 		logger.debug("output:"+output2);
 		
 		post.setEntity(new StringEntity(output2));
+		
+//		HttpClient client = HttpClientBuilder.create().build();
 
 		HttpResponse response = client.execute(post);
 		int code = response.getStatusLine().getStatusCode();

@@ -11,12 +11,10 @@ import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
 import org.glycoinfo.WURCSFramework.wurcs.array.MS;
 import org.glycoinfo.WURCSFramework.wurcs.array.UniqueRES;
 import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
-import org.glycoinfo.WURCSFramework.wurcs.rdf.WURCSExporterRDF;
 import org.glycoinfo.WURCSFramework.wurcs.rdf.WURCSRDFModelMS;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
-import org.glycoinfo.rdf.glycan.Saccharide;
 
 public class WurcsRDFMSInsertSparql extends InsertSparqlBean {
 	
@@ -81,6 +79,7 @@ public class WurcsRDFMSInsertSparql extends InsertSparqlBean {
 		
 		WURCSRDFModelMS t_oMSExport = new WURCSRDFModelMS(t_aUniqueMSs, t_bPrefix);
 		String wurcsrdf = t_oMSExport.get_RDF("TURTLE");
+		logger.debug("MS data:>" + wurcsrdf);
 
 		return wurcsrdf;
 	}

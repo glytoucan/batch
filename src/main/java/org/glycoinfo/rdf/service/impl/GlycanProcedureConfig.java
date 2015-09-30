@@ -92,7 +92,7 @@ public class GlycanProcedureConfig {
 	InsertSparql glycoSequenceInsert() {
 		GlycoSequenceInsertSparql gsis = new GlycoSequenceInsertSparql();
 		gsis.setSparqlEntity(new SparqlEntity());
-		gsis.setGraph("http://rdf.glytoucan.org");
+		gsis.setGraph("http://rdf.glytoucan.org/sequence/wurcs");
 		return gsis;
 	}
 	
@@ -106,7 +106,7 @@ public class GlycanProcedureConfig {
 	@Bean
 	SaccharideSelectSparql saccharideSelectSparql() {
 		SaccharideSelectSparql select = new SaccharideSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org>\n");
+		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/2.0>");
 		return select;
 	}
 	
@@ -156,5 +156,4 @@ public class GlycanProcedureConfig {
 		sss.setGraphms("<http://rdf.glytoucan.org/wurcs/ms>");
 		return sss;
 	}
-
 }

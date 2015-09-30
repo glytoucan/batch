@@ -17,7 +17,7 @@ public class GlycoCTProcessor implements
 	GlycanProcedure glycanProcedure;
 	
 	@Override
-	public SparqlEntity process(final SparqlEntity sparqlEntity) {
+	public SparqlEntity process(final SparqlEntity sparqlEntity) throws SparqlException {
 		// get the sequence
 		String sequence = sparqlEntity.getValue(GlycoSequence.Sequence);
 		String id = sparqlEntity.getValue(GlycoSequence.AccessionNumber);
@@ -25,11 +25,14 @@ public class GlycoCTProcessor implements
 		glycanProcedure.setId(id);
 		glycanProcedure.setBatch(true);
 		try {
-		glycanProcedure.register();
+			glycanProcedure.register();
 		} catch (SparqlException e) {
 			e.printStackTrace();
 			logger.debug("FAILURE:>" + sequence + "<");
+			throw e;
 		}
+		
+		
 		return new SparqlEntity();
 	}
 }
