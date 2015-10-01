@@ -30,18 +30,8 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	@Autowired
 	ContributorNameSelectSparql contributorSelectSparql;
 	
-	String name, graph;	
+	String name, graph, id;	
 	
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getGraph() {
 		return graph;
 	}
@@ -102,5 +92,25 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 			return idSE.getValue(Contributor.Id);
 		}
 		return null;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 }

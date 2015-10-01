@@ -7,7 +7,13 @@ public interface ContributorProcedure {
 	
 	String searchContributor() throws SparqlException;
 
-	String getName();
+	String getId();
+
+	void setId(String id);
 
 	void setName(String name);
+	
+	String getName();
+
+//	String searchContributor(String email);
 }

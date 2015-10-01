@@ -113,6 +113,8 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 		t_oExport.hideComments(true); // Hide all comments in query
 		t_oExport.setSearchSupersumption(true); // Search supersumption of monosaccharide
 		t_oExport.setMSGraphURI(getGraphms());
+		t_oExport.setSearchSupersumption(false);
+		logger.debug("set setSearchSupersumption false");
 		String reducing = getSparqlEntity().getValue(Motif.ReducingEnd);
 		if (StringUtils.isNotBlank(reducing) && reducing.equals(SelectSparql.TRUE))
 			t_oExport.setSpecifyRootNode(true);

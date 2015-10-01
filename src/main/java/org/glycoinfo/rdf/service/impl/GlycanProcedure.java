@@ -121,7 +121,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 //	@Qualifier(value = "insertscintregisteraction")
 //	InsertScint insertScintRegisterAction;
 	
-	String sequence, image, id, sequenceResult, contributor, format;
+	String sequence, image, id, sequenceResult, contributorId, format;
 	
 	/**
 	 * 
@@ -432,7 +432,27 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	
 	/**
 	 * 
-	 * @throws SparqlException 
+	 * Registration of a glycan using standard registration method via either the text entry, graphical, or file upload.  
+	 * It first checks if the wurcs structure version of this sequence exists (in case it was translated already).  
+	 * If not found using sparql, it is then translated to wurcs and searched for again.  
+	 * If the translation fails, an exception is thrown with the ConvertException embedded.
+	 * 
+	 * A primary policy that should be protected is if the sequence cannot be converted to wurcs, it will not be accepted.
+	 * 
+	 * If found in either case above, then it is already registered and a SparqlException is thrown.
+	 * 
+	 * Otherwise, it sets the FromSequence as the one first input, with the Sequence element assumed to be the wurcs sequence.
+	 * 
+	 * It is now possible to move onto the registration process.
+	 * It cannot be registered if the user's information (contributor) is blank.
+	 *
+	 * Core info such as Saccharide Contributor, and ResourceEntry are then inserted.
+	 * For backwards compatibility, when the wurcs file could not be converted, it was added into the rdfs label for the sequence.
+	 * This functionality is kept even though WurcsRDF adds similar information.
+	 * 
+	 * addWurcs() method is then called
+	 * 
+	 * @throws SparqlException AlreadyRegistered + " as:>" + se.getValue(AccessionNumber) + "<"
 	 * @see org.glycoinfo.rdf.service.GlycanProcedure#register()
 	 */
 	@Override
@@ -446,27 +466,25 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			sparqlentity = searchBySequence();
 			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null && !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) 
 			{
-				if (!isBatch) {
-					throw new SparqlException(AlreadyRegistered + " as:>" + se.getValue(AccessionNumber) + "<");
-				}
-			} else {
-				setFromSequence(sparqlentity.getValue(GlycanProcedure.FromSequence));
+				throw new SparqlException(AlreadyRegistered + " as:>" + se.getValue(AccessionNumber) + "<");
 			}
-			logger.debug("setting sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence));
+			logger.debug("setting from sequence:>" + sparqlentity.getValue(GlycanProcedure.FromSequence) + "< sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence) + "<");
+			setFromSequence(sparqlentity.getValue(GlycanProcedure.FromSequence));
 			setSequence(sparqlentity.getValue(GlycanProcedure.Sequence));
 		} catch (ConvertException e) {
 			e.printStackTrace();
-			logger.error("convert exception processing:>" + sequence + "<");
-			if (e.getMessage() != null && e.getMessage().length() > 0)
-				errorMessage=e.getMessage();
-			else
+//			logger.error("convert exception processing:>" + sequence + "<");
+//			if (e.getMessage() != null && e.getMessage().length() > 0)
+//				errorMessage=e.getMessage();
+//			else
 				throw new SparqlException(e);
 		}
+		
 		logger.debug("registering wurcs:>" + getId() + "\nsequence:>" + getSequence());
 
-		if (!isBatch) {
-			if (StringUtils.isBlank(contributor)) {
-				throw new SparqlException("Contributor name cannot be blank");
+//		if (!isBatch) {
+			if (StringUtils.isBlank(contributorId)) {
+				throw new SparqlException("Contributor id cannot be blank");
 			}
 			
 			accessionNumber = "G" + AccessionNumberGenerator.generateRandomString(7);
@@ -485,40 +503,51 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			saccharideInsertSparql.setSparqlEntity(sparqlentity);
 			sparqlDAO.insert(saccharideInsertSparql);
 	
-			contributorProcedure.setName(contributor);
-			String id = contributorProcedure.addContributor();
+//			contributorProcedure.setId(contributorId);
+//			String id = contributorProcedure.searchContributor(userin);
 		
 			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.URI, saccharideInsertSparql);
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Identifier, accessionNumber);
 			
-			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.ContributorId, id);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.ContributorId, contributorId);
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.DataSubmittedDate, new Date());
 
 	//		resourceEntryInsertSparql.setSparqlEntity(reisSE);
 			sparqlDAO.insert(resourceEntryInsertSparql);
-		}
+//		}
 		
 		
 		logger.debug("registering wurcs:>" + getId() + "\nsequence:>" + getSequence());
 
-		if (null != errorMessage) {
-			// don't have wurcs, just exit clean.
-			glycoSequenceInsert.setGraph(wurcsRDFInsertSparql.getGraph());
-			glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId, getId());
-			glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, "wurcs");
-			try {
-				glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.ErrorMessage, URLEncoder.encode(errorMessage, "UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			glycoSequenceInsert.setGraph(wurcsRDFInsertSparql.getGraph());
-			sparqlDAO.insert(glycoSequenceInsert);
-			logger.debug("inserted:>" + getId() + "\nmessage:>" + errorMessage);
-		} else
+		// record the errorMessage just in case
+//		if (null != errorMessage) {
+//			// don't have wurcs, just exit clean.
+//			glycoSequenceInsert.setGraph(wurcsRDFInsertSparql.getGraph());
+//			glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId, getId());
+//			glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, "wurcs");
+//			try {
+//				glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.ErrorMessage, URLEncoder.encode(errorMessage, "UTF-8"));
+//			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
+//			}
+//			glycoSequenceInsert.setGraph(wurcsRDFInsertSparql.getGraph());
+//			sparqlDAO.insert(glycoSequenceInsert);
+//			logger.debug("inserted:>" + getId() + "\nmessage:>" + errorMessage);
+//		} else
 			addWurcs();
 		return getId();
 	}
 
+	/**
+	 * 
+	 * sets the sequence, and primary id and calls the wurcsRDFInsertSparql.
+	 * 
+	 * then runs the wurcsRDFMSInsertSparql for the monosaccharide data.
+	 * 
+	 * calculates mass based upon wurcs.
+	 * 
+	 * @throws SparqlException
+	 */
 	public void addWurcs() throws SparqlException {
 		logger.debug("registering wurcs:>" + getId() + "\nsequence:>" + getSequence());
 		wurcsRDFInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, getId());
@@ -601,16 +630,6 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		if (list.iterator().hasNext())
 			return list.iterator().next();
 		return null;
-	}
-
-	@Override
-	public String getContributor() {
-		return contributor;
-	}
-
-	@Override
-	public void setContributor(String name) {
-		this.contributor=name;
 	}
 
 	@Override
@@ -723,5 +742,72 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		sss.setSparqlEntity(se);
 		
 		return sparqlDAO.query(sss);
+	}
+	
+	
+	/**
+	 * 
+	 * This is for the case where a glycoct(_condensed) formatted GlycoSequence already exists.  (data loaded from another database)
+	 * If the wurcs already exists, that can be expected if the process is being rerun for some reason, returns the existing id.
+	 * 
+	 * Assuming the ResourceEntry, Contributor for the Saccharide is already input.
+	 * 
+	 * Conversion exceptions can occur, however unexpected.  In these cases record the error message and place into rdfs label for the glycosequence. 
+	 * Will then have to exit clean as we cannot process anymore since no wurcs. 
+	 * 
+	 * However the wurcs, mass, wurcsRDF, wurcsRDFMS etc still do not exist, add using addWurcs();
+	 * 
+	 * @see org.glycoinfo.rdf.service.GlycanProcedure#initialize()
+	 */
+	@Override
+	public String initialize() throws SparqlException {
+		SparqlEntity sparqlentity = new SparqlEntity();
+		String accessionNumber = null;
+
+		// check if it doesn't exist.
+		String errorMessage = null;
+		try {
+			sparqlentity = searchBySequence();
+			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null && !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) 
+			{
+				logger.debug(AlreadyRegistered + " as:>" + se.getValue(AccessionNumber) + "<");
+				return se.getValue(AccessionNumber);
+			}
+			logger.debug("setting from sequence:>" + sparqlentity.getValue(GlycanProcedure.FromSequence) + "< sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence) + "<");
+			setFromSequence(sparqlentity.getValue(GlycanProcedure.FromSequence));
+			setSequence(sparqlentity.getValue(GlycanProcedure.Sequence));
+		} catch (ConvertException e) {
+			e.printStackTrace();
+			logger.error("convert exception processing:>" + sequence + "<");
+			if (e.getMessage() != null && e.getMessage().length() > 0)
+				errorMessage=e.getMessage();
+			else
+				throw new SparqlException(e);
+		}
+		
+		logger.debug("registering wurcs:>" + getId() + "\nsequence:>" + getSequence());
+
+//		 record the errorMessage
+		if (null != errorMessage) {
+			// don't have wurcs, just exit clean.
+			glycoSequenceInsert.setGraph(wurcsRDFInsertSparql.getGraph());
+			glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId, getId());
+			glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, "wurcs");
+			try {
+				glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.ErrorMessage, URLEncoder.encode(errorMessage, "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			glycoSequenceInsert.setGraph(wurcsRDFInsertSparql.getGraph());
+			sparqlDAO.insert(glycoSequenceInsert);
+			logger.debug("inserted:>" + getId() + "\nmessage:>" + errorMessage);
+		} else
+			addWurcs();
+		return getId();
+	}
+
+	@Override
+	public void setContributorId(String userId) {
+		this.contributorId = userId;
 	}
 }

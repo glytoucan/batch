@@ -3,7 +3,6 @@ package org.glycoinfo.rdf.service;
 import java.util.List;
 
 import org.glycoinfo.rdf.SparqlException;
-import org.glycoinfo.rdf.dao.SesameDAOTestConfig;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
@@ -24,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -105,6 +105,7 @@ public class UserProcedureTest {
 	}
 
 	@Test(expected=SparqlException.class)
+	@Transactional
 	public void testInsufficientUser() throws SparqlException {
 		SparqlEntity se = new SparqlEntity();
 		se.setValue("id", "person456");
@@ -113,6 +114,7 @@ public class UserProcedureTest {
 	}
 	
 	@Test
+	@Transactional
 	public void testUser() throws SparqlException {
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(SelectScint.PRIMARY_KEY, "person789");
@@ -170,8 +172,9 @@ public class UserProcedureTest {
 		Assert.assertFalse(results.size() == 0);
 		for (SparqlEntity sparqlEntity : results) {
 			logger.debug(sparqlEntity.toString());
-			Assert.assertNull(sparqlEntity.getValue("member"));
-			Assert.assertNotNull(sparqlEntity.getValue("contributor"));
+			Assert.assertNotNull(sparqlEntity.getValue("familyName"));
+			Assert.assertNotNull(sparqlEntity.getValue("givenName"));
+			Assert.assertNotNull(sparqlEntity.getValue("alternateName"));
 		}
 	}
 

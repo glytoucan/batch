@@ -5,10 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.mail.Message;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.SparqlException;
@@ -20,15 +17,14 @@ import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
 	Log logger = LogFactory.getLog(UserProcedure.class);
+	
+	public static final String ContributorId = "alternateName"; // shortcut to map contributor id into Person;
 	
 	String[] requiredFields = {SelectScint.PRIMARY_KEY, "email", "givenName", "familyName", "verifiedEmail"};
 
@@ -100,7 +96,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		if (!columns.containsAll(Arrays.asList(requiredFields))) {
 			throw new SparqlException("not all required fields are supplied");
 		}
-		
+
 		String email = getSparqlEntity().getValue("email");
 		List usersWithEmail = getUser(email);
 		if (usersWithEmail.size() > 0)  // if this email exists, already registered, dont need to add.
@@ -138,7 +134,20 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		// otherwise just a member.
 		sparqlentityPerson.setValue("member", organizationSelect);
+
+		if (StringUtils.isBlank(getSparqlEntity().getValue(org.glycoinfo.rdf.service.UserProcedure.givenName)))
+			throw new SparqlException("given name cannot be glank");
+		if (StringUtils.isBlank(getSparqlEntity().getValue(org.glycoinfo.rdf.service.UserProcedure.familyName)))
+			throw new SparqlException("familyName cannot be glank");
+		
+		// check if Contributor exists, and map. 
+		contributorProcedure.setName(nameMap(sparqlentityPerson));
+		String contributorId = contributorProcedure.addContributor();
+
+		sparqlentityPerson.setValue("alternateName", contributorId);
+		
 		insertScintPerson.setSparqlEntity(sparqlentityPerson);
+
 		sparqlDAO.insert(insertScintPerson);
 		
 		// RegisterAction entity
@@ -172,15 +181,20 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		sparqlDAO.insert(insertScintRegisterAction);
 		
-		contributorProcedure.setName(getSparqlEntity().getValue(org.glycoinfo.rdf.service.UserProcedure.givenName));
-		contributorProcedure.addContributor();
-		
 		String name = getSparqlEntity().getValue("givenName");
 
 		if (isSendEmail()) {
 		mailService.newRegistration(email, name);
 		mailService.newRegistrationAdmin(sparqlEntityPerson);
 		}
+	}
+
+	private String nameMap(SparqlEntity sparqlEntity) {
+		if (sparqlEntity.getValue(email).equals("aokinobu@gmail.com"))
+			return "aoki";
+		if (sparqlEntity.getValue(email).equals("d.shinmachi.aist@gmail.com"))
+			return "daisuke shinmachi";
+		return sparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.givenName) + " " + sparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.familyName);
 	}
 
 	@Override
@@ -213,4 +227,11 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	public void setRequiredFields(String[] requiredFields) {
 		this.requiredFields = requiredFields;
 	}
+	
+	@Override
+	public String getUserId(String email) throws SparqlException {
+		List<SparqlEntity> list = getUser(email);
+		SparqlEntity first = list.iterator().next();
+		return first.getValue(ContributorId);
+	}	
 }

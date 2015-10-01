@@ -340,7 +340,7 @@ LIN
 		String sequence="WURCS=2.0/4,4,3/[u2122h][a2112h-1b_1-5][a2112h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O]/1-2-3-4/a4-b1_b3-c1_c3-d1";
 
 		glycanProcedure.setSequence(sequence);
-		glycanProcedure.setContributor("testname");
+		glycanProcedure.setContributorId("testname");
 		String se = glycanProcedure.register();
 
 		/*
@@ -431,7 +431,7 @@ LIN
 		String wurcs = se.getValue(GlycanProcedure.ResultSequence);
 		
 		logger.debug("wurcs:>" + wurcs + "<");
-		glycanProcedure.setContributor("test");
+		glycanProcedure.setContributorId("test");
 		
 		glycanProcedure.setSequence(sequence);
 		String id = glycanProcedure.register(sequence, wurcs);
@@ -490,7 +490,7 @@ LIN
 		String wurcs = se.getValue(GlycanProcedure.ResultSequence);
 		
 		logger.debug("wurcs:>" + wurcs + "<");
-		glycanProcedure.setContributor("test");
+		glycanProcedure.setContributorId("test");
 		
 		glycanProcedure.setSequence(sequence);
 		String id = glycanProcedure.register(sequence, wurcs);

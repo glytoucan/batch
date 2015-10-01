@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
-import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.rdf.SparqlException;
@@ -512,7 +509,7 @@ public class SearchTest {
 						+ "1b:x-dman-HEX-1:5";
 				logger.debug("sequence:>" + sequence + "<");
 				glycanProcedure.setSequence(sequence);
-				glycanProcedure.setContributor("test");
+				glycanProcedure.setContributorId("test");
 				glycanProcedure.setBatch(false);
 				String id = glycanProcedure.register();
 				

@@ -31,7 +31,7 @@ public class GlycanProcedureConfig {
 	@Bean
 	SaccharideInsertSparql getSaccharideInsertSparql() {
 		SaccharideInsertSparql sis = new SaccharideInsertSparql();
-		sis.setGraph(graph);
+		sis.setGraph(graph + "/core");
 		return sis;
 	}
 	
@@ -47,21 +47,21 @@ public class GlycanProcedureConfig {
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(ResourceEntryInsertSparql.Database, "glytoucan");
 		resourceEntryInsertSparql.setSparqlEntity(se);
-		resourceEntryInsertSparql.setGraph(graph);
+		resourceEntryInsertSparql.setGraph(graph + "/core");
 		return resourceEntryInsertSparql;
 	}
 
 	@Bean
 	SelectSparql glycoSequenceContributorSelectSparql() {
 		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
-		sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\n");
+		sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\n");
 		return sb;
 	}
 	
 	@Bean
 	SelectSparql listAllGlycoSequenceContributorSelectSparql() {
 		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
-		sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\n");
+		sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\nFROM <" + graph + "/users>\n");
 		return sb;
 	}
 	
@@ -106,7 +106,7 @@ public class GlycanProcedureConfig {
 	@Bean
 	SaccharideSelectSparql saccharideSelectSparql() {
 		SaccharideSelectSparql select = new SaccharideSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/2.0>");
+		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>");
 		return select;
 	}
 	
@@ -124,7 +124,7 @@ public class GlycanProcedureConfig {
 	@Bean
 	public MSInsertSparql msInsertSparql() {
 		MSInsertSparql wrss = new MSInsertSparql();
-		wrss.setGraph("http://rdf.glytoucan.org/msdb");
+		wrss.setGraph("http://rdf.glytoucan.org/msdb/monosaccharide");
 		return wrss;
 	}
 	
@@ -138,17 +138,17 @@ public class GlycanProcedureConfig {
 	@Bean
 	ContributorInsertSparql getContributorInsertSparql() {
 		ContributorInsertSparql c = new ContributorInsertSparql();
-		c.setGraph(graph);
+		c.setGraph(graph + "/users");
 		return c;
 	}
 	
 	@Bean
 	ContributorNameSelectSparql getContributorNameSelectSparql() {
 		ContributorNameSelectSparql selectbyNameContributor = new ContributorNameSelectSparql();
-		selectbyNameContributor.setFrom("FROM <" + graph + ">");
+		selectbyNameContributor.setFrom("FROM <" + graph + ">\nFROM <" + graph + "/users" + ">\n");
 		return selectbyNameContributor;
 	}
-	
+
 	@Bean
 	SubstructureSearchSparql substructureSearchSparql() {
 		SubstructureSearchSparql sss = new SubstructureSearchSparql();

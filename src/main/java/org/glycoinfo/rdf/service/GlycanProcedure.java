@@ -23,8 +23,6 @@ public interface GlycanProcedure extends GlyConvert {
 	public static final String Id = "Id";
 	public static final String ResultSequence = "ResultSequence";
 
-	
-
 	public SparqlEntity searchBySequence() throws SparqlException, ConvertException;
 
 	public String register(String sequence) throws SparqlException;
@@ -39,9 +37,7 @@ public interface GlycanProcedure extends GlyConvert {
 	
 	public String getImage();
 
-	public String getContributor();
-
-	public void setContributor(String name);
+//	public String getContributor();
 
 	public void setBatch(boolean batch);
 	
@@ -70,4 +66,8 @@ public interface GlycanProcedure extends GlyConvert {
 	public ArrayList<SparqlEntity> findMotifs(String wurcs) throws SparqlException;
 
 	boolean checkExists(String id) throws SparqlException;
+
+	String initialize() throws SparqlException;
+
+	public void setContributorId(String userId);
 }

@@ -26,4 +26,5 @@ public interface UserProcedure {
 
 	public void setSendEmail(boolean sendEmail);
 
+	public String getUserId(String email2) throws SparqlException;
 }

@@ -15,7 +15,8 @@ SELECT ?id
 FROM <http://rdf.glytoucan.org>
 where {
 ?o a foaf:Person .
-?o dcterms:identifier ?id .
+BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/\") AS ?id) .
+?o foaf:name "aoki" .
 }
 	 * @param string 
 	 * 
@@ -32,7 +33,6 @@ where {
 
 	@Override
 	public String getWhere() throws SparqlException {
-		
-		return this.where + "?o foaf:name \"" + getSparqlEntity().getValue(Contributor.Name) + "\"^^xsd:string . \n";
+		return this.where + "?o foaf:name \"" + getSparqlEntity().getValue(Contributor.Name) + "\" . \n";
 	}
 }

@@ -3,6 +3,7 @@ package org.glycoinfo.rdf.scint;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
@@ -69,8 +70,15 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 					this.where += SchemaSparqlFormatter.getDomainWhere(SchemaSparqlFormatter.getUri(classHandler, getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY)), classHandler, column) + " \n";
 				else {
 					// otherwise construct the where itself, select ?column where ?a column "value" and ignore primary key
-					this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n";
-					this.where += "?" + column + " " + classHandler.getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n";
+					if (StringUtils.isNotBlank(getSparqlEntity().getValue(column) )) {
+						this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " ?" + column +" .\n";
+						this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n";
+					} else {
+						if (column.contains(":"))
+							this.where += "?uri " + column +  " ?" + column +" .\n";
+						else
+							this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " ?" + column +" .\n";
+					}
 				}
 			}
 			
