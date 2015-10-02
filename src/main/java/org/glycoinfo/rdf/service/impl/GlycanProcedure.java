@@ -308,6 +308,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		logger.debug("searching for:>" + sparqlSequence + "<");
 		List<SparqlEntity> list = searchSequence(sparqlSequence);
 		logger.debug(list);
+		
+		SparqlEntity searchResultSE = new SparqlEntity();
 		if (list != null && list.size() < 1) {
 			// if not wurcs, convert
 			glyConvertDetect.setToformat("wurcs");
@@ -317,25 +319,26 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			logger.debug("converted:>" + wurcs + "<");
 			list = searchSequence(wurcs);
 			
+			logger.debug("search result list:>" + list + "<");
 			if (list != null && list.size() < 1) {
-				if (null == se)
-					se = new SparqlEntity();
-				se.setValue(FromSequence, sequence);
-				se.setValue(Sequence, wurcs);
-				se.setValue(ResultSequence, wurcs);
-				se.setValue(AccessionNumber, NotRegistered);
+				searchResultSE = new SparqlEntity();
+				logger.debug("not found:>" + sequence + "|" + wurcs + "<");
+				searchResultSE.setValue(FromSequence, sequence);
+				searchResultSE.setValue(Sequence, wurcs);
+				searchResultSE.setValue(ResultSequence, wurcs);
+				searchResultSE.setValue(AccessionNumber, NotRegistered);
 				setFormat(getFromFormat());
-				return se;
+				return searchResultSE;
 			}
 		}
 		
 		if (list != null && list.size() > 1)
 			logger.warn("found more than one WURCS!");
-		se = list.get(0);
+		searchResultSE = list.get(0);
 		
-		se.setValue(Image, "/glycans/" + se.getValue(AccessionNumber) + "/image?style=extended&format=png&notation=cfg");
-		se.setValue(FromSequence, sequence);
-		return se;
+		searchResultSE.setValue(Image, "/glycans/" + se.getValue(AccessionNumber) + "/image?style=extended&format=png&notation=cfg");
+		searchResultSE.setValue(FromSequence, sequence);
+		return searchResultSE;
 	}
 	
 	private List<SparqlEntity> searchSequence(String sparqlSequence) throws SparqlException {
@@ -343,7 +346,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(FromSequence, sparqlSequence);
 		select.setSparqlEntity(se);
-		
+		logger.debug("searching with:>" + select + "<");
 		return sparqlDAO.query(select);
 	}
 
@@ -371,7 +374,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 				se.setValue(Sequence, CouldNotConvertHeader + e.getMessage());
 			}
 			
-			se.setValue(FromSequence, getSequence());
+//			se.setValue(FromSequence, getSequence());
+			logger.debug("adding to search list:>" + se + "<");
 			list.add(se);
 		}
 		return list;

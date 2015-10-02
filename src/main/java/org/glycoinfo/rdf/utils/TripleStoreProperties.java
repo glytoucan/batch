@@ -2,12 +2,11 @@ package org.glycoinfo.rdf.utils;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-@Component
+@Configuration
 //@ConfigurationProperties(prefix = TripleStoreProperties.TS_CONFIGURATION_PREFIX)
 public class TripleStoreProperties  implements InitializingBean {
 	public static final String TS_CONFIGURATION_PREFIX = "spring.triplestore";

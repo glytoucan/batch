@@ -36,6 +36,7 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 		this.select = "DISTINCT ?" + Sequence + "\n"
 				+ "?" + AccessionNumber + "\n";
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
+				+ "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n";
 		this.where = "?" + SaccharideURI + " a glycan:saccharide .\n"
 				+ "?" + SaccharideURI + " glytoucan:has_primary_id ?" + AccessionNumber + " .\n"
