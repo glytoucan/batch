@@ -26,18 +26,18 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import virtuoso.sesame2.driver.VirtuosoRepository;
 
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = ("org.glycoinfo.batch.glytoucan"))
-@SpringApplicationConfiguration(classes = { GlycoCTProcessBatch.class, GlycanProcedureConfig.class})
+@Import(value = { GlycanProcedureConfig.class})
 @EnableBatchProcessing
 public class GlycoCTProcessBatch {
  
