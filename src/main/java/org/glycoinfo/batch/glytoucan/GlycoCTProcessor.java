@@ -25,7 +25,7 @@ public class GlycoCTProcessor implements
 		glycanProcedure.setId(id);
 		glycanProcedure.setBatch(true);
 		try {
-			glycanProcedure.register();
+			glycanProcedure.initialize();
 		} catch (SparqlException e) {
 			e.printStackTrace();
 			logger.debug("FAILURE:>" + sequence + "<");
