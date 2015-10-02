@@ -29,7 +29,7 @@ public class GlycanProcedureConfig {
 	private static final String graph = "http://rdf.glytoucan.org";
 
 	@Bean
-	SaccharideInsertSparql getSaccharideInsertSparql() {
+	SaccharideInsertSparql saccharideInsertSparql() {
 		SaccharideInsertSparql sis = new SaccharideInsertSparql();
 		sis.setGraph(graph + "/core");
 		return sis;
