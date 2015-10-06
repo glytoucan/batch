@@ -321,7 +321,6 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			
 			logger.debug("search result list:>" + list + "<");
 			if (list != null && list.size() < 1) {
-				searchResultSE = new SparqlEntity();
 				logger.debug("not found:>" + sequence + "|" + wurcs + "<");
 				searchResultSE.setValue(FromSequence, sequence);
 				searchResultSE.setValue(Sequence, wurcs);
@@ -774,8 +773,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			sparqlentity = searchBySequence();
 			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null && !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) 
 			{
-				logger.debug(AlreadyRegistered + " as:>" + se.getValue(AccessionNumber) + "<");
-				return se.getValue(AccessionNumber);
+				logger.debug(AlreadyRegistered + " as:>" + sparqlentity.getValue(AccessionNumber) + "<");
+				return sparqlentity.getValue(AccessionNumber);
 			}
 			logger.debug("setting from sequence:>" + sparqlentity.getValue(GlycanProcedure.FromSequence) + "< sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence) + "<");
 			setFromSequence(sparqlentity.getValue(GlycanProcedure.FromSequence));
