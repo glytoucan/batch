@@ -336,7 +336,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			logger.warn("found more than one WURCS!");
 		searchResultSE = list.get(0);
 		
-		searchResultSE.setValue(Image, "/glycans/" + se.getValue(AccessionNumber) + "/image?style=extended&format=png&notation=cfg");
+		searchResultSE.setValue(Image, "/glycans/" + searchResultSE.getValue(AccessionNumber) + "/image?style=extended&format=png&notation=cfg");
 		searchResultSE.setValue(FromSequence, sequence);
 		return searchResultSE;
 	}
