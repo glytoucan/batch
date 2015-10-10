@@ -122,7 +122,7 @@ public class GlycoSequenceInsertSparql extends InsertSparqlBean {
 	@Override
 	public String getGraph() {
 		if (StringUtils.isBlank(super.getGraph()))
-			return getGraphBase() + "/" + getSparqlEntity().getValue(GlycoSequence.Format);
+			return getGraphBase() + "/sequence/" + getSparqlEntity().getValue(GlycoSequence.Format);
 		return super.getGraph();
 	}
 	

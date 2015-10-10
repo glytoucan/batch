@@ -507,9 +507,10 @@ public class SearchTest {
 			public void testRegisterAndSelect() throws SparqlException {
 				String sequence = "RES\\n"
 						+ "1b:x-dman-HEX-1:5";
+				
 				logger.debug("sequence:>" + sequence + "<");
 				glycanProcedure.setSequence(sequence);
-				glycanProcedure.setContributorId("test");
+				glycanProcedure.setContributorId("1");
 				glycanProcedure.setBatch(false);
 				String id = glycanProcedure.register();
 				
@@ -517,7 +518,7 @@ public class SearchTest {
 				se.setValue(Saccharide.PrimaryId, id);
 				
 				SaccharideSelectSparql select = new SaccharideSelectSparql();
-				select.setFrom("FROM <http://rdf.glytoucan.org>\n");
+				select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>\n");
 				select.setSparqlEntity(se);
 
 				List<SparqlEntity> sachList = sparqlDAO.query(select);
@@ -525,7 +526,7 @@ public class SearchTest {
 				logger.debug("size:>" + sachList.size());				
 
 				GlycoSequenceSelectSparql glycoSelect = new GlycoSequenceSelectSparql();
-				glycoSelect.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\n");
+				glycoSelect.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/core>\n");
 				glycoSelect.setSparqlEntity(se);
 
 				List<SparqlEntity> glycosachList = sparqlDAO.query(glycoSelect);
@@ -534,7 +535,7 @@ public class SearchTest {
 				logger.debug("size:>" + glycosachList.size());				
 				
 				org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql gSelect = new org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql();
-				gSelect.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\n");
+				gSelect.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/core>\n");
 				gSelect.setSparqlEntity(se);
 
 				List<SparqlEntity> gList = sparqlDAO.query(gSelect);
@@ -549,8 +550,8 @@ public class SearchTest {
 				
 				sequence = se.getValue(GlycoSequence.Sequence);
 				List<SparqlEntity> list = glycanProcedure.substructureSearch(sequence, "1", "0");
-				Assert.assertNotNull(se.getValue(SubstructureSearchSparql.SubstructureSearchSaccharideURI));
-
+				SparqlEntity resultSE = list.get(0);
+				Assert.assertNotNull(resultSE.getValue(SubstructureSearchSparql.SubstructureSearchSaccharideURI));
 			}
 			
 			@Test

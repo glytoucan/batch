@@ -55,8 +55,6 @@ public interface GlycanProcedure extends GlyConvert {
 
 	public List<SparqlEntity> substructureSearch(String sequence, String limit, String offset) throws SparqlException;
 
-	void registerGlycoSequence() throws SparqlException;
-
 	public void setFormat(String value);
 
 	public void setId(String value);
@@ -70,4 +68,6 @@ public interface GlycanProcedure extends GlyConvert {
 	String initialize() throws SparqlException;
 
 	public void setContributorId(String userId);
+
+	void registerGlycoSequence(String orig) throws SparqlException;
 }

@@ -45,7 +45,7 @@ public class SaccharideSelectSparql extends SelectSparqlBean implements Sacchari
 	public String getWhere() throws SparqlException {
 		String lWhere = "?" + SaccharideURI + " a glycan:saccharide .\n?" + SaccharideURI + " glytoucan:has_primary_id ?" + PrimaryId + " .\n";
 		if (null != getSparqlEntity() && StringUtils.isNotBlank(getSparqlEntity().getValue(PrimaryId)))
-				lWhere = "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n";
+				lWhere += "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .\n";
 		return lWhere;
 	}
 

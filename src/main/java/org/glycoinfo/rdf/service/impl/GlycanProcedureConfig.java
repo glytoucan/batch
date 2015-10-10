@@ -92,7 +92,7 @@ public class GlycanProcedureConfig {
 	InsertSparql glycoSequenceInsert() {
 		GlycoSequenceInsertSparql gsis = new GlycoSequenceInsertSparql();
 		gsis.setSparqlEntity(new SparqlEntity());
-		gsis.setGraph("http://rdf.glytoucan.org/sequence/wurcs");
+		gsis.setGraphBase(graph);
 		return gsis;
 	}
 	

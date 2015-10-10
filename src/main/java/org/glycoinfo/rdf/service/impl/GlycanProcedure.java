@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
 import org.glycoinfo.batch.mass.MassSparqlProcessor;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
+import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.GlyConvertDetect;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.conversion.util.DetectFormat;
@@ -521,23 +522,15 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		
 		
 		logger.debug("registering wurcs:>" + getId() + "\nsequence:>" + getSequence());
-
-		// record the errorMessage just in case
-//		if (null != errorMessage) {
-//			// don't have wurcs, just exit clean.
-//			glycoSequenceInsert.setGraph(wurcsRDFInsertSparql.getGraph());
-//			glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId, getId());
-//			glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, "wurcs");
-//			try {
-//				glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.ErrorMessage, URLEncoder.encode(errorMessage, "UTF-8"));
-//			} catch (UnsupportedEncodingException e) {
-//				e.printStackTrace();
-//			}
-//			glycoSequenceInsert.setGraph(wurcsRDFInsertSparql.getGraph());
-//			sparqlDAO.insert(glycoSequenceInsert);
-//			logger.debug("inserted:>" + getId() + "\nmessage:>" + errorMessage);
-//		} else
-			addWurcs();
+		
+		addWurcs();
+		
+		// if adding wurcs is fine, and the original isn't wurcs, then the translation was valid.  So record the original as well.  (in a different graph of course)
+		
+		logger.debug("format:>" + getFormat() + "<\nFromSequence:>" + getFromSequence() + "<");
+		if (getFormat() != null && getFormat().equals("wurcs"))
+			registerGlycoSequence(getFromSequence());
+		
 		return getId();
 	}
 
@@ -643,11 +636,11 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	}
 
 	@Override
-	public void registerGlycoSequence() throws SparqlException {
+	public void registerGlycoSequence(String orig) throws SparqlException {
 		logger.debug("adding:" + getId() + " with >" + getSequence() + "< in " + getFormat() + " format.");
 		glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId, getId());
-		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Sequence, getSequence());
-		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, getFormat());
+		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Sequence, orig);
+		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, DetectFormat.detect(orig));
 
 		SaccharideInsertSparql sis = new SaccharideInsertSparql();
 		sis.setSparqlEntity(glycoSequenceInsert.getSparqlEntity());
@@ -660,9 +653,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Override
 	public String register(String orig, String newStructure) throws SparqlException {
 		setId(register(newStructure));
-		setSequence(orig);
-		setFormat(DetectFormat.detect(orig));
-		registerGlycoSequence();
+		registerGlycoSequence(orig);
 		return getId();
 	}
 	
