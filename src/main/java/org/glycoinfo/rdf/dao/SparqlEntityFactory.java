@@ -17,13 +17,7 @@ public class SparqlEntityFactory implements DisposableBean {
     private static final ThreadLocal<SparqlEntity> localSparqlEntityThread = new ThreadLocal<SparqlEntity>();
     
     public static SparqlEntity getSparqlEntity() throws SparqlException {
-    	SparqlEntity sparqlEntityObject = localSparqlEntityThread.get();
-
-        if (sparqlEntityObject == null) {
-            throw new SparqlException("No sparqlentity active");
-        }
-
-        return sparqlEntityObject;
+    	return localSparqlEntityThread.get();
     }
     
     public static void set(SparqlEntity s) {
