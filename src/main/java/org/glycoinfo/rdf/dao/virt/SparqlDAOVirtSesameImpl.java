@@ -282,8 +282,8 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 	@Transactional
 	public List<SparqlEntity> query(SelectSparql select) throws SparqlException {
 		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
-
-		select.setSparqlEntity(se);
+		if (null != se)
+			select.setSparqlEntity(se);
 		
 //		logger.debug("sparqlEntityFactory:>" + sparqlEntityFactory + "<");
 //		logger.debug("SparqlEntity:>" + se + "<");
