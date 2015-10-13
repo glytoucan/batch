@@ -15,6 +15,7 @@ import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
@@ -34,6 +35,7 @@ import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
+import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.glycoinfo.rdf.service.impl.MailService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,7 +66,7 @@ public class GlycanProcedureTest {
 	@Autowired
 	SparqlDAO sparqlDAO;
 	
-	private static final String graph = "http://rdf.test.glytoucan.org";
+	private static final String graph = "http://rdf.glytoucan.org";
 	
 	@Bean(name = "selectscintperson")
 	SelectScint getSelectPersonScint() throws SparqlException {
@@ -165,7 +167,7 @@ public class GlycanProcedureTest {
 	@Scope("prototype")
 	SelectSparql glycoSequenceContributorSelectSparql() {
 		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
-		sb.setFrom("FROM <" + graph + ">\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.test.glytoucan.org/mass>");
+		sb.setFrom("FROM <" + graph + ">\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>");
 		return sb;
 	}
 	
@@ -240,14 +242,14 @@ public class GlycanProcedureTest {
 	@Bean
 	MonosaccharideSelectSparql monosaccharideSelectSparql() {
 		MonosaccharideSelectSparql sb = new MonosaccharideSelectSparql();
-		sb.setFrom(sb.getFrom() + "FROM <http://rdf.test.glytoucan.org>\n");
+		sb.setFrom(sb.getFrom() + "FROM <http://rdf.glytoucan.org>\n");
 		return sb;
 	}
 	
 	@Bean
 	public MSInsertSparql msInsertSparql() {
 		MSInsertSparql wrss = new MSInsertSparql();
-		wrss.setGraph("http://rdf.test.glytoucan.org/msdb");
+		wrss.setGraph("http://rdf.glytoucan.org/msdb");
 		return wrss;
 	}
 	
@@ -500,6 +502,190 @@ LIN
 		logger.debug(se.toString());
 	}
 	
+	@Test
+	@Transactional
+	public void testRegisterG65696SL() throws SparqlException, ConvertException
+	{
+//		GlycoCT:
+//		RES
+//		1b:x-dglc-HEX-1:5
+//		2b:b-dgal-HEX-1:5
+//		3b:b-dglc-HEX-1:5
+//		4s:n-acetyl
+//		5b:b-dgal-HEX-1:5
+//		6b:b-dglc-HEX-1:5
+//		7s:n-acetyl
+//		8b:b-dgal-HEX-1:5
+//		9b:b-dglc-HEX-1:5
+//		10s:n-acetyl
+//		11b:b-dgal-HEX-1:5
+//		12b:b-dglc-HEX-1:5
+//		13s:n-acetyl
+//		14b:b-dgal-HEX-1:5
+//		LIN
+//		1:1o(4+1)2d
+//		2:2o(3+1)3d
+//		3:3d(2+1)4n
+//		4:3o(4+1)5d
+//		5:2o(6+1)6d
+//		6:6d(2+1)7n
+//		7:6o(4+1)8d
+//		8:8o(3+1)9d
+//		9:9d(2+1)10n
+//		10:9o(3+1)11d
+//		11:8o(6+1)12d
+//		12:12d(2+1)13n
+//		13:12o(4+1)14d
+		String sequence = "RES\\n"
+				+ "1b:x-dglc-HEX-1:5\\n"
+				+ "2b:b-dgal-HEX-1:5\\n"
+				+ "3b:b-dglc-HEX-1:5\\n"
+				+ "4s:n-acetyl\\n"
+				+ "5b:b-dgal-HEX-1:5\\n"
+				+ "6b:b-dglc-HEX-1:5\\n"
+				+ "7s:n-acetyl\\n"
+				+ "8b:b-dgal-HEX-1:5\\n"
+				+ "9b:b-dglc-HEX-1:5\\n"
+				+ "10s:n-acetyl\\n"
+				+ "11b:b-dgal-HEX-1:5\\n"
+				+ "12b:b-dglc-HEX-1:5\\n"
+				+ "13s:n-acetyl\\n"
+				+ "14b:b-dgal-HEX-1:5\\n"
+				+ "LIN\\n"
+				+ "1:1o(4+1)2d\\n"
+				+ "2:2o(3+1)3d\\n"
+				+ "3:3d(2+1)4n\\n"
+				+ "4:3o(4+1)5d\\n"
+				+ "5:2o(6+1)6d\\n"
+				+ "6:6d(2+1)7n\\n"
+				+ "7:6o(4+1)8d\\n"
+				+ "8:8o(3+1)9d\\n"
+				+ "9:9d(2+1)10n\\n"
+				+ "10:9o(3+1)11d\\n"
+				+ "11:8o(6+1)12d\\n"
+				+ "12:12d(2+1)13n\\n"
+				+ "13:12o(4+1)14d\\n";
+
+		logger.debug("sequence:>" + sequence + "<");
+		glycanProcedure.setId("G65696SL");
+		glycanProcedure.setContributorId("5854");
+		String result = glycanProcedure.register(sequence);
+
+		Assert.assertNotNull(result);
+		
+	}
+	
+	@Test
+	@Transactional
+	public void testRegisterG46627YI() throws SparqlException, ConvertException
+	{
+//		GlycoCT:
+//		RES
+//		1b:x-dglc-HEX-1:5
+//		2b:b-dgal-HEX-1:5
+//		3b:b-dglc-HEX-1:5
+//		4s:n-acetyl
+//		5b:b-dgal-HEX-1:5
+//		6b:b-dglc-HEX-1:5
+//		7s:n-acetyl
+//		8b:a-lgal-HEX-1:5|6:d
+//		9b:b-dgal-HEX-1:5
+//		10b:b-dglc-HEX-1:5
+//		11s:n-acetyl
+//		12b:b-dgal-HEX-1:5
+//		13b:a-lgal-HEX-1:5|6:d
+//		LIN
+//		1:1o(4+1)2d
+//		2:2o(3+1)3d
+//		3:3d(2+1)4n
+//		4:3o(3+1)5d
+//		5:2o(6+1)6d
+//		6:6d(2+1)7n
+//		7:6o(3+1)8d
+//		8:6o(4+1)9d
+//		9:9o(3+1)10d
+//		10:10d(2+1)11n
+//		11:10o(3+1)12d
+//		12:12o(2+1)13d
+		String sequence = "RES\\n" +
+				"1b:x-dglc-HEX-1:5\\n" +
+				"2b:b-dgal-HEX-1:5\\n" +
+				"3b:b-dglc-HEX-1:5\\n" +
+				"4s:n-acetyl\\n" +
+				"5b:b-dgal-HEX-1:5\\n" +
+				"6b:b-dglc-HEX-1:5\\n" +
+				"7s:n-acetyl\\n" +
+				"8b:a-lgal-HEX-1:5|6:d\\n" +
+				"9b:b-dgal-HEX-1:5\\n" +
+				"10b:b-dglc-HEX-1:5\\n" +
+				"11s:n-acetyl\\n" +
+				"12b:b-dgal-HEX-1:5\\n" +
+				"13b:a-lgal-HEX-1:5|6:d\\n" +
+				"LIN\\n" +
+				"1:1o(4+1)2d\\n" +
+				"2:2o(3+1)3d\\n" +
+				"3:3d(2+1)4n\\n" +
+				"4:3o(3+1)5d\\n" +
+				"5:2o(6+1)6d\\n" +
+				"6:6d(2+1)7n\\n" +
+				"7:6o(3+1)8d\\n" +
+				"8:6o(4+1)9d\\n" +
+				"9:9o(3+1)10d\\n" +
+				"10:10d(2+1)11n\\n" +
+				"11:10o(3+1)12d\\n" +
+				"12:12o(2+1)13d\\n";
+
+		logger.debug("sequence:>" + sequence + "<");
+		glycanProcedure.setId("G46627YI");
+		glycanProcedure.setContributorId("5854");
+		String result = glycanProcedure.register(sequence);
+
+		Assert.assertNotNull(result);
+		Assert.assertEquals("G46627YI", result);
+	}
+	
+	@Test
+	@Transactional
+	public void testRegisterG92195EH() throws SparqlException, ConvertException
+	{
+
+		String sequence = "RES\\n" +
+				"1b:x-dglc-HEX-1:5\\n" +
+				"2b:b-dgal-HEX-1:5\\n" +
+				"3b:b-dglc-HEX-1:5\\n" +
+				"4s:n-acetyl\\n" +
+				"5b:b-dgal-HEX-1:5\\n" +
+				"6b:b-dglc-HEX-1:5\\n" +
+				"7s:n-acetyl\\n" +
+				"8b:a-lgal-HEX-1:5|6:d\\n" +
+				"9b:b-dgal-HEX-1:5\\n" +
+				"10b:b-dglc-HEX-1:5\\n" +
+				"11s:n-acetyl\\n" +
+				"12b:b-dgal-HEX-1:5\\n" +
+				"13b:a-lgal-HEX-1:5|6:d\\n" +
+				"LIN\\n" +
+				"1:1o(4+1)2d\\n" +
+				"2:2o(3+1)3d\\n" +
+				"3:3d(2+1)4n\\n" +
+				"4:3o(3+1)5d\\n" +
+				"5:2o(6+1)6d\\n" +
+				"6:6d(2+1)7n\\n" +
+				"7:6o(3+1)8d\\n" +
+				"8:6o(4+1)9d\\n" +
+				"9:9o(3+1)10d\\n" +
+				"10:10d(2+1)11n\\n" +
+				"11:10o(3+1)12d\\n" +
+				"12:12o(2+1)13d\\n";
+
+		logger.debug("sequence:>" + sequence + "<");
+		glycanProcedure.setId("G92195EH");
+		glycanProcedure.setContributorId("5854");
+		String result = glycanProcedure.register(sequence);
+
+		Assert.assertNotNull(result);
+		
+	}
+	
 	
 	@Test
 	public void testListAll() throws SparqlException, NoSuchAlgorithmException {
@@ -537,5 +723,10 @@ LIN
 		
 		logger.debug(compare.toString());
 		Assert.assertTrue(compare.containsAll(correct));
+	}
+	
+	@Bean
+	SparqlEntityFactory sparqlEntityFactory() {
+		return new SparqlEntityFactory();
 	}
 }

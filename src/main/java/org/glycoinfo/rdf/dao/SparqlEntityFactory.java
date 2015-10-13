@@ -14,24 +14,9 @@ import org.springframework.transaction.TransactionSystemException;
  * @see SparqlEntity
  */
 public class SparqlEntityFactory implements DisposableBean {
-    private final ThreadLocal<SparqlEntity> localSparqlEntityThread;
-
-
-    /**
-     * <p>Creates a new {@link SparqlEntityFactory} for the provided {@link Repository}.</p>
-     *
-     * @param repository The repository to which connections are opened.
-     */
-    public SparqlEntityFactory() {
-    	localSparqlEntityThread = new ThreadLocal<SparqlEntity>();
-    }
+    private static final ThreadLocal<SparqlEntity> localSparqlEntityThread = new ThreadLocal<SparqlEntity>();
     
-    public SparqlEntity create() {
-    	localSparqlEntityThread.set(new SparqlEntity());
-    	return localSparqlEntityThread.get();
-    }
-
-    public SparqlEntity getSparqlEntity() throws SparqlException {
+    public static SparqlEntity getSparqlEntity() throws SparqlException {
     	SparqlEntity sparqlEntityObject = localSparqlEntityThread.get();
 
         if (sparqlEntityObject == null) {
@@ -41,11 +26,11 @@ public class SparqlEntityFactory implements DisposableBean {
         return sparqlEntityObject;
     }
     
-    public void set(SparqlEntity s) {
+    public static void set(SparqlEntity s) {
     	localSparqlEntityThread.set(s);
     }
 
-    public void close() {
+    public static void unset() {
     	localSparqlEntityThread.remove();
     }
 
@@ -62,6 +47,6 @@ public class SparqlEntityFactory implements DisposableBean {
 
 	@Override
 	public void destroy() throws Exception {
-		close();		
+		unset();		
 	}
 }

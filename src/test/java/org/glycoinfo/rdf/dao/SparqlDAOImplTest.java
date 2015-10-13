@@ -304,6 +304,20 @@ public class SparqlDAOImplTest {
 				.delete(new InsertSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
 						+ "DELETE DATA { graph <http://bluetree.jp/nobutest> {"
 						+ "<http://bluetree.jp/nobutest/aa> <http://bluetree.jp/nobutest/bb> \"cc\" . } }"));
+		
+//		sparql PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+//			PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+//			PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>
+//			#{ GRAPH <http://rdf.glytoucan.org/sequence/glycoct>
+//			DELETE DATA {
+//			graph <http://rdf.glytoucan.org/sequence/glycoct> {
+//			<http://rdf.glycoinfo.org/glycan/G92195EH> glycan:has_glycosequence <http://rdf.glycoinfo.org/glycan/G92195EH/glycoct> .
+//			<http://rdf.glycoinfo.org/glycan/G92195EH/glycoct> glycan:has_sequence "RES\n1b:x-dglc-HEX-1:5\n2b:b-dgal-HEX-1:5\n3b:b-dglc-HEX-1:5\n4s:n-acetyl\n5b:b-dgal-HEX-1:5\n6b:a-lgal-HEX-1:5|6:d\n7b:a-lgal-HEX-1:5|6:d\n8b:b-dglc-HEX-1:5\n9s:n-acetyl\n10b:b-dgal-HEX-1:5\n11b:b-dglc-HEX-1:5\n12s:n-acetyl\n13b:b-dgal-HEX-1:5\nLIN\n1:1o(4+1)2d\n2:2o(3+1)3d\n3:3d(2+1)4n\n4:3o(3+1)5d\n5:5o(2+1)6d\n6:3o(4+1)7d\n7:2o(6+1)8d\n8:8d(2+1)9n\n9:8o(4+1)10d\n10:10o(3+1)11d\n11:11d(2+1)12n\n12:11o(3+1)13d\n"^^xsd:string .
+//			<http://rdf.glycoinfo.org/glycan/G92195EH/glycoct> rdfs:label "RES\n1b:x-dglc-HEX-1:5\n2b:b-dgal-HEX-1:5\n3b:b-dglc-HEX-1:5\n4s:n-acetyl\n5b:b-dgal-HEX-1:5\n6b:a-lgal-HEX-1:5|6:d\n7b:a-lgal-HEX-1:5|6:d\n8b:b-dglc-HEX-1:5\n9s:n-acetyl\n10b:b-dgal-HEX-1:5\n11b:b-dglc-HEX-1:5\n12s:n-acetyl\n13b:b-dgal-HEX-1:5\nLIN\n1:1o(4+1)2d\n2:2o(3+1)3d\n3:3d(2+1)4n\n4:3o(3+1)5d\n5:5o(2+1)6d\n6:3o(4+1)7d\n7:2o(6+1)8d\n8:8d(2+1)9n\n9:8o(4+1)10d\n10:10o(3+1)11d\n11:11d(2+1)12n\n12:11o(3+1)13d\n"^^xsd:string .
+//			<http://rdf.glycoinfo.org/glycan/G92195EH/glycoct> glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct .
+//			}
+//			}
+
 	}
 
 	@Test

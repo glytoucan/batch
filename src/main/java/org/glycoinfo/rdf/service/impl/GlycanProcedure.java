@@ -42,9 +42,12 @@ import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.utils.AccessionNumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service
+@Scope("request")
 public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedure {
 
 	public static Log logger = (Log) LogFactory.getLog(GlycanProcedure.class);
@@ -109,8 +112,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Autowired
 	public MSInsertSparql msInsertSparql;
 	
-	@Autowired
-	public SparqlEntityFactory sparqlEntityFactory;
+//	@Autowired
+//	public SparqlEntityFactory sparqlEntityFactory;
 	
 //
 //	@Autowired
@@ -494,8 +497,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 				throw new SparqlException("Contributor id cannot be blank");
 			}
 			
+			if (org.apache.commons.lang.StringUtils.isBlank(getId())) {
 			accessionNumber = "G" + AccessionNumberGenerator.generateRandomString(7);
 			
+//			SparqlEntity searchAccNumEntity = sparqlEntityFactory.create();
 			SparqlEntity result = searchByAccessionNumber(accessionNumber);
 			while (result != null && StringUtils.isNotBlank(result.getValue(Saccharide.PrimaryId))) {
 				logger.debug("rerolling... " + result.getValue(Saccharide.PrimaryId));
@@ -506,7 +511,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			logger.debug("setting accession#:>" + accessionNumber + "<");
 			
 			setId(accessionNumber);
-			sparqlentity.setValue(Saccharide.PrimaryId, accessionNumber);
+			}
+			sparqlentity.setValue(Saccharide.PrimaryId, getId());
 			
 			saccharideInsertSparql.setSparqlEntity(sparqlentity);
 			sparqlDAO.insert(saccharideInsertSparql);
@@ -515,7 +521,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 //			String id = contributorProcedure.searchContributor(userin);
 		
 			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.URI, saccharideInsertSparql);
-			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Identifier, accessionNumber);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Identifier, getId());
 			
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.ContributorId, contributorId);
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.DataSubmittedDate, new Date());
@@ -532,7 +538,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		// if adding wurcs is fine, and the original isn't wurcs, then the translation was valid.  So record the original as well.  (in a different graph of course)
 		
 		logger.debug("format:>" + getFormat() + "<\nFromSequence:>" + getFromSequence() + "<");
-		if (getFormat() != null && getFormat().equals("wurcs"))
+		if (getFormat() != null && !getFormat().equals("wurcs"))
 			registerGlycoSequence(getFromSequence());
 		
 		return getId();
@@ -624,9 +630,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 
 	@Override
 	public SparqlEntity searchByAccessionNumber(String accessionNumber) throws SparqlException {
-//		SparqlEntity se = new SparqlEntity();
-		SparqlEntity se = sparqlEntityFactory.getSparqlEntity();
-		se.setValue(Saccharide.PrimaryId, accessionNumber);
+		SparqlEntity se = new SparqlEntity();
+//		logger.debug("sparqlEntityFactory:>" + sparqlEntityFactory + "<");
+//		logger.debug("SparqlEntity:>" + se + "<");
+//		se.setValue(Saccharide.PrimaryId, accessionNumber);
 		return searchByAccessionNumber(se);
 	}
 	

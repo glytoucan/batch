@@ -15,6 +15,7 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Value;
@@ -50,6 +51,9 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 
 	@Autowired(required=false)
 	TripleStoreProperties datasource;
+	
+//	@Autowired
+//	SparqlEntityFactory sparqlEntityFactory;
 	
 	public static String prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> \n"
 			+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
@@ -277,6 +281,13 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 	@Override
 	@Transactional
 	public List<SparqlEntity> query(SelectSparql select) throws SparqlException {
+		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
+
+		select.setSparqlEntity(se);
+		
+//		logger.debug("sparqlEntityFactory:>" + sparqlEntityFactory + "<");
+//		logger.debug("SparqlEntity:>" + se + "<");
+		
 		return query(select.getSparql());
 	}
 
