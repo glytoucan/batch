@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
 import org.glycoinfo.batch.mass.MassSparqlProcessor;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
-import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.GlyConvertDetect;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.conversion.util.DetectFormat;
@@ -27,6 +26,7 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.ResourceEntry;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
@@ -108,6 +108,9 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		
 	@Autowired
 	public MSInsertSparql msInsertSparql;
+	
+	@Autowired
+	public SparqlEntityFactory sparqlEntityFactory;
 	
 //
 //	@Autowired
@@ -492,6 +495,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			}
 			
 			accessionNumber = "G" + AccessionNumberGenerator.generateRandomString(7);
+			
 			SparqlEntity result = searchByAccessionNumber(accessionNumber);
 			while (result != null && StringUtils.isNotBlank(result.getValue(Saccharide.PrimaryId))) {
 				logger.debug("rerolling... " + result.getValue(Saccharide.PrimaryId));
@@ -617,11 +621,20 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		
 	}
 
+
 	@Override
 	public SparqlEntity searchByAccessionNumber(String accessionNumber) throws SparqlException {
-		SparqlEntity se = new SparqlEntity();
+//		SparqlEntity se = new SparqlEntity();
+		SparqlEntity se = sparqlEntityFactory.getSparqlEntity();
 		se.setValue(Saccharide.PrimaryId, accessionNumber);
-		glycoSequenceContributorSelectSparql.setSparqlEntity(se);
+		return searchByAccessionNumber(se);
+	}
+	
+	@Override
+	public SparqlEntity searchByAccessionNumber(SparqlEntity accessionNumber) throws SparqlException {
+//		SparqlEntity se = new SparqlEntity();
+//		se.setValue(Saccharide.PrimaryId, accessionNumber);
+		glycoSequenceContributorSelectSparql.setSparqlEntity(accessionNumber);
 		List<SparqlEntity> list = sparqlDAO.query(glycoSequenceContributorSelectSparql);
 		if (list.iterator().hasNext())
 			return list.iterator().next();

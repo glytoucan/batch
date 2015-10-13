@@ -49,6 +49,8 @@ public interface GlycanProcedure extends GlyConvert {
 
 	public void deleteByAccessionNumber(String accessionNumber);
 	
+	public SparqlEntity searchByAccessionNumber(SparqlEntity accessionNumber) throws SparqlException;
+
 	public SparqlEntity searchByAccessionNumber(String accessionNumber) throws SparqlException;
 
 	public List<SparqlEntity> getGlycans(String offset, String limit) throws SparqlException;
