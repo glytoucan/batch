@@ -272,14 +272,14 @@ LIN
 	 */
 	@Test
 	public void testSearch() throws SparqlException, ConvertException {
-		glycanProcedure.setSequence("RES\n" +
+		String sequence = "RES\n" +
 				"1b:b-dglc-HEX-1:5\n" +
 				"2s:n-acetyl\n"
 				+ "3b:b-dgal-HEX-1:5\n"
 				+ "LIN\n"
 				+ "1:1d(2+1)2n\n"
-				+ "2:1o(4+1)3d");
-		SparqlEntity se = glycanProcedure.searchBySequence();
+				+ "2:1o(4+1)3d";
+		SparqlEntity se = glycanProcedure.searchBySequence(sequence);
 		
 		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.Image));
@@ -298,14 +298,14 @@ LIN
 //test
 //		data-wurcs="WURCS=2.0/2,2,1/[22112h-1a_1-5_2*NCC/3=O][12112h-1b_1-5]/1-2/a3-b1">
 //		data-wurcs="WURCS=2.0/2,2,1/[22112h-1a_1-5_2*NCC/3=O][12112h-1b_1-5]/1-2/a3-b1">
-		glycanProcedure.setSequence("RES\n"
+		String sequence = "RES\n"
 				+ "1b:a-dgal-HEX-1:5\n"
 				+ "2s:n-acetyl\n"
 				+ "3b:b-dgal-HEX-1:5\n"
 				+ "LIN\n"
 				+ "1:1d(2+1)2n\n"
-				+ "2:1o(3+1)3d");
-		SparqlEntity se = glycanProcedure.searchBySequence();
+				+ "2:1o(3+1)3d";
+		SparqlEntity se = glycanProcedure.searchBySequence(sequence);
 
 		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.Image));
@@ -341,9 +341,9 @@ LIN
 		
 		String sequence="WURCS=2.0/4,4,3/[u2122h][a2112h-1b_1-5][a2112h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O]/1-2-3-4/a4-b1_b3-c1_c3-d1";
 
-		glycanProcedure.setSequence(sequence);
-		glycanProcedure.setContributorId("testname");
-		String se = glycanProcedure.register();
+//		glycanProcedure.setSequence(sequence);
+//		glycanProcedure.setContributorId("testname");
+		String se = glycanProcedure.register(sequence, "testname");
 
 		/*
 		PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
@@ -422,8 +422,8 @@ LIN
 				+ "3:3d(2+1)4n\\n"
 				+ "4:1d(2+1)5n\\n";
 		logger.debug("sequence:>" + sequence + "<");
-		glycanProcedure.setSequence(sequence);
-		SparqlEntity se = glycanProcedure.searchBySequence();
+//		glycanProcedure.setSequence(sequence);
+		SparqlEntity se = glycanProcedure.searchBySequence(sequence);
 
 		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.ResultSequence));
@@ -433,10 +433,10 @@ LIN
 		String wurcs = se.getValue(GlycanProcedure.ResultSequence);
 		
 		logger.debug("wurcs:>" + wurcs + "<");
-		glycanProcedure.setContributorId("test");
+//		glycanProcedure.setContributorId("test");
 		
-		glycanProcedure.setSequence(sequence);
-		String id = glycanProcedure.register(sequence);
+//		glycanProcedure.setSequence(sequence);
+		String id = glycanProcedure.register(sequence, "test");
 		logger.debug("searching with id:>" + id + "<");
 		se = glycanProcedure.searchByAccessionNumber(id);
 		
@@ -483,8 +483,8 @@ LIN
 				+ "15:1o(6+1)16d\\n";
 
 		logger.debug("sequence:>" + sequence + "<");
-		glycanProcedure.setSequence(sequence);
-		SparqlEntity se = glycanProcedure.searchBySequence();
+//		glycanProcedure.setSequence(sequence);
+		SparqlEntity se = glycanProcedure.searchBySequence(sequence);
 
 		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.ResultSequence));
@@ -494,10 +494,10 @@ LIN
 		String wurcs = se.getValue(GlycanProcedure.ResultSequence);
 		
 		logger.debug("wurcs:>" + wurcs + "<");
-		glycanProcedure.setContributorId("test");
+//		glycanProcedure.setContributorId("test");
 		
-		glycanProcedure.setSequence(sequence);
-		String id = glycanProcedure.register(sequence);
+//		glycanProcedure.setSequence(sequence);
+		String id = glycanProcedure.register(sequence, "test");
 		se = glycanProcedure.searchByAccessionNumber(id);
 		Assert.assertNotNull(se.getValue("Mass"));
 		
@@ -569,9 +569,9 @@ LIN
 				+ "13:12o(4+1)14d\\n";
 
 		logger.debug("sequence:>" + sequence + "<");
-		glycanProcedure.setId("G65696SL");
-		glycanProcedure.setContributorId("5854");
-		String result = glycanProcedure.register(sequence);
+//		glycanProcedure.setId("G65696SL");
+//		glycanProcedure.setContributorId("5854");
+		String result = glycanProcedure.register(sequence, "5854");
 
 		Assert.assertNotNull(result);
 		
@@ -638,12 +638,12 @@ LIN
 				"12:12o(2+1)13d\\n";
 
 		logger.debug("sequence:>" + sequence + "<");
-		glycanProcedure.setId("G46627YI");
-		glycanProcedure.setContributorId("5854");
-		String result = glycanProcedure.register(sequence);
+//		glycanProcedure.setId("G46627YI");
+//		glycanProcedure.setContributorId("5854");
+		String result = glycanProcedure.register(sequence, "5854");
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals("G46627YI", result);
+//		Assert.assertEquals("G46627YI", result);
 	}
 	
 	@Test
@@ -680,9 +680,9 @@ LIN
 				"12:12o(2+1)13d\\n";
 
 		logger.debug("sequence:>" + sequence + "<");
-		glycanProcedure.setId("G92195EH");
-		glycanProcedure.setContributorId("5854");
-		String result = glycanProcedure.register(sequence);
+//		glycanProcedure.setId("G92195EH");
+//		glycanProcedure.setContributorId("5854");
+		String result = glycanProcedure.register(sequence, "5854");
 
 		Assert.assertNotNull(result);
 		

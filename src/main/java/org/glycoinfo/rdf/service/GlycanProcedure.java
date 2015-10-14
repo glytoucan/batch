@@ -10,7 +10,7 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;
 
-public interface GlycanProcedure extends GlyConvert {
+public interface GlycanProcedure {
 	public static final String Image = "image"; 
 	public static final String CouldNotConvertHeader = "Failed Conversion:";
 	public static final String NotRegistered = "not registered";
@@ -22,30 +22,12 @@ public interface GlycanProcedure extends GlyConvert {
 	public static final String Format = "Format";
 	public static final String Id = "Id";
 	public static final String ResultSequence = "ResultSequence";
-
-	public SparqlEntity searchBySequence() throws SparqlException, ConvertException;
-
-	public String register(String sequence) throws SparqlException;
 	
-	public void setSequence(String sequence);
-	
-	public String getSequence();
-	
-	public String getSequenceResult();
-
-	public String getId();
-	
-	public String getImage();
-
-//	public String getContributor();
-
 	public void setBatch(boolean batch);
-	
-	public Map<String, String> register(List<String> inputs) throws SparqlException;
 	
 	List<SparqlEntity> search(List<String> input) throws SparqlException;
 
-	public String register() throws SparqlException;
+	public String register(String sequence, String contributorId) throws SparqlException;
 
 	public void deleteByAccessionNumber(String accessionNumber);
 	
@@ -57,19 +39,17 @@ public interface GlycanProcedure extends GlyConvert {
 
 	public List<SparqlEntity> substructureSearch(String sequence, String limit, String offset) throws SparqlException;
 
-	public void setFormat(String value);
-
-	public void setId(String value);
-
-	public String register(String string, String string2) throws SparqlException;
-
 	public ArrayList<SparqlEntity> findMotifs(String wurcs) throws SparqlException;
 
 	boolean checkExists(String id) throws SparqlException;
 
-	String initialize() throws SparqlException;
+	SparqlEntity searchBySequence(String sequence) throws SparqlException,
+			ConvertException;
 
-	public void setContributorId(String userId);
+	Map<String, String> register(List<String> inputs, String contributorId)
+			throws SparqlException;
 
-	void registerGlycoSequence(String orig) throws SparqlException;
+	void registerGlycoSequence(SparqlEntity data) throws SparqlException;
+
+	String initialize(String sequence, String id) throws SparqlException;
 }

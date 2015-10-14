@@ -21,11 +21,9 @@ public class GlycoCTProcessor implements
 		// get the sequence
 		String sequence = sparqlEntity.getValue(GlycoSequence.Sequence);
 		String id = sparqlEntity.getValue(GlycoSequence.AccessionNumber);
-		glycanProcedure.setSequence(sequence);
-		glycanProcedure.setId(id);
 		glycanProcedure.setBatch(true);
 		try {
-			glycanProcedure.initialize();
+			glycanProcedure.initialize(sequence, id);
 		} catch (SparqlException e) {
 			e.printStackTrace();
 			logger.debug("FAILURE:>" + sequence + "<");
