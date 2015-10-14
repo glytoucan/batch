@@ -194,6 +194,25 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 			return "aoki";
 		if (sparqlEntity.getValue(email).equals("d.shinmachi.aist@gmail.com"))
 			return "daisuke shinmachi";
+		if (sparqlEntity.getValue(email).equals("glytoucan@gmail.com"))
+			return "Administrator";
+		if (sparqlEntity.getValue(email).equals("kkiyoko@soka.ac.jp"))
+			return "Kiyoko F. Aoki-Kinoshita";
+		if (sparqlEntity.getValue(email).equals("yamadaissaku@gmail.com"))
+			return "Issaku YAMADA";
+		if (sparqlEntity.getValue(email).equals("e1156225@soka-u.jp"))
+			return "Risa Sekimoto";
+		if (sparqlEntity.getValue(email).equals("t.shikanai@aist.go.jp"))
+			return "Toshihide Shikanai";
+		if (sparqlEntity.getValue(email).equals("matsubara@noguchi.or.jp"))
+			return "Masaaki Matsubara";
+		if (sparqlEntity.getValue(email).equals("yusyahassy@gmail.com"))
+			return "Nobuyuki Hashimoto";
+		if (sparqlEntity.getValue(email).equals("dfsmith@emory.edu"))
+			return "David F. Smith";
+		if (sparqlEntity.getValue(email).equals("e0956224@gmail.com"))
+			return "Yushi Takahashi";
+		
 		return sparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.givenName) + " " + sparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.familyName);
 	}
 
