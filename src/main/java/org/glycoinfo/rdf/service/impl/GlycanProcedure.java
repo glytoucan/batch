@@ -633,7 +633,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		SparqlEntity se = new SparqlEntity();
 //		logger.debug("sparqlEntityFactory:>" + sparqlEntityFactory + "<");
 //		logger.debug("SparqlEntity:>" + se + "<");
-//		se.setValue(Saccharide.PrimaryId, accessionNumber);
+		se.setValue(Saccharide.PrimaryId, accessionNumber);
 		return searchByAccessionNumber(se);
 	}
 	
