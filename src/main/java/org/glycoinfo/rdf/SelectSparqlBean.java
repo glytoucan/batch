@@ -1,6 +1,7 @@
 package org.glycoinfo.rdf;
 
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -120,6 +121,7 @@ public class SelectSparqlBean implements SelectSparql, InitializingBean {
 
 	@Override
 	public void setSparqlEntity(SparqlEntity sparqlentity) {
+		SparqlEntityFactory.set(sparqlentity);
 		this.sparqlEntity = sparqlentity;
 	}
 

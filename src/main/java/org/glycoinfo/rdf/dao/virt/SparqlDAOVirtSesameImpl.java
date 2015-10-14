@@ -34,6 +34,9 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 //import virtuoso.jdbc3.VirtuosoExtendedString;
@@ -43,9 +46,10 @@ import org.springframework.transaction.annotation.Transactional;
  * @author aoki
  */
 @Repository
+@Scope(value="request", proxyMode=ScopedProxyMode.TARGET_CLASS)
 //@SuppressWarnings({ "unchecked", "rawtypes" })
 public class SparqlDAOVirtSesameImpl implements SparqlDAO {
-
+	
 	public static Log logger = (Log) LogFactory
 			.getLog("org.glytoucan.registry.dao.SparqlDAOVirtSesameImpl");
 
@@ -241,6 +245,12 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 	@Override
 	@Transactional
 	public void execute(InsertSparql insert) throws SparqlException {
+		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
+		if (null != se) {
+			insert.setSparqlEntity(se);
+			SparqlEntityFactory.unset();
+		}
+		
 		logger.debug(insert);
 
 		RepositoryConnection connection = sesameConnectionFactory.getConnection();

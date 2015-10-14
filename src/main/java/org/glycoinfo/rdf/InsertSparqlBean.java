@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +85,8 @@ public class InsertSparqlBean implements InsertSparql {
 	public void setSparqlEntity(SparqlEntity sparqlentity) {
 		this.sparql = null;
 		this.sparqlEntity = sparqlentity;
+		
+		SparqlEntityFactory.set(sparqlentity);
 	}
 
 	@Override

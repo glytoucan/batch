@@ -436,15 +436,17 @@ LIN
 		glycanProcedure.setContributorId("test");
 		
 		glycanProcedure.setSequence(sequence);
-		String id = glycanProcedure.register(sequence, wurcs);
+		String id = glycanProcedure.register(sequence);
+		logger.debug("searching with id:>" + id + "<");
 		se = glycanProcedure.searchByAccessionNumber(id);
+		
 		Assert.assertNotNull(se.getValue("Mass"));
 		
 		logger.debug(se.toString());
 	}
 	
-	@Test
-	@Transactional
+//	@Test
+//	@Transactional
 	public void testRegisterG98132BH() throws SparqlException, NoSuchAlgorithmException, ConvertException {
 		String sequence = "RES\\n"
 				+ "1b:x-dglc-HEX-1:5\\n"
@@ -495,7 +497,7 @@ LIN
 		glycanProcedure.setContributorId("test");
 		
 		glycanProcedure.setSequence(sequence);
-		String id = glycanProcedure.register(sequence, wurcs);
+		String id = glycanProcedure.register(sequence);
 		se = glycanProcedure.searchByAccessionNumber(id);
 		Assert.assertNotNull(se.getValue("Mass"));
 		
