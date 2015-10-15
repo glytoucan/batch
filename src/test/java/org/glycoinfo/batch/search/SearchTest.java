@@ -509,10 +509,10 @@ public class SearchTest {
 						+ "1b:x-dman-HEX-1:5";
 				
 				logger.debug("sequence:>" + sequence + "<");
-				glycanProcedure.setSequence(sequence);
-				glycanProcedure.setContributorId("1");
+//				glycanProcedure.setSequence(sequence);
+//				glycanProcedure.setContributorId("1");
 				glycanProcedure.setBatch(false);
-				String id = glycanProcedure.register();
+				String id = glycanProcedure.register(sequence, "1");
 				
 				SparqlEntity se = new SparqlEntity();
 				se.setValue(Saccharide.PrimaryId, id);
