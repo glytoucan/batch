@@ -46,8 +46,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import scala.annotation.meta.getter;
-
 @Service
 @Scope("request")
 public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedure {
