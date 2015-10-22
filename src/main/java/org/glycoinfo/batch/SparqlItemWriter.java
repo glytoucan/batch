@@ -9,6 +9,7 @@ import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,11 +97,13 @@ public class SparqlItemWriter<T extends SparqlEntity> implements
 
 			InsertSparql insertSparql = getInsertSparql();
 			try {
+				SparqlEntityFactory.set(t);
 				insertSparql.setSparqlEntity(t);
 
 				if (!(insertSparql.getSparql().trim().length() == 0)) {
 					logger.debug("inserting >" + insertSparql.getSparql()
 							+ "< into " + insertSparql.getGraph() + "<");
+					
 					schemaDAO.insert(insertSparql);
 				}
 			} catch (SparqlException e) {

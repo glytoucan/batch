@@ -208,10 +208,20 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 		
-		<dependency>
-  <groupId>org.apache.velocity</groupId>
-  <artifactId>velocity</artifactId>
+<!-- 		<dependency> -->
+<!--   <groupId>org.apache.velocity</groupId> -->
+<!--   <artifactId>velocity</artifactId> -->
+<!-- </dependency> -->
+<dependency>
+  <groupId>commons-lang</groupId>
+  <artifactId>commons-lang</artifactId>
+  <version>2.6</version>
 </dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.10.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>

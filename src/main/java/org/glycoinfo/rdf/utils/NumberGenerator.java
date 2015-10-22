@@ -1,8 +1,16 @@
 package org.glycoinfo.rdf.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
-public class AccessionNumberGenerator {
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.Md5Crypt;
+import org.apache.commons.codec.digest.Sha2Crypt;
+
+public class NumberGenerator {
 
 	/** Random Number Generator.
      * 
@@ -62,9 +70,20 @@ public class AccessionNumberGenerator {
     		}
     	}
     	for (int i=0; i<2; i++) {
-    		sb.append((char) (generator.nextInt(26)+65));      
+    		sb.append((char) (generator.nextInt(26)+65));
     	}
-    	
+
     	return sb.toString(); 
+    }
+
+    static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+
+    public static String generateHash(String input, Date salt) {
+    	return generateHash(input, sdf.format(salt));
+    }
+
+    public static String generateHash(String input, String salt) {
+    	String hash = Sha2Crypt.sha256Crypt(input.getBytes(), "$5$" + salt);
+    	return Base64.encodeBase64String(hash.getBytes());
     }
 }

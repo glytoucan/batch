@@ -2,8 +2,10 @@ package org.glycoinfo.rdf.service;
 
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
+import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
+import org.glycoinfo.rdf.glycan.Contributor;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
@@ -67,21 +69,18 @@ public class ContributorProcedureRdfTest extends AbstractTransactionalJUnit4Spri
 	@Test
 	@Transactional
 	public void testAddContributor() throws SparqlException {
-		contributorProcedure.setName("test");
-		String id = contributorProcedure.addContributor();
+		String id = contributorProcedure.addContributor("test");
 		Assert.assertNotNull(id);
 	}
 	
 	@Test
 	@Transactional
 	public void testAddSearch() throws SparqlException {
-		contributorProcedure.setName("test2");
-		String id = contributorProcedure.addContributor();
+		String id = contributorProcedure.addContributor("test2");
 		Assert.assertNotNull(id);
 		
-		contributorProcedure.setName("test2");
-		String id2 = contributorProcedure.searchContributor();
+		SparqlEntity idData = contributorProcedure.searchContributor("test2");
 		
-		Assert.assertEquals(id, id2);
+		Assert.assertEquals(id, idData.getValue(Contributor.ID));
 	}
 }

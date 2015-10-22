@@ -25,14 +25,14 @@ BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/
 //		this.prefix = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
 //				+ "PREFIX dcterms: <http://purl.org/dc/terms/>\n"
 //				+ "PREFIX foaf: <http://xmlns.com/foaf/0.1/#>\n";
-		this.select = "?" + Contributor.Id + "\n";
+		this.select = "?" + Contributor.ID + "\n";
 		this.where 
 			= "?o a foaf:Person .\n"
-			+ "BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/\") AS ?" + Contributor.Id + ") .\n";
+			+ "BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/\") AS ?" + Contributor.ID + ") .\n";
 	}
 
 	@Override
 	public String getWhere() throws SparqlException {
-		return this.where + "?o foaf:name \"" + getSparqlEntity().getValue(Contributor.Name) + "\" . \n";
+		return this.where + "?o foaf:name \"" + getSparqlEntity().getValue(Contributor.NAME) + "\" . \n";
 	}
 }

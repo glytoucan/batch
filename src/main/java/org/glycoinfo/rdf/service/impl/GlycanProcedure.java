@@ -40,14 +40,13 @@ import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
-import org.glycoinfo.rdf.utils.AccessionNumberGenerator;
+import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service
-@Scope("request")
 public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedure {
 
 	public static Log logger = (Log) LogFactory.getLog(GlycanProcedure.class);
@@ -439,7 +438,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 				throw new SparqlException("Contributor id cannot be blank");
 			}
 			
-			accessionNumber = "G" + AccessionNumberGenerator.generateRandomString(7);
+			accessionNumber = "G" + NumberGenerator.generateRandomString(7);
 			
 //			SparqlEntity searchAccNumEntity = sparqlEntityFactory.create();
 			SparqlEntity result = searchByAccessionNumber(accessionNumber);

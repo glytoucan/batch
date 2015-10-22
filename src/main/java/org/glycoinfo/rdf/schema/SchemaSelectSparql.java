@@ -20,7 +20,8 @@ public class SchemaSelectSparql extends SelectSparqlBean {
 		super.prefix = SchemaSparqlFormatter.getPrefixDefinition(classHandler) + "\n";
 		super.prefix += "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
 				+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n";
-		super.select = "?result";
+		super.select = "distinct ?result";
+		super.from = "FROM <" + classHandler.getPrefixIri().substring(0, classHandler.getPrefixIri().length() - 1)  + ">";
 		super.where = SchemaSparqlFormatter.getCommonClassWhere(classHandler) + " \n";
 	}
 

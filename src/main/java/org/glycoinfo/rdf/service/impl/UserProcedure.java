@@ -2,41 +2,35 @@ package org.glycoinfo.rdf.service.impl;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.Contributor;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.ContributorProcedure;
+import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
 	Log logger = LogFactory.getLog(UserProcedure.class);
 	
-	public static final String ContributorId = "alternateName"; // shortcut to map contributor id into Person;
 	
 	String[] requiredFields = {SelectScint.PRIMARY_KEY, "email", "givenName", "familyName", "verifiedEmail"};
-
-	boolean sendEmail;
-	
-	public boolean isSendEmail() {
-		return sendEmail;
-	}
-
-	public void setSendEmail(boolean sendEmail) {
-		this.sendEmail = sendEmail;
-	}
 
 	@Autowired
 	SparqlDAO sparqlDAO;
@@ -57,6 +51,14 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	@Qualifier(value = "insertscintregisteraction")
 	InsertScint insertScintRegisterAction;
 	
+	@Autowired
+	@Qualifier(value = "insertScintProgramMembership")
+	InsertScint insertScintProgramMembership;
+	
+	@Autowired
+	@Qualifier(value = "selectScintProgramMembership")
+	SelectScint selectScintProgramMembership;
+
 	@Autowired
 	@Qualifier(value = "contributorProcedure")
 	ContributorProcedure contributorProcedure;
@@ -87,22 +89,30 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		ch.setSparqlDAO(sparqlDAO);
 		return ch; 
 	}
-	
-	SparqlEntity se;
+
+	ClassHandler getProgramMembershipClassHandler() throws SparqlException {
+		ClassHandler classHandler = new ClassHandler("schema", "http://schema.org/", "ProgramMembership");
+		classHandler.setSparqlDAO(sparqlDAO);
+		return classHandler; 
+	}
 	
 	@Override
-	public void addUser() throws SparqlException {
-		Set<String> columns = getSparqlEntity().getColumns();
+	@Transactional
+	public void addUser(SparqlEntity userSparqlEntity) throws SparqlException {
+		Set<String> columns = userSparqlEntity.getColumns();
 		if (!columns.containsAll(Arrays.asList(requiredFields))) {
 			throw new SparqlException("not all required fields are supplied");
 		}
 
-		String email = getSparqlEntity().getValue("email");
-		List usersWithEmail = getUser(email);
-		if (usersWithEmail.size() > 0)  // if this email exists, already registered, dont need to add.
+		String email = userSparqlEntity.getValue("email");
+		SparqlEntity usersWithEmail = getUser(email);
+
+		// if have email and contributor id, then mapping was complete.
+		if (null != usersWithEmail && StringUtils.isNotBlank(usersWithEmail.getValue(CONTRIBUTOR_ID)))
 			return;
 
-		String personUID = getSparqlEntity().getValue(SelectScint.PRIMARY_KEY);
+		// get primary key from parameter (security)
+		String personUID = userSparqlEntity.getValue(SelectScint.PRIMARY_KEY);
 		// check for primary key of user.  (should be at least at UUID)
 		if ( personUID == null || personUID.equals("")) {
 			throw new SparqlException("PRIMARY_KEY is >" + personUID + "<");
@@ -114,7 +124,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 			if (field.equals("verifiedEmail"))
 				continue;
 			
-			sparqlentityPerson.setValue(field, getSparqlEntity().getValue(field));
+			sparqlentityPerson.setValue(field, userSparqlEntity.getValue(field));
 		}
 		
 		// if you have a verified email, you are a contributor of the glytoucan organization.
@@ -127,7 +137,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		SparqlEntity sparqlentityOrganization = new SparqlEntity("glytoucan");
 		organizationSelect.setSparqlEntity(sparqlentityOrganization);
 		
-		String verified = getSparqlEntity().getValue(verifiedEmail);
+		String verified = userSparqlEntity.getValue(VERIFIED_EMAIL);
 		if (verified != null && verified.equals("true")) {
 			sparqlentityPerson.setValue("contributor", organizationSelect);
 		}
@@ -135,16 +145,16 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		// otherwise just a member.
 		sparqlentityPerson.setValue("member", organizationSelect);
 
-		if (StringUtils.isBlank(getSparqlEntity().getValue(org.glycoinfo.rdf.service.UserProcedure.givenName)))
-			throw new SparqlException("given name cannot be glank");
-		if (StringUtils.isBlank(getSparqlEntity().getValue(org.glycoinfo.rdf.service.UserProcedure.familyName)))
-			throw new SparqlException("familyName cannot be glank");
+		if (StringUtils.isBlank(userSparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.EMAIL)))
+			throw new SparqlException("email cannot be blank.  Please fix account information.");
+		
+		if (StringUtils.isBlank(nameMap(sparqlentityPerson)))
+			throw new SparqlException("given name cannot be blank.  Please fix account information or login with google+.");
 		
 		// check if Contributor exists, and map. 
-		contributorProcedure.setName(nameMap(sparqlentityPerson));
-		String contributorId = contributorProcedure.addContributor();
+		String contributorId = contributorProcedure.addContributor(nameMap(sparqlentityPerson));
 
-		sparqlentityPerson.setValue("alternateName", contributorId);
+		sparqlentityPerson.setValue(CONTRIBUTOR_ID, contributorId);
 		
 		insertScintPerson.setSparqlEntity(sparqlentityPerson);
 
@@ -181,62 +191,134 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		sparqlDAO.insert(insertScintRegisterAction);
 		
-		String name = getSparqlEntity().getValue("givenName");
+		String name = userSparqlEntity.getValue("givenName");
 
-		if (isSendEmail()) {
+		String sendEmail = userSparqlEntity.getValue("sendEmail");
+		if (StringUtils.isNotBlank(sendEmail)) {
 		mailService.newRegistration(email, name);
 		mailService.newRegistrationAdmin(sparqlEntityPerson);
 		}
 	}
 
+	@Override
+	@Transactional
+	public String generateHash(String id) throws SparqlException {
+//		SparqlEntity userSE = getUser(email);
+//		String userid = userSE.getValue(ID);
+		
+		// check if it exists
+		SparqlEntity sparqlEntityPerson = new SparqlEntity(id);
+		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
+		List<SparqlEntity> person = sparqlDAO.query(selectScintPerson);
+		if (null == person || !person.iterator().hasNext())
+			throw new SparqlException("id >" + id + "< doesnt exist");
+		
+		insertScintPerson.setClassHandler(getPersonClassHandler());
+		insertScintPerson.setSparqlEntity(sparqlEntityPerson);
+
+		// ProgramMembership entity
+		SparqlEntity sparqlentityProgramMembership = new SparqlEntity(GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectScint.PRIMARY_KEY));
+		sparqlentityProgramMembership.setValue("programName", "Glytoucan Partner");
+		
+		sparqlentityProgramMembership.setValue("member", insertScintPerson);
+		
+		Date dateVal = new Date();
+		
+		sparqlentityProgramMembership.setValue(MEMBERSHIP_NUMBER, NumberGenerator.generateHash(sparqlEntityPerson.getValue(SelectScint.PRIMARY_KEY) + sparqlentityProgramMembership.getValue("programName") + sparqlentityProgramMembership.getValue(SelectScint.PRIMARY_KEY) + "SEED", dateVal));
+
+		// set the sparqlentity for the registeraction. 
+		insertScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
+		insertScintProgramMembership.setSparqlEntity(sparqlentityProgramMembership);
+		logger.debug(insertScintProgramMembership.getSparql());
+		sparqlDAO.insert(insertScintProgramMembership);
+		
+		sparqlEntityPerson.setValue(MEMBER_OF, insertScintProgramMembership);
+		insertScintPerson.setSparqlEntity(sparqlEntityPerson);
+		sparqlDAO.insert(insertScintPerson);
+
+		return sparqlentityProgramMembership.getValue(MEMBERSHIP_NUMBER);
+	}
+
 	private String nameMap(SparqlEntity sparqlEntity) {
-		if (sparqlEntity.getValue(email).equals("aokinobu@gmail.com"))
+		if (sparqlEntity.getValue(EMAIL).equals("aokinobu@gmail.com"))
 			return "aoki";
-		if (sparqlEntity.getValue(email).equals("d.shinmachi.aist@gmail.com"))
+		if (sparqlEntity.getValue(EMAIL).equals("d.shinmachi.aist@gmail.com"))
 			return "daisuke shinmachi";
-		if (sparqlEntity.getValue(email).equals("glytoucan@gmail.com"))
+		if (sparqlEntity.getValue(EMAIL).equals("glytoucan@gmail.com"))
 			return "Administrator";
-		if (sparqlEntity.getValue(email).equals("kkiyoko@soka.ac.jp"))
+		if (sparqlEntity.getValue(EMAIL).equals("kkiyoko@soka.ac.jp"))
 			return "Kiyoko F. Aoki-Kinoshita";
-		if (sparqlEntity.getValue(email).equals("yamadaissaku@gmail.com"))
+		if (sparqlEntity.getValue(EMAIL).equals("yamadaissaku@gmail.com"))
 			return "Issaku YAMADA";
-		if (sparqlEntity.getValue(email).equals("e1156225@soka-u.jp"))
+		if (sparqlEntity.getValue(EMAIL).equals("e1156225@soka-u.jp"))
 			return "Risa Sekimoto";
-		if (sparqlEntity.getValue(email).equals("t.shikanai@aist.go.jp"))
+		if (sparqlEntity.getValue(EMAIL).equals("t.shikanai@aist.go.jp"))
 			return "Toshihide Shikanai";
-		if (sparqlEntity.getValue(email).equals("matsubara@noguchi.or.jp"))
+		if (sparqlEntity.getValue(EMAIL).equals("matsubara@noguchi.or.jp"))
 			return "Masaaki Matsubara";
-		if (sparqlEntity.getValue(email).equals("yusyahassy@gmail.com"))
+		if (sparqlEntity.getValue(EMAIL).equals("yusyahassy@gmail.com"))
 			return "Nobuyuki Hashimoto";
-		if (sparqlEntity.getValue(email).equals("dfsmith@emory.edu"))
+		if (sparqlEntity.getValue(EMAIL).equals("dfsmith@emory.edu"))
 			return "David F. Smith";
-		if (sparqlEntity.getValue(email).equals("e0956224@gmail.com"))
+		if (sparqlEntity.getValue(EMAIL).equals("e0956224@gmail.com"))
 			return "Yushi Takahashi";
 		
-		return sparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.givenName) + " " + sparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.familyName);
+		return sparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.GIVEN_NAME);
 	}
 
 	@Override
-	public List<SparqlEntity> getUser(String email) throws SparqlException {
-
-		SparqlEntity userSE = new SparqlEntity();
-		userSE.setValue("email", email);
-
+	public SparqlEntity getUser(String primaryId) throws SparqlException {
+		SparqlEntity userSE = new SparqlEntity(primaryId);
+		
 		// Select Person
 		SelectScint personScint = new SelectScint();
 		personScint.setClassHandler(getPersonClassHandler());
 		personScint.setSparqlEntity(userSE);
-		return sparqlDAO.query(personScint);
-	}
+		
+		List<SparqlEntity> userData = sparqlDAO.query(personScint);
+		
+		if (userData.size() > 1) 
+			logger.warn("more than one userData for :>" + userSE);
+		if (userData.iterator().hasNext()) {
+			SparqlEntity first = userData.iterator().next();
 
-	@Override
-	public void setSparqlEntity(SparqlEntity s) {
-		this.se=s;
-	}
+			// if contributor id doesnt exist, find it.
+			SparqlEntity contributor = null;
+			if (StringUtils.isBlank(first.getValue(CONTRIBUTOR_ID))) {
+				contributor = contributorProcedure.searchContributor(nameMap(first));
+				if (StringUtils.isNotBlank(contributor.getValue(Contributor.ID))) {
+					first.setValue(CONTRIBUTOR_ID, contributor.getValue(Contributor.ID));
+				}
+			}
+			
+			// set contributor name.
+			first.setValue(Contributor.NAME, nameMap(first));
+			
+			SparqlEntity programMembership = new SparqlEntity();
+			selectScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
+			programMembership.setValue("member", personScint);
+			
+			selectScintProgramMembership.setSparqlEntity(programMembership);
+			List<SparqlEntity> membershipData = sparqlDAO.query(selectScintProgramMembership);
 
-	@Override
-	public SparqlEntity getSparqlEntity() {
-		return se;
+			// if memberOf program, find id.
+			if (!membershipData.isEmpty()) {
+				// check for Hash
+				for (Iterator iterator = membershipData.iterator(); iterator
+						.hasNext();) {
+					SparqlEntity sparqlEntity = (SparqlEntity) iterator
+							.next();
+					String programName = sparqlEntity.getValue("programName");
+					String hash = null;
+					if (StringUtils.isNotBlank(programName) && programName.equals("Glytoucan Partner"))
+						hash = sparqlEntity.getValue("membershipNumber");
+					first.setValue("membershipNumber", hash);
+				}
+			}
+				
+			return first;
+		} else
+			return null;
 	}
 
 	public String[] getRequiredFields() {
@@ -249,8 +331,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	
 	@Override
 	public String getUserId(String email) throws SparqlException {
-		List<SparqlEntity> list = getUser(email);
-		SparqlEntity first = list.iterator().next();
-		return first.getValue(ContributorId);
+		SparqlEntity first = getUser(email);
+		return first.getValue(CONTRIBUTOR_ID);
 	}	
 }

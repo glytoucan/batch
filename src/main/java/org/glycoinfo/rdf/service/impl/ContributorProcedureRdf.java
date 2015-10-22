@@ -30,16 +30,6 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	@Autowired
 	ContributorNameSelectSparql contributorSelectSparql;
 	
-	String name, graph, id;	
-	
-	public String getGraph() {
-		return graph;
-	}
-
-	public void setGraph(String graph) {
-		this.graph = graph;
-	}
-
 	/**
 	 * adds a Contributor class (foaf:Person).
 	 * 
@@ -50,10 +40,10 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
      * 
 	 * @throws SparqlException
 	 */
-	public String addContributor() throws SparqlException {
-		String id = searchContributor();
-		if (StringUtils.isBlank(id)) {
-		
+	public String addContributor(String name) throws SparqlException {
+		SparqlEntity result = searchContributor(name);
+		String id;
+		if (result == null) {
 			// retrieve the latest contributor id
 			SelectSparql selectLatestContributorId = new LatestContributorIdSparql();
 			List<SparqlEntity> personUIDResult = sparqlDAO.query(selectLatestContributorId);
@@ -64,53 +54,34 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 			
 			// insert the above data.
 			SparqlEntity sparqlEntityPerson = new SparqlEntity(id);
-			sparqlEntityPerson.setValue(ContributorInsertSparql.ContributorName, getName());
+			sparqlEntityPerson.setValue(ContributorInsertSparql.ContributorName, name);
 			sparqlEntityPerson.setValue(ContributorInsertSparql.UserId, id);
 			contributorSparql.setSparqlEntity(sparqlEntityPerson);
 			
-			sparqlDAO.insert(contributorSparql);
-		
-		} else
+			sparqlDAO.insert(contributorSparql);		
+		} else {
+			id = result.getValue(Contributor.ID);
 			logger.info("User id " + id + "already exists");
+		}
 		
 		return id;
 	}
 
 	@Override
-	public String searchContributor() throws SparqlException {
-		if (StringUtils.isBlank(getName()))
+	public SparqlEntity searchContributor(String name) throws SparqlException {
+		if (StringUtils.isBlank(name))
 			throw new SparqlException("name cannot be blank");
 
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(Contributor.Name, name);
+		se.setValue(Contributor.NAME, name);
 		contributorSelectSparql.setSparqlEntity(se);
 
 		List<SparqlEntity> personUIDResult = sparqlDAO.query(contributorSelectSparql);
 		
 		if (personUIDResult.iterator().hasNext()) {
 			SparqlEntity idSE = personUIDResult.iterator().next();
-			return idSE.getValue(Contributor.Id);
+			return idSE;
 		}
 		return null;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(String id) {
-		this.id = id;
 	}
 }

@@ -41,6 +41,7 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 	}
 	
 	public void update() {
+		
 		this.select="";
 		this.where = "";
 		if (null != getSparqlEntity()) {
@@ -59,20 +60,24 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 			} catch (SparqlException e) {
 				e.printStackTrace();
 			}
-			
+
 			for (String column: columns) {
 				if (column.equals(SelectSparql.PRIMARY_KEY))
 					continue;
 				// add any columns requested to the select line
 				this.select += "?" + column + " ";
 				// finding with primary key is very easy, simply where with primary + type
-				if (null != getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY))
+				if (null != getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY)) {
 					this.where += SchemaSparqlFormatter.getDomainWhere(SchemaSparqlFormatter.getUri(classHandler, getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY)), classHandler, column) + " \n";
-				else {
+//							+ SchemaSparqlFormatter.getDomainWhere("?uri", classHandler, column) + " \n";
+				} else {
 					// otherwise construct the where itself, select ?column where ?a column "value" and ignore primary key
 					if (StringUtils.isNotBlank(getSparqlEntity().getValue(column) )) {
 						this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " ?" + column +" .\n";
-						this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n";
+						if (getSparqlEntity().getObjectValue(column) instanceof UriProvider)
+							this.where += "?uri " + classHandler.getPrefix() + ":" + column +  ((UriProvider)getSparqlEntity().getObjectValue(column)).getUri() + " .\n";
+						else
+							this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n";
 					} else {
 						if (column.contains(":"))
 							this.where += "?uri " + column +  " ?" + column +" .\n";
@@ -82,9 +87,33 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 				}
 			}
 			
+			/*
+			 * prefix schema: <http://schema.org/>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT ?result 
+FROM <http://schema.org> 
+WHERE {
+# schema:Person rdf:type owl:Class . 
+?result rdfs:domain [
+      rdf:type owl:Class ;
+      owl:unionOf (
+          schema:ContactPoint
+          schema:Organization
+          schema:Person
+        ) 
+    ]  .
+}
+			 */
+			
 			for(String domain: domains) {
 				this.select += "?" + domain + " \n";
-				this.where += "OPTIONAL { ?uri " + classHandler.getPrefix() + ":" + domain +  " ?" + domain + " . } \n";
+				if (columns.contains(SelectSparql.PRIMARY_KEY)) {
+					// if we have the primary key, uri should be primary key address.
+					this.where += "OPTIONAL { " + getUri() + " " + classHandler.getPrefix() + ":" + domain +  " ?" + domain + " . } \n";
+				} else {
+					this.where += "OPTIONAL { ?uri " + classHandler.getPrefix() + ":" + domain +  " ?" + domain + " . } \n";
+				}
 			}
 		}
 	}
