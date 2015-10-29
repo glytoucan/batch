@@ -1,39 +1,22 @@
 package org.glycoinfo.rdf.service.impl;
 
-import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
-import org.glycoinfo.client.MSdbClient;
-import org.glycoinfo.mass.MassInsertSparql;
-import org.glycoinfo.rdf.InsertSparql;
-import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
-import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
-import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
-import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
-import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
-import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
-import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
-import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
-import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
-import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
-import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
-import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFInsertSparql;
-import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
+import org.glycoinfo.rdf.scint.DeleteScint;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.ContributorProcedure;
-import org.glycoinfo.rdf.service.GlycanProcedure;
 import org.glycoinfo.rdf.service.UserProcedure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class UserProcedureConfig {
-	private static final String graph = "http://rdf.glytoucan.org";
-
+public class UserProcedureConfig implements GraphConfig {
+	
+	public static final String graphUser = graph + "/schema/users";
+	
 	@Autowired
 	SparqlDAO sparqlDAO;
 
@@ -42,48 +25,65 @@ public class UserProcedureConfig {
 		SelectScint select = new SelectScint();
 		
 		select.setClassHandler(getPersonClassHandler());
+		select.setFrom("FROM <" + graphUser + ">");
 		return select;
 	}
 
 	@Bean(name = "insertscintperson")
 	InsertScint getInsertPersonScint() throws SparqlException {
-		InsertScint insert = new InsertScint("http://rdf.glytoucan.org/users");
+		InsertScint insert = new InsertScint(graphUser);
 		insert.setClassHandler(getPersonClassHandler());
 		return insert;
+	}
+
+	@Bean(name = "deletescintperson")
+	DeleteScint getDeletePersonScint() throws SparqlException {
+		DeleteScint delete = new DeleteScint(graphUser);
+		delete.setClassHandler(getPersonClassHandler());
+		return delete;
 	}
 	
 	@Bean(name = "selectscintregisteraction")
 	SelectScint getSelectRegisterActionScint() throws SparqlException {
 		SelectScint select = new SelectScint();
 		select.setClassHandler(getRegisterActionClassHandler());
+		select.setFrom("FROM <" + graphUser + ">");
 		return select;
 	}
 
 	@Bean(name = "insertscintregisteraction")
 	InsertScint getInsertRegisterActionScint() throws SparqlException {
-		InsertScint insert = new InsertScint("http://rdf.glytoucan.org/users");
+		InsertScint insert = new InsertScint(graphUser);
 		insert.setClassHandler(getRegisterActionClassHandler());
 		return insert;
 	}
 	
 	@Bean(name = "insertScintProgramMembership")
 	InsertScint getInsertScintProgramMembership() throws SparqlException {
-		InsertScint insertScintProgramMembership = new InsertScint("http://rdf.glytoucan.org/schema/users");
+		InsertScint insertScintProgramMembership = new InsertScint(graphUser);
 		insertScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
 		return insertScintProgramMembership;
+	}
+
+	@Bean(name = "deleteScintProgramMembership")
+	DeleteScint getDeleteScintProgramMembership() throws SparqlException {
+		DeleteScint deleteScintProgramMembership = new DeleteScint(graphUser);
+		deleteScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
+		return deleteScintProgramMembership;
 	}
 	
 	@Bean(name = "selectScintProgramMembership")
 	SelectScint getSelectProgramMembership() throws SparqlException {
 		SelectScint select = new SelectScint();
 		select.setClassHandler(getProgramMembershipClassHandler());
+		select.setFrom("FROM <" + graphUser + ">");
 		return select;
 	}
 	
 	ClassHandler getPersonClassHandler() throws SparqlException {
 		ClassHandler ch = new ClassHandler("schema", "http://schema.org/", "Person");
 		ch.setSparqlDAO(sparqlDAO);
-		return ch; 
+		return ch;
 	}
 	
 	ClassHandler getRegisterActionClassHandler() throws SparqlException {
@@ -114,5 +114,10 @@ public class UserProcedureConfig {
 	ContributorProcedure getContributorProcedure() throws SparqlException {
 		ContributorProcedure cp = new ContributorProcedureRdf();
 		return cp;
+	}
+	
+	@Bean
+	MailService mailService() {
+		return new MailService();
 	}
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.rdf.DeleteSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
@@ -34,7 +35,6 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Repository;
@@ -238,8 +238,42 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 //	}
 
 	@Transactional
-	public void delete(InsertSparql statement) throws SparqlException {
-		execute(statement);
+	public void delete(DeleteSparql deletesparql) throws SparqlException {
+		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
+		if (null != se) {
+			deletesparql.setSparqlEntity(se);
+			SparqlEntityFactory.unset();
+		}
+		
+		RepositoryConnection connection = sesameConnectionFactory.getConnection();
+
+		String format = deletesparql.getFormat();
+		String statement = deletesparql.getSparql();
+		logger.debug("format:>"+format);
+		logger.debug(statement);
+		
+		try {
+			if (format.equals(InsertSparql.SPARQL)) {
+				Update update;
+				update = connection.prepareUpdate(QueryLanguage.SPARQL, statement);
+				update.execute();
+				BindingSet bindings = update.getBindings();
+				ArrayList<SparqlEntity> results = new ArrayList<SparqlEntity>();
+				bindings.iterator();
+				for (Binding binding : bindings) {
+					logger.debug("binding Name:>" + binding.getName());
+					logger.debug("binding Value:>" + binding.getValue());
+				}
+			} else if (format.equals(InsertSparql.Turtle)) {
+				StringReader reader = new StringReader(statement);
+				ValueFactory f = connection.getValueFactory();
+				Resource res = f.createURI(deletesparql.getGraph());
+				connection.add(reader, "", RDFFormat.TURTLE, res);
+			}
+		} catch (RepositoryException | MalformedQueryException | UpdateExecutionException | RDFParseException | IOException e) {
+			e.printStackTrace();
+			throw new SparqlException(e);
+		}
 	}
 	
 	@Override

@@ -20,13 +20,13 @@ import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.conversion.util.DetectFormat;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.mass.MassSelectSparql;
+import org.glycoinfo.rdf.DuplicateException;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.ResourceEntry;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
@@ -42,13 +42,10 @@ import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedure {
-
 	public static Log logger = (Log) LogFactory.getLog(GlycanProcedure.class);
 	
 	GlyConvertDetect glyConvertDetect = new GlyConvertDetect();
@@ -63,9 +60,6 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		this.isBatch = isBatch;
 	}
 	
-//    @Value("${tempgraph}")
-//    private String tempgraph;
-
 	@Autowired
 	SparqlDAO sparqlDAO;
 
@@ -419,7 +413,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			sparqlentity = searchBySequence(sequence);
 			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null && !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) 
 			{
-				throw new SparqlException(AlreadyRegistered + " as:>" + sparqlentity.getValue(AccessionNumber) + "<");
+				throw new DuplicateException(AlreadyRegistered + " as:>" + sparqlentity.getValue(AccessionNumber) + "<", sparqlentity.getValue(AccessionNumber));
 			}
 			logger.debug("setting from sequence:>" + sparqlentity.getValue(GlycanProcedure.FromSequence) + "< sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence) + "<");
 		} catch (ConvertException e) {

@@ -43,7 +43,7 @@ public class SelectInsertImplTest {
 	public static final String graph = "http://www.glytoucan.org/rdf/construction";
 
 	public void testInsertSelectGraphconstruction() throws SparqlException {
-		schemaDAO.delete(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
+		schemaDAO.insert(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "  ?s a glycan:saccharide .\n"
 				+ "  ?s glytoucan:has_primary_id ?AccessionNumber .\n"
@@ -53,7 +53,7 @@ public class SelectInsertImplTest {
 	}
 
 	public void testInsertSelectGraphMass() throws SparqlException {
-		schemaDAO.delete(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
+		schemaDAO.insert(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "?s glytoucan:has_mass ?Mass ." + "}}\n" + using + "WHERE {\n"
 				+ "?s glytoucan:has_derivatized_mass ?dmass .\n"
@@ -64,7 +64,7 @@ public class SelectInsertImplTest {
 	}
 
 	public void testInsertSelectGraphGlycoCT() throws SparqlException {
-		schemaDAO.delete(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
+		schemaDAO.insert(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "	  ?s glycan:has_sequence ?Seq .\n" + "					}}\n" + using
 				+ "WHERE {\n" + "	  ?s glycan:has_glycosequence ?gseq .\n"
@@ -91,7 +91,7 @@ public class SelectInsertImplTest {
 	}
 
 	public void testInsertSelectGraphMotif() throws SparqlException {
-		schemaDAO.delete(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
+		schemaDAO.insert(new InsertSparqlBean(prefix + "\n" + "INSERT\n"
 				+ "{ GRAPH <"+graph+"> {\n"
 				+ "				?s glycan:has_motif ?motif .\n"
 				+ "						   ?motif a glycan:glycan_motif ;\n"
@@ -104,7 +104,7 @@ public class SelectInsertImplTest {
 
 	public void testInsertSelectGraphMono() throws SparqlException {
 		schemaDAO
-				.delete(new InsertSparqlBean(prefix
+				.insert(new InsertSparqlBean(prefix
 						+ "\n"
 						+ "INSERT\n"
 						+ "{ GRAPH <"+graph+"> {\n"

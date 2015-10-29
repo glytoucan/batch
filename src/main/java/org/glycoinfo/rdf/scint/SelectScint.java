@@ -42,7 +42,7 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 	
 	public void update() {
 		
-		this.select="";
+		this.select="?" + URI + " ";
 		this.where = "";
 		if (null != getSparqlEntity()) {
 			if (null != getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY))
@@ -62,7 +62,7 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 			}
 
 			for (String column: columns) {
-				if (column.equals(SelectSparql.PRIMARY_KEY))
+				if (column.equals(SelectSparql.PRIMARY_KEY) || column.equals(SelectSparql.NO_DOMAINS))
 					continue;
 				// add any columns requested to the select line
 				this.select += "?" + column + " ";
@@ -73,16 +73,16 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 				} else {
 					// otherwise construct the where itself, select ?column where ?a column "value" and ignore primary key
 					if (StringUtils.isNotBlank(getSparqlEntity().getValue(column) )) {
-						this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " ?" + column +" .\n";
+						this.where += "?" + URI + " " + classHandler.getPrefix() + ":" + column +  " ?" + column +" .\n";
 						if (getSparqlEntity().getObjectValue(column) instanceof UriProvider)
-							this.where += "?uri " + classHandler.getPrefix() + ":" + column +  ((UriProvider)getSparqlEntity().getObjectValue(column)).getUri() + " .\n";
+							this.where += "?" + URI + " " + classHandler.getPrefix() + ":" + column +  ((UriProvider)getSparqlEntity().getObjectValue(column)).getUri() + " .\n";
 						else
-							this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n";
+							this.where += "?" + URI + " " + classHandler.getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n";
 					} else {
 						if (column.contains(":"))
-							this.where += "?uri " + column +  " ?" + column +" .\n";
+							this.where += "?" + URI + " " + column +  " ?" + column +" .\n";
 						else
-							this.where += "?uri " + classHandler.getPrefix() + ":" + column +  " ?" + column +" .\n";
+							this.where += "?" + URI + " " + classHandler.getPrefix() + ":" + column +  " ?" + column +" .\n";
 					}
 				}
 			}
@@ -105,25 +105,36 @@ WHERE {
     ]  .
 }
 			 */
-			
+			if (!columns.contains(SelectSparql.NO_DOMAINS)) {
 			for(String domain: domains) {
 				this.select += "?" + domain + " \n";
 				if (columns.contains(SelectSparql.PRIMARY_KEY)) {
 					// if we have the primary key, uri should be primary key address.
 					this.where += "OPTIONAL { " + getUri() + " " + classHandler.getPrefix() + ":" + domain +  " ?" + domain + " . } \n";
 				} else {
-					this.where += "OPTIONAL { ?uri " + classHandler.getPrefix() + ":" + domain +  " ?" + domain + " . } \n";
+					this.where += "OPTIONAL { ?" + URI + " " + classHandler.getPrefix() + ":" + domain +  " ?" + domain + " . } \n";
 				}
+			}
 			}
 		}
 	}
 
 	@Override
 	public String getUri() {
+//		if (null == getSparqlEntity() || null == getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY))
+//			throw new SparqlException("need at least sparqlentity or URI");
 		return SchemaSparqlFormatter.getUri(classHandler, getSparqlEntity().getObjectValue(SelectSparql.PRIMARY_KEY));
 	}
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		// this needs to be here...
+	}
+	
+	public String getPrimaryKey() throws SparqlException {
+		if (null == getSparqlEntity() || null == getSparqlEntity().getValue(SelectSparql.URI))
+			throw new SparqlException("need at least sparqlentity or URI");
+
+		return SchemaSparqlFormatter.getPrimaryKey(classHandler, getSparqlEntity().getValue(SelectSparql.URI));
 	}
 }

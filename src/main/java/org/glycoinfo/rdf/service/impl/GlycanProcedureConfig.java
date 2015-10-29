@@ -5,10 +5,7 @@ import org.glycoinfo.client.MSdbClient;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
-import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
-import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
@@ -19,26 +16,17 @@ import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
-import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.service.GlycanProcedure;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class GlycanProcedureConfig {
-	private static final String graph = "http://rdf.glytoucan.org";
-
+public class GlycanProcedureConfig implements GraphConfig {
 	@Bean
 	SaccharideInsertSparql saccharideInsertSparql() {
 		SaccharideInsertSparql sis = new SaccharideInsertSparql();
 		sis.setGraph(graph + "/core");
 		return sis;
-	}
-	
-	@Bean(name = "contributorProcedure")
-	ContributorProcedure getContributorProcedure() throws SparqlException {
-		ContributorProcedure cp = new ContributorProcedureRdf();
-		return cp;
 	}
 	
 	@Bean
@@ -133,20 +121,6 @@ public class GlycanProcedureConfig {
 		org.glycoinfo.rdf.service.impl.GlycanProcedure glycanProc = new org.glycoinfo.rdf.service.impl.GlycanProcedure();
 		glycanProc.setBatch(true);
 		return glycanProc; 
-	}
-	
-	@Bean
-	ContributorInsertSparql getContributorInsertSparql() {
-		ContributorInsertSparql c = new ContributorInsertSparql();
-		c.setGraph(graph + "/users");
-		return c;
-	}
-	
-	@Bean
-	ContributorNameSelectSparql getContributorNameSelectSparql() {
-		ContributorNameSelectSparql selectbyNameContributor = new ContributorNameSelectSparql();
-		selectbyNameContributor.setFrom("FROM <" + graph + ">\nFROM <" + graph + "/users" + ">\n");
-		return selectbyNameContributor;
 	}
 
 	@Bean

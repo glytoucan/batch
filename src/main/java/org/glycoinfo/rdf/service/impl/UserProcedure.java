@@ -9,12 +9,12 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Contributor;
 import org.glycoinfo.rdf.scint.ClassHandler;
+import org.glycoinfo.rdf.scint.DeleteScint;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.ContributorProcedure;
@@ -29,7 +29,6 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
 	Log logger = LogFactory.getLog(UserProcedure.class);
 	
-	
 	String[] requiredFields = {SelectScint.PRIMARY_KEY, "email", "givenName", "familyName", "verifiedEmail"};
 
 	@Autowired
@@ -42,7 +41,11 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	@Autowired
 	@Qualifier(value = "insertscintperson")
 	InsertScint insertScintPerson;
-	
+
+	@Autowired
+	@Qualifier(value = "deletescintperson")
+	DeleteScint deleteScintPerson;
+
 	@Autowired
 	@Qualifier(value = "selectscintregisteraction")
 	SelectScint selectScintRegisterAction;
@@ -54,6 +57,10 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	@Autowired
 	@Qualifier(value = "insertScintProgramMembership")
 	InsertScint insertScintProgramMembership;
+
+	@Autowired
+	@Qualifier(value = "deleteScintProgramMembership")
+	DeleteScint deleteScintProgramMembership;
 	
 	@Autowired
 	@Qualifier(value = "selectScintProgramMembership")
@@ -98,17 +105,17 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	
 	@Override
 	@Transactional
-	public void addUser(SparqlEntity userSparqlEntity) throws SparqlException {
+	public void add(SparqlEntity userSparqlEntity) throws SparqlException {
 		Set<String> columns = userSparqlEntity.getColumns();
 		if (!columns.containsAll(Arrays.asList(requiredFields))) {
 			throw new SparqlException("not all required fields are supplied");
 		}
 
-		String email = userSparqlEntity.getValue("email");
-		SparqlEntity usersWithEmail = getUser(email);
+		String id = userSparqlEntity.getValue(SelectScint.PRIMARY_KEY);
+		SparqlEntity userdetails = getById(id);
 
 		// if have email and contributor id, then mapping was complete.
-		if (null != usersWithEmail && StringUtils.isNotBlank(usersWithEmail.getValue(CONTRIBUTOR_ID)))
+		if (null != userdetails && StringUtils.isNotBlank(userdetails.getValue(CONTRIBUTOR_ID)) && StringUtils.isNotBlank(userdetails.getValue(EMAIL)))
 			return;
 
 		// get primary key from parameter (security)
@@ -191,12 +198,12 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		sparqlDAO.insert(insertScintRegisterAction);
 		
-		String name = userSparqlEntity.getValue("givenName");
+		String name = userSparqlEntity.getValue(GIVEN_NAME);
 
 		String sendEmail = userSparqlEntity.getValue("sendEmail");
 		if (StringUtils.isNotBlank(sendEmail)) {
-		mailService.newRegistration(email, name);
-		mailService.newRegistrationAdmin(sparqlEntityPerson);
+			mailService.newRegistration(userdetails.getValue(UserProcedure.EMAIL), name);
+			mailService.newRegistrationAdmin(sparqlEntityPerson);
 		}
 	}
 
@@ -208,6 +215,8 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		// check if it exists
 		SparqlEntity sparqlEntityPerson = new SparqlEntity(id);
+		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectScint.TRUE);
+		
 		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
 		List<SparqlEntity> person = sparqlDAO.query(selectScintPerson);
 		if (null == person || !person.iterator().hasNext())
@@ -218,9 +227,27 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
 		// ProgramMembership entity
 		SparqlEntity sparqlentityProgramMembership = new SparqlEntity(GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectScint.PRIMARY_KEY));
-		sparqlentityProgramMembership.setValue("programName", "Glytoucan Partner");
+		sparqlentityProgramMembership.setValue(PROGRAM_NAME, GLYTOUCAN_PROGRAM_TITLE);
 		
-		sparqlentityProgramMembership.setValue("member", insertScintPerson);
+		sparqlentityProgramMembership.setValue(MEMBER, insertScintPerson);
+		
+		// delete the previous Program Membership
+		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, null);
+		selectScintProgramMembership.setSparqlEntity(sparqlentityProgramMembership);
+		List<SparqlEntity> list = sparqlDAO.query(selectScintProgramMembership);
+
+		// if it does exist
+		if (list.iterator().hasNext()) {
+			SparqlEntity se = list.iterator().next();
+			se.setValue(SelectScint.PRIMARY_KEY, UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectScint.PRIMARY_KEY));
+			
+			deleteScintProgramMembership.setSparqlEntity(se);
+			sparqlDAO.delete(deleteScintProgramMembership);
+			
+			sparqlEntityPerson.setValue(MEMBER_OF, deleteScintProgramMembership);
+			deleteScintPerson.setSparqlEntity(sparqlEntityPerson);
+			sparqlDAO.delete(deleteScintPerson);
+		}
 		
 		Date dateVal = new Date();
 		
@@ -267,7 +294,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	}
 
 	@Override
-	public SparqlEntity getUser(String primaryId) throws SparqlException {
+	public SparqlEntity getById(String primaryId) throws SparqlException {
 		SparqlEntity userSE = new SparqlEntity(primaryId);
 		
 		// Select Person
@@ -294,7 +321,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 			// set contributor name.
 			first.setValue(Contributor.NAME, nameMap(first));
 			
-			SparqlEntity programMembership = new SparqlEntity();
+			SparqlEntity programMembership = new SparqlEntity(GLYTOUCAN_PROGRAM + primaryId);
 			selectScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
 			programMembership.setValue("member", personScint);
 			
@@ -308,11 +335,11 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 						.hasNext();) {
 					SparqlEntity sparqlEntity = (SparqlEntity) iterator
 							.next();
-					String programName = sparqlEntity.getValue("programName");
+					String programName = sparqlEntity.getValue(UserProcedure.PROGRAM_NAME);
 					String hash = null;
-					if (StringUtils.isNotBlank(programName) && programName.equals("Glytoucan Partner"))
-						hash = sparqlEntity.getValue("membershipNumber");
-					first.setValue("membershipNumber", hash);
+					if (StringUtils.isNotBlank(programName) && programName.equals(UserProcedure.GLYTOUCAN_PROGRAM_TITLE))
+						hash = sparqlEntity.getValue(MEMBERSHIP_NUMBER);
+					first.setValue(MEMBERSHIP_NUMBER, hash);
 				}
 			}
 				
@@ -329,9 +356,81 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		this.requiredFields = requiredFields;
 	}
 	
+//	@Override
+//	public String getMembershipInfo(String email) throws SparqlException {
+//		SparqlEntity emailSE = new SparqlEntity();
+//		emailSE.setValue(EMAIL, email);
+//		SparqlEntity contributor = null;
+//		contributor = getMembershipI(nameMap(emailSE));
+//		if (StringUtils.isNotBlank(contributor.getValue(Contributor.ID))) {
+//			emailSE.setValue(CONTRIBUTOR_ID, contributor.getValue(Contributor.ID));
+//		}
+//		return emailSE.getValue(CONTRIBUTOR_ID);
+//	}
+
 	@Override
-	public String getUserId(String email) throws SparqlException {
-		SparqlEntity first = getUser(email);
-		return first.getValue(CONTRIBUTOR_ID);
-	}	
+	public String getIdByEmail(String email) throws SparqlException {
+		SparqlEntity emailSE = new SparqlEntity();
+		emailSE.setValue(EMAIL, email);
+		SparqlEntity contributor = null;
+		contributor = contributorProcedure.searchContributor(nameMap(emailSE));
+		if (StringUtils.isNotBlank(contributor.getValue(Contributor.ID))) {
+			emailSE.setValue(CONTRIBUTOR_ID, contributor.getValue(Contributor.ID));
+		}
+		return emailSE.getValue(CONTRIBUTOR_ID);
+	}
+	
+	public List<SparqlEntity> getAll() throws SparqlException {
+		return sparqlDAO.query(selectScintPerson);
+	}
+
+	@Override
+	public List<SparqlEntity> getByContributorId(String username) throws SparqlException {
+		SparqlEntity sparqlEntityPerson = new SparqlEntity();
+		sparqlEntityPerson.setValue("alternateName", username);
+		sparqlEntityPerson.setValue("givenName", null);
+		sparqlEntityPerson.setValue("email", null);
+		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectScint.TRUE);
+		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
+
+		return sparqlDAO.query(selectScintPerson);
+	}
+	
+	@Override
+	public boolean checkApiKey(String username, String hash) throws SparqlException {
+		if (StringUtils.isBlank(username) || StringUtils.isBlank(hash)) {
+			throw new SparqlException("username or hash cannot be blank");
+		}
+		
+		hash = hash.trim();
+		username = username.trim();
+
+		SparqlEntity sparqlEntityPerson = new SparqlEntity();
+		sparqlEntityPerson.setValue(UserProcedure.CONTRIBUTOR_ID, username);
+		sparqlEntityPerson.setValue(UserProcedure.MEMBER_OF, null);
+		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectScint.TRUE);
+		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
+		
+		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson);
+		SparqlEntity se = results.iterator().next();
+
+		selectScintPerson.setSparqlEntity(se);
+
+		SparqlEntity pmSE = new SparqlEntity(GLYTOUCAN_PROGRAM + selectScintPerson.getPrimaryKey());
+		pmSE.setValue(UserProcedure.MEMBER, selectScintPerson);
+		pmSE.setValue(UserProcedure.MEMBERSHIP_NUMBER, null);
+		selectScintProgramMembership.setSparqlEntity(pmSE);
+				
+		List<SparqlEntity> resultsPM = sparqlDAO.query(selectScintProgramMembership);
+		if (resultsPM.iterator().hasNext()){
+			SparqlEntity pmResultsSE = resultsPM.iterator().next();
+
+			String storedHash = pmResultsSE.getValue(UserProcedure.MEMBERSHIP_NUMBER);
+			logger.debug("input hash:>" + hash + "<");
+			logger.debug("storedhash:>" + storedHash + "<");
+			return hash.equals(storedHash);
+		}
+		return false;
+	}
+
 }

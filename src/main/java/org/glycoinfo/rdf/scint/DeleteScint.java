@@ -3,7 +3,7 @@ package org.glycoinfo.rdf.scint;
 import java.util.List;
 import java.util.Set;
 
-import org.glycoinfo.rdf.InsertSparqlBean;
+import org.glycoinfo.rdf.DeleteSparqlBean;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.UriProvider;
@@ -12,7 +12,7 @@ import org.glycoinfo.rdf.schema.SchemaSparqlFormatter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InsertScint extends InsertSparqlBean implements UriProvider {
+public class DeleteScint extends DeleteSparqlBean implements UriProvider {
 
 	private ClassHandler classHandler;
 
@@ -25,10 +25,10 @@ public class InsertScint extends InsertSparqlBean implements UriProvider {
 		init();
 	}
 
-	public InsertScint() {
+	public DeleteScint() {
 	}
 	
-	public InsertScint(String graph) {
+	public DeleteScint(String graph) {
 		this.graph = graph;
 	}
 	
@@ -46,7 +46,7 @@ public class InsertScint extends InsertSparqlBean implements UriProvider {
 		if (getSparqlEntity() != null) {
 			if (classHandler != null) {
 				
-				this.insert=SchemaSparqlFormatter.getAInsert(getUri(), classHandler);
+				this.delete=SchemaSparqlFormatter.getAInsert(getUri(), classHandler);
 				List<String> domains;
 				try {
 				Set<String> columns = getSparqlEntity().getColumns();
@@ -59,7 +59,7 @@ public class InsertScint extends InsertSparqlBean implements UriProvider {
 						// TODO: this doesnt take into consideration subClass relationships
 						logger.warn("field:>" + column + "< is not a predicate of this class>" + classHandler.getClassName() + "<");
 					}
-					this.insert += SchemaSparqlFormatter.getInsert(getUri(), classHandler, column, getSparqlEntity().getObjectValue(column));
+					this.delete += SchemaSparqlFormatter.getInsert(getUri(), classHandler, column, getSparqlEntity().getObjectValue(column));
 				}
 				} catch (SparqlException e) {
 					e.printStackTrace();

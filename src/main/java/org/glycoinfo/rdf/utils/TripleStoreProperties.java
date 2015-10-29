@@ -11,16 +11,16 @@ import org.springframework.util.StringUtils;
 public class TripleStoreProperties  implements InitializingBean {
 	public static final String TS_CONFIGURATION_PREFIX = "spring.triplestore";
 
-    @Value("${" + TS_CONFIGURATION_PREFIX + ".driverClassName}")
+    @Value("${" + TS_CONFIGURATION_PREFIX + ".driverClassName:virtuoso.jdbc4.Driver}")
 	private String driverClassName;
 
-    @Value("${" + TS_CONFIGURATION_PREFIX + ".url}")
+    @Value("${" + TS_CONFIGURATION_PREFIX + ".url:jdbc:virtuoso://127.0.0.1:1111}")
 	private String url;
 
-    @Value("${" + TS_CONFIGURATION_PREFIX + ".username}")
+    @Value("${" + TS_CONFIGURATION_PREFIX + ".username:dba}")
 	private String username;
 
-    @Value("${" + TS_CONFIGURATION_PREFIX + ".password}")
+    @Value("${" + TS_CONFIGURATION_PREFIX + ".password:dba}")
 	private String password;
 
 	private ClassLoader classLoader;

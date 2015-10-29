@@ -35,7 +35,6 @@ import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
-import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.glycoinfo.rdf.service.impl.MailService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -421,6 +420,14 @@ LIN
 				+ "2:2o(-1+1)3d\\n"
 				+ "3:3d(2+1)4n\\n"
 				+ "4:1d(2+1)5n\\n";
+//		String sequence = "RES\n"
+//				+ "1b:b-dglc-HEX-1:5\n"
+//				+ "2s:n-acetyl\n"
+//				+ "3b:b-dgal-HEX-1:5\n"
+//				+ "LIN\n"
+//				+ "1:1d(2+1)2n\n"
+//				+ "2:1o(4+1)3d";
+
 		logger.debug("sequence:>" + sequence + "<");
 //		glycanProcedure.setSequence(sequence);
 		SparqlEntity se = glycanProcedure.searchBySequence(sequence);
@@ -441,7 +448,7 @@ LIN
 		se = glycanProcedure.searchByAccessionNumber(id);
 		
 		Assert.assertNotNull(se.getValue("Mass"));
-		
+
 		logger.debug(se.toString());
 	}
 	
@@ -509,35 +516,35 @@ LIN
 	public void testRegisterG65696SL() throws SparqlException, ConvertException
 	{
 //		GlycoCT:
-//		RES
-//		1b:x-dglc-HEX-1:5
-//		2b:b-dgal-HEX-1:5
-//		3b:b-dglc-HEX-1:5
-//		4s:n-acetyl
-//		5b:b-dgal-HEX-1:5
-//		6b:b-dglc-HEX-1:5
-//		7s:n-acetyl
-//		8b:b-dgal-HEX-1:5
-//		9b:b-dglc-HEX-1:5
-//		10s:n-acetyl
-//		11b:b-dgal-HEX-1:5
-//		12b:b-dglc-HEX-1:5
-//		13s:n-acetyl
-//		14b:b-dgal-HEX-1:5
-//		LIN
-//		1:1o(4+1)2d
-//		2:2o(3+1)3d
-//		3:3d(2+1)4n
-//		4:3o(4+1)5d
-//		5:2o(6+1)6d
-//		6:6d(2+1)7n
-//		7:6o(4+1)8d
-//		8:8o(3+1)9d
-//		9:9d(2+1)10n
-//		10:9o(3+1)11d
-//		11:8o(6+1)12d
-//		12:12d(2+1)13n
-//		13:12o(4+1)14d
+//RES
+//1b:x-dglc-HEX-1:5
+//2b:b-dgal-HEX-1:5
+//3b:b-dglc-HEX-1:5
+//4s:n-acetyl
+//5b:b-dgal-HEX-1:5
+//6b:b-dglc-HEX-1:5
+//7s:n-acetyl
+//8b:b-dgal-HEX-1:5
+//9b:b-dglc-HEX-1:5
+//10s:n-acetyl
+//11b:b-dgal-HEX-1:5
+//12b:b-dglc-HEX-1:5
+//13s:n-acetyl
+//14b:b-dgal-HEX-1:5
+//LIN
+//1:1o(4+1)2d
+//2:2o(3+1)3d
+//3:3d(2+1)4n
+//4:3o(4+1)5d
+//5:2o(6+1)6d
+//6:6d(2+1)7n
+//7:6o(4+1)8d
+//8:8o(3+1)9d
+//9:9d(2+1)10n
+//10:9o(3+1)11d
+//11:8o(6+1)12d
+//12:12d(2+1)13n
+//13:12o(4+1)14d
 		String sequence = "RES\\n"
 				+ "1b:x-dglc-HEX-1:5\\n"
 				+ "2b:b-dgal-HEX-1:5\\n"

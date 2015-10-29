@@ -46,9 +46,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @XmlRootElement (name="select-sparql")
 public interface SelectSparql {
 	
-	public static String PRIMARY_KEY = "primary_key";
-	public static String TRUE = "1";
-	public static String FALSE = "0";
+	public final static String PRIMARY_KEY = "primary_key";
+	public final static String NO_DOMAINS = "no_domains";
+	public final static String URI = "uri";
+	public final static String TRUE = "1";
+	public final static String FALSE = "0";
 	
 	@JsonProperty(value="define")
 	public String getDefine();

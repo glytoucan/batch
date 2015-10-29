@@ -7,7 +7,6 @@ import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.UriProvider;
 import org.glycoinfo.rdf.scint.ClassHandler;
 
@@ -97,6 +96,11 @@ public class SchemaSparqlFormatter {
 		return value.toString();
 	}
 
+	public static String getPrimaryKey(ClassHandler classhandler, String value) {
+		return value.replace(classhandler.getPrefixIri(), "").replace(classhandler.getClassName() + "#", "");
+	}
+
+	
 	public static String getAInsert(String uri, ClassHandler classHandler) {
 		return uri + " a " + getPrefixClassName(classHandler) + " . \n";
 	}

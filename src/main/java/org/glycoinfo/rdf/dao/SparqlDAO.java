@@ -2,6 +2,7 @@ package org.glycoinfo.rdf.dao;
 
 import java.util.List;
 
+import org.glycoinfo.rdf.DeleteSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
@@ -12,7 +13,7 @@ public interface SparqlDAO {
 
 	void insert(InsertSparql insert) throws SparqlException;
 
-	void delete(InsertSparql string) throws SparqlException;
+	void delete(DeleteSparql string) throws SparqlException;
 
 	void execute(InsertSparql string) throws SparqlException;
 	

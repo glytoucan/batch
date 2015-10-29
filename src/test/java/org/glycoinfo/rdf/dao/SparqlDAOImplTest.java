@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.rdf.DeleteSparql;
+import org.glycoinfo.rdf.DeleteSparqlBean;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
@@ -15,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = VirtSesameDAOTestConfig.class)
@@ -81,7 +84,6 @@ public class SparqlDAOImplTest {
 		}
 	}
 
-	@Test
 	public void testQueryOptional() {
 		String query = prefix
 				+ "SELECT DISTINCT  ?AccessionNumber ?img ?Mass ?Motif ?ID ?Contributor ?time\n"
@@ -122,7 +124,6 @@ public class SparqlDAOImplTest {
 		}
 	}
 
-	@Test
 	public void testInsertUnicode() throws SparqlException {
 		schemaDAO
 				.insert(new InsertSparqlBean("insert data { \n"
@@ -164,6 +165,7 @@ public class SparqlDAOImplTest {
 	  }
 	
 	@Test
+	@Transactional
 	public void testInsert() throws SparqlException {
 		schemaDAO
 				.insert(new InsertSparqlBean("insert data { graph <http://bluetree.jp/nobutest> { <http://bluetree.jp/nobutest/aa> <http://bluetree.jp/nobutest/bb> \"cc\" . \n"
@@ -218,6 +220,7 @@ public class SparqlDAOImplTest {
 	}
 
 	@Test
+	@Transactional
 	public void testInsertConvert() throws SparqlException {
 		schemaDAO
 				.insert(new InsertSparqlBean("insert into graph <nobutest>  {"
@@ -299,9 +302,10 @@ public class SparqlDAOImplTest {
 	}
 
 	@Test
+	@Transactional
 	public void testDelete() throws SparqlException {
 		schemaDAO
-				.delete(new InsertSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
+				.delete(new DeleteSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
 						+ "DELETE DATA { graph <http://bluetree.jp/nobutest> {"
 						+ "<http://bluetree.jp/nobutest/aa> <http://bluetree.jp/nobutest/bb> \"cc\" . } }"));
 		
@@ -319,8 +323,20 @@ public class SparqlDAOImplTest {
 //			}
 
 	}
+	
+	@Test
+	@Transactional
+	public void testDeleteBean() throws SparqlException {
+		DeleteSparql ds = new DeleteSparqlBean();
+		
+		ds.setPrefix(prefix);
+		ds.setDelete("<http://bluetree.jp/nobutest/aa> <http://bluetree.jp/nobutest/bb> \"cc\"");
+		ds.setGraph("http://bluetree.jp/nobutest");
+		schemaDAO.delete(ds);
+	}
 
 	@Test
+	@Transactional
 	public void testClearGraph() throws SparqlException {
 		schemaDAO
 				.execute(new InsertSparqlBean("clear graph <http://bluetree.jp/nobutest>"));

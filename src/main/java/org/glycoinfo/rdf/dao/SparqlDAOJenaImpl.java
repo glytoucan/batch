@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.glycoinfo.rdf.DeleteSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
@@ -176,7 +177,7 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 
 
 	@Override
-	public void delete(InsertSparql string) throws SparqlException {
+	public void delete(DeleteSparql string) throws SparqlException {
 		// TODO Auto-generated method stub
 		
 	}
