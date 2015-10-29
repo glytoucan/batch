@@ -8,6 +8,7 @@ import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
 import org.glycoinfo.rdf.glycan.Contributor;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
+import org.glycoinfo.rdf.service.impl.ContributorProcedureConfig;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 //@SpringApplicationConfiguration(classes = UserProcedureRdfTest.class)
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf.service"})
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {ContributorProcedureRdfTest.class, VirtSesameDAOTestConfig.class})
+@SpringApplicationConfiguration(classes = {ContributorProcedureRdfTest.class, VirtSesameDAOTestConfig.class, ContributorProcedureConfig.class})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf.service"})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf"}, excludeFilters={
 //		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=Configuration.class)})

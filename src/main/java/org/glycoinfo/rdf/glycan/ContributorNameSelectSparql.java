@@ -28,11 +28,12 @@ BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/
 		this.select = "?" + Contributor.ID + "\n";
 		this.where 
 			= "?o a foaf:Person .\n"
-			+ "BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/\") AS ?" + Contributor.ID + ") .\n";
+					+ "?o dcterms:identifier ?" + Contributor.ID + " .\n";
+//			+ "BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/\") AS ?" + Contributor.ID + ") .\n";
 	}
 
 	@Override
 	public String getWhere() throws SparqlException {
-		return this.where + "?o foaf:name \"" + getSparqlEntity().getValue(Contributor.NAME) + "\" . \n";
+		return this.where + "?o foaf:name \"" + getSparqlEntity().getValue(Contributor.NAME) + "\"^^xsd:string . \n";
 	}
 }
