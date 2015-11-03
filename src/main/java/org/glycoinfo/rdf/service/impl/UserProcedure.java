@@ -412,6 +412,10 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
 		
 		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson);
+		
+		if (null == results || !results.iterator().hasNext())
+			return false;
+
 		SparqlEntity se = results.iterator().next();
 
 		selectScintPerson.setSparqlEntity(se);
@@ -432,5 +436,4 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		}
 		return false;
 	}
-
 }
