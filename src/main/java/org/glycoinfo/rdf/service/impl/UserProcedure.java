@@ -423,6 +423,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		SparqlEntity pmSE = new SparqlEntity(GLYTOUCAN_PROGRAM + selectScintPerson.getPrimaryKey());
 		pmSE.setValue(UserProcedure.MEMBER, selectScintPerson);
 		pmSE.setValue(UserProcedure.MEMBERSHIP_NUMBER, null);
+		pmSE.setValue(SelectScint.NO_DOMAINS, true);
 		selectScintProgramMembership.setSparqlEntity(pmSE);
 				
 		List<SparqlEntity> resultsPM = sparqlDAO.query(selectScintProgramMembership);

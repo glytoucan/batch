@@ -7,12 +7,12 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.schema.DomainSchemaSelectSparql;
+import org.glycoinfo.rdf.schema.SchemaSparqlFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.glycoinfo.rdf.schema.DomainSchemaSelectSparql;
-import org.glycoinfo.rdf.schema.SchemaSparqlFormatter;
 
 @Component
 public class ClassHandler {
@@ -50,6 +50,8 @@ public class ClassHandler {
 		List<SparqlEntity> results = sparqlDAO.query(domainselect);
 		if (domains==null)
 			domains = new ArrayList<String>();
+		else
+			domains.clear();
 		for (SparqlEntity sparqlEntity : results) {
 
 			String result = SchemaSparqlFormatter.getDomainName(this, sparqlEntity.getValue("result"));
