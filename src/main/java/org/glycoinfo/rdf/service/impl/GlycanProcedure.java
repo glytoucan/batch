@@ -710,4 +710,41 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			addWurcs(sparqlentity);
 		return sparqlentity.getValue(Saccharide.PrimaryId);
 	}
+
+	public String register(String sequence, String name, String dbId) throws SparqlException {
+		String id = register(sequence, name);
+		SparqlEntity resourceEntryInsertSE = new SparqlEntity();	
+		
+//		<http://rdf.glycoinfo.org/unicarb-db/324>
+//			a glycan:resource_entry ;
+//			dcterms:identirfier "324" ;
+//			glycan:in_glycan_database glycan:database_unicarb_db ;
+//			rdfs:seeAlso	<http://unicarb-db.biomedicine.gu.se:9000/msData/324> ;
+//			glytoucan:contributor	<http://rdf.glycoinfo.org/glytoucan/contributor/userId/5861> .
+				// retrieve database info
+		
+		// insert into resourceEntry
+	
+		List<SparqlEntity> list = contributorProcedure.selectDatabaseByContributor(name);
+//userID="254"^^<http://www.w3.org/2001/XMLSchema#int>
+//user=http://rdf.glycoinfo.org/glytoucan/contributor/userId/254
+//db=http://purl.jp/bio/12/glyco/glycan#database_unicarb_db
+//uriTmp="http://rdf.glycoinfo.org/unicarb-db/"^^<http://www.w3.org/2001/XMLSchema#string>
+//urlTmp="http://unicarb-db.biomedicine.gu.se:9000/msData/"^^<http://www.w3.org/2001/XMLSchema#string>
+		contributorProcedure.insertResourceEntry(list, dbId);
+		return id;
+	}
+
+	@Override
+	public String addResourceEntry(String accessionNumber, String name, String dbId) throws SparqlException {
+		List<SparqlEntity> list = contributorProcedure.selectDatabaseByContributor(name);
+		String uri = "http://rdf.glycoinfo.org/glycan/" + accessionNumber;
+
+		for (SparqlEntity sparqlEntity : list) {
+			sparqlEntity.setValue(Saccharide.URI, uri);
+		}
+		
+		contributorProcedure.insertResourceEntry(list, dbId);
+		return null;
+	}
 }

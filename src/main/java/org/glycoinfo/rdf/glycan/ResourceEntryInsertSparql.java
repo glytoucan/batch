@@ -3,7 +3,7 @@ package org.glycoinfo.rdf.glycan;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.UriProvider;
 
@@ -48,7 +48,11 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 	}
 	
 	public String getURI() {
-		return "http://rdf.glycoinfo.org/resource-entry/" + getSparqlEntity().getValue(Identifier);
+		if (null != getSparqlEntity().getValue(ResourceEntry.ResourceEntryURI) && null != getSparqlEntity().getValue(ResourceEntry.Identifier)) {
+			String url = getSparqlEntity().getValue(ResourceEntry.ResourceEntryURI) + getSparqlEntity().getValue(ResourceEntry.Identifier);
+			return url;
+		} else
+			return "http://rdf.glycoinfo.org/resource-entry/" + getSparqlEntity().getValue(Identifier);
 	}
 
 	public String getInsert()  {
@@ -63,16 +67,25 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 //		}
 		String saccharideRelation = null;
 		if (null != getSparqlEntity().getValue(Saccharide.URI)) {
-			UriProvider saccharideUri = (UriProvider) getSparqlEntity().getObjectValue(Saccharide.URI);
-			saccharideRelation = "<" + saccharideUri.getUri() + "> glycan:has_resource_entry <" + getURI() + "> .\n";
+			saccharideRelation = "<" + getSparqlEntity().getValue(Saccharide.URI) + "> glycan:has_resource_entry <" + getURI() + "> .\n";
 		}
-		this.insert = (StringUtils.isBlank(saccharideRelation)? "" : saccharideRelation)
-				+ "<" + getURI() + ">" + " a " + "glycan:resource_entry .\n"
-				+ "<" + getURI() + ">" + " glycan:in_glycan_database glytoucan:database_" + getSparqlEntity().getValue(Database) + " .\n"
-				+ "<" + getURI() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(Identifier) + "\" .\n"
-				+ "<" + getURI() + ">" + " rdfs:seeAlso <https://glytoucan.org/Structures/Glycans/" + getSparqlEntity().getValue(Identifier) + "> .\n"
-				+ "<" + getURI() + ">" + " glytoucan:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(ContributorId) + "> .\n"
-				+ "<" + getURI() + ">" + " glytoucan:date_registered \"" + dateTimeStamp((Date) getSparqlEntity().getObjectValue(DataSubmittedDate)) + "\"^^xsd:dateTimeStamp ."; 
+		
+		StringBuilder insertBuilder = new StringBuilder((StringUtils.isBlank(saccharideRelation)? "" : saccharideRelation) + "<" + getURI() + ">" + " a " + "glycan:resource_entry .\n");
+		if (StringUtils.isNotBlank(getSparqlEntity().getValue(Database)))
+			insertBuilder.append("<" + getURI() + ">" + " glycan:in_glycan_database glytoucan:database_" + getSparqlEntity().getValue(Database) + " .\n");
+		if (StringUtils.isNotBlank(getSparqlEntity().getValue(GlycanDatabaseLiteral)))
+			insertBuilder.append("<" + getURI() + ">" + " glycan:in_glycan_database <" + getSparqlEntity().getValue(GlycanDatabaseLiteral) + "> .\n");
+		
+		insertBuilder.append("<" + getURI() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(Identifier) + "\" .\n");
+		if (StringUtils.isNotBlank(getSparqlEntity().getValue(DatabaseURL))) {
+			String databaseUrl = getSparqlEntity().getValue(DatabaseURL);
+			databaseUrl.replace("[?id?]", getSparqlEntity().getValue(Identifier));
+			insertBuilder.append("<" + getURI() + ">" + " rdfs:seeAlso <" + databaseUrl + "> .\n");
+		} else
+			insertBuilder.append("<" + getURI() + ">" + " rdfs:seeAlso <https://glytoucan.org/Structures/Glycans/" + getSparqlEntity().getValue(Identifier) + "> .\n");
+		insertBuilder.append("<" + getURI() + ">" + " glytoucan:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(ContributorId) + "> .\n");
+		insertBuilder.append("<" + getURI() + ">" + " glytoucan:date_registered \"" + dateTimeStamp((Date) getSparqlEntity().getObjectValue(DataSubmittedDate)) + "\"^^xsd:dateTimeStamp ."); 
+		this.insert = insertBuilder.toString();
 		return this.insert;
 	}
 

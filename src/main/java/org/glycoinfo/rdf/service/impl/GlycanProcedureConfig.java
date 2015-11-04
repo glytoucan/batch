@@ -6,6 +6,7 @@ import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.DatabaseSelectSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
@@ -129,5 +130,12 @@ public class GlycanProcedureConfig implements GraphConfig {
 		sss.setGraphtarget("<http://rdf.glytoucan.org/sequence/wurcs>");
 		sss.setGraphms("<http://rdf.glytoucan.org/wurcs/ms>");
 		return sss;
+	}
+	
+	@Bean
+	public DatabaseSelectSparql databaseSelectSparql() {
+		DatabaseSelectSparql dss = new DatabaseSelectSparql();
+//		dss.setFrom();
+		return dss;
 	}
 }

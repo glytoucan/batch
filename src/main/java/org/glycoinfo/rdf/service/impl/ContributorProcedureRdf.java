@@ -1,5 +1,6 @@
 package org.glycoinfo.rdf.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +13,10 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Contributor;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
+import org.glycoinfo.rdf.glycan.DatabaseSelectSparql;
 import org.glycoinfo.rdf.glycan.LatestContributorIdSparql;
+import org.glycoinfo.rdf.glycan.ResourceEntry;
+import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,6 +33,12 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 
 	@Autowired
 	ContributorNameSelectSparql contributorSelectSparql;
+	
+	@Autowired
+	DatabaseSelectSparql databaseSelectSparql;
+	
+	@Autowired
+	ResourceEntryInsertSparql resourceEntryInsertSparql;
 	
 	/**
 	 * adds a Contributor class (foaf:Person).
@@ -83,5 +93,33 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 			return idSE;
 		}
 		return null;
+	}
+	
+	@Override
+	public List<SparqlEntity> selectDatabaseByContributor(String contributorId) throws SparqlException {
+		if (StringUtils.isBlank(contributorId))
+			throw new SparqlException("contributorId cannot be blank");
+
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(ResourceEntry.ContributorId, contributorId);
+		databaseSelectSparql.setSparqlEntity(se);
+
+		return sparqlDAO.query(databaseSelectSparql);
+	}
+
+	@Override
+	public List<SparqlEntity> insertResourceEntry(List<SparqlEntity> entries, String id) throws SparqlException {
+		if (null == entries)
+			throw new SparqlException("entries cannot be blank");
+
+		if (entries.iterator().hasNext()) {
+			SparqlEntity databaseresult = entries.iterator().next();
+			databaseresult.setValue(ResourceEntry.Identifier, id);
+			databaseresult.setValue(ResourceEntry.DataSubmittedDate, new Date());
+			resourceEntryInsertSparql.setSparqlEntity(databaseresult);
+			sparqlDAO.insert(resourceEntryInsertSparql);
+		}
+		
+		return entries;
 	}
 }

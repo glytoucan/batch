@@ -19,6 +19,7 @@ import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
+import org.glycoinfo.rdf.glycan.DatabaseSelectSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
@@ -35,6 +36,7 @@ import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
+import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.glycoinfo.rdf.service.impl.MailService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -52,7 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {GlycanProcedureTest.class, VirtSesameDAOTestConfig.class})
+@SpringApplicationConfiguration(classes = {GlycanProcedureTest.class, VirtSesameDAOTestConfig.class, GlycanProcedureConfig.class})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf.service", "org.glycoinfo.rdf.scint"})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf"}, excludeFilters={
 //		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=Configuration.class)})
@@ -251,6 +253,9 @@ public class GlycanProcedureTest {
 		wrss.setGraph("http://rdf.glytoucan.org/msdb");
 		return wrss;
 	}
+	
+	@Autowired
+	DatabaseSelectSparql databaseSelectSparql;
 	
 //	@Test(expected=SparqlException.class)
 //	public void testInsufficientUser() throws SparqlException {
@@ -732,6 +737,30 @@ LIN
 		
 		logger.debug(compare.toString());
 		Assert.assertTrue(compare.containsAll(correct));
+	}
+	
+	@Test
+	public void testDatabaseInfo() throws SparqlException {
+//		
+//		ArrayList<SparqlEntity> list = glycanProcedure.getDatabaseInfo(acc);
+//
+//		ArrayList<String> compare = new ArrayList<String>();
+//		for (SparqlEntity sparqlEntity : list) {
+//			String id = sparqlEntity.getValue(Saccharide.PrimaryId);
+//			compare.add(id);
+//		}
+//		
+//		// check results
+//		
+//		ArrayList<String> correct = new ArrayList<String>();
+//		correct.add("G00034MO");
+//		correct.add("G00042MO");
+//		correct.add("G00032MO");
+//		correct.add("G00055MO");
+//		correct.add("G00068MO");
+//		
+//		logger.debug(compare.toString());
+//		Assert.assertTrue(compare.containsAll(correct));
 	}
 	
 	@Bean
