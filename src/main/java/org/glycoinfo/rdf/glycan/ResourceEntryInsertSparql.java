@@ -79,7 +79,9 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 		insertBuilder.append("<" + getURI() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(Identifier) + "\" .\n");
 		if (StringUtils.isNotBlank(getSparqlEntity().getValue(DatabaseURL))) {
 			String databaseUrl = getSparqlEntity().getValue(DatabaseURL);
-			databaseUrl.replace("[?id?]", getSparqlEntity().getValue(Identifier));
+			logger.debug("databaseUrl:>" + databaseUrl);
+			databaseUrl = databaseUrl.replace("[?id?]", getSparqlEntity().getValue(Identifier));
+			logger.debug("databaseUrl:>" + databaseUrl);
 			insertBuilder.append("<" + getURI() + ">" + " rdfs:seeAlso <" + databaseUrl + "> .\n");
 		} else
 			insertBuilder.append("<" + getURI() + ">" + " rdfs:seeAlso <https://glytoucan.org/Structures/Glycans/" + getSparqlEntity().getValue(Identifier) + "> .\n");

@@ -127,7 +127,7 @@ public class ResourceEntrySparqlBeanTest {
 		if (list != null && list.iterator().hasNext()) {
 			SparqlEntity databaseresult = list.iterator().next();
 			InsertSparql is = getResourceEntrySparql();
-			databaseresult.setValue(ResourceEntry.Identifier, "2222");
+			databaseresult.setValue(ResourceEntry.Identifier, "323");
 			databaseresult.setValue(ResourceEntry.DataSubmittedDate, new Date());
 			is.setSparqlEntity(databaseresult);
 			sparqlDAO.insert(is);
