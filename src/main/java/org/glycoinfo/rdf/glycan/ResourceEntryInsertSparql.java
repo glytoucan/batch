@@ -66,6 +66,9 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 //			throw new SparqlException("requires date submitted");
 //		}
 		String saccharideRelation = null;
+		if (null != getSparqlEntity().getValue(Saccharide.PrimaryId)) {
+			getSparqlEntity().setValue(Saccharide.URI, "http://rdf.glycoinfo.org/glycan/" + getSparqlEntity().getValue(Saccharide.PrimaryId));
+		}
 		if (null != getSparqlEntity().getValue(Saccharide.URI)) {
 			saccharideRelation = "<" + getSparqlEntity().getValue(Saccharide.URI) + "> glycan:has_resource_entry <" + getURI() + "> .\n";
 		}

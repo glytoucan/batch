@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
 import org.glycoinfo.batch.mass.MassSparqlProcessor;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
+import org.glycoinfo.conversion.GlyConvert;
 import org.glycoinfo.conversion.GlyConvertDetect;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.conversion.util.DetectFormat;
@@ -299,10 +300,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		SparqlEntity searchResultSE = new SparqlEntity();
 		if (list != null && list.size() < 1) {
 			// if not wurcs, convert
-			glyConvertDetect.setToformat("wurcs");
 			logger.debug("converting:>" + sequence + "<");
-			glyConvertDetect.setFromSequence(sequence);
-			String wurcs = glyConvertDetect.convert();
+			String wurcs = glyConvertDetect.convert(sequence, GlyConvert.WURCS);
 			logger.debug("converted:>" + wurcs + "<");
 			list = searchSequence(wurcs);
 			
@@ -452,7 +451,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 //			contributorProcedure.setId(contributorId);
 //			String id = contributorProcedure.searchContributor(userin);
 		
-			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.URI, saccharideInsertSparql);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, accessionNumber);
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Identifier, accessionNumber);
 			
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.ContributorId, contributorId);

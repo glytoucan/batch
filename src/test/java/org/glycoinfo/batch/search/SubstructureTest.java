@@ -2,17 +2,22 @@ package org.glycoinfo.batch.search;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +32,9 @@ public class SubstructureTest {
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(SubstructureTest.class);
 
+	@Autowired
+	SparqlDAO sparqlDAO;
+	
 	@Bean
 	SelectSparql getSelectSparql() {
 		SubstructureSearchSparql search = new SubstructureSearchSparql();
@@ -479,5 +487,18 @@ public class SubstructureTest {
 //				+ "<testSequenceURI> glycan:has_sequence \"testConvertedSequence!\"^^xsd:string .\n"
 //				+ "<testSequenceURI> glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n"
 //				+ "<testSequenceURI> glytoucan:is_glycosequence_of <testSaccharideURI> .\n }\n", convert.getSparql());
-//	}			
+//	}
+			
+			@Test
+			public void testSelectSparql2() throws SparqlException {
+				SelectSparql search = getSelectSparql();
+				SparqlEntity sparqlentity = new SparqlEntity();
+				sparqlentity.setValue(GlycoSequence.URI, "rdf://sacharide.test");
+				sparqlentity.setValue(GlycoSequence.Sequence, "WURCS=2.0/2,2,1/[a2112h-1x_1-5][a2122h-1x_1-5]/1-2/a?-b1");
+				search.setSparqlEntity(sparqlentity);
+				
+				List<SparqlEntity> results = sparqlDAO.query(search);
+				
+				Assert.assertTrue(results.size() > 0);
+			}
 }

@@ -1,9 +1,7 @@
 package org.glycoinfo.batch.glyconvert;
 
 import org.glycoinfo.conversion.GlyConvert;
-import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
-import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +53,6 @@ public class GlycomeDBConvertInsertSparql extends ConvertInsertSparql implements
 	public String getInsert() {
 		getSparqlEntity().setValue(GlycoSequence.Sequence, getSparqlEntity().getValue(GlycomeDBConvertInsertSparql.ConvertedSequence));
 		return super.getInsert();
-	}
-
-	public String getSequence() {
-		String sequence = getGlyConvert().getToSequence();
-		if (null == sequence)
-			sequence = getSparqlEntity().getValue(ConvertedSequence);
-		return sequence;
 	}
 
 	// TODO: put in subclass

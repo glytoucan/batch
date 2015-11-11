@@ -44,7 +44,7 @@ public class ResourceEntrySparqlBeanTest {
 	@Bean
 	ResourceEntrySelectSparql resourceEntrySelectSparql() {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(ResourceEntry.Identifier, "252275760");
+		se.setValue(ResourceEntry.Identifier, "323");
 		ResourceEntrySelectSparql re = new ResourceEntrySelectSparql();
 		re.setSparqlEntity(se);
 		return re;
@@ -73,7 +73,7 @@ public class ResourceEntrySparqlBeanTest {
 
 		List<SparqlEntity> list = sparqlDAO.query(new SelectSparqlBean(
 				"PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
-						+ "select ?date where {?resource a glycan:resource_entry . ?resource glycan:in_glycan_database glycan:database_glytoucan . ?resource dcterms:identifier \"G00TESTDATA\"^^xsd:string . ?resource dcterms:dataSubmitted ?date . ?resource dc:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/"
+						+ "select ?date where {?resource a glycan:resource_entry . ?resource glycan:in_glycan_database glytoucan:database_glytoucan . ?resource dcterms:identifier \"G00TESTDATA\" . ?resource glytoucan:date_registered ?date . ?resource glytoucan:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/"
 						+ "1234" + ">}"));
 		if (list.size() < 1)
 			Assert.fail("no results");
@@ -89,7 +89,7 @@ public class ResourceEntrySparqlBeanTest {
 		if (list.size() < 1)
 			Assert.fail("no results");
 		for (SparqlEntity sparqlEntity : list) {
-			Assert.assertEquals("252275760", sparqlEntity.getValue(ResourceEntry.Identifier));
+			Assert.assertEquals("323", sparqlEntity.getValue(ResourceEntry.Identifier));
 		}
 	}
 
@@ -134,5 +134,20 @@ public class ResourceEntrySparqlBeanTest {
 		} else
 			Assert.fail();
 	}
+
+//	@Test
+//	@Transactional
+//	public void testInsertRegister() throws SparqlException, UnsupportedEncodingException {
+//		sparqlentity.setValue(Saccharide.PrimaryId, accessionNumber);
+//
+//		saccharideInsertSparql.setSparqlEntity(sparqlentity);
+//		resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, accessionNumber);
+//		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Identifier, accessionNumber);
+//
+//		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.ContributorId, contributorId);
+//		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.DataSubmittedDate, new Date());
+//		sparqlDAO.insert(resourceEntryInsertSparql);
+//
+//	}
 
 }

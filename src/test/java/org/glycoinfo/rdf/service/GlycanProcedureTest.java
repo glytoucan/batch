@@ -448,7 +448,7 @@ LIN
 //		glycanProcedure.setContributorId("test");
 		
 //		glycanProcedure.setSequence(sequence);
-		String id = glycanProcedure.register(sequence, "test");
+		String id = glycanProcedure.register(sequence, "254");
 		logger.debug("searching with id:>" + id + "<");
 		se = glycanProcedure.searchByAccessionNumber(id);
 		
@@ -767,4 +767,31 @@ LIN
 	SparqlEntityFactory sparqlEntityFactory() {
 		return new SparqlEntityFactory();
 	}
+	
+	@Test
+	@Transactional
+	public void testRegisterUnicarb2237() throws SparqlException, ConvertException
+	{
+
+		String sequence = "RES\\n"
+				+ "1b:o-dglc-HEX-0:0|1:aldi\\n"
+				+ "2s:n-acetyl\\n"
+				+ "3b:b-dglc-HEX-1:5\\n"
+				+ "4s:n-acetyl\\n"
+				+ "5b:a-lgal-HEX-1:5|6:d\\n"
+				+ "LIN\\n"
+				+ "1:1d(2+1)2n\\n"
+				+ "2:1o(4+1)3d\\n"
+				+ "3:3d(2+1)4n\\n"
+				+ "4:1o(6+1)5d\\n";
+
+		logger.debug("sequence:>" + sequence + "<");
+//		glycanProcedure.setId("G92195EH");
+//		glycanProcedure.setContributorId("5854");
+		String result = glycanProcedure.register(sequence, "2237");
+
+		Assert.assertNotNull(result);
+		
+	}
+	
 }

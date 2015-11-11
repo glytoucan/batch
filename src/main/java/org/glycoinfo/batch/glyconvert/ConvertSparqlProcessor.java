@@ -37,11 +37,10 @@ public class ConvertSparqlProcessor implements
 		
 		// convert the sequence
 		GlyConvert converter = getGlyConvert();
-		converter.setFromSequence(sequence);
 		String convertedSeq = null;
 		String errorMessage = null;
 		try {
-			convertedSeq = converter.convert();
+			convertedSeq = converter.convert(sequence);
 		} catch (ConvertException e) {
 			e.printStackTrace();
 			logger.error("error processing:>" + sequence + "<");
