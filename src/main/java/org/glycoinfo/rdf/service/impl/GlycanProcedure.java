@@ -282,19 +282,22 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	public SparqlEntity searchBySequence(String sequence) throws SparqlException, ConvertException {
 		
 		logger.debug("sequence:>"+sequence+"<");
+		
+		String sparqlSequence = null;
+		sparqlSequence = sequence.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
+
+		sequence = sparqlSequence.trim();
+
 //		try {
 //			logger.debug("sequenceencode:>"+URLEncoder.encode(sequence, "UTF-8")+"<");
 //		} catch (UnsupportedEncodingException e) {
 //		}
-		String sparqlSequence = null;
-		sequence = sequence.trim();
-		sparqlSequence = sequence.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
 		
 //		String format = DetectFormat.detect(sequence);
 		
 		// check RDF for wurcs
-		logger.debug("searching for:>" + sparqlSequence + "<");
-		List<SparqlEntity> list = searchSequence(sparqlSequence);
+		logger.debug("searching for:>" + sequence + "<");
+		List<SparqlEntity> list = searchSequence(sequence);
 		logger.debug(list);
 		
 		SparqlEntity searchResultSE = new SparqlEntity();
@@ -339,21 +342,19 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		List<SparqlEntity> list = new ArrayList<SparqlEntity>();
 		for (Iterator iterator = input.iterator(); iterator.hasNext();) {
 			String sequence = (String) iterator.next();
-			sequence = sequence.trim();
-			if (sequence.endsWith("\\r\\n"))
-				sequence = sequence.substring(0, sequence.length() - 4);
-			if (sequence.endsWith("\\n"))
-				sequence = sequence.substring(0, sequence.length() - 2);
-			logger.debug("sequence:>"+sequence+"<");
+			String sparqlSequence = null;
+			sparqlSequence = sequence.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
+
+			logger.debug("sequence:>"+sparqlSequence+"<");
 			
-			sequence = sequence.trim();
+			sparqlSequence = sparqlSequence.trim();
 
 			SparqlEntity se = new SparqlEntity();
 			
 			try {
-				se = searchBySequence(sequence);
+				se = searchBySequence(sparqlSequence);
 			} catch (ConvertException e) {
-				logger.debug("convertexception seq:>" + sequence);
+				logger.debug("convertexception seq:>" + sparqlSequence);
 				logger.debug("convertexception msg:>" + e.getMessage());
 				se.setValue(Sequence, CouldNotConvertHeader + e.getMessage());
 			}
@@ -403,13 +404,20 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	 */
 	@Override
 	public String register(String sequence, String contributorId) throws SparqlException {
+
+		String sparqlSequence = null;
+		sparqlSequence = sequence.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
+
+		sparqlSequence = sparqlSequence.trim();
+		logger.debug("sequence:>"+sparqlSequence+"<");
+		
 		SparqlEntity sparqlentity = new SparqlEntity();
 		String accessionNumber = null;
 
 		// check if it doesn't exist.
 		String errorMessage = null;
 		try {
-			sparqlentity = searchBySequence(sequence);
+			sparqlentity = searchBySequence(sparqlSequence);
 			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null && !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) 
 			{
 				throw new DuplicateException(AlreadyRegistered + " as:>" + sparqlentity.getValue(AccessionNumber) + "<", sparqlentity.getValue(AccessionNumber));
@@ -610,6 +618,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			
 			se.setValue(GlycoSequence.Sequence, motifSequence);
 			se.setValue(GlycoSequence.AccessionNumber, acc);
+			se.setValue(SubstructureSearchSparql.LIMITID, "true");
 			substructureSearchSparql.setSparqlEntity(se);
 			List<SparqlEntity> listResult = sparqlDAO.query(substructureSearchSparql);
 			logger.debug("checking motif:>" + motifId);

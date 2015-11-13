@@ -1,9 +1,11 @@
 package org.glycoinfo.rdf.glycan;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
@@ -68,8 +70,21 @@ public class GlycoSequenceSelectSparql extends SaccharideSelectSparql implements
 	 * @return
 	 */
 	public String getFilter() {
-		return "FILTER NOT EXISTS {\n"
+		if (getSparqlEntity().getValue(IdentifiersToIgnore) != null) {
+//			FILTER (?primaryId != "G95801EZ")} 
+			String filter = null;
+			List<String> ignores = (List<String>) getSparqlEntity().getObjectValue(IdentifiersToIgnore);
+			for (Iterator iterator = ignores.iterator(); iterator.hasNext();) {
+				String string = (String) iterator.next();
+				filter = " ?" + Saccharide.PrimaryId + " != \"" + string + "\" ";
+				if (iterator.hasNext())
+					filter += " && ";
+			}
+			return "FILTER (" + filter + ")";
+		} else {
+			return "FILTER NOT EXISTS {\n"
 				+ "?" + SaccharideURI + " glytoucan:has_derivatized_mass ?existingmass .\n}";
+		}
 	}
 
 	@Override

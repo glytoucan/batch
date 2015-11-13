@@ -9,4 +9,7 @@ public interface GlycoSequence extends ClassLabel {
 	public static final String AccessionNumber = Saccharide.PrimaryId;
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String GlycanSequenceURI = "GlycanSequenceURI";
+	public static final String IdentifiersToIgnore = "GlycanSequenceIdentifiersToIgnore";
+	public static final String FilterMass = "GlycanSequenceFilterMass";
+
 }

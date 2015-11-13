@@ -402,13 +402,11 @@ LIN
 	
 	@Test
 	public void testSequenceScope() throws SparqlException, NoSuchAlgorithmException {
-		
 		SparqlEntity se = glycanProcedure.searchByAccessionNumber("G00026MO");
 		logger.debug(se.getValue("Mass"));
 		se = glycanProcedure.searchByAccessionNumber("G00031MO");
 		logger.debug(se.getValue("Mass"));
 //		Assert.assertNotNull(se);
-		
 	}
 	
 	@Test
@@ -768,7 +766,7 @@ LIN
 		return new SparqlEntityFactory();
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void testRegisterUnicarb2237() throws SparqlException, ConvertException
 	{
@@ -789,6 +787,30 @@ LIN
 //		glycanProcedure.setId("G92195EH");
 //		glycanProcedure.setContributorId("5854");
 		String result = glycanProcedure.register(sequence, "2237");
+
+		Assert.assertNotNull(result);
+		
+	}
+	
+	@Test
+	@Transactional
+	public void testRegisterWithCRLF() throws SparqlException, ConvertException
+	{
+
+		String sequence = "RES\r\n"
+				+ "1b:x-dglc-HEX-1:5\r\n"
+				+ "2b:x-dman-HEX-1:5\r\n"
+				+ "3b:x-dglc-HEX-1:5\r\n"
+				+ "4s:n-acetyl\r\n"
+				+ "LIN\r\n"
+				+ "1:1o(-1+1)2d\r\n"
+				+ "2:2o(-1+1)3d\r\n"
+				+ "3:3d(2+1)4n";
+
+		logger.debug("sequence:>" + sequence + "<");
+//		glycanProcedure.setId("G92195EH");
+//		glycanProcedure.setContributorId("5854");
+		String result = glycanProcedure.register(sequence, "999");
 
 		Assert.assertNotNull(result);
 		
