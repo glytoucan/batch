@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class SubstructureSearchSparql extends SelectSparqlBean {
 
 	public static final String SubstructureSearchSaccharideURI = "glycan";
+	public static final String LIMITID = "substructureSearchLimitFlag";
 	
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(SubstructureSearchSparql.class);
@@ -27,8 +28,15 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 	private String graphtarget;
 
 	private String graphms;
+	private boolean includeItself;
 
-//	WURCSSequenceExporterSPARQL exporter = new WURCSSequenceExporterSPARQL();
+	public boolean isFilterOutSelf() {
+		return includeItself;
+	}
+
+	public void setFilterOutSelf(boolean includeItself) {
+		this.includeItself = includeItself;
+	}
 
 	public String getGraphtarget() {
 		return graphtarget;
@@ -51,8 +59,6 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>";
 		this.select = "DISTINCT ?" + SubstructureSearchSaccharideURI;
-//				+ " ?" + Saccharide.PrimaryId; 
-//		this.limit = "10";
 	}
 
 	
@@ -67,21 +73,13 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 	public String getWhere() throws SparqlException {
 		this.where = "";
 		String t_strSPARQL = "";
-		String limitingId = getSparqlEntity().getValue(GlycoSequence.AccessionNumber);
-		if (StringUtils.isNotBlank(limitingId)) {
+		String limitingIdFlag = getSparqlEntity().getValue(LIMITID);
+		
+		if (StringUtils.isNotBlank(limitingIdFlag)) {
+			String limitingId = getSparqlEntity().getValue(GlycoSequence.AccessionNumber);
 			t_strSPARQL = "?glycan glytoucan:has_primary_id \"" + limitingId + "\" .\n";
 		}
-		  
-//	"?" + Saccharide.URI + " toucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n"
-//				+ "GRAPH <http://www.glycoinfo.org/wurcs> {"
-//				+ "SELECT *\n"
-//				+ "WHERE {\n"
-//				+ "?" + Saccharide.URI + " glycan:has_glycosequence ?gseq .\n";
-				
-//				"?glycans a glycan:glycan_motif .\n"
-//				+ "?glycans glycan:has_glycosequence ?gseq .\n"
-//				+ "?gseq glycan:has_sequence ?Seq .\n"
-//				+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_glycoct\n";
+
 		WURCSImporter t_oImport = new WURCSImporter();
 		WURCSArray t_oWURCS;
 		try {
@@ -90,20 +88,28 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 			e.printStackTrace();
 			throw new SparqlException(e);
 		}
-//		try {
-//			t_oWURCS = t_oImport.extractWURCSArray(URLDecoder.decode(getSparqlEntity().getValue(GlycoSequence.Sequence), "UTF-8"));
-//		} catch (UnsupportedEncodingException | WURCSFormatException e) {
-//			e.printStackTrace();
-//			throw new SparqlException(e);
-//		}
-//		WURCSArrayToSequence t_oA2S = new WURCSArrayToSequence();
-//		t_oA2S.start(t_oWURCS);
 
 		WURCSArrayToSequence2 t_oA2S = new WURCSArrayToSequence2();
 		t_oA2S.start(t_oWURCS);
 		
 		WURCSSequence2 t_oSeq = t_oA2S.getSequence();
 
+		WURCSSequence2ExporterSPARQL t_oExport = getExporter();
+		
+		t_oExport.start(t_oSeq);
+		
+		t_strSPARQL += t_oExport.getWhere();
+
+		this.where += t_strSPARQL;
+		
+		if (isFilterOutSelf()) {
+			this.where += "?glycan  glytoucan:has_primary_id ?primaryId .\n"
+					+ "FILTER (?primaryId != \"" + getSparqlEntity().getValue(GlycoSequence.AccessionNumber) + "\")";
+		}
+		return where;
+	}
+
+	WURCSSequence2ExporterSPARQL getExporter() {
 		WURCSSequence2ExporterSPARQL t_oExport = new WURCSSequence2ExporterSPARQL();
 
 		// Set option for SPARQL query generator
@@ -114,71 +120,12 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 		t_oExport.setSearchSupersumption(true); // Search supersumption of monosaccharide
 		t_oExport.setMSGraphURI(getGraphms());
 		t_oExport.setSearchSupersumption(false);
+
 		logger.debug("set setSearchSupersumption false");
+		
 		String reducing = getSparqlEntity().getValue(Motif.ReducingEnd);
 		if (StringUtils.isNotBlank(reducing) && reducing.equals(SelectSparql.TRUE))
 			t_oExport.setSpecifyRootNode(true);
-		t_oExport.start(t_oSeq);
-		t_strSPARQL += t_oExport.getWhere();
-
-		logger.debug("WHERE of substructure:>" +  t_strSPARQL + "<");
-
-		
-			this.where += t_strSPARQL;
-		
-//		this.where += "}";
-//		this.where += "}";
-		return where;
+		return t_oExport;
 	}
-
-/*
-	 * 
-	 * total list:
-	 * 
-	 * PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> PREFIX toucan:
-	 * <http://www.glytoucan.org/glyco/owl/glytoucan#> SELECT DISTINCT ?glycans
-	 * ?AccessionNumber ?Seq from <http://glytoucan.org/rdf/demo/0.6> from
-	 * <http://glytoucan.org/rdf/demo/0.6/rdf> WHERE { ?glycans a
-	 * glycan:saccharide . ?glycans toucan:has_primary_id ?AccessionNumber .
-	 * ?glycans glycan:has_glycosequence ?gseq . ?gseq glycan:has_sequence ?Seq
-	 * . ?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf }
-	 * 
-	 * 
-	 * motifs to check:
-	 * 
-	 * PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> PREFIX toucan:getSearchSparql
-	 * <http://www.glytoucan.org/glyco/owl/glytoucan#> SELECT DISTINCT ?glycans
-	 * ?AccessionNumber ?Seq from <http://glytoucan.org/rdf/demo/0.6> from
-	 * <http://glytoucan.org/rdf/demo/0.6/rdf> WHERE { ?glycans a
-	 * glycan:glycan_motif . ?glycans toucan:has_primary_id ?AccessionNumber .
-	 * ?glycans glycan:has_glycosequence ?gseq . ?gseq glycan:has_sequence ?Seq
-	 * . ?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf }
-	 * 
-	 * 
-	 * PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> PREFIX toucan:
-	 * <http://www.glytoucan.org/glyco/owl/glytoucan#> SELECT DISTINCT ?glycans
-	 * ?id ?Seq from <http://glytoucan.org/rdf/demo/0.6> from
-	 * <http://bluetree.jp/test> WHERE { ?glycans a glycan:glycan_motif .
-	 * ?glycans toucan:has_primary_id ?id . ?glycans glycan:has_glycosequence
-	 * ?gseq . ?gseq glycan:has_sequence ?Seq . ?gseq
-	 * glycan:in_carbohydrate_format glycan:carbohydrate_format_kcf }
-	 * 
-	 * glycan:has_motif
-	 */
-
-	// triple store batch process
-	// conversion
-	// retrieve a list of asc#
-	// for each asc #
-	// convert to kcf
-	// insert into rdf
-
-	// mass
-
-	// motif/substructure
-	// retrieve a list of asc#
-	// for each asc# -
-	// retrieve list of structures to find subs
-	// search for substructure - kcam
-	// insert substructure/motif
 }
