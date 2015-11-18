@@ -20,8 +20,10 @@ import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
 import org.glycoinfo.rdf.service.GlycanProcedure;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
+@Import(ContributorProcedureConfig.class)
 public class GlycanProcedureConfig implements GraphConfig {
 	@Bean
 	SaccharideInsertSparql saccharideInsertSparql() {

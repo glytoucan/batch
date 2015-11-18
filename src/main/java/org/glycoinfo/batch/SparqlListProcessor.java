@@ -28,12 +28,6 @@ public class SparqlListProcessor implements
 
 	SelectSparql sparql;
 
-	/**
-	 * 
-	 * Select Sparql to retrieve the Motifs of the ItemReader.
-	 * 
-	 * @return
-	 */
 	SelectSparql getSelectSparql() {
 		return sparql;
 	}
@@ -59,7 +53,6 @@ public class SparqlListProcessor implements
 	public void setConverter(SparqlEntityConverter<SparqlEntity> converter) {
 		this.converter = converter;
 	}
-	
 	
 	private SparqlEntityConverter<SparqlEntity> getPostConverter() {
 		return postConverter;
@@ -89,13 +82,14 @@ public class SparqlListProcessor implements
 			}
 			list = postList;
 		}
-			
+		
 		if (putall) {
-			ArrayList<SparqlEntity> newList = new ArrayList();
+			ArrayList<SparqlEntity> newList = new ArrayList<SparqlEntity>();
 			for (SparqlEntity sparqlEntity2 : list) {
 				sparqlEntity2.putAll(sparqlEntity);
 				newList.add(sparqlEntity2);
 			}
+			logger.debug("passing onto insert:>" + newList + "<");
 			return newList;
 		} else
 			return list;

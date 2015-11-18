@@ -316,5 +316,11 @@
 				<spring.mainClass>org.glycoinfo.batch.glytoucan.GlycoCTProcessBatch</spring.mainClass>
 			</properties>
 		</profile>
+		<profile>
+			<id>linkIsomer</id>
+			<properties>
+				<spring.mainClass>org.glycoinfo.batch.search.wurcs.WurcsLinkageIsomerSearchBatch</spring.mainClass>
+			</properties>
+		</profile>
 	</profiles>
 </project>

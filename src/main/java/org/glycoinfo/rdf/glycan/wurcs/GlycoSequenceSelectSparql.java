@@ -26,8 +26,6 @@ import org.springframework.util.Assert;
  */
 @Component
 public class GlycoSequenceSelectSparql extends SelectSparqlBean implements InitializingBean, GlycoSequence {
-
-
 	private boolean whereset = false;
 	public GlycoSequenceSelectSparql(String sparql) {
 		super(sparql);
@@ -56,16 +54,14 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 		return "\"" + getSparqlEntity().getValue(Saccharide.PrimaryId) + "\"";
 	}
 
-
 	@Override
 	public String getWhere() throws SparqlException {
 		String whereCopy = this.where;
 		if (null != getSparqlEntity() && null != getSparqlEntity().getValue(Saccharide.PrimaryId))
 			whereCopy += "?" + SaccharideURI + " glytoucan:has_primary_id " + getPrimaryId() + " .";
 			
-		whereCopy += 					getFilter();	
+		whereCopy += getFilter();
 
-		
 		return whereCopy;
 	}
 
@@ -89,11 +85,11 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 	public String getFilter() {
 		if (getSparqlEntity().getValue(IdentifiersToIgnore) != null) {
 //			FILTER (?primaryId != "G95801EZ")} 
-			String filter = null;
+			String filter = "";
 			List<String> ignores = (List<String>) getSparqlEntity().getObjectValue(IdentifiersToIgnore);
 			for (Iterator iterator = ignores.iterator(); iterator.hasNext();) {
 				String string = (String) iterator.next();
-				filter = " ?" + Saccharide.PrimaryId + " != \"" + string + "\" ";
+				filter += " ?" + Saccharide.PrimaryId + " != \"" + string + "\" ";
 				if (iterator.hasNext())
 					filter += " && ";
 			}

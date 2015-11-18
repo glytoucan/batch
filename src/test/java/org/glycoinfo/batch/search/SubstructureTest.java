@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.glycoinfo.batch.search.wurcs.IsomerSubstructureSearchSparql;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
@@ -501,4 +502,51 @@ public class SubstructureTest {
 				
 				Assert.assertTrue(results.size() > 0);
 			}
+			
+			@Test
+			public void testIsomerSubSelectSparqlG80382WR() throws SparqlException {
+				IsomerSubstructureSearchSparql search = new IsomerSubstructureSearchSparql();
+				search.setFilterOutSelf(true);
+			    String graphtarget = "<http://rdf.glytoucan.org/sequence/wurcs>";
+			    String graphms = "<http://rdf.glytoucan.org/wurcs/ms>";
+
+				search.setGraphms(graphms);
+				search.setGraphtarget(graphtarget);
+
+				SparqlEntity sparqlentity = new SparqlEntity();
+				sparqlentity.setValue(GlycoSequence.URI, "http://rdf.glytoucan.org/");
+				sparqlentity.setValue(GlycoSequence.Sequence, "WURCS=2.0/5,9,8/[a2122h-1x_1-5_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][axxxxh-1b_1-?_2*NCC/3=O]/1-2-3-4-2-4-2-5-5/a4-b1_b4-c1_c3-d1_c6-f1_d2-e1_f2-g1_h1-a?|b?|c?|d?|e?|f?|g?}_i1-a?|b?|c?|d?|e?|f?|g?}");
+				search.setSparqlEntity(sparqlentity);
+				
+				logger.debug(search.getSparql());
+				
+				List<SparqlEntity> results = sparqlDAO.query(search);
+				
+				Assert.assertTrue(results.size() > 0);
+			}
+			
+			
+//			G09256ZZ
+					
+					@Test
+					public void testIsomerSubSelectSparqlG09256ZZ() throws SparqlException {
+						IsomerSubstructureSearchSparql search = new IsomerSubstructureSearchSparql();
+						search.setFilterOutSelf(true);
+					    String graphtarget = "<http://rdf.glytoucan.org/sequence/wurcs>";
+					    String graphms = "<http://rdf.glytoucan.org/wurcs/ms>";
+
+						search.setGraphms(graphms);
+						search.setGraphtarget(graphtarget);
+
+						SparqlEntity sparqlentity = new SparqlEntity();
+						sparqlentity.setValue(GlycoSequence.URI, "http://rdf.glytoucan.org/");
+						sparqlentity.setValue(GlycoSequence.Sequence, "WURCS=2.0/5,7,6/[h2122h_2*NCC/3=O][a2112h-1b_1-5][Aad21122h-2a_2-6][a1221m-1a_1-5][a2122h-1b_1-5_2*NCC/3=O]/1-2-3-4-5-2-4/a3-b1_a6-e1_b3-c2_c4-d1_e4-f1_f2-g1");
+						search.setSparqlEntity(sparqlentity);
+						
+						logger.debug(search.getSparql());
+						
+						List<SparqlEntity> results = sparqlDAO.query(search);
+						
+						Assert.assertTrue(results.size() > 0);
+					}
 }

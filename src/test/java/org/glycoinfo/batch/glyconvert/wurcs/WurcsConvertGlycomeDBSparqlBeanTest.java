@@ -8,7 +8,7 @@ import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
 import org.glycoinfo.batch.glyconvert.GlycomeDBConvertInsertSparql;
 import org.glycoinfo.batch.glyconvert.GlycomeDBConvertSelectSparql;
 import org.glycoinfo.conversion.GlyConvert;
-import org.glycoinfo.conversion.wurcs.GlycoctToWurcsConverter;
+import org.glycoinfo.conversion.glycoct.GlycoctToWurcsConverter;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;

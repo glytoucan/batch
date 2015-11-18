@@ -1,11 +1,7 @@
 package org.glycoinfo.rdf.dao;
 
 import org.glycoinfo.rdf.SparqlException;
-import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.spring.SesameConnectionFactory;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.transaction.TransactionSystemException;
 
 /**
  * <p>{@link SparqlEntityFactory} handles data corresponding to a {@link SparqlEntity}.</p>
