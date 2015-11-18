@@ -12,7 +12,10 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.WURCSFramework.util.WURCSException;
+import org.glycoinfo.WURCSFramework.util.WURCSFactory;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
+import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
 import org.glycoinfo.batch.mass.MassSparqlProcessor;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.conversion.GlyConvert;
@@ -48,8 +51,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedure {
 	public static Log logger = (Log) LogFactory.getLog(GlycanProcedure.class);
-	
-	GlyConvertDetect glyConvertDetect = new GlyConvertDetect();
+
+	@Autowired
+	GlyConvertDetect glyConvertDetect;
 	
 	boolean isBatch;
 
@@ -267,56 +271,37 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	
 	/**
 	 * 
-	 * Search for an image using any sequence format.
-	 * This process takes in the input from setSequence and executes the following:
-	 * 1. determine the sequence type using DetectFormat.
-	 * 2. based on format type, select the WURCS format from RDF using GlycoSequence.
-	 * 3. if it doesn't exist, convert using GlyConvert.
-	 * 4. convert into image format
-	 * 5. set the id to accession number
+	 * Search for structure using any sequence format.
+	 * This process executes the following:
+	 * 
+	 * 1. convert to wurcs
+	 * 2. search rdf
+	 * 3. convert into image format
+	 * 4. set the id to accession number
+	 * 
 	 * @throws ConvertException 
 	 * 
-	 * @see org.glycoinfo.rdf.service.GlycanProcedure#search()
+	 * @see org.glycoinfo.rdf.service.impl.GlycanProcedure#convertToWurcs(String sequence)
 	 */
 	@Override
 	public SparqlEntity searchBySequence(String sequence) throws SparqlException, ConvertException {
-		
 		logger.debug("sequence:>"+sequence+"<");
 		
-		String sparqlSequence = null;
-		sparqlSequence = sequence.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
+		String wurcs = convertToWurcs(sequence);
 
-		sequence = sparqlSequence.trim();
-
-//		try {
-//			logger.debug("sequenceencode:>"+URLEncoder.encode(sequence, "UTF-8")+"<");
-//		} catch (UnsupportedEncodingException e) {
-//		}
-		
-//		String format = DetectFormat.detect(sequence);
-		
 		// check RDF for wurcs
-		logger.debug("searching for:>" + sequence + "<");
-		List<SparqlEntity> list = searchSequence(sequence);
+		logger.debug("searching for:>" + wurcs + "<");
+		List<SparqlEntity> list = searchSequence(wurcs);
 		logger.debug(list);
 		
 		SparqlEntity searchResultSE = new SparqlEntity();
 		if (list != null && list.size() < 1) {
-			// if not wurcs, convert
-			logger.debug("converting:>" + sequence + "<");
-			String wurcs = glyConvertDetect.convert(sequence, GlyConvert.WURCS);
-			logger.debug("converted:>" + wurcs + "<");
-			list = searchSequence(wurcs);
-			
-			logger.debug("search result list:>" + list + "<");
-			if (list != null && list.size() < 1) {
-				logger.debug("not found:>" + sequence + "|" + wurcs + "<");
-				searchResultSE.setValue(FromSequence, sequence);
-				searchResultSE.setValue(Sequence, wurcs);
-				searchResultSE.setValue(ResultSequence, wurcs);
-				searchResultSE.setValue(AccessionNumber, NotRegistered);
-				return searchResultSE;
-			}
+			logger.debug("not found:>" + sequence + "|" + sequence + "<");
+			searchResultSE.setValue(FromSequence, sequence);
+			searchResultSE.setValue(Sequence, wurcs);
+			searchResultSE.setValue(ResultSequence, wurcs);
+			searchResultSE.setValue(AccessionNumber, NotRegistered);
+			return searchResultSE;
 		}
 		
 		if (list != null && list.size() > 1)
@@ -379,9 +364,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	
 	/**
 	 * 
-	 * Registration of a glycan using standard registration method via either the text entry, graphical, or file upload.  
-	 * It first checks if the wurcs structure version of this sequence exists (in case it was translated already).  
-	 * If not found using sparql, it is then translated to wurcs and searched for again.  
+	 * Registration of a glycan using standard registration method via either the text entry, graphical, file upload, or REST api.  
+	 * It first checks the structure by converting it to WURCS format.
 	 * If the translation fails, an exception is thrown with the ConvertException embedded.
 	 * 
 	 * A primary policy that should be protected is if the sequence cannot be converted to wurcs, it will not be accepted.
@@ -405,19 +389,12 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Override
 	public String register(String sequence, String contributorId) throws SparqlException {
 
-		String sparqlSequence = null;
-		sparqlSequence = sequence.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
-
-		sparqlSequence = sparqlSequence.trim();
-		logger.debug("sequence:>"+sparqlSequence+"<");
-		
 		SparqlEntity sparqlentity = new SparqlEntity();
 		String accessionNumber = null;
 
 		// check if it doesn't exist.
-		String errorMessage = null;
 		try {
-			sparqlentity = searchBySequence(sparqlSequence);
+			sparqlentity = searchBySequence(sequence);
 			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null && !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) 
 			{
 				throw new DuplicateException(AlreadyRegistered + " as:>" + sparqlentity.getValue(AccessionNumber) + "<", sparqlentity.getValue(AccessionNumber));
@@ -425,11 +402,11 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			logger.debug("setting from sequence:>" + sparqlentity.getValue(GlycanProcedure.FromSequence) + "< sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence) + "<");
 		} catch (ConvertException e) {
 			e.printStackTrace();
-//			logger.error("convert exception processing:>" + sequence + "<");
-//			if (e.getMessage() != null && e.getMessage().length() > 0)
-//				errorMessage=e.getMessage();
-//			else
-				throw new SparqlException(e);
+			logger.error("convert exception processing:>" + sequence + "<");
+			String errorMessage = null;
+			if (e.getMessage() != null && e.getMessage().length() > 0)
+				errorMessage=e.getMessage();
+			throw new SparqlException(errorMessage, e);
 		}
 		
 		logger.debug("registering wurcs sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence));
@@ -461,6 +438,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		
 			resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, accessionNumber);
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Identifier, accessionNumber);
+			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Database, ResourceEntry.Database_Glytoucan);
 			
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.ContributorId, contributorId);
 			resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.DataSubmittedDate, new Date());
@@ -468,7 +446,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	//		resourceEntryInsertSparql.setSparqlEntity(reisSE);
 			sparqlDAO.insert(resourceEntryInsertSparql);
 //		}
-		
+
 		
 		logger.debug("registering wurcs:>" + accessionNumber + "\nsequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence));
 		
@@ -478,6 +456,35 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		registerGlycoSequence(sparqlentity);
 		
 		return accessionNumber;
+	}
+	
+	@Override
+	public String convertToWurcs(String sequence) throws ConvertException {
+	logger.debug("sequence to convert:>"+sequence+"<");
+		
+		// conversion will validate
+		String wurcs = glyConvertDetect.convert(sequence, GlyConvert.WURCS);
+		
+		// just in case, validate it.
+		try {
+			wurcs = validateWurcs(wurcs);
+		} catch (WURCSException e) {
+			throw new ConvertException(e.getMessage(), e);
+		}
+		
+		return wurcs;
+	}
+	
+	@Override
+	public String validateWurcs(String sequence) throws WURCSException {
+		sequence = sequence.trim();
+		logger.debug("validating:>" + sequence + "<");
+		WURCSFactory factory;
+		factory = new WURCSFactory(sequence);
+		WURCSArray t_oArray = factory.getArray();
+//		WURCSSequence2 t_oSeq2 = factory.getSequence();
+		String wurcs = factory.getWURCS();
+		return wurcs;
 	}
 
 	/**
@@ -592,10 +599,15 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 
 	@Override
 	public void registerGlycoSequence(SparqlEntity data) throws SparqlException {
-		logger.debug("adding:" + data.getValue(Saccharide.PrimaryId) + " with >" + data.getValue(GlycanProcedure.Sequence) + "< in " + data.getValue(GlycanProcedure.Format) + " format.");
+		String sequence = data.getValue(GlycanProcedure.Sequence);
+		if (sequence.contains("\n")) {
+			sequence = sequence.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
+		}
+		
+		logger.debug("adding:" + data.getValue(Saccharide.PrimaryId) + " with >" + sequence + "< in " + data.getValue(GlycanProcedure.Format) + " format.");
 		glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.PrimaryId,  data.getValue(Saccharide.PrimaryId));
-		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Sequence, data.getValue(GlycanProcedure.FromSequence));
-		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, DetectFormat.detect(data.getValue(GlycanProcedure.FromSequence)));
+		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Sequence, sequence);
+		glycoSequenceInsert.getSparqlEntity().setValue(GlycoSequence.Format, DetectFormat.detect(sequence));
 
 		SaccharideInsertSparql sis = new SaccharideInsertSparql();
 		sis.setSparqlEntity(glycoSequenceInsert.getSparqlEntity());
@@ -675,10 +687,9 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Override
 	public String initialize(String sequence, String id) throws SparqlException {
 		SparqlEntity sparqlentity = new SparqlEntity();
-		String accessionNumber = null;
+		String errorMessage = null;
 
 		// check if it doesn't exist.
-		String errorMessage = null;
 		try {
 			sparqlentity = searchBySequence(sequence);
 			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null && !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) 
@@ -695,7 +706,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			if (e.getMessage() != null && e.getMessage().length() > 0)
 				errorMessage=e.getMessage();
 			else
-				throw new SparqlException(e);
+				throw new SparqlException(errorMessage, e);
 		}
 		
 //		logger.debug("registering wurcs:>" + getId() + "\nsequence:>" + getSequence());
@@ -717,30 +728,6 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		} else
 			addWurcs(sparqlentity);
 		return sparqlentity.getValue(Saccharide.PrimaryId);
-	}
-
-	public String register(String sequence, String name, String dbId) throws SparqlException {
-		String id = register(sequence, name);
-		SparqlEntity resourceEntryInsertSE = new SparqlEntity();	
-		
-//		<http://rdf.glycoinfo.org/unicarb-db/324>
-//			a glycan:resource_entry ;
-//			dcterms:identirfier "324" ;
-//			glycan:in_glycan_database glycan:database_unicarb_db ;
-//			rdfs:seeAlso	<http://unicarb-db.biomedicine.gu.se:9000/msData/324> ;
-//			glytoucan:contributor	<http://rdf.glycoinfo.org/glytoucan/contributor/userId/5861> .
-				// retrieve database info
-		
-		// insert into resourceEntry
-	
-		List<SparqlEntity> list = contributorProcedure.selectDatabaseByContributor(name);
-//userID="254"^^<http://www.w3.org/2001/XMLSchema#int>
-//user=http://rdf.glycoinfo.org/glytoucan/contributor/userId/254
-//db=http://purl.jp/bio/12/glyco/glycan#database_unicarb_db
-//uriTmp="http://rdf.glycoinfo.org/unicarb-db/"^^<http://www.w3.org/2001/XMLSchema#string>
-//urlTmp="http://unicarb-db.biomedicine.gu.se:9000/msData/"^^<http://www.w3.org/2001/XMLSchema#string>
-		contributorProcedure.insertResourceEntry(list, dbId);
-		return id;
 	}
 
 	@Override

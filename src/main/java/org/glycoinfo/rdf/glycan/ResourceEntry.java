@@ -9,4 +9,5 @@ public interface ResourceEntry {
 	public static final String UserURI = "UserURI"; //http://rdf.glycoinfo.org/glytoucan/contributor/userId/254
 	public static final String GlycanDatabaseLiteral = "GlycanDatabaseLiteral"; //http://purl.jp/bio/12/glyco/glycan#database_unicarb_db
 	public static final String DatabaseURL = "DatabaseURL"; // http://unicarb-db.biomedicine.gu.se:9000/msData/"^^<http://www.w3.org/2001/XMLSchema#string>
+	public static final String Database_Glytoucan = "glytoucan"; // database_glytoucan
 }

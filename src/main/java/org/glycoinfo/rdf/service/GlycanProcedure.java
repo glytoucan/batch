@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.conversion.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -53,4 +54,8 @@ public interface GlycanProcedure {
 	String initialize(String sequence, String id) throws SparqlException;
 
 	public String addResourceEntry(String accessionNumber, String name, String dbId) throws SparqlException;
+
+	String convertToWurcs(String sequence) throws ConvertException;
+
+	String validateWurcs(String sequence) throws WURCSException;
 }

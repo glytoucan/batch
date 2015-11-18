@@ -1,17 +1,43 @@
 package org.glycoinfo.rdf;
 
+/**
+ * 
+ * Class for exception of conversion
+ * 
+ * @author aoki
+ * 
+ */
 public class SparqlException extends Exception {
+	protected String msg;
 
-	/*
-	 * generated serial id
+	/**
+	 * @param msg
 	 */
-	private static final long serialVersionUID = -7329593754733340638L;
+	public SparqlException(String msg) {
+		super(msg);
+		this.msg = msg;
+	}
 
-	public SparqlException(Exception e) {
-		super(e);
+	/**
+	 * @param throwable 
+	 */
+	public SparqlException(Throwable throwable) {
+		super(throwable);
 	}
 	
-	public SparqlException(String message) {
-		super(message);
+	/**
+	 * @param msg
+	 * @param throwable 
+	 */
+	public SparqlException(String msg,Throwable throwable) {
+		super(msg,throwable);
+		this.msg = msg;
 	}
+
+	public String getErrorMessage()
+	{
+		return this.msg;
+	}
+
+	private static final long serialVersionUID = 1L;
 }
