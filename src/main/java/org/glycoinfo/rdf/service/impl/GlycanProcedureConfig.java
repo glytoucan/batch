@@ -2,6 +2,7 @@ package org.glycoinfo.rdf.service.impl;
 
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.client.MSdbClient;
+import org.glycoinfo.conversion.GlyConvertConfig;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
@@ -23,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(ContributorProcedureConfig.class)
+@Import( {ContributorProcedureConfig.class, GlyConvertConfig.class} )
 public class GlycanProcedureConfig implements GraphConfig {
 	@Bean
 	SaccharideInsertSparql saccharideInsertSparql() {
