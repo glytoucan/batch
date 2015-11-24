@@ -339,8 +339,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			try {
 				se = searchBySequence(sparqlSequence);
 			} catch (ConvertException e) {
-				logger.debug("convertexception seq:>" + sparqlSequence);
-				logger.debug("convertexception msg:>" + e.getMessage());
+				logger.error("convertexception seq:>" + sparqlSequence);
+				logger.error("convertexception msg:>" + e.getMessage());
 				se.setValue(Sequence, CouldNotConvertHeader + e.getMessage());
 			}
 			
@@ -401,7 +401,6 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			}
 			logger.debug("setting from sequence:>" + sparqlentity.getValue(GlycanProcedure.FromSequence) + "< sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence) + "<");
 		} catch (ConvertException e) {
-			e.printStackTrace();
 			logger.error("convert exception processing:>" + sequence + "<");
 			String errorMessage = null;
 			if (e.getMessage() != null && e.getMessage().length() > 0)
@@ -453,6 +452,9 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		addWurcs(sparqlentity);
 		
 		// if adding wurcs is fine, and the original isn't wurcs, then the translation was valid.  So record the original as well.  (in a different graph of course)
+		SparqlEntity glycoctSE = sparqlentity;
+		glycoctSE.setValue(GlycoSequence.Sequence, sparqlentity.getValue(GlycanProcedure.FromSequence));
+		
 		registerGlycoSequence(sparqlentity);
 		
 		return accessionNumber;
@@ -469,6 +471,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		try {
 			wurcs = validateWurcs(wurcs);
 		} catch (WURCSException e) {
+			logger.error("wurcs expception:>" + e.getMessage());
 			throw new ConvertException(e.getMessage(), e);
 		}
 		
@@ -554,8 +557,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		try {
 			se = processor.process(sparqlEntity);
 		} catch (SparqlException | WURCSMassException e) {
-			e.printStackTrace();
-			logger.debug("could not calculate mass");
+			logger.error("could not calculate mass" + e.getMessage());
 			se = new SparqlEntity();
 			se.setValue(MassInsertSparql.Mass, 0);
 			se.setValue(MassInsertSparql.MassLabel, "error calculating mass:>" + e.getMessage() + "<");
@@ -597,6 +599,13 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		return sparqlDAO.query(listAllGlycoSequenceContributorSelectSparql);
 	}
 
+	/**
+	 * 
+	 * Registers into RDF using the Saccharide.PrimaryId for the pid, GlycoSequence.Sequence for the sequence string, and DetectFormat.detect to confirm the format.
+	 * 
+	 * 
+	 * @see org.glycoinfo.rdf.service.GlycanProcedure#registerGlycoSequence(org.glycoinfo.rdf.dao.SparqlEntity)
+	 */
 	@Override
 	public void registerGlycoSequence(SparqlEntity data) throws SparqlException {
 		String sequence = data.getValue(GlycanProcedure.Sequence);
@@ -701,7 +710,6 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 //			setFromSequence(sparqlentity.getValue(GlycanProcedure.FromSequence));
 //			setSequence(sparqlentity.getValue(GlycanProcedure.Sequence));
 		} catch (ConvertException e) {
-			e.printStackTrace();
 			logger.error("convert exception processing:>" + sequence + "<");
 			if (e.getMessage() != null && e.getMessage().length() > 0)
 				errorMessage=e.getMessage();
