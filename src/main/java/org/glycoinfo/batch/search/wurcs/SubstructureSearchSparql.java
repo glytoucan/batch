@@ -80,10 +80,24 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 			t_strSPARQL = "?glycan glytoucan:has_primary_id \"" + limitingId + "\" .\n";
 		}
 
+		WURCSSequence2ExporterSPARQL t_oExport = getExporter(getSparqlEntity().getValue(GlycoSequence.Sequence));
+		
+		t_strSPARQL += t_oExport.getWhere();
+
+		this.where += t_strSPARQL;
+		
+		if (isFilterOutSelf()) {
+			this.where += "?glycan  glytoucan:has_primary_id ?primaryId .\n"
+					+ "FILTER (?primaryId != \"" + getSparqlEntity().getValue(GlycoSequence.AccessionNumber) + "\")";
+		}
+		return where;
+	}
+	
+	WURCSSequence2ExporterSPARQL getExporter(String sequence) throws SparqlException {
 		WURCSImporter t_oImport = new WURCSImporter();
 		WURCSArray t_oWURCS;
 		try {
-			t_oWURCS = t_oImport.extractWURCSArray(getSparqlEntity().getValue(GlycoSequence.Sequence));
+			t_oWURCS = t_oImport.extractWURCSArray(sequence);
 		} catch (WURCSFormatException e) {
 			e.printStackTrace();
 			throw new SparqlException(e);
@@ -97,16 +111,17 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 		WURCSSequence2ExporterSPARQL t_oExport = getExporter();
 		
 		t_oExport.start(t_oSeq);
-		
-		t_strSPARQL += t_oExport.getWhere();
+		return t_oExport;
+	}
 
-		this.where += t_strSPARQL;
-		
-		if (isFilterOutSelf()) {
-			this.where += "?glycan  glytoucan:has_primary_id ?primaryId .\n"
-					+ "FILTER (?primaryId != \"" + getSparqlEntity().getValue(GlycoSequence.AccessionNumber) + "\")";
+	@Override
+	public String getOrderBy() {
+		try {
+			return getExporter(getSparqlEntity().getValue(GlycoSequence.Sequence)).getOrderByString();
+		} catch (SparqlException e) {
+			logger.error(e.getMessage());
+			return super.getOrderBy();
 		}
-		return where;
 	}
 
 	WURCSSequence2ExporterSPARQL getExporter() {
@@ -128,4 +143,6 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 			t_oExport.setSpecifyRootNode(true);
 		return t_oExport;
 	}
+	
+	
 }

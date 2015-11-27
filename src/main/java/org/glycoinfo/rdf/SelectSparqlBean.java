@@ -167,7 +167,7 @@ public class SelectSparqlBean implements SelectSparql, InitializingBean {
 			sparqlbuf.append(where != null ? "WHERE {\n" + where + "} "
 					: " ");
 			// sparqlbuf.append(" RETURN ").append(returnStatement);
-			sparqlbuf.append(getOrderBy() != null ? " ORDER BY " + getOrderBy()
+			sparqlbuf.append(getOrderBy() != null ?  getOrderBy().contains("ORDER BY")? getOrderBy() : " ORDER BY " + getOrderBy()
 					+ " " : " ");
 
 			sparqlbuf.append(getLimit() != null ? " LIMIT " + getLimit() + " "
