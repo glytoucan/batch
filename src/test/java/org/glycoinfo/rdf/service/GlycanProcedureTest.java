@@ -1038,4 +1038,20 @@ LIN
 		}	
 		
 		
+		@Test
+		@Transactional
+		public void testLinearCode() throws SparqlException, ConvertException
+		{
+
+			String sequence = "GNb2(Ab4GNb4)Ma3(Ab4GNb2(Fa3(Ab4)GNb6)Ma6)Mb4GNb4GN";
+			logger.debug("sequence :>" + sequence + "<");
+//			glycanProcedure.setId("G92195EH");
+//			glycanProcedure.setContributorId("5854");
+			String result = glycanProcedure.register(sequence, "254");
+
+			logger.debug("result :>" + result + "<");
+			Assert.assertNotEquals(0, result.trim().length());
+		}	
+		
+		
 }
