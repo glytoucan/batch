@@ -2,8 +2,10 @@ package org.glycoinfo.batch.search;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.rdf.SparqlException;
@@ -505,8 +507,11 @@ public class SearchTest {
 			@Test
 			@Transactional
 			public void testRegisterAndSelect() throws SparqlException {
-				String sequence = "RES\\n"
-						+ "1b:x-dman-HEX-1:5";
+				String sequence = "RES\n"
+						+ "1b:x-dglc-HEX-1:5\n"
+						+ "2b:x-dman-HEX-1:5\n"
+						+ "LIN\n"
+						+ "1:1o(-1+1)2d";
 				
 				logger.debug("sequence:>" + sequence + "<");
 //				glycanProcedure.setSequence(sequence);
@@ -552,6 +557,15 @@ public class SearchTest {
 				List<SparqlEntity> list = glycanProcedure.substructureSearch(sequence, "1", "0");
 				SparqlEntity resultSE = list.get(0);
 				Assert.assertNotNull(resultSE.getValue(SubstructureSearchSparql.SubstructureSearchSaccharideURI));
+			
+				boolean foundit=false;
+				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+					SparqlEntity sparqlEntity = (SparqlEntity) iterator.next();
+					String resultID = sparqlEntity.getValue(SubstructureSearchSparql.SubstructureSearchSaccharideURI);
+					if (StringUtils.isNotBlank(resultID) && resultID.contains(id))
+						foundit=true;
+				}
+				Assert.assertTrue(foundit);
 			}
 			
 			@Test
