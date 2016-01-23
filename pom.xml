@@ -325,8 +325,21 @@
   <project.scm.url>https://github.com/glytoucan/batch</project.scm.url>
   <cobertura.base.package>org.glycoinfo.batch</cobertura.base.package>
   <inceptionYear>2014</inceptionYear>
-  <repository.domain>nexus.glycoinfo.org/content/sites/project/</repository.domain>
+  <repository.domain>nexus.glycoinfo.org/content/sites/project/glytoucan/batch</repository.domain>
   <repository.user>glytoucan</repository.user>
   <repository.name>batch</repository.name>
 </properties>
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <!-- Import dependency management from Spring Boot -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-dependencies</artifactId>
+      <version>1.2.5.RELEASE</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+<url>http://${repository.domain}/${repository.user}/${repository.name}/</url>
 </project>

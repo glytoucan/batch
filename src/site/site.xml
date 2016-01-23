@@ -9,6 +9,9 @@
     <fluidoSkin>
       <topBarEnabled>true</topBarEnabled>
       <sideBarEnabled>true</sideBarEnabled>
+      <googleSearch>
+        <sitesearch>http://nexus.glycoinfo.org/content/sites/project/glytoucan/batch</sitesearch>
+      </googleSearch>
     </fluidoSkin>
   </custom>
   <body>
