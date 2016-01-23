@@ -270,7 +270,7 @@
 			<url>http://nexus.glycoinfo.org/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>glycoinfo</id>
+			<id>glycoinfo-snapshots</id>
 			<name>Internal Release Snapshots</name>
 			<url>http://nexus.glycoinfo.org/content/repositories/snapshots/</url>
 			<!-- <site> <id>website</id> <url>file:///var/lib/tomcat7/webapps/</url>
