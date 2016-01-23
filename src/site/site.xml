@@ -16,8 +16,11 @@
     <body>
         <menu ref="reports" inherit="top"/>
         <menu ref="modules"/>
-        <menu name="Markdown Documentation">
-            <item href="overview.html" name="Overview"/>
+        <menu name="GlyTouCan Links">
+            <item href="http://glytoucan.org" name="The International Glycan Repository"/>
+            <item href="http://code.glytoucan.org" name="Manual And Code"/>
+            <item href="http://code.glytoucan.org/batch" name="Batch ETL and SparqlBeans"/>
+            <item href="http://www.wurcs-wg.org" name="WURCS"/>
         </menu>
     </body>
 </project>
