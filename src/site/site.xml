@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="GlyTouCan ETL Batch">
-
-    <skin>
-        <groupId>org.apache.maven.skins</groupId>
-        <artifactId>maven-fluido-skin</artifactId>
-        <version>1.4</version>
-    </skin>
-    <custom>
-        <fluidoSkin>
-            <topBarEnabled>true</topBarEnabled>
-            <sideBarEnabled>true</sideBarEnabled>
-        </fluidoSkin>
-    </custom>
-    <body>
-        <menu ref="reports" inherit="top"/>
-        <menu ref="modules"/>
-        <menu name="GlyTouCan Links">
-            <item href="http://glytoucan.org" name="The International Glycan Repository"/>
-            <item href="http://code.glytoucan.org" name="Manual And Code"/>
-            <item href="http://code.glytoucan.org/batch" name="Batch ETL and SparqlBeans"/>
-            <item href="http://www.wurcs-wg.org" name="WURCS"/>
-        </menu>
-    </body>
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.4</version>
+  </skin>
+  <custom>
+    <fluidoSkin>
+      <topBarEnabled>true</topBarEnabled>
+      <sideBarEnabled>true</sideBarEnabled>
+    </fluidoSkin>
+  </custom>
+  <body>
+    <menu ref="reports" inherit="top"/>
+    <menu ref="modules"/>
+    <menu name="GlyTouCan Links">
+      <item href="http://glytoucan.org" name="The International Glycan Repository"/>
+      <item href="http://code.glytoucan.org" name="Manual And Code"/>
+      <item href="http://code.glytoucan.org/batch" name="Batch ETL and SparqlBeans"/>
+      <item href="http://www.wurcs-wg.org" name="WURCS"/>
+    </menu>
+  </body>
 </project>
