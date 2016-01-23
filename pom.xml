@@ -36,7 +36,7 @@
 			<artifactId>spring-boot-starter-log4j</artifactId>
 		</dependency>
 
-		<!-- <dependency> <groupId>commons-dbcp</groupId> <artifactId>commons-dbcp</artifactId> 
+		<!-- <dependency> <groupId>commons-dbcp</groupId> <artifactId>commons-dbcp</artifactId>
 			</dependency> -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -91,7 +91,7 @@
 			<artifactId>sesame-queryalgebra-evaluation</artifactId>
 			<version>2.8.0-beta2</version>
 		</dependency>
-		<!-- 
+		<!--
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
@@ -207,7 +207,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-		
+
 <!-- 		<dependency> -->
 <!--   <groupId>org.apache.velocity</groupId> -->
 <!--   <artifactId>velocity</artifactId> -->
@@ -273,9 +273,13 @@
 			<id>glycoinfo</id>
 			<name>Internal Release Snapshots</name>
 			<url>http://nexus.glycoinfo.org/content/repositories/snapshots/</url>
-			<!-- <site> <id>website</id> <url>file:///var/lib/tomcat7/webapps/</url> 
+			<!-- <site> <id>website</id> <url>file:///var/lib/tomcat7/webapps/</url>
 				</site> -->
 		</snapshotRepository>
+		<site>
+      <id>glycoinfo-projects</id>
+      <url>dav:http://nexus.glycoinfo.org/content/sites/project/glytoucan/batch</url>
+    </site>
 	</distributionManagement>
 
 	<profiles>
@@ -323,4 +327,16 @@
 			</properties>
 		</profile>
 	</profiles>
+
+	<properties>
+		<changelog.fileUri>${changelog.github.fileUri}</changelog.fileUri>
+		<changelog.revision.fileUri>${changelog.revision.github.fileUri}</changelog.revision.fileUri>
+		<project.scm.url>https://github.com/glytoucan/batch</project.scm.url>
+		<cobertura.base.package>org.glycoinfo.batch</cobertura.base.package>
+		<inceptionYear>2014</inceptionYear>
+		<repository.domain>nexus.glycoinfo.org/content/sites/project/</repository.domain>
+		<repository.user>glytoucan</repository.user>
+		<repository.name>batch</repository.name>
+	</properties>
+
 </project>
