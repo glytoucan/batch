@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="GlyTouCan ETL Batch">
+  <googleAnalyticsAccountId>UA-54566807-1</googleAnalyticsAccountId>
   <skin>
     <groupId>org.apache.maven.skins</groupId>
     <artifactId>maven-fluido-skin</artifactId>
