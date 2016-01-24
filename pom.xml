@@ -256,15 +256,15 @@
     <id>glycoinfo-snapshots</id>
     <name>Internal Release Snapshots</name>
     <url>http://nexus.glycoinfo.org/content/repositories/snapshots/</url>
-		<site>
-			<id>glycoinfo-projects</id>
-			<url>dav:http://nexus.glycoinfo.org/content/sites/project/glytoucan/batch/</url>
-		</site>
-</snapshotRepository>
-<site>
-  <id>glycoinfo-projects</id>
-  <url>dav:http://nexus.glycoinfo.org/content/sites/project/glytoucan/batch</url>
-</site>
+    <site>
+      <id>glycoinfo-projects</id>
+      <url>dav:http://nexus.glycoinfo.org/content/sites/project/glytoucan/batch/</url>
+    </site>
+  </snapshotRepository>
+  <site>
+    <id>glycoinfo-projects</id>
+    <url>dav:http://nexus.glycoinfo.org/content/sites/project/glytoucan/batch</url>
+  </site>
 </distributionManagement>
 <profiles>
   <profile>
@@ -323,6 +323,7 @@
   <repository.domain>nexus.glycoinfo.org/content/sites/project/glytoucan/batch</repository.domain>
   <repository.user>glytoucan</repository.user>
   <repository.name>batch</repository.name>
+  <googleAnalyticsAccountId>UA-54566807-1</googleAnalyticsAccountId>
 </properties>
 <dependencyManagement>
   <dependencies>
