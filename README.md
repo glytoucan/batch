@@ -2,7 +2,9 @@
 batch processing for the glytoucan project.  This utilizes the [spring batch framework](http://projects.spring.io/spring-batch/) for ETL processing of RDF.
 
 # Background
-Recommended to at least read through the spring batch quick start tutorial.  A concept called SparqlBeans are also used which are simply classes that store a sparql string, with other utilities provided as a layer between the application logic and the RDF triplestore.  By recording (or "objectifying") the SPARQL it is easier to see other examples of related RDF classes and possibly re-use/inherit for other means.  The SPARQLs used in this package are specific for the glytoucan project.
+Recommended to at least read through the spring batch quick start tutorial.  A concept called SparqlBeans are also used which are simply classes that store a sparql string, with other utilities provided as a layer between the application logic and the RDF triplestore.  By recording (or "objectifying") the SPARQL it is easier to see other examples of related RDF classes and possibly re-use/inherit for other means.  The SPARQLs used in this package are specific for the [glytoucan](http://glytoucan.org) project.
+
+The separation of sparql from object mapping methods is to prevent issues that may arise from the third-party mapping methods.  This provides flexibility and freedom to use specialized sparql even though it is a standardized language.  The framework should not cause roadblocks between what the application developer needs versus the data store.  It should also make full use of sparql standardization by having the ability to completely change the underlying RDF data store vendor.
 
 # What is it?
 The SparqlItemReader and SparqlItemWriter are prepared to provide reading and writing to a triplestore using the sparql language.
