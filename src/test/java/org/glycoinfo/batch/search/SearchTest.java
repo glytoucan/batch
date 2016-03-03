@@ -554,7 +554,7 @@ public class SearchTest {
 				logger.debug(se.toString());
 				
 				sequence = se.getValue(GlycoSequence.Sequence);
-				List<SparqlEntity> list = glycanProcedure.substructureSearch(sequence, "1", "0");
+				List<SparqlEntity> list = glycanProcedure.substructureSearch(sequence, "100", "0");
 				SparqlEntity resultSE = list.get(0);
 				Assert.assertNotNull(resultSE.getValue(SubstructureSearchSparql.SubstructureSearchSaccharideURI));
 			

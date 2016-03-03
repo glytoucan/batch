@@ -61,7 +61,6 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 		this.select = "DISTINCT ?" + SubstructureSearchSaccharideURI;
 	}
 
-	
 	@Override
 	public String getFrom() {
 		return "FROM " + getGraphms() + "\n"
@@ -143,6 +142,4 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 			t_oExport.setSpecifyRootNode(true);
 		return t_oExport;
 	}
-	
-	
 }
