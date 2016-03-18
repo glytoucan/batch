@@ -1,6 +1,6 @@
 package org.glycoinfo.batch.glyconvert;
 
-import org.glycoinfo.conversion.GlyConvert;
+import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.springframework.beans.factory.InitializingBean;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.glycoinfo.WURCSFramework.util.WURCSException;
-import org.glycoinfo.conversion.error.ConvertException;
+import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;

@@ -2,7 +2,7 @@ package org.glycoinfo.rdf.service.impl;
 
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.client.MSdbClient;
-import org.glycoinfo.conversion.GlyConvertConfig;
+import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;

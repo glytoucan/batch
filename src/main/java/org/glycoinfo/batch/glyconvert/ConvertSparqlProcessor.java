@@ -5,8 +5,8 @@ import java.net.URLEncoder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.conversion.GlyConvert;
-import org.glycoinfo.conversion.error.ConvertException;
+import org.glycoinfo.convert.GlyConvert;
+import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;

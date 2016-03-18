@@ -1,6 +1,6 @@
 package org.glycoinfo.batch.glyconvert;
 
-import org.glycoinfo.conversion.GlyConvert;
+import org.glycoinfo.convert.GlyConvert;
 
 /**
  * 
