@@ -2,6 +2,7 @@ package org.glycoinfo.rdf.service;
 
 import java.util.List;
 
+import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -56,7 +57,7 @@ public class UserProcedureTest {
 	@Transactional
 	public void testUser() throws SparqlException {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(SelectScint.PRIMARY_KEY, "person789");
+		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
 		se.setValue("email", "person789@person.com");
 		se.setValue("givenName", "person");
 		se.setValue("familyName", "789");
@@ -66,11 +67,11 @@ public class UserProcedureTest {
 		se.setValue("member", "");
 		se.setValue("contributor", "");
 		se.remove("verifiedEmail");
-		se.setValue(SelectScint.NO_DOMAINS, SelectScint.TRUE);
+		se.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
 
 		SelectScint personScint = selectScintPerson;
 		personScint.setSparqlEntity(se);
-		List<SparqlEntity> results = sparqlDAO.query(personScint);
+		List<SparqlEntity> results = sparqlDAO.query(personScint.getSparqlBean());
 		
 		Assert.assertFalse(results.size() == 0);
 		for (SparqlEntity sparqlEntity : results) {
@@ -91,10 +92,10 @@ public class UserProcedureTest {
 		userProcedure.add(se);
 		se.setValue("member", null);
 		se.remove("verifiedEmail");
-		se.setValue(SelectScint.NO_DOMAINS, SelectScint.TRUE);
+		se.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
 		
 		selectScintPerson.setSparqlEntity(se);
-		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson);
+		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		
 		Assert.assertFalse(results.size() == 0);
 		for (SparqlEntity sparqlEntity : results) {
@@ -125,7 +126,7 @@ public class UserProcedureTest {
 	@Transactional
 	public void testJoinMembership() throws SparqlException {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(SelectScint.PRIMARY_KEY, "person789");
+		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
 		se.setValue(UserProcedure.EMAIL, "person789@person.com");
 		se.setValue(UserProcedure.GIVEN_NAME, "testperson789given");
 		se.setValue(UserProcedure.FAMILY_NAME, "testperson789family");
@@ -146,7 +147,7 @@ public class UserProcedureTest {
 	@Transactional
 	public void testJoinMembershipTwice() throws SparqlException {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(SelectScint.PRIMARY_KEY, "person789");
+		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
 		se.setValue(UserProcedure.EMAIL, "person789@person.com");
 		se.setValue(UserProcedure.GIVEN_NAME, "testperson789given");
 		se.setValue(UserProcedure.FAMILY_NAME, "testperson789family");
@@ -160,7 +161,12 @@ public class UserProcedureTest {
 		logger.debug(se.getData().toString());
 		Assert.assertNotNull(se.getValue(UserProcedure.MEMBER_OF));
 		Assert.assertNotNull(se.getValue(UserProcedure.MEMBERSHIP_NUMBER));
-		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String results2 = userProcedure.generateHash("person789");
 		Assert.assertNotNull(results2);
 		Assert.assertNotEquals(results, results2);
@@ -175,7 +181,7 @@ public class UserProcedureTest {
 	@Transactional
 	public void testCheck() throws SparqlException {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(SelectScint.PRIMARY_KEY, "person789");
+		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
 		se.setValue(UserProcedure.EMAIL, "person789@person.com");
 		se.setValue(UserProcedure.GIVEN_NAME, "testperson789given");
 		se.setValue(UserProcedure.FAMILY_NAME, "testperson789family");

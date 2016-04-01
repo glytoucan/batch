@@ -53,7 +53,7 @@ public class DeleteScint extends DeleteSparqlBean implements UriProvider {
 				domains = classHandler.getDomains();
 	
 				for (String column : columns) {
-					if (column.equals(SelectSparql.PRIMARY_KEY) || column.equals(SelectSparql.NO_DOMAINS))
+					if (column.equals(SelectSparql.PRIMARY_KEY) || column.equals(Scintillate.NO_DOMAINS))
 						continue;
 					if (!domains.contains(column)) {
 						// TODO: this doesnt take into consideration subClass relationships

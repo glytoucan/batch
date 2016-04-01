@@ -2,6 +2,7 @@ package org.glycoinfo.rdf.scint;
 
 import java.util.List;
 
+import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -87,14 +88,14 @@ public class ScintTest {
 	public void testDeleteProgramMembership() throws SparqlException {
 		
 		SparqlEntity sparqlEntityPerson = new SparqlEntity("TestID123");
-		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectScint.TRUE);
+		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
 		
 		insertScintPerson.setSparqlEntity(sparqlEntityPerson);
 		
 		sparqlDAO.insert(insertScintPerson);
 
 		// ProgramMembership entity
-		SparqlEntity sparqlentityProgramMembership = new SparqlEntity(UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectScint.PRIMARY_KEY));
+		SparqlEntity sparqlentityProgramMembership = new SparqlEntity(UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
 		sparqlentityProgramMembership.setValue(UserProcedure.PROGRAM_NAME, UserProcedure.GLYTOUCAN_PROGRAM_TITLE);
 		
 		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, "123");
@@ -106,10 +107,10 @@ public class ScintTest {
 		
 		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, null);
 		selectScintProgramMembership.setSparqlEntity(sparqlentityProgramMembership);
-		List<SparqlEntity> list = sparqlDAO.query(selectScintProgramMembership);
+		List<SparqlEntity> list = sparqlDAO.query(selectScintProgramMembership.getSparqlBean());
 		
 		SparqlEntity se = list.iterator().next();
-		se.setValue(SelectScint.PRIMARY_KEY, UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectScint.PRIMARY_KEY));
+		se.setValue(SelectSparql.PRIMARY_KEY, UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
 		// delete the previous Program Membership
 		deleteScintProgramMembership.setSparqlEntity(se);	
 		sparqlDAO.delete(deleteScintProgramMembership);

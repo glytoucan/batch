@@ -13,47 +13,47 @@ import org.glycoinfo.rdf.schema.SchemaSparqlFormatter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SelectScint extends SelectSparqlBean implements UriProvider {
+public class SelectScint extends Scintillate implements UriProvider {
+
+	SelectSparqlBean sparqlBean;
 	
-	ClassHandler classHandler;
-	
-	public ClassHandler getClassHandler() {
-		return classHandler;
+	public SelectSparqlBean getSparqlBean() throws SparqlException {
+		update();
+		return sparqlBean;
 	}
 
-	public void setClassHandler(ClassHandler classHandler) {
-		this.classHandler = classHandler;
+	public void setSparqlBean(SelectSparqlBean sparqlBean) {
+		this.sparqlBean = sparqlBean;
 	}
 
-	public SelectScint() {
-		super.limit = "10";
+	public SelectScint() throws SparqlException {
+		this.sparqlBean = new SelectSparqlBean();
+		this.sparqlBean.setLimit("10");
 	}
 	
-	void init() {
-		this.prefix = SchemaSparqlFormatter.getPrefixDefinition(getClassHandler());
+	public SelectScint(String prefix, String prefixIri, String className) throws SparqlException {
+		super(prefix, prefixIri, className);
+		this.sparqlBean = new SelectSparqlBean();
+	}
+	
+	void init() throws SparqlException {
 		update();
 	}	
 
-	@Override
-	public void setSparqlEntity(SparqlEntity sparqlentity) {
-		super.setSparqlEntity(sparqlentity);
-		init();
-	}
-	
-	public void update() {
+	public void update() throws SparqlException {
+		this.sparqlBean.setPrefix(SchemaSparqlFormatter.getPrefixDefinition(this));
 		
-		this.select="?" + URI + " ";
-		this.where = "";
+		this.sparqlBean.setSelect("?" + SelectSparql.URI + " ");
+		this.sparqlBean.setWhere("");
 		if (null != getSparqlEntity()) {
 			if (null != getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY))
-				this.where = SchemaSparqlFormatter.getAClassWhere(SchemaSparqlFormatter.getUri(classHandler, getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY)), classHandler) + " \n";
+				this.sparqlBean.setWhere(SchemaSparqlFormatter.getAClassWhere(SchemaSparqlFormatter.getUri(this, getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY)), this) + " \n");
 			
-
 			Set<String> columns = getSparqlEntity().getColumns();
 
 			List<String> domains = null;
 			try {
-				domains = classHandler.getDomains();
+				domains = getDomains();
 //				if (!domains.contains(columns)) {
 //					logger.warn("not all columns contained in domains");
 //				} doesnt work since columns may not be full uri
@@ -62,27 +62,27 @@ public class SelectScint extends SelectSparqlBean implements UriProvider {
 			}
 
 			for (String column: columns) {
-				if (column.equals(SelectSparql.PRIMARY_KEY) || column.equals(SelectSparql.NO_DOMAINS))
+				if (column.equals(SelectSparql.PRIMARY_KEY) || column.equals(NO_DOMAINS))
 					continue;
 				// add any columns requested to the select line
-				this.select += "?" + column + " ";
+				this.sparqlBean.setSelect(this.sparqlBean.getSelect() + "?" + column + " ");
 				// finding with primary key is very easy, simply where with primary + type
 				if (null != getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY)) {
-					this.where += SchemaSparqlFormatter.getDomainWhere(SchemaSparqlFormatter.getUri(classHandler, getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY)), classHandler, column) + " \n";
+					this.sparqlBean.setWhere(this.sparqlBean.getWhere() + SchemaSparqlFormatter.getDomainWhere(SchemaSparqlFormatter.getUri(this, getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY)), this, column) + " \n");
 //							+ SchemaSparqlFormatter.getDomainWhere("?uri", classHandler, column) + " \n";
 				} else {
 					// otherwise construct the where itself, select ?column where ?a column "value" and ignore primary key
 					if (StringUtils.isNotBlank(getSparqlEntity().getValue(column) )) {
-						this.where += "?" + URI + " " + classHandler.getPrefix() + ":" + column +  " ?" + column +" .\n";
+						this.sparqlBean.setWhere("?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " ?" + column +" .\n");
 						if (getSparqlEntity().getObjectValue(column) instanceof UriProvider)
-							this.where += "?" + URI + " " + classHandler.getPrefix() + ":" + column +  ((UriProvider)getSparqlEntity().getObjectValue(column)).getUri() + " .\n";
+							this.sparqlBean.setWhere("?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " " + ((UriProvider)getSparqlEntity().getObjectValue(column)).getUri() + " .\n");
 						else
-							this.where += "?" + URI + " " + classHandler.getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n";
+							this.sparqlBean.setWhere("?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n");
 					} else {
 						if (column.contains(":"))
-							this.where += "?" + URI + " " + column +  " ?" + column +" .\n";
+							this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "?" + SelectSparql.URI + " " + column +  " ?" + column +" .\n");
 						else
-							this.where += "?" + URI + " " + classHandler.getPrefix() + ":" + column +  " ?" + column +" .\n";
+							this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " ?" + column +" .\n");
 					}
 				}
 			}
@@ -105,36 +105,41 @@ WHERE {
     ]  .
 }
 			 */
-			if (!columns.contains(SelectSparql.NO_DOMAINS)) {
+			if (!columns.contains(NO_DOMAINS)) {
 			for(String domain: domains) {
-				this.select += "?" + domain + " \n";
+				this.sparqlBean.setSelect(this.sparqlBean.getSelect() + "?" + domain + " \n");
 				if (columns.contains(SelectSparql.PRIMARY_KEY)) {
 					// if we have the primary key, uri should be primary key address.
-					this.where += "OPTIONAL { " + getUri() + " " + classHandler.getPrefix() + ":" + domain +  " ?" + domain + " . } \n";
+					this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "OPTIONAL { " + getUri() + " " + getPrefix() + ":" + domain +  " ?" + domain + " . } \n");
 				} else {
-					this.where += "OPTIONAL { ?" + URI + " " + classHandler.getPrefix() + ":" + domain +  " ?" + domain + " . } \n";
+					this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "OPTIONAL { ?" + SelectSparql.URI + " " + getPrefix() + ":" + domain +  " ?" + domain + " . } \n");
 				}
 			}
 			}
 		}
 	}
 
-	@Override
-	public String getUri() {
-//		if (null == getSparqlEntity() || null == getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY))
-//			throw new SparqlException("need at least sparqlentity or URI");
-		return SchemaSparqlFormatter.getUri(classHandler, getSparqlEntity().getObjectValue(SelectSparql.PRIMARY_KEY));
+	public SparqlEntity getSparqlEntity() {
+		return sparqlBean.getSparqlEntity();
 	}
 	
+	public void setSparqlEntity(SparqlEntity se) {
+		this.sparqlBean.setSparqlEntity(se);
+	}
+
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		// this needs to be here...
+	public String getUri() throws SparqlException {
+		if (null == getSparqlEntity() && null == getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY) && null == getSparqlEntity().getValue(SelectSparql.URI))
+			throw new SparqlException("need at least sparqlentity or URI");
+		if (null != getSparqlEntity().getValue(SelectSparql.URI))
+			return "<" + getSparqlEntity().getValue(SelectSparql.URI) + ">";
+		return SchemaSparqlFormatter.getUri(this, getSparqlEntity().getObjectValue(SelectSparql.PRIMARY_KEY));
 	}
 	
 	public String getPrimaryKey() throws SparqlException {
 		if (null == getSparqlEntity() || null == getSparqlEntity().getValue(SelectSparql.URI))
 			throw new SparqlException("need at least sparqlentity or URI");
 
-		return SchemaSparqlFormatter.getPrimaryKey(classHandler, getSparqlEntity().getValue(SelectSparql.URI));
+		return SchemaSparqlFormatter.getPrimaryKey(this, getSparqlEntity().getValue(SelectSparql.URI));
 	}
 }

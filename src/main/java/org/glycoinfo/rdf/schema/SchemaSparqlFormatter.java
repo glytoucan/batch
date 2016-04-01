@@ -7,6 +7,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.UriProvider;
 import org.glycoinfo.rdf.scint.ClassHandler;
 
@@ -51,7 +52,7 @@ public class SchemaSparqlFormatter {
 		return getPrefixClassName(classHandler) + " " + classHandler.getPrefix() + ":" + domain + " \"" + data + "\" .\n";
 	}
 	
-	public static String getInsert(ClassHandler classHandler, String domain, Object data) {
+	public static String getInsert(ClassHandler classHandler, String domain, Object data) throws SparqlException {
 		if (data instanceof String)
 			return getInsert(classHandler, domain, (String)data);
 		if (data instanceof UriProvider) {
@@ -65,7 +66,7 @@ public class SchemaSparqlFormatter {
 		return uri + " " + classHandler.getPrefix() + ":" + domain + " \"" + data + "\" .\n";
 	}
 	
-	public static String getInsert(String uri, ClassHandler classHandler, String domain, Object data) {
+	public static String getInsert(String uri, ClassHandler classHandler, String domain, Object data) throws SparqlException {
 		if (data instanceof String)
 			return getInsert(uri, classHandler, domain, (String)data);
 		if (data instanceof UriProvider) {

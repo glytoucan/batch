@@ -26,11 +26,11 @@ public class ClassHandler {
 	// domains and ranges are the properties and class names in a list.
 	List<String> domains, ranges;
 
-	private String prefix;
+	protected String prefix;
 
-	private String prefixIri;
+	protected String prefixIri;
 
-	private String className;
+	protected String className;
 	
 	private String uriBase;
 	

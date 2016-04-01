@@ -47,7 +47,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public interface SelectSparql {
 	
 	public final static String PRIMARY_KEY = "primary_key";
-	public final static String NO_DOMAINS = "no_domains";
+
 	public final static String URI = "uri";
 	public final static String TRUE = "1";
 	public final static String FALSE = "0";
