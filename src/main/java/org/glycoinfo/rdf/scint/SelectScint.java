@@ -22,9 +22,6 @@ public class SelectScint extends Scintillate implements UriProvider {
 		return sparqlBean;
 	}
 
-	public void setSparqlBean(SelectSparqlBean sparqlBean) {
-		this.sparqlBean = sparqlBean;
-	}
 
 	public SelectScint() throws SparqlException {
 		this.sparqlBean = new SelectSparqlBean();

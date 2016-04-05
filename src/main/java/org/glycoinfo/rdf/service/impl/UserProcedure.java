@@ -166,9 +166,9 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
 		sparqlentityPerson.setValue(CONTRIBUTOR_ID, contributorId);
 		
-		insertScintPerson.setSparqlEntity(sparqlentityPerson);
+		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlentityPerson);
 
-		sparqlDAO.insert(insertScintPerson);
+		sparqlDAO.insert(insertScintPerson.getSparqlBean());
 		
 		// RegisterAction entity
 		// UID is userid + register class
@@ -197,9 +197,9 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		sparqlentityRegisterAction.setValue("participant", personSelect);
 
 		// set the sparqlentity for the registeraction. 
-		insertScintRegisterAction.setSparqlEntity(sparqlentityRegisterAction);
+		insertScintRegisterAction.getSparqlBean().setSparqlEntity(sparqlentityRegisterAction);
 		
-		sparqlDAO.insert(insertScintRegisterAction);
+		sparqlDAO.insert(insertScintRegisterAction.getSparqlBean());
 		
 		String name = userSparqlEntity.getValue(GIVEN_NAME);
 
@@ -225,8 +225,8 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		if (null == person || !person.iterator().hasNext())
 			throw new SparqlException("id >" + id + "< doesnt exist");
 		
-		insertScintPerson.setClassHandler(getPersonClassHandler());
-		insertScintPerson.setSparqlEntity(sparqlEntityPerson);
+//		insertScintPerson.setClassHandler(getPersonClassHandler());
+		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlEntityPerson);
 
 		// ProgramMembership entity
 		SparqlEntity sparqlentityProgramMembership = new SparqlEntity(GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
@@ -257,14 +257,14 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		sparqlentityProgramMembership.setValue(MEMBERSHIP_NUMBER, NumberGenerator.generateHash(sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY) + sparqlentityProgramMembership.getValue("programName") + sparqlentityProgramMembership.getValue(SelectSparql.PRIMARY_KEY) + "SEED", dateVal));
 
 		// set the sparqlentity for the registeraction. 
-		insertScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
-		insertScintProgramMembership.setSparqlEntity(sparqlentityProgramMembership);
-		logger.debug(insertScintProgramMembership.getSparql());
-		sparqlDAO.insert(insertScintProgramMembership);
+//		insertScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
+		insertScintProgramMembership.getSparqlBean().setSparqlEntity(sparqlentityProgramMembership);
+		logger.debug(insertScintProgramMembership.getSparqlBean().getSparql());
+		sparqlDAO.insert(insertScintProgramMembership.getSparqlBean());
 		
 		sparqlEntityPerson.setValue(MEMBER_OF, insertScintProgramMembership);
-		insertScintPerson.setSparqlEntity(sparqlEntityPerson);
-		sparqlDAO.insert(insertScintPerson);
+		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlEntityPerson);
+		sparqlDAO.insert(insertScintPerson.getSparqlBean());
 
 		return sparqlentityProgramMembership.getValue(MEMBERSHIP_NUMBER);
 	}

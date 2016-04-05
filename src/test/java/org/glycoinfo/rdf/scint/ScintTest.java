@@ -90,9 +90,9 @@ public class ScintTest {
 		SparqlEntity sparqlEntityPerson = new SparqlEntity("TestID123");
 		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
 		
-		insertScintPerson.setSparqlEntity(sparqlEntityPerson);
+		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlEntityPerson);
 		
-		sparqlDAO.insert(insertScintPerson);
+		sparqlDAO.insert(insertScintPerson.getSparqlBean());
 
 		// ProgramMembership entity
 		SparqlEntity sparqlentityProgramMembership = new SparqlEntity(UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
@@ -101,9 +101,9 @@ public class ScintTest {
 		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, "123");
 		sparqlentityProgramMembership.setValue(UserProcedure.MEMBER, insertScintPerson);
 		
-		insertScintProgramMembership.setSparqlEntity(sparqlentityProgramMembership);
+		insertScintProgramMembership.getSparqlBean().setSparqlEntity(sparqlentityProgramMembership);
 		
-		sparqlDAO.insert(insertScintProgramMembership);
+		sparqlDAO.insert(insertScintProgramMembership.getSparqlBean());
 		
 		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, null);
 		selectScintProgramMembership.setSparqlEntity(sparqlentityProgramMembership);

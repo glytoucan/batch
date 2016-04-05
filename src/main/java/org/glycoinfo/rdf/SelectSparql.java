@@ -2,9 +2,6 @@ package org.glycoinfo.rdf;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.glycoinfo.rdf.dao.SparqlEntity;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -44,36 +41,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @XmlRootElement (name="select-sparql")
-public interface SelectSparql {
-	
-	public final static String PRIMARY_KEY = "primary_key";
-
-	public final static String URI = "uri";
-	public final static String TRUE = "1";
-	public final static String FALSE = "0";
-	
+public interface SelectSparql extends Sparql {
 	@JsonProperty(value="define")
 	public String getDefine();
 	
 	public void setDefine(String define);
-
-	/**
-	 * 
-	 * The prefix used for all sparql.
-	 * 
-	 * @return
-	 */
-	@JsonProperty(value="prefix")
-	public String getPrefix();
-
-	/**
-	 * 
-	 * Setting the prefix.
-	 * 
-	 * @param prefix
-	 */
-	public void setPrefix(String prefix);
-
+	
 	/**
 	 * 
 	 * Retrieve the initial select usually used in the reader and or processor.
@@ -93,21 +66,20 @@ public interface SelectSparql {
 
 	/**
 	 * 
-	 * Retrieve the where clause.  Note the variables must match those in the getSelect method.
+	 * Retrieve the order by used in the original select.  If this is null it is ignored.
 	 * 
 	 * @return
-	 * @throws SparqlException 
 	 */
-	@JsonProperty(value="where")
-	public String getWhere() throws SparqlException;
+	@JsonProperty(value="orderby")
+	public String getOrderBy();
 
 	/**
 	 * 
-	 * Set the where clause.
+	 * Set the order by.
 	 * 
-	 * @param where
+	 * @param orderByStatement
 	 */
-	void setWhere(String where);
+	public void setOrderBy(String orderByStatement);
 
 	/**
 	 * 
@@ -124,25 +96,8 @@ public interface SelectSparql {
 	 * 
 	 * @param graph
 	 */
-	public void setFrom(String graph);
+	public void setFrom(String graph);	
 	
-	/**
-	 * 
-	 * Retrieve the order by used in the original select.  If this is null it is ignored.
-	 * 
-	 * @return
-	 */
-	@JsonProperty(value="orderby")
-	public String getOrderBy();
-
-	/**
-	 * 
-	 * Set the order by.
-	 * 
-	 * @param orderByStatement
-	 */
-	public void setOrderBy(String orderByStatement);
-
 	/**
 	 * 
 	 * Retrieve the Group by used in the original select.  If this is null it is ignored.
@@ -191,35 +146,4 @@ public interface SelectSparql {
 	public String getOffset();
 	
 	public void setOffset(String offset);
-
-	public void setSparql(String sparql);
-	
-	/**
-	 * 
-	 * Retrieve the overall sparql constructed from all of the parts above.
-	 * 
-	 * @return
-	 * @throws SparqlException 
-	 */
-	@JsonProperty(value="sparql")
-	public String getSparql() throws SparqlException;
-	
-
-	/**
-	 * 
-	 * The sparqlentity is a simple Map where "value" can be retrieved based on a key.  This is mainly to represent the results of a SparqlQuery, but can be any kind of data Map.
-	 * The primary use of this is to enable dynamic queries based on the data stored in the SparqlEntity. 
-	 * 
-	 */
-	public void setSparqlEntity(SparqlEntity sparqlentity);
-
-	/**
-	 * 
-	 * See @setSparqlEntity above
-	 * 
-	 * @return SparqlEntity the current data stored and used to generate the query.
-	 */
-	@JsonIgnore
-	public SparqlEntity getSparqlEntity();
-
 }

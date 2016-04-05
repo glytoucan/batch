@@ -81,22 +81,24 @@ public class GlycanProcedureTest {
 
 	@Bean(name = "insertscintperson")
 	InsertScint getInsertPersonScint() throws SparqlException {
-		InsertScint insert = new InsertScint("http://rdf.glytoucan.org/users");
-		insert.setClassHandler(getSelectPersonScint());
+		InsertScint insert = new InsertScint("schema", "http://schema.org/", "Person");
+		insert.getSparqlBean().setGraph("http://rdf.glytoucan.org/users");
+//		insert.setClassHandler(getSelectPersonScint());
 		return insert;
 	}
 	
-//	@Bean(name = "selectscintregisteraction")
-//	SelectScint getSelectRegisterActionScint() throws SparqlException {
-//		SelectScint select = new SelectScint();
+	@Bean(name = "selectscintregisteraction")
+	SelectScint getSelectRegisterActionScint() throws SparqlException {
+		SelectScint select = new SelectScint("schema", "http://schema.org/", "RegisterAction");
 //		select.setClassHandler(getRegisterActionClassHandler());
-//		return select;
-//	}
+		return select;
+	}
 
 	@Bean(name = "insertscintregisteraction")
 	InsertScint getInsertRegisterActionScint() throws SparqlException {
-		InsertScint insert = new InsertScint("http://rdf.glytoucan.org/users");
-		insert.setClassHandler(getRegisterActionClassHandler());
+		InsertScint insert = new InsertScint("schema", "http://schema.org/", "RegisterAction");
+		insert.getSparqlBean().setGraph("http://rdf.glytoucan.org/users");
+//		insert.setClassHandler(getRegisterActionClassHandler());
 		return insert;
 	}
 	

@@ -1,17 +1,11 @@
 package org.glycoinfo.rdf.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Set;
-
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
-import org.glycoinfo.rdf.scint.SelectScint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -67,8 +61,8 @@ public class InitProcedure implements org.glycoinfo.rdf.service.InitProcedure {
 //			throw new SparqlException("not all required fields are supplied");
 //		}
 		
-		insertScintOrganization.setSparqlEntity(se);
-		sparqlDAO.insert(insertScintOrganization);
+		insertScintOrganization.getSparqlBean().setSparqlEntity(se);
+		sparqlDAO.insert(insertScintOrganization.getSparqlBean());
 	}
 
 	@Override

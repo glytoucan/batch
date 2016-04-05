@@ -1,27 +1,16 @@
 package org.glycoinfo.rdf.service;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
-import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SesameDAOTestConfig;
 import org.glycoinfo.rdf.dao.SparqlDAO;
-import org.glycoinfo.rdf.dao.SparqlDAOSesameImpl;
-import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
-import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.impl.UserProcedure;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -49,8 +38,9 @@ public class InitProcedureTest {
 	
 	@Bean(name = "insertscintorganization")
 	InsertScint getInsertPersonScint() throws SparqlException {
-		InsertScint insert = new InsertScint("http://rdf.glytoucan.org/users");
-		insert.setClassHandler(getOrganizationClassHandler());
+		InsertScint insert = new InsertScint("schema", "http://schema.org/", "Organization");
+		insert.getSparqlBean().setGraph("http://rdf.glytoucan.org/users");
+//		insert.setClassHandler(getOrganizationClassHandler());
 		return insert;
 	}
 	
