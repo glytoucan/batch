@@ -74,7 +74,7 @@ public class SelectScint extends Scintillate implements UriProvider {
 						if (getSparqlEntity().getObjectValue(column) instanceof UriProvider)
 							this.sparqlBean.setWhere("?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " " + ((UriProvider)getSparqlEntity().getObjectValue(column)).getUri() + " .\n");
 						else
-							this.sparqlBean.setWhere("?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n");
+							this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n");
 					} else {
 						if (column.contains(":"))
 							this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "?" + SelectSparql.URI + " " + column +  " ?" + column +" .\n");
