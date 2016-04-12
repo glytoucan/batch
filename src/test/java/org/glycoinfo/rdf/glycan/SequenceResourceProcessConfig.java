@@ -1,0 +1,21 @@
+package org.glycoinfo.rdf.glycan;
+
+import org.glycoinfo.rdf.glycan.wurcs.WurcsSequenceResourceProcessConfig;
+import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
+@Configuration
+@Import(value=GlycanProcedureConfig.class)
+public class SequenceResourceProcessConfig {
+	public static Logger logger = (Logger) LoggerFactory
+			.getLogger(WurcsSequenceResourceProcessConfig.class);
+	
+	@Bean
+	SequenceResourceProcess sequenceResourceProcess() {
+		return new SequenceResourceProcess();
+	}
+}

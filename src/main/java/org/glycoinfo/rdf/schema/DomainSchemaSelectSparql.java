@@ -15,7 +15,8 @@ public class DomainSchemaSelectSparql extends SchemaSelectSparql {
 		super.where = SchemaSparqlFormatter.getCommonClassWhere(classHandler) + " \n" + "{ ?class ^(rdfs:subClassOf)+ "
 				+ SchemaSparqlFormatter.getPrefixClassName(classHandler) + " .\n" + "?result rdfs:domain ?class .\n"
 				+ " } UNION { ?result rdfs:domain " + SchemaSparqlFormatter.getPrefixClassName(classHandler) + " .\n }"
-				+ "UNION { ?result schema:domainIncludes " + SchemaSparqlFormatter.getPrefixClassName(classHandler)
-				+ " .\n }";
+				+ "UNION { ?result " + classHandler.getPrefix() + ":domainIncludes " + SchemaSparqlFormatter.getPrefixClassName(classHandler)
+				+ " .\n }" + "UNION { ?class ^(rdfs:subClassOf)+ "
+				+ SchemaSparqlFormatter.getPrefixClassName(classHandler) + " .\n" + "?result " + classHandler.getPrefix() + ":domainIncludes ?class .\n }";
 	}
 }

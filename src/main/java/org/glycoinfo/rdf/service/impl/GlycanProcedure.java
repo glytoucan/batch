@@ -37,6 +37,7 @@ import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
+import org.glycoinfo.rdf.glycan.SaccharideUtil;
 import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
@@ -46,6 +47,7 @@ import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -69,7 +71,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	SparqlDAO sparqlDAO;
 
 	@Autowired
-	SaccharideInsertSparql saccharideInsertSparql;
+	@Qualifier("SaccharideInsert")
+	InsertSparql saccharideInsertSparql;
 	
 	@Autowired
 	ContributorProcedure contributorProcedure;
@@ -90,6 +93,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	WurcsRDFMSInsertSparql wurcsRDFMSInsertSparql;
 
 	@Autowired
+	@Qualifier("GlycosequenceInsert")
 	InsertSparql glycoSequenceInsert;
 	
 	@Autowired
@@ -621,7 +625,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		SaccharideInsertSparql sis = new SaccharideInsertSparql();
 		sis.setSparqlEntity(glycoSequenceInsert.getSparqlEntity());
 
-		glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.URI, sis.getUri());
+		glycoSequenceInsert.getSparqlEntity().setValue(Saccharide.URI, SaccharideUtil.getURI(data.getValue(Saccharide.PrimaryId)));
 		
 		sparqlDAO.insert(glycoSequenceInsert);
 	}

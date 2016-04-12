@@ -28,13 +28,14 @@ public class InsertScint extends Scintillate implements UriProvider {
 	public InsertScint(String prefix, String prefixIri, String className) throws SparqlException {
 		super(prefix, prefixIri, className);
 		this.sparqlBean = new InsertSparqlBean();
+		setPrefix();
 	}
 	
 	public void setPrefix() {
 		this.sparqlBean.setPrefix(SchemaSparqlFormatter.getPrefixDefinition(this) + "\n");
 	}
 
-	public void update() throws SparqlException {
+	public void updateSparql() throws SparqlException {
 		if (getSparqlEntity() != null) {
 			this.sparqlBean.setInsert(SchemaSparqlFormatter.getAInsert(getUri(), this));
 				List<String> domains;
@@ -64,7 +65,7 @@ public class InsertScint extends Scintillate implements UriProvider {
 
 	@Override
 	public String getUri() throws SparqlException {
-		if (null == getSparqlEntity() && null == getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY) && null == getSparqlEntity().getValue(SelectSparql.URI))
+		if (null == getSparqlEntity() || null == getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY) && null == getSparqlEntity().getValue(SelectSparql.URI))
 			throw new SparqlException("need at least sparqlentity or URI");
 		if (null != getSparqlEntity().getValue(SelectSparql.URI))
 			return "<" + getSparqlEntity().getValue(SelectSparql.URI) + ">";
@@ -72,7 +73,6 @@ public class InsertScint extends Scintillate implements UriProvider {
 	}
 	
 	public InsertSparqlBean getSparqlBean() throws SparqlException {
-		update();
 		return sparqlBean;
 	}
 

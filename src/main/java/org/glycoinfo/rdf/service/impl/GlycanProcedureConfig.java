@@ -26,15 +26,16 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import( {ContributorProcedureConfig.class, GlyConvertConfig.class} )
 public class GlycanProcedureConfig implements GraphConfig {
-	@Bean
-	SaccharideInsertSparql saccharideInsertSparql() {
+
+	@Bean(name="SaccharideInsert")
+	InsertSparql saccharideInsertSparql() {
 		SaccharideInsertSparql sis = new SaccharideInsertSparql();
 		sis.setGraph(graph + "/core");
 		return sis;
 	}
 	
-	@Bean
-	ResourceEntryInsertSparql getResourceEntryInsertSparql() {
+	@Bean(name="ResourceEntryInsert")
+	InsertSparql getResourceEntryInsertSparql() {
 		ResourceEntryInsertSparql resourceEntryInsertSparql = new ResourceEntryInsertSparql();
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(ResourceEntryInsertSparql.Database, "glytoucan");
@@ -80,7 +81,7 @@ public class GlycanProcedureConfig implements GraphConfig {
 		return wrdf;
 	}
 	
-	@Bean
+	@Bean(name="GlycosequenceInsert")
 	InsertSparql glycoSequenceInsert() {
 		GlycoSequenceInsertSparql gsis = new GlycoSequenceInsertSparql();
 		gsis.setSparqlEntity(new SparqlEntity());

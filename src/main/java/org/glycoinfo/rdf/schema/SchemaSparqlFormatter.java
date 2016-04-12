@@ -73,6 +73,14 @@ public class SchemaSparqlFormatter {
 			UriProvider uriData = (UriProvider)data;
 			return uri + " " + classHandler.getPrefix() + ":" + domain + " " + uriData.getUri() + " .\n";
 		}
+		if (data instanceof Date) {
+			String nowAsISO = getDateFormat().format(data);
+			return uri + " " + classHandler.getPrefix() + ":" + domain + " \"" + nowAsISO + "\"^^xsd:dateTime .\n";
+		}
+		if (data instanceof Enum) {
+			Enum dataEnum = (Enum)data;
+			return uri + " " + classHandler.getPrefix() + ":" + domain + " "  + classHandler.getPrefix() + ":" + dataEnum.toString() + " .\n";
+		}
 
 		return uri + " " + classHandler.getPrefix() + ":" + domain + " " + data + " .\n";
 	}
@@ -87,11 +95,7 @@ public class SchemaSparqlFormatter {
 	
 	public static String getPrimaryKey(Object value) {
 		if (value instanceof Date) {
-			TimeZone tz = TimeZone.getTimeZone("UTC");
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-			df.setTimeZone(tz);
-			String nowAsISO = df.format(value);
-
+			String nowAsISO = getDateFormat().format(value);
 			return nowAsISO;
 		}
 		return value.toString();
@@ -104,5 +108,12 @@ public class SchemaSparqlFormatter {
 	
 	public static String getAInsert(String uri, ClassHandler classHandler) {
 		return uri + " a " + getPrefixClassName(classHandler) + " . \n";
+	}
+	
+	public static DateFormat getDateFormat() {
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+		df.setTimeZone(tz);
+		return df;
 	}
 }

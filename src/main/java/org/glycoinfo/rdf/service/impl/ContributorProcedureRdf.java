@@ -122,4 +122,24 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 		
 		return entries;
 	}
+	
+//	@Override
+//	public SparqlEntity insertContributorLog(String id, String message) throws SparqlException {
+//		if (StringUtils.isBlank(id))
+//			throw new SparqlException("id cannot be blank");
+//
+//		SparqlEntity se = new SparqlEntity();
+//		se.setValue(Contributor.NAME, name);
+//		contributorSelectSparql.setSparqlEntity(se);
+//
+//		List<SparqlEntity> personUIDResult = sparqlDAO.query(contributorSelectSparql);
+//		
+//		if (personUIDResult.iterator().hasNext()) {
+//			SparqlEntity idSE = personUIDResult.iterator().next();
+//			return idSE;
+//		}
+//		return null;
+//	}
+	
+	
 }

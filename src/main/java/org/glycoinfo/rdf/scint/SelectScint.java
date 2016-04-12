@@ -18,7 +18,6 @@ public class SelectScint extends Scintillate implements UriProvider {
 	SelectSparqlBean sparqlBean;
 	
 	public SelectSparqlBean getSparqlBean() throws SparqlException {
-		update();
 		return sparqlBean;
 	}
 
