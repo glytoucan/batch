@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
-import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -33,6 +32,9 @@ public class ResourceEntrySparqlBeanTest {
 
 	@Autowired
 	SparqlDAO sparqlDAO;
+	
+	@Autowired
+	SelectSparql resourceEntrySelect;
 
 	@Bean
 	ResourceEntryInsertSparql getResourceEntrySparql() {
@@ -56,6 +58,13 @@ public class ResourceEntrySparqlBeanTest {
 		// dss.setFrom();
 		return dss;
 	}
+	
+	@Bean
+	public SelectSparql resourceEntrySelect() {
+		SelectSparql re = new ResourceEntrySelectSparql();
+		re.setFrom("FROM <http://test>");
+		return re; 
+	}
 
 	@Test
 	@Transactional
@@ -63,7 +72,7 @@ public class ResourceEntrySparqlBeanTest {
 		InsertSparql ins = getResourceEntrySparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
 		sparqlentity.setValue(ResourceEntry.Identifier, "G00TESTDATA");
-		sparqlentity.setValue(Saccharide.PrimaryId, "TEST");
+//		sparqlentity.setValue(Saccharide.PrimaryId, "TEST");
 		sparqlentity.setValue(ResourceEntry.ContributorId, "1234");
 		sparqlentity.setValue(ResourceEntry.Database, "glytoucan");
 		sparqlentity.setValue(ResourceEntry.DataSubmittedDate, new Date(0));
@@ -71,14 +80,13 @@ public class ResourceEntrySparqlBeanTest {
 		ins.setSparqlEntity(sparqlentity);
 		sparqlDAO.insert(ins);
 
-		List<SparqlEntity> list = sparqlDAO.query(new SelectSparqlBean(
-				"PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
-						+ "select ?date where {?resource a glycan:resource_entry . ?resource glycan:in_glycan_database glytoucan:database_glytoucan . ?resource dcterms:identifier \"G00TESTDATA\" . ?resource glytoucan:date_registered ?date . ?resource glytoucan:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/"
-						+ "1234" + ">}"));
+
+		resourceEntrySelect.setSparqlEntity(sparqlentity);
+		List<SparqlEntity> list = sparqlDAO.query(resourceEntrySelect);
 		if (list.size() < 1)
 			Assert.fail("no results");
 		for (SparqlEntity sparqlEntity : list) {
-			Assert.assertEquals("Thu Jan 01 09:00:00 JST 1970", sparqlEntity.getValue("date"));
+			Assert.assertEquals("G00TESTDATA", sparqlEntity.getValue("Identifier"));
 		}
 	}
 
