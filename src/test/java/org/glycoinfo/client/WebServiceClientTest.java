@@ -47,7 +47,7 @@ public class WebServiceClientTest {
 		logger.debug(image);
 	}
 
-	@Test
+//	@Test
 	public void imageTest() throws Exception {
 		GlyspaceClient gsClient = new GlyspaceClient();
 		String image = gsClient.getImage("http://localhost:8081", "RES\\n"
@@ -87,7 +87,7 @@ public class WebServiceClientTest {
         /* Test image to string and string to image finish */
 	}
 	
-	@Test
+//	@Test
 	public void testReadMs() throws IOException {
 		String ttl = msdbClient.getTtl("a-dall-HEX-1:5|2,3:anhydro");
 		

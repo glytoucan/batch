@@ -17,6 +17,7 @@ import org.glycoinfo.rdf.glycan.Contributor;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.DeleteScint;
 import org.glycoinfo.rdf.scint.InsertScint;
+import org.glycoinfo.rdf.scint.Scintillate;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.utils.NumberGenerator;
@@ -145,7 +146,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		// Organization entity
 		SparqlEntity sparqlentityOrganization = new SparqlEntity("glytoucan");
-		selectScintOrganization.setSparqlEntity(sparqlentityOrganization);
+		selectScintOrganization.update(sparqlentityOrganization);
 		
 		String verified = userSparqlEntity.getValue(VERIFIED_EMAIL);
 		if (verified != null && verified.equals("true")) {
@@ -166,7 +167,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
 		sparqlentityPerson.setValue(CONTRIBUTOR_ID, contributorId);
 		
-		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlentityPerson);
+		insertScintPerson.update(sparqlentityPerson);
 
 		sparqlDAO.insert(insertScintPerson.getSparqlBean());
 		
@@ -184,20 +185,20 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		// DateTime entity
 		SparqlEntity sparqlentityDateTime = new SparqlEntity(new Date());
-		selectScintDateTime.setSparqlEntity(sparqlentityDateTime);
+		selectScintDateTime.update(sparqlentityDateTime);
 		
 		// set the datetime class to be the startTime range for the registeraction domain.
 		sparqlentityRegisterAction.setValue("startTime", selectScintDateTime);
 
 		SparqlEntity sparqlEntityPerson = new SparqlEntity(personUID);
-		SelectScint personSelect = new SelectScint();
+//		SelectScint personSelect = new SelectScint();
 //		personSelect.setClassHandler(getPersonClassHandler());
-		personSelect.setSparqlEntity(sparqlEntityPerson);
+		selectScintPerson.update(sparqlEntityPerson);
 		
-		sparqlentityRegisterAction.setValue("participant", personSelect);
+		sparqlentityRegisterAction.setValue("participant", selectScintPerson);
 
 		// set the sparqlentity for the registeraction. 
-		insertScintRegisterAction.getSparqlBean().setSparqlEntity(sparqlentityRegisterAction);
+		insertScintRegisterAction.update(sparqlentityRegisterAction);
 		
 		sparqlDAO.insert(insertScintRegisterAction.getSparqlBean());
 		
@@ -218,9 +219,9 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		// check if it exists
 		SparqlEntity sparqlEntityPerson = new SparqlEntity(id);
-		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
+		sparqlEntityPerson.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
 		
-		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
+		selectScintPerson.update(sparqlEntityPerson);
 		List<SparqlEntity> person = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		if (null == person || !person.iterator().hasNext())
 			throw new SparqlException("id >" + id + "< doesnt exist");
@@ -236,7 +237,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		// delete the previous Program Membership
 		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, null);
-		selectScintProgramMembership.setSparqlEntity(sparqlentityProgramMembership);
+		selectScintProgramMembership.update(sparqlentityProgramMembership);
 		List<SparqlEntity> list = sparqlDAO.query(selectScintProgramMembership.getSparqlBean());
 
 		// if it does exist
@@ -244,12 +245,12 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 			SparqlEntity se = list.iterator().next();
 			se.setValue(SelectSparql.PRIMARY_KEY, UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
 			
-			deleteScintProgramMembership.setSparqlEntity(se);
-			sparqlDAO.delete(deleteScintProgramMembership);
+			deleteScintProgramMembership.update(se);
+			sparqlDAO.delete(deleteScintProgramMembership.getSparqlBean());
 			
 			sparqlEntityPerson.setValue(MEMBER_OF, deleteScintProgramMembership);
-			deleteScintPerson.setSparqlEntity(sparqlEntityPerson);
-			sparqlDAO.delete(deleteScintPerson);
+			deleteScintPerson.update(sparqlEntityPerson);
+			sparqlDAO.delete(deleteScintPerson.getSparqlBean());
 		}
 		
 		Date dateVal = new Date();
@@ -258,7 +259,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
 		// set the sparqlentity for the registeraction. 
 //		insertScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
-		insertScintProgramMembership.getSparqlBean().setSparqlEntity(sparqlentityProgramMembership);
+		insertScintProgramMembership.update(sparqlentityProgramMembership);
 		logger.debug(insertScintProgramMembership.getSparqlBean().getSparql());
 		sparqlDAO.insert(insertScintProgramMembership.getSparqlBean());
 		
@@ -303,7 +304,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		// Select Person
 //		SelectScint personScint = new SelectScint();
 //		personScint.setClassHandler(getPersonClassHandler());
-		selectScintPerson.setSparqlEntity(userSE);
+		selectScintPerson.update(userSE);
 		
 		List<SparqlEntity> userData = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		
@@ -328,7 +329,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 //			selectScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
 			programMembership.setValue("member", selectScintPerson);
 			
-			selectScintProgramMembership.setSparqlEntity(programMembership);
+			selectScintProgramMembership.update(programMembership);
 			List<SparqlEntity> membershipData = sparqlDAO.query(selectScintProgramMembership.getSparqlBean());
 
 			// if memberOf program, find id.
@@ -393,8 +394,8 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		sparqlEntityPerson.setValue("alternateName", username);
 		sparqlEntityPerson.setValue("givenName", null);
 		sparqlEntityPerson.setValue("email", null);
-		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
-		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
+		sparqlEntityPerson.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
+		selectScintPerson.update(sparqlEntityPerson);
 
 		return sparqlDAO.query(selectScintPerson.getSparqlBean());
 	}
@@ -411,8 +412,8 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		SparqlEntity sparqlEntityPerson = new SparqlEntity();
 		sparqlEntityPerson.setValue(UserProcedure.CONTRIBUTOR_ID, username);
 		sparqlEntityPerson.setValue(UserProcedure.MEMBER_OF, null);
-		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
-		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
+		sparqlEntityPerson.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
+		selectScintPerson.update(sparqlEntityPerson);
 		
 		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		
@@ -421,13 +422,13 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
 		SparqlEntity se = results.iterator().next();
 
-		selectScintPerson.setSparqlEntity(se);
+		selectScintPerson.update(se);
 
 		SparqlEntity pmSE = new SparqlEntity(GLYTOUCAN_PROGRAM + selectScintPerson.getPrimaryKey());
 		pmSE.setValue(UserProcedure.MEMBER, selectScintPerson);
 		pmSE.setValue(UserProcedure.MEMBERSHIP_NUMBER, null);
-		pmSE.setValue(SelectScint.NO_DOMAINS, true);
-		selectScintProgramMembership.setSparqlEntity(pmSE);
+		pmSE.setValue(Scintillate.NO_DOMAINS, true);
+		selectScintProgramMembership.update(pmSE);
 				
 		List<SparqlEntity> resultsPM = sparqlDAO.query(selectScintProgramMembership.getSparqlBean());
 		if (resultsPM.iterator().hasNext()){

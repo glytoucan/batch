@@ -17,10 +17,10 @@ public class BigdataDAOTestConfig {
     @Value("${triplestore.blazegraph.url}")
     private String url;
 	
-	@Bean
-	SparqlDAO getSparqlDAO() {
-		return new SparqlDAOBigdataImpl();
-	}
+//	@Bean
+//	SparqlDAO getSparqlDAO() {
+//		return new SparqlDAOBigdataImpl();
+//	}
 
 	@Bean
 	TripleStoreProperties getTripleStoreProperties() {

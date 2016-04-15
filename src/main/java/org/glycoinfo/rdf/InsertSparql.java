@@ -53,7 +53,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author aoki
  *
  */
-public interface InsertSparql extends Sparql {
+public interface InsertSparql extends SparqlBean {
 
 	public static final String SPARQL = "SPARQL";
 	public static final String Turtle = "Turtle";

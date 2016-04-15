@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.glycoinfo.rdf.DeleteSparql;
-import org.glycoinfo.rdf.InsertSparql;
-import org.glycoinfo.rdf.SelectSparql;
+import org.glycoinfo.rdf.SparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
@@ -39,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author aoki
  */
 //@SuppressWarnings({ "unchecked", "rawtypes" })
-public class SparqlDAOSesameImpl implements SparqlDAO {
+public abstract class SparqlDAOSesameImpl implements SparqlDAO {
 
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(SparqlDAOSesameImpl.class);
@@ -226,7 +224,7 @@ return null;
 
 	@Override
 	@Transactional
-	public List<SparqlEntity> query(SelectSparql select) throws SparqlException {
+	public List<SparqlEntity> query(SparqlBean select) throws SparqlException {
 		return query(select.getSparql());
 	}
 
@@ -237,7 +235,7 @@ return null;
 
 	@Override
 	@Transactional
-	public void insert(InsertSparql insert)
+	public void insert(SparqlBean insert)
 			throws SparqlException {
 		insert(insert.getSparql());
 	}
@@ -253,16 +251,5 @@ return null;
 			throw new SparqlException(e);
 		}
        	return 0;
-	}
-
-
-	@Override
-	public void delete(DeleteSparql string) throws SparqlException {
-	}
-
-	@Override
-	public void execute(InsertSparql string) throws SparqlException {
-		// TODO Auto-generated method stub
-		
 	}
 }

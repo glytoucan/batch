@@ -163,7 +163,7 @@ public class MassTest {
 		System.out.println();
 	}
 	
-	@Test
+//	@Test
 	public void testNotMatchAsLip() throws SparqlException {
 		String input = "WURCS=2.0/5,5,4/[x1122h-1x_1-5][21122h-1a_1-5][22112h-1a_1-5][22122h-1a_1-5][12112h-1b_1-5_4,6*OC^XO*/3CO/6=O/3C]/1-2-3-4-5/a2-b1_b2-c1_b3-d1_d4-e1";
 

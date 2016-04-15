@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
@@ -16,9 +17,9 @@ import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
 import org.glycoinfo.rdf.glycan.DatabaseSelectSparql;
 import org.glycoinfo.rdf.glycan.LatestContributorIdSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntry;
-import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class ContributorProcedureRdf implements ContributorProcedure  {
 
@@ -38,7 +39,8 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	DatabaseSelectSparql databaseSelectSparql;
 	
 	@Autowired
-	ResourceEntryInsertSparql resourceEntryInsertSparql;
+	@Qualifier("ResourceEntryInsert")
+	InsertSparql resourceEntryInsertSparql;
 	
 	/**
 	 * adds a Contributor class (foaf:Person).

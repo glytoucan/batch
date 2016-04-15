@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author aoki
  *
  */
-public interface Sparql {
+public interface SparqlBean {
 	
 	public final static String PRIMARY_KEY = "primary_key";
 

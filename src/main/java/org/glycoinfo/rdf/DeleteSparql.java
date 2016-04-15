@@ -1,7 +1,5 @@
 package org.glycoinfo.rdf;
 
-import org.glycoinfo.rdf.dao.SparqlEntity;
-
 /**
  * 
  * Representing the parts of an insert statement.  Nullable clauses can be ignored with null, whitespace or a blank string.
@@ -51,7 +49,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
  * @author aoki
  *
  */
-public interface DeleteSparql {
+public interface DeleteSparql extends SparqlBean {
 
 	public static final String SPARQL = "SPARQL";
 	public static final String Turtle = "Turtle";
@@ -72,38 +70,6 @@ public interface DeleteSparql {
 	 * @param insert
 	 */
 	public void setDelete(String insert);
-
-	/**
-	 * 
-	 * The prefix used for all sparql.
-	 * 
-	 * @return
-	 */
-	public String getPrefix();
-
-	/**
-	 * 
-	 * Setting the prefix.
-	 * 
-	 * @param prefix
-	 */
-	public void setPrefix(String prefix);
-
-	/**
-	 * 
-	 * Retrieve the where clause.
-	 * 
-	 * @return
-	 */
-	public String getWhere();
-
-	/**
-	 * 
-	 * Set the where clause.
-	 * 
-	 * @param where
-	 */
-	void setWhere(String where);
 
 	/**
 	 * 
@@ -137,30 +103,5 @@ public interface DeleteSparql {
 	 */
 	public void setUsing(String using);
 
-	/**
-	 * 
-	 * Retrieve the overall sparql constructed from all of the parts above.
-	 * 
-	 * @return
-	 * @throws SparqlException 
-	 */
-	public String getSparql() throws SparqlException;
-	
-	/**
-	 * 
-	 * The sparqlentity is a simple Map where "value" can be retrieved based on a key.  This is mainly to represent the results of a SparqlQuery, but can be any kind of data Map.
-	 * The primary use of this is to enable dynamic queries based on the data stored in the SparqlEntity. 
-	 * 
-	 */
-	public void setSparqlEntity(SparqlEntity sparqlentity);
-
-	/**
-	 * 
-	 * See @setSparqlEntity above
-	 * 
-	 * @return SparqlEntity the current data stored and used to generate the query.
-	 */
-	public SparqlEntity getSparqlEntity();
-	
 	public String getFormat();
 }

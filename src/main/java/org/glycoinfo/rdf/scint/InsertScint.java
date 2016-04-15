@@ -6,8 +6,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SelectSparql;
+import org.glycoinfo.rdf.SparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.UriProvider;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -15,7 +17,7 @@ import org.glycoinfo.rdf.schema.SchemaSparqlFormatter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InsertScint extends Scintillate implements UriProvider {
+public class InsertScint extends ScintillateParent implements UriProvider {
 
 	private static final Log logger = LogFactory.getLog(InsertScint.class);
 	
@@ -25,9 +27,10 @@ public class InsertScint extends Scintillate implements UriProvider {
 		sparqlBean=new InsertSparqlBean();
 	}
 	
-	public InsertScint(String prefix, String prefixIri, String className) throws SparqlException {
+	public InsertScint(String graph, String prefix, String prefixIri, String className) throws SparqlException {
 		super(prefix, prefixIri, className);
 		this.sparqlBean = new InsertSparqlBean();
+		this.sparqlBean.setGraph(graph);
 		setPrefix();
 	}
 	
@@ -35,7 +38,8 @@ public class InsertScint extends Scintillate implements UriProvider {
 		this.sparqlBean.setPrefix(SchemaSparqlFormatter.getPrefixDefinition(this) + "\n");
 	}
 
-	public void updateSparql() throws SparqlException {
+	@Override
+	public void update() throws SparqlException {
 		if (getSparqlEntity() != null) {
 			this.sparqlBean.setInsert(SchemaSparqlFormatter.getAInsert(getUri(), this));
 				List<String> domains;
@@ -72,8 +76,13 @@ public class InsertScint extends Scintillate implements UriProvider {
 		return SchemaSparqlFormatter.getUri(this, getSparqlEntity().getObjectValue(SelectSparql.PRIMARY_KEY));
 	}
 	
-	public InsertSparqlBean getSparqlBean() throws SparqlException {
+	@Override
+	public InsertSparql getSparqlBean() {
 		return sparqlBean;
 	}
 
+	@Override
+	public void setSparqlBean(SparqlBean sparql) {
+		this.sparqlBean = (InsertSparqlBean) sparql;
+	}
 }

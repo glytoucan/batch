@@ -219,7 +219,7 @@ public class SparqlDAOImplTest {
 		}
 	}
 
-	@Test
+//	@Test
 	@Transactional
 	public void testInsertConvert() throws SparqlException {
 		schemaDAO
@@ -335,7 +335,7 @@ public class SparqlDAOImplTest {
 		schemaDAO.delete(ds);
 	}
 
-	@Test
+//	@Test
 	@Transactional
 	public void testClearGraph() throws SparqlException {
 		schemaDAO

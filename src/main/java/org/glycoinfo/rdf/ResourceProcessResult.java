@@ -1,24 +1,24 @@
 package org.glycoinfo.rdf;
 
-import org.glytoucan.core.Log;
-import org.glytoucan.core.Status;
+import jp.bluetree.log.Entry;
+import jp.bluetree.log.LevelType;
 
 public class ResourceProcessResult {
 
-	Log logMessage;
+	Entry logMessage;
 	String id;
 
-	public ResourceProcessResult(String logDescription, Status status) {
-		logMessage = new Log();
-		logMessage.setDescription(logDescription);
-		logMessage.setStatus(status);
+	public ResourceProcessResult(String logDescription, LevelType status) {
+		logMessage = new Entry();
+		logMessage.setMessage(logDescription);
+		logMessage.setLevel(status);
 	}
 
-	public Log getLogMessage() {
+	public Entry getLogMessage() {
 		return logMessage;
 	}
 
-	public void setLogMessage(Log logMessage) {
+	public void setLogMessage(Entry logMessage) {
 		this.logMessage = logMessage;
 	}
 

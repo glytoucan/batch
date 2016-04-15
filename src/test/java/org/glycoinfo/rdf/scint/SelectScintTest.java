@@ -68,6 +68,10 @@ public class SelectScintTest {
 	@Qualifier(value = "programMembershipInsert")
 	InsertScint programMembershipInsert;
 	
+	@Autowired
+	@Qualifier("dateTimeSelect")
+	SelectScint dateTimeSelect;
+	
 	
 	ClassHandler getPersonClassHandler() throws SparqlException {
 		ClassHandler classHandler = new ClassHandler("schema", "http://schema.org/", "Person");
@@ -86,11 +90,10 @@ public class SelectScintTest {
 		classHandler.setSparqlDAO(sparqlDAO);
 		return classHandler; 
 	}
-
-	ClassHandler getDateTimeClassHandler() throws SparqlException {
-		ClassHandler classHandler = new ClassHandler("schema", "http://schema.org/", "DateTime");
-		classHandler.setSparqlDAO(sparqlDAO);
-		return classHandler; 
+	@Bean(name="dateTimeSelect")
+	SelectScint getDateTimeClassHandler() throws SparqlException {
+		SelectScint ss = new SelectScint("schema", "http://schema.org/", "DateTime");
+		return ss; 
 	}
 	
 	@Bean(name = "selectscintperson")
@@ -102,7 +105,7 @@ public class SelectScintTest {
 
 	@Bean(name = "insertscintperson")
 	InsertScint getInsertPersonScint() throws SparqlException {
-		InsertScint insert = new InsertScint("schema", "http://schema.org/", "Person");
+		InsertScint insert = new InsertScint("http://rdf.glytoucan.org/users", "schema", "http://schema.org/", "Person");
 		insert.getSparqlBean().setGraph("http://rdf.glytoucan.org/users");
 //		insert.setClassHandler(getPersonClassHandler());
 		return insert;
@@ -115,7 +118,7 @@ public class SelectScintTest {
 
 	@Bean(name = "insertscintregisteraction")
 	InsertScint getInsertRegisterActionScint() throws SparqlException {
-		InsertScint insert = new InsertScint("schema", "http://schema.org/", "RegisterAction");
+		InsertScint insert = new InsertScint("http://rdf.glytoucan.org/users", "schema", "http://schema.org/", "RegisterAction");
 		insert.getSparqlBean().setGraph("http://rdf.glytoucan.org/users");
 		return insert;
 	}
@@ -127,7 +130,8 @@ public class SelectScintTest {
 
 	@Bean(name = "programMembershipInsert")
 	InsertScint programMembershipInsert() throws SparqlException {
-		return new InsertScint("schema", "http://schema.org/", "ProgramMembership");
+		InsertScint is = new InsertScint("http://rdf.glytoucan.org/users", "schema", "http://schema.org/", "ProgramMembership");
+		return is; 
 	}
 	
 	@Test
@@ -136,7 +140,7 @@ public class SelectScintTest {
 		sparqlentity.setValue("familyName", "");
 		sparqlentity.setValue("givenName", "");
 		sparqlentity.setValue("email", "support@glytoucan.org");
-		selectScintPerson.setSparqlEntity(sparqlentity);
+		selectScintPerson.update(sparqlentity);
 		logger.debug(selectScintPerson.getSparqlBean().getSparql());
 		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		
@@ -169,7 +173,7 @@ public class SelectScintTest {
 		sparqlentity.setValue("givenName", "person1234givenName");
 		sparqlentity.setValue("email", "person1234@test.org");
 //		insertScintPerson.setClassHandler(getPersonClassHandler());
-		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlentity);
+		insertScintPerson.update(sparqlentity);
 
 		logger.debug(insertScintPerson.getSparqlBean().getSparql());
 		sparqlDAO.insert(insertScintPerson.getSparqlBean());
@@ -178,7 +182,7 @@ public class SelectScintTest {
 		sparqlentitySelect.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
 		sparqlentitySelect.setValue("givenName", null);
 
-		selectScintPerson.setSparqlEntity(sparqlentitySelect);
+		selectScintPerson.update(sparqlentitySelect);
 		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		
 		logger.debug(results.size());
@@ -203,7 +207,7 @@ public class SelectScintTest {
 		testInsertRegisterAction();
 		SparqlEntity sparqlentity = new SparqlEntity("register123");
 		sparqlentity.setValue("startTime", "");
-		selectScintRegisterAction.setSparqlEntity(sparqlentity);
+		selectScintRegisterAction.update(sparqlentity);
 		logger.debug(selectScintRegisterAction.getSparqlBean().getSparql());
 		List<SparqlEntity> results = sparqlDAO.query(selectScintRegisterAction.getSparqlBean());
 		
@@ -231,25 +235,25 @@ public class SelectScintTest {
 		SparqlEntity sparqlentityRegisterAction = new SparqlEntity("register123");
 		
 		// new DateTime Class
-		SelectScint dateTimeSelect = new SelectScint("schema", "http://schema.org/", "DateTime");
+//		SelectScint dateTimeSelect = new SelectScint("schema", "http://schema.org/", "DateTime");
 //		dateTimeSelect.setClassHandler(getDateTimeClassHandler());
 		
 		// DateTime entity
 		SparqlEntity sparqlentityDateTime = new SparqlEntity(new Date(0));
-		dateTimeSelect.setSparqlEntity(sparqlentityDateTime);
+		dateTimeSelect.update(sparqlentityDateTime);
 		
 		// set the datetime class to be the startTime range for the registeraction domain.
 		sparqlentityRegisterAction.setValue("startTime", dateTimeSelect);
 		
 		SparqlEntity sparqlEntityPerson = new SparqlEntity("person123");
-		SelectScint personSelect = new SelectScint("schema", "http://schema.org/", "Person");
-		personSelect.setSparqlEntity(sparqlEntityPerson);
+//		SelectScint personSelect = new SelectScint("schema", "http://schema.org/", "Person");
+		selectScintPerson.update(sparqlEntityPerson);
 		
-		sparqlentityRegisterAction.setValue("participant", personSelect);
+		sparqlentityRegisterAction.setValue("participant", selectScintPerson);
 
 		// set the sparqlentity for the registeraction. 
 //		insertScintRegisterAction.getSparqlBean().setClassHandler(getRegisterActionClassHandler());
-		insertScintRegisterAction.getSparqlBean().setSparqlEntity(sparqlentityRegisterAction);
+		insertScintRegisterAction.update(sparqlentityRegisterAction);
 		logger.debug(insertScintRegisterAction.getSparqlBean().getSparql());
 		
 		sparqlDAO.insert(insertScintRegisterAction.getSparqlBean());
@@ -271,16 +275,16 @@ public class SelectScintTest {
 		SparqlEntity sparqlEntityPerson = new SparqlEntity("person123");
 //		InsertScint personScint = new InsertScint(graph);
 //		getInsertPersonScint().setClassHandler(getPersonClassHandler());
-		getInsertPersonScint().getSparqlBean().setSparqlEntity(sparqlEntityPerson);
+		insertScintPerson.update(sparqlEntityPerson);
 
-		logger.debug(getInsertPersonScint().getSparqlBean().getSparql());
+		logger.debug(insertScintPerson.getSparqlBean().getSparql());
 
 		
 		// ProgramMembership entity
 		SparqlEntity sparqlentityProgramMembership = new SparqlEntity("partner123" + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
 		sparqlentityProgramMembership.setValue("programName", "Glytoucan Partner");
 		
-		sparqlentityProgramMembership.setValue("member", getInsertPersonScint());
+		sparqlentityProgramMembership.setValue("member", insertScintPerson);
 		
 		Date dateVal = new Date();
 		
@@ -289,15 +293,15 @@ public class SelectScintTest {
 //		InsertScint insertScintProgramMembership = new InsertScint("http://rdf.glytoucan.org/schema/users");
 		// set the sparqlentity for the registeraction. 
 //		programMembershipInsert.setClassHandler(getProgramMembershipClassHandler());
-		programMembershipInsert.getSparqlBean().setSparqlEntity(sparqlentityProgramMembership);
+		programMembershipInsert.update(sparqlentityProgramMembership);
 		logger.debug(programMembershipInsert.getSparqlBean().getSparql());
 		sparqlDAO.insert(programMembershipInsert.getSparqlBean());
 		
 		sparqlEntityPerson.setValue("email", "person1234@test.org");
 		sparqlEntityPerson.setValue("memberOf", programMembershipInsert);
-		getInsertPersonScint().getSparqlBean().setSparqlEntity(sparqlEntityPerson);
-		logger.debug(getInsertPersonScint().getSparqlBean().getSparql());
-		sparqlDAO.insert(getInsertPersonScint().getSparqlBean());
+		insertScintPerson.update(sparqlEntityPerson);
+		logger.debug(insertScintPerson.getSparqlBean());
+		sparqlDAO.insert(insertScintPerson.getSparqlBean());
 
 	}
 	
@@ -309,7 +313,7 @@ public class SelectScintTest {
 		sparqlentity.setValue("givenName", "person1234givenName");
 		sparqlentity.setValue("email", "person1234@test.org");
 //		insertScintPerson.setClassHandler(getPersonClassHandler());
-		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlentity);
+		insertScintPerson.update(sparqlentity);
 
 		logger.debug(insertScintPerson.getSparqlBean().getSparql());
 		sparqlDAO.insert(insertScintPerson.getSparqlBean());
@@ -318,7 +322,7 @@ public class SelectScintTest {
 		sparqlEntityPerson.setValue("email", "person1234@test.org");
 		sparqlEntityPerson.setValue("givenName", null);
 		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
-		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
+		selectScintPerson.update(sparqlEntityPerson);
 
 		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		
@@ -336,7 +340,7 @@ public class SelectScintTest {
 		sparqlentity.setValue("email", "person1234@test.org");
 		sparqlentity.setValue("alternateName", "456");
 //		insertScintPerson.setClassHandler(getPersonClassHandler());
-		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlentity);
+		insertScintPerson.update(sparqlentity);
 
 		logger.debug(insertScintPerson.getSparqlBean().getSparql());
 		sparqlDAO.insert(insertScintPerson.getSparqlBean());
@@ -346,7 +350,7 @@ public class SelectScintTest {
 		sparqlEntityPerson.setValue("givenName", null);
 		sparqlEntityPerson.setValue("email", null);
 		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
-		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
+		selectScintPerson.update(sparqlEntityPerson);
 
 		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		
@@ -369,7 +373,7 @@ public class SelectScintTest {
 		sparqlEntityPerson.setValue("email", "person1234@test.org");
 		sparqlEntityPerson.setValue("memberOf", null);
 //		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
-		selectScintPerson.setSparqlEntity(sparqlEntityPerson);
+		selectScintPerson.update(sparqlEntityPerson);
 
 		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		
@@ -380,10 +384,10 @@ public class SelectScintTest {
 		
 //		programMembershipSelect = new SelectScint("schema", "http://schema.org/", "ProgramMembership");
 //		programMembershipSelect.setClassHandler(getProgramMembershipClassHandler());
-		selectScintPerson.setSparqlEntity(se);
+		selectScintPerson.update(se);
 		SparqlEntity pmSE = new SparqlEntity();
 		pmSE.setValue("member", selectScintPerson);
-		programMembershipSelect.setSparqlEntity(pmSE);
+		programMembershipSelect.update(pmSE);
 		
 		List<SparqlEntity> resultsPM = sparqlDAO.query(programMembershipSelect.getSparqlBean());
 		Assert.assertNotNull(resultsPM);

@@ -7,7 +7,6 @@ import org.glycoinfo.rdf.ResourceProcessException;
 import org.glycoinfo.rdf.ResourceProcessResult;
 import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.glycan.GlycoSequenceResourceProcess;
-import org.glytoucan.core.Status;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import jp.bluetree.log.LevelType;
 
 /**
  * @author aoki
@@ -40,7 +41,7 @@ public class WurcsSequenceResourceProcessTest {
 		// from org.glycoinfo.convert.ConvertTest
 		ResourceProcessResult result = wurcsSequenceResourceProcess.processGlycoSequence("", "0");
 		
-		Assert.assertTrue(result.getLogMessage().getStatus().equals(Status.ERROR));
+		Assert.assertTrue(result.getLogMessage().getLevel().equals(LevelType.ERROR));
 	}
 	
 	/**
@@ -55,8 +56,8 @@ public class WurcsSequenceResourceProcessTest {
 		
 		ResourceProcessResult result = wurcsSequenceResourceProcess.processGlycoSequence(glycoct, "0");
 		
-		Assert.assertTrue(result.getLogMessage().getStatus().equals(Status.WARNING));
-		Assert.assertTrue(result.getLogMessage().getDescription().contains("G15021LG"));
+		Assert.assertTrue(result.getLogMessage().getLevel().equals(LevelType.WARN));
+		Assert.assertTrue(result.getLogMessage().getMessage().contains("G15021LG"));
 	}
 	
 	/**
@@ -80,6 +81,6 @@ public class WurcsSequenceResourceProcessTest {
 		
 		ResourceProcessResult result = wurcsSequenceResourceProcess.processGlycoSequence(glycoct, "0");
 		
-		Assert.assertTrue(result.getLogMessage().getStatus().equals(Status.SUCCESS));
+		Assert.assertTrue(result.getLogMessage().getLevel().equals(LevelType.INFO));
 	}
 }

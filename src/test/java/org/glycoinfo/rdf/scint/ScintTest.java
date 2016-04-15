@@ -2,6 +2,7 @@ package org.glycoinfo.rdf.scint;
 
 import java.util.List;
 
+import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
@@ -9,6 +10,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.service.UserProcedure;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureConfig;
+import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.glycoinfo.rdf.service.impl.UserProcedureConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {ScintTest.class, VirtSesameTransactionConfig.class, UserProcedureConfig.class, ContributorProcedureConfig.class})
+@SpringApplicationConfiguration(classes = {ScintTest.class, VirtSesameTransactionConfig.class, UserProcedureConfig.class, ContributorProcedureConfig.class, GlycanProcedureConfig.class})
 @ComponentScan(basePackages = {"org.glycoinfo.rdf.scint"}, excludeFilters={
 		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=SelectScintTest.class)})
 @Configuration
@@ -78,7 +80,7 @@ public class ScintTest {
 		return scint; 
 	}
 
-	@Test
+//	@Test
 	public void testGetDomain() throws SparqlException {
 		logger.debug("" + classHandler.getDomains());
 	}
@@ -88,11 +90,11 @@ public class ScintTest {
 	public void testDeleteProgramMembership() throws SparqlException {
 		
 		SparqlEntity sparqlEntityPerson = new SparqlEntity("TestID123");
-		sparqlEntityPerson.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
+		sparqlEntityPerson.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
 		
-		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlEntityPerson);
+		insertScintPerson.update(sparqlEntityPerson);
 		
-		sparqlDAO.insert(insertScintPerson.getSparqlBean());
+		sparqlDAO.insert((InsertSparql) insertScintPerson.getSparqlBean());
 
 		// ProgramMembership entity
 		SparqlEntity sparqlentityProgramMembership = new SparqlEntity(UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
@@ -101,18 +103,18 @@ public class ScintTest {
 		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, "123");
 		sparqlentityProgramMembership.setValue(UserProcedure.MEMBER, insertScintPerson);
 		
-		insertScintProgramMembership.getSparqlBean().setSparqlEntity(sparqlentityProgramMembership);
+		insertScintProgramMembership.update(sparqlentityProgramMembership);
 		
-		sparqlDAO.insert(insertScintProgramMembership.getSparqlBean());
-		
+		sparqlDAO.insert((InsertSparql) insertScintProgramMembership.getSparqlBean());
+
 		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, null);
-		selectScintProgramMembership.setSparqlEntity(sparqlentityProgramMembership);
+		selectScintProgramMembership.update(sparqlentityProgramMembership);
 		List<SparqlEntity> list = sparqlDAO.query(selectScintProgramMembership.getSparqlBean());
 		
 		SparqlEntity se = list.iterator().next();
 		se.setValue(SelectSparql.PRIMARY_KEY, UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
 		// delete the previous Program Membership
-		deleteScintProgramMembership.setSparqlEntity(se);	
-		sparqlDAO.delete(deleteScintProgramMembership);
+		deleteScintProgramMembership.update(se);	
+		sparqlDAO.delete(deleteScintProgramMembership.getSparqlBean());
 	}
 }

@@ -65,7 +65,7 @@ public class SaccharideSparqlBeanTest {
 		return sis;
 	}
 	
-	@Test
+//	@Test
 	public void testInsertSparql() throws SparqlException {
 		logger.debug(getSaccharideInsertSparql().getSparql());
 		

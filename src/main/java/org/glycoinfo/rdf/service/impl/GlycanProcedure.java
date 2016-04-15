@@ -33,7 +33,6 @@ import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.ResourceEntry;
-import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
@@ -78,7 +77,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	ContributorProcedure contributorProcedure;
 	
 	@Autowired
-	ResourceEntryInsertSparql resourceEntryInsertSparql;
+	@Qualifier("ResourceEntryInsert")
+	InsertSparql resourceEntryInsertSparql;
 
 	@Autowired
 	SelectSparql glycoSequenceContributorSelectSparql;

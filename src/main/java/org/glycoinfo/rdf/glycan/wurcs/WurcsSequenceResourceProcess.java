@@ -11,8 +11,8 @@ import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
 import org.glycoinfo.convert.GlyConvertDetect;
 import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.InsertSparql;
+import org.glycoinfo.rdf.ResourceProcessBatchParent;
 import org.glycoinfo.rdf.ResourceProcessException;
-import org.glycoinfo.rdf.ResourceProcessParent;
 import org.glycoinfo.rdf.ResourceProcessResult;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -21,10 +21,12 @@ import org.glycoinfo.rdf.glycan.ResourceEntry;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.service.impl.GlycanProcedure;
 import org.glycoinfo.rdf.utils.NumberGenerator;
-import org.glytoucan.core.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-public class WurcsSequenceResourceProcess extends ResourceProcessParent implements GlycoSequenceResourceProcess {
+import jp.bluetree.log.LevelType;
+
+public class WurcsSequenceResourceProcess extends ResourceProcessBatchParent implements GlycoSequenceResourceProcess {
 
 	private static final Log logger = LogFactory.getLog(WurcsSequenceResourceProcess.class);
 
@@ -35,9 +37,11 @@ public class WurcsSequenceResourceProcess extends ResourceProcessParent implemen
 	GlycanProcedure glycanProcedure;
 
 	@Autowired
+	@Qualifier("SaccharideInsert")
 	InsertSparql saccharideInsertSparql;
 
 	@Autowired
+	@Qualifier("ResourceEntryInsert")
 	InsertSparql resourceEntryInsertSparql;
 
 	public ResourceProcessResult processGlycoSequence(String sequence, String contributorId)
@@ -47,7 +51,7 @@ public class WurcsSequenceResourceProcess extends ResourceProcessParent implemen
 
 		if (StringUtils.isBlank(contributorId)) {
 			throw new ResourceProcessException(
-					new ResourceProcessResult("Contributor id cannot be blank", Status.ERROR));
+					new ResourceProcessResult("Contributor id cannot be blank", LevelType.ERROR));
 		}
 
 		try {
@@ -56,20 +60,20 @@ public class WurcsSequenceResourceProcess extends ResourceProcessParent implemen
 			if (null != sparqlentity && sparqlentity.getValue(GlycanProcedure.AccessionNumber) != null
 					&& !sparqlentity.getValue(GlycanProcedure.AccessionNumber).equals(GlycanProcedure.NotRegistered)) {
 				return new ResourceProcessResult(GlycanProcedure.AlreadyRegistered + " as:>"
-						+ sparqlentity.getValue(GlycanProcedure.AccessionNumber) + "<", Status.WARNING);
+						+ sparqlentity.getValue(GlycanProcedure.AccessionNumber) + "<", LevelType.WARN);
 			}
 		} catch (ConvertException e) {
 			logger.error("convert exception processing:>" + sequence + "<");
 			String errorMessage = null;
 			if (e.getMessage() != null && e.getMessage().length() > 0)
 				errorMessage = e.getMessage();
-			throw new ResourceProcessException(new ResourceProcessResult(errorMessage, Status.ERROR));
+			throw new ResourceProcessException(new ResourceProcessResult(errorMessage, LevelType.ERROR));
 		} catch (SparqlException e) {
 			logger.error("Sparql exception processing:>" + sequence + "<");
 			String errorMessage = null;
 			if (e.getMessage() != null && e.getMessage().length() > 0)
 				errorMessage = e.getMessage();
-			throw new ResourceProcessException(new ResourceProcessResult(errorMessage, Status.ERROR));
+			throw new ResourceProcessException(new ResourceProcessResult(errorMessage, LevelType.ERROR));
 		}
 
 		logger.debug("registering wurcs sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence));
@@ -115,10 +119,10 @@ public class WurcsSequenceResourceProcess extends ResourceProcessParent implemen
 			String errorMessage = null;
 			if (e.getMessage() != null && e.getMessage().length() > 0)
 				errorMessage = e.getMessage();
-			throw new ResourceProcessException(new ResourceProcessResult(errorMessage, Status.ERROR));
+			throw new ResourceProcessException(new ResourceProcessResult(errorMessage, LevelType.ERROR));
 		}
 		
-		return new ResourceProcessResult(accessionNumber, Status.SUCCESS);
+		return new ResourceProcessResult(accessionNumber, LevelType.INFO);
 	}
 
 	public String validateWurcs(String sequence) throws WURCSException {
@@ -130,5 +134,15 @@ public class WurcsSequenceResourceProcess extends ResourceProcessParent implemen
 		// WURCSSequence2 t_oSeq2 = factory.getSequence();
 		String wurcs = factory.getWURCS();
 		return wurcs;
+	}
+
+	@Override
+	public String getGraph() {
+		return "http://rdf.glycoinfo.org/sequence/wurcs";
+	}
+
+	@Override
+	public boolean initClearGraph() {
+		return true;
 	}
 }

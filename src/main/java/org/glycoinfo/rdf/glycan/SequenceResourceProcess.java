@@ -13,11 +13,12 @@ import org.glycoinfo.rdf.ResourceProcessException;
 import org.glycoinfo.rdf.ResourceProcessParent;
 import org.glycoinfo.rdf.ResourceProcessResult;
 import org.glycoinfo.rdf.utils.NumberGenerator;
-import org.glytoucan.core.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class SequenceResourceProcess extends ResourceProcessParent implements GlycoSequenceResourceProcess {
+import jp.bluetree.log.LevelType;
+
+public abstract class SequenceResourceProcess extends ResourceProcessParent implements GlycoSequenceResourceProcess {
 
 	private static final Log logger = LogFactory.getLog(SequenceResourceProcess.class);
 
@@ -39,7 +40,7 @@ public class SequenceResourceProcess extends ResourceProcessParent implements Gl
 		
 		if (StringUtils.isBlank(contributorId)) {
 			throw new ResourceProcessException(
-					new ResourceProcessResult("Contributor id cannot be blank", Status.ERROR));
+					new ResourceProcessResult("Contributor id cannot be blank", LevelType.ERROR));
 		}
 
 //		try {
@@ -102,7 +103,7 @@ public class SequenceResourceProcess extends ResourceProcessParent implements Gl
 //			throw new ResourceProcessException(new ResourceProcessResult(errorMessage, Status.ERROR));
 //		}
 		
-		return new ResourceProcessResult(sequence, Status.SUCCESS);
+		return new ResourceProcessResult(sequence, LevelType.INFO);
 	}
 
 	public String validateWurcs(String sequence) throws WURCSException {

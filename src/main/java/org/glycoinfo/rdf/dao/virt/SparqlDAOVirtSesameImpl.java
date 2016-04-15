@@ -12,7 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.DeleteSparql;
 import org.glycoinfo.rdf.InsertSparql;
-import org.glycoinfo.rdf.SelectSparql;
+import org.glycoinfo.rdf.SparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -237,18 +237,22 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 //			return null;
 //	}
 
+	@Override
 	@Transactional
-	public void delete(DeleteSparql deletesparql) throws SparqlException {
+	public void delete(SparqlBean deletesparql) throws SparqlException {
+		if (!(deletesparql instanceof DeleteSparql))
+			throw new SparqlException("expected delete SPARQL");
+		DeleteSparql delete = (DeleteSparql)deletesparql;
 		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
 		if (null != se) {
-			deletesparql.setSparqlEntity(se);
+			delete.setSparqlEntity(se);
 			SparqlEntityFactory.unset();
 		}
 		
 		RepositoryConnection connection = sesameConnectionFactory.getConnection();
 
-		String format = deletesparql.getFormat();
-		String statement = deletesparql.getSparql();
+		String format = delete.getFormat();
+		String statement = delete.getSparql();
 		logger.debug("format:>"+format);
 		logger.debug(statement);
 		
@@ -267,7 +271,7 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 			} else if (format.equals(InsertSparql.Turtle)) {
 				StringReader reader = new StringReader(statement);
 				ValueFactory f = connection.getValueFactory();
-				Resource res = f.createURI(deletesparql.getGraph());
+				Resource res = f.createURI(delete.getGraph());
 				connection.add(reader, "", RDFFormat.TURTLE, res);
 			}
 		} catch (RepositoryException | MalformedQueryException | UpdateExecutionException | RDFParseException | IOException e) {
@@ -278,19 +282,22 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 	
 	@Override
 	@Transactional
-	public void execute(InsertSparql insert) throws SparqlException {
+	public void execute(SparqlBean insert) throws SparqlException {
+		if (!(insert instanceof InsertSparql))
+			throw new SparqlException("expected Insert SPARQL");
+		InsertSparql thisInsert = (InsertSparql)insert;
 		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
 		if (null != se) {
-			insert.setSparqlEntity(se);
+			thisInsert.setSparqlEntity(se);
 			SparqlEntityFactory.unset();
 		}
 		
-		logger.debug(insert);
+		logger.debug(thisInsert);
 
 		RepositoryConnection connection = sesameConnectionFactory.getConnection();
 
-		String format = insert.getFormat();
-		String statement = insert.getSparql();
+		String format = thisInsert.getFormat();
+		String statement = thisInsert.getSparql();
 		logger.debug("format:>"+format);
 		logger.debug(statement);
 		
@@ -309,7 +316,7 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 			} else if (format.equals(InsertSparql.Turtle)) {
 				StringReader reader = new StringReader(statement);
 				ValueFactory f = connection.getValueFactory();
-				Resource res = f.createURI(insert.getGraph());
+				Resource res = f.createURI(thisInsert.getGraph());
 				connection.add(reader, "", RDFFormat.TURTLE, res);
 			}
 		} catch (RepositoryException | MalformedQueryException | UpdateExecutionException | RDFParseException | IOException e) {
@@ -324,7 +331,7 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 
 	@Override
 	@Transactional
-	public List<SparqlEntity> query(SelectSparql select) throws SparqlException {
+	public List<SparqlEntity> query(SparqlBean select) throws SparqlException {
 		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
 		if (null != se) {
 			select.setSparqlEntity(se);
@@ -339,7 +346,7 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 
 	@Override
 	@Transactional
-	public void insert(InsertSparql insert)
+	public void insert(SparqlBean insert)
 			throws SparqlException {
 		execute(insert);
 	}
@@ -348,5 +355,15 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 	public int load(String file) throws SparqlException {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	/*
+	 * @see org.glycoinfo.rdf.dao.SparqlDAO#archive(org.glycoinfo.rdf.Sparql)
+	 */
+	@Override
+	public void archive(SparqlBean something) throws SparqlException {
+		
+		
+		
 	}
 }

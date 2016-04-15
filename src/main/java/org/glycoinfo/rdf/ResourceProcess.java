@@ -6,4 +6,6 @@ public interface ResourceProcess {
 	public SparqlDAO getSparqlDAO();
 
 	public void setSparqlDAO(SparqlDAO sparqlDAO);
+	
+	public String getGraph();
 }

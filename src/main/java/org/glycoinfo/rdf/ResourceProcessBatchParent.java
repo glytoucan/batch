@@ -3,7 +3,7 @@ package org.glycoinfo.rdf;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class ResourceProcessParent implements ResourceProcess { 
+public abstract class ResourceProcessBatchParent implements ResourceProcessBatch { 
 	@Autowired
 	SparqlDAO sparqlDAO;
 

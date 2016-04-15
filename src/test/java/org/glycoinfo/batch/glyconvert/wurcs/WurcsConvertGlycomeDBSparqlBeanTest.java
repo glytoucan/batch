@@ -13,18 +13,12 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsConvertSelectSparql;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = WurcsConvertGlycomeDBSparqlBeanTest.class)
-@Configuration
-@EnableAutoConfiguration
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@SpringApplicationConfiguration(classes = WurcsConvertGlycomeDBSparqlBeanTest.class)
+//@Configuration
+//@EnableAutoConfiguration
 public class WurcsConvertGlycomeDBSparqlBeanTest {
 	protected Log logger = LogFactory.getLog(getClass());
 	
@@ -48,7 +42,7 @@ public class WurcsConvertGlycomeDBSparqlBeanTest {
 		return convert;
 	}
 		
-	@Test
+//	@Test
 	public void testGlycomeDBSelectSparql() throws SparqlException {
 		logger.debug(getConvertSelectSparql().getSparql());
 		
@@ -64,7 +58,7 @@ public class WurcsConvertGlycomeDBSparqlBeanTest {
 				+ "}\n", getConvertSelectSparql().getSparql());
 	}
 
-	@Test
+//	@Test
 	public void testGlycomeDBInsertSparql() throws SparqlException {
 
 		ConvertInsertSparql convert = getConvertInsertSparql();

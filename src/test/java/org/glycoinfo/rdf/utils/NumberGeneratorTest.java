@@ -9,11 +9,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 @Configuration
@@ -38,8 +36,8 @@ public class NumberGeneratorTest {
 			logger.debug(URLEncoder.encode("$5$19700101010000$xeBxaHB8k6f.H6Y4t1Aoa6kSxGU90nr1XpXZ3rgTcr9", "UTF-8"));
 			logger.debug(URLEncoder.encode(NumberGenerator.generateHash("5852UnicarbDBGlytoucanPartner", sdf.format(dateVal)), "UTF-8"));
 			logger.debug(URLEncoder.encode("$5$19700101010000$KtaqOjyOLmtVNpA6YBeFpw7.u32eR9NT6/5OZIJHoJ5", "UTF-8"));
-			Assert.assertEquals("JDUkMTk3MDAxMDEwMTAwMDAkeGVCeGFIQjhrNmYuSDZZNHQxQW9hNmtTeEdVOTBucjFYcFhaM3JnVGNyOQ==", NumberGenerator.generateHash("5858UnicarbDBGlytoucanPartner", sdf.format(dateVal)));
-			Assert.assertEquals("JDUkMTk3MDAxMDEwMTAwMDAkS3RhcU9qeU9MbXRWTnBBNllCZUZwdzcudTMyZVI5TlQ2LzVPWklKSG9KNQ==", NumberGenerator.generateHash("5852UnicarbDBGlytoucanPartner", sdf.format(dateVal)));
+			Assert.assertEquals("JDUkMTk3MDAxMDEwOTAwMDAkWEM2MXJ1bmRCWTZGYmZ6R0dYbnJWSllndzJienFrZnJiTFJBbm9tYTZVLw==", NumberGenerator.generateHash("5858UnicarbDBGlytoucanPartner", sdf.format(dateVal)));
+			Assert.assertEquals("JDUkMTk3MDAxMDEwOTAwMDAkaHJXRkV0S0s0dmtPMmxzR1dERGR2Q1RFMlRRY3o2MERwTFIzakZKQkpiNw==", NumberGenerator.generateHash("5852UnicarbDBGlytoucanPartner", sdf.format(dateVal)));
 			
 			} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block

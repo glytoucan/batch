@@ -10,25 +10,17 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
-import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { SearchTest.class, GlycanProcedureConfig.class, VirtSesameTransactionConfig.class })
-@Configuration
-@EnableAutoConfiguration
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@SpringApplicationConfiguration(classes = { SearchTest.class, GlycanProcedureConfig.class, VirtSesameTransactionConfig.class })
+//@Configuration
+//@EnableAutoConfiguration
 public class SubstructureTest {
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(SubstructureTest.class);
@@ -42,7 +34,7 @@ public class SubstructureTest {
 		return search;
 	}
 	
-	@Test
+//	@Test
 	public void testSelectSparql() throws SparqlException {
 		SelectSparql search = getSelectSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
@@ -81,7 +73,7 @@ public class SubstructureTest {
 								+ "}", search.getSparql());
 	}
 	
-	@Test
+//	@Test
 	public void testSearchSelectSparql() throws SparqlException {
 		SelectSparql search = getSelectSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
@@ -138,7 +130,7 @@ public class SubstructureTest {
 	}
 	
 	// 	0030MO
-	@Test
+//	@Test
 	public void testSearchSelectSparql0030MO() throws SparqlException {
 		SelectSparql search = getSelectSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
@@ -197,7 +189,7 @@ public class SubstructureTest {
 	//http://ts.nobu.glycoinfo.org/sparql?default-graph-uri=http%3A%2F%2Fwww.glycoinfo.org%2Fwurcs&query=PREFIX+glycan%3A+%3Chttp%3A%2F%2Fpurl.jp%2Fbio%2F12%2Fglyco%2Fglycan%23%3E%0D%0APREFIX+toucan%3A++%3Chttp%3A%2F%2Fwww.glytoucan.org%2Fglyco%2Fowl%2Fglytoucan%23%3E%0D%0ASELECT+%3FMotifURI+%3FPrimaryId+%3FGlycoSequenceURI+%3FSequence%0D%0AFROM+%3Chttp%3A%2F%2Frdf.glytoucan.org%3E%0D%0AFROM+%3Chttp%3A%2F%2Frdf.glytoucan.org%2Fsequence%2Fwurcs%3E%0D%0AWHERE+{%3FMotifURI+a+glycan%3Aglycan_motif+.%0D%0A%3FMotifURI+toucan%3Ahas_primary_id+%3FPrimaryId+.%0D%0A%3FMotifURI+glycan%3Ahas_glycosequence+%3FGlycoSequenceURI+.%0D%0A%3FGlycoSequenceURI+glycan%3Ahas_sequence+%3FSequence+.%0D%0A%3FGlycoSequenceURI+glycan%3Ain_carbohydrate_format+glycan%3Acarbohydrate_format_wurcs+.}%0D%0A&format=text%2Fhtml&timeout=0&debug=on
 	// G00026MO
 
-	@Test
+//	@Test
 	public void testSearchSelectSparql0026MO() throws SparqlException {
 		SelectSparql search = getSelectSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
@@ -258,7 +250,7 @@ public class SubstructureTest {
 	// WURCS=2.0/4,7,6/[u2122h_2*NCC/3=O][12122h-1b_1-5_2*NCC/3=O][11122h-1b_1-5][21122h-1a_1-5]/1-2-3-4-4-4-4/a4-b1_b4-c1_c3-d1_c6-e1_e3-f1_e6-g1
 	// 28MO
 	
-	@Test
+//	@Test
 	public void testSearchSelectSparql0028MO() throws SparqlException {
 		SelectSparql search = getSelectSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
@@ -318,7 +310,7 @@ public class SubstructureTest {
 	
 	// 31MO
 	// WURCS=2.0/2,2,1/[22112h-1a_1-5_2*NCC/3=O][12112h-1b_1-5]/1-2/a3-b1
-	@Test
+//	@Test
 	public void testSearchSelectSparql0031MO() throws SparqlException {
 		SelectSparql search = getSelectSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
@@ -380,7 +372,7 @@ public class SubstructureTest {
 			
 			// 31MO
 			// WURCS=2.0/2,2,1/[22112h-1a_1-5_2*NCC/3=O][12112h-1b_1-5]/1-2/a3-b1
-			@Test
+//			@Test
 			public void testSearchSelectSparqlG07490EK() throws SparqlException {
 				SelectSparql search = getSelectSparql();
 				SparqlEntity sparqlentity = new SparqlEntity();
@@ -439,7 +431,7 @@ public class SubstructureTest {
 			// G51379UR
 			//WURCS=2.0/2,2,1/[11122h-1b_1-5][21122h-1a_1-5]/1-2/a6-b1
 		
-			@Test
+//			@Test
 			public void testSearchSelectSparqlG51379UR() throws SparqlException {
 				SelectSparql search = getSelectSparql();
 				SparqlEntity sparqlentity = new SparqlEntity();
@@ -454,7 +446,7 @@ public class SubstructureTest {
 			// G72618IM
 			// WURCS=2.0/2,3,2/[11122h-1b_1-5][21122h-1a_1-5]/1-2-2/a3-b1_a6-c1
 
-			@Test
+//			@Test
 			public void testSearchSelectSparqlG72618IM() throws SparqlException {
 				SelectSparql search = getSelectSparql();
 				SparqlEntity sparqlentity = new SparqlEntity();
@@ -490,7 +482,7 @@ public class SubstructureTest {
 //				+ "<testSequenceURI> glytoucan:is_glycosequence_of <testSaccharideURI> .\n }\n", convert.getSparql());
 //	}
 			
-			@Test
+//			@Test
 			public void testSelectSparql2() throws SparqlException {
 				SelectSparql search = getSelectSparql();
 				SparqlEntity sparqlentity = new SparqlEntity();
@@ -503,7 +495,7 @@ public class SubstructureTest {
 				Assert.assertTrue(results.size() > 0);
 			}
 			
-			@Test
+//			@Test
 			public void testIsomerSubSelectSparqlG80382WR() throws SparqlException {
 				IsomerSubstructureSearchSparql search = new IsomerSubstructureSearchSparql();
 				search.setFilterOutSelf(true);
@@ -528,7 +520,7 @@ public class SubstructureTest {
 			
 //			G09256ZZ
 					
-					@Test
+//					@Test
 					public void testIsomerSubSelectSparqlG09256ZZ() throws SparqlException {
 						IsomerSubstructureSearchSparql search = new IsomerSubstructureSearchSparql();
 						search.setFilterOutSelf(true);

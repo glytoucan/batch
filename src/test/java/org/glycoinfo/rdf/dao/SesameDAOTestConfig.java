@@ -2,8 +2,6 @@ package org.glycoinfo.rdf.dao;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.rdf.SparqlException;
-import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
@@ -24,10 +22,10 @@ public class SesameDAOTestConfig {
     @Value("${triplestore.sesame.url}")
     private String url;
 	
-	@Bean
-	SparqlDAO getSparqlDAO() {
-		return new SparqlDAOSesameImpl();
-	}
+//	@Bean
+//	SparqlDAO getSparqlDAO() {
+//		return new SparqlDAOSesameImpl();
+//	}
 
 	@Bean
 	TripleStoreProperties getTripleStoreProperties() {

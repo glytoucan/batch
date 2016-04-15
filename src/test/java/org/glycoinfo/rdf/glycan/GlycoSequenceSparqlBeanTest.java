@@ -44,7 +44,7 @@ public class GlycoSequenceSparqlBeanTest {
 		return ins;
 	}
 
-	@Test
+//	@Test
 	public void testSelectSparql() throws SparqlException {
 		logger.debug(getGlycoSequenceSparql().getSparql());
 		
@@ -56,7 +56,7 @@ public class GlycoSequenceSparqlBeanTest {
 				getGlycoSequenceSparql().getSparql());
 	}
 	
-	@Test
+//	@Test
 	public void testSelectToWurcsSparql() throws SparqlException, UnsupportedEncodingException {
 		GlycoSequenceToWurcsSelectSparql s = new GlycoSequenceToWurcsSelectSparql("glycoct");
 		SparqlEntity se = new SparqlEntity();
@@ -138,7 +138,7 @@ public class GlycoSequenceSparqlBeanTest {
 		logger.debug(""+list);
 		Assert.assertNotEquals(list.size(), 0);
 	}
-	@Test
+//	@Test
 	public void testRunSelectToWurcsSparqlNoFormat() throws SparqlException {
 		GlycoSequenceToWurcsSelectSparql s = new GlycoSequenceToWurcsSelectSparql();
 		SparqlEntity se = new SparqlEntity();

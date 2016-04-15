@@ -7,9 +7,7 @@ package org.glycoinfo.rdf.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.glycoinfo.rdf.DeleteSparql;
-import org.glycoinfo.rdf.InsertSparql;
-import org.glycoinfo.rdf.SelectSparql;
+import org.glycoinfo.rdf.SparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
@@ -47,7 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author aoki
  */
 //@SuppressWarnings({ "unchecked", "rawtypes" })
-public class SparqlDAOBigdataImpl implements SparqlDAO {
+public abstract class SparqlDAOBigdataImpl implements SparqlDAO {
 
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger("org.glytoucan.registry.dao.SparqlDAOBigdataImpl");
@@ -248,7 +246,7 @@ return null;
 	}
 
 	@Override
-	public List<SparqlEntity> query(SelectSparql select) throws SparqlException {
+	public List<SparqlEntity> query(SparqlBean select) throws SparqlException {
 		return query(select.getSparql());
 	}
 
@@ -256,27 +254,4 @@ return null;
 		execute(insert);
 	}
 
-	@Override
-	public void insert(InsertSparql insert)
-			throws SparqlException {
-		insert(insert.getSparql());
-	}
-
-	@Override
-	public int load(String file) throws SparqlException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void delete(DeleteSparql string) throws SparqlException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void execute(InsertSparql string) throws SparqlException {
-		// TODO Auto-generated method stub
-		
-	}
 }

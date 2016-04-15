@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.glycoinfo.rdf.DeleteSparql;
-import org.glycoinfo.rdf.InsertSparql;
-import org.glycoinfo.rdf.SelectSparql;
+import org.glycoinfo.rdf.SparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.slf4j.Logger;
@@ -30,7 +28,7 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * @author aoki
  *
  */
-public class SparqlDAOJenaImpl implements SparqlDAO {
+public abstract class SparqlDAOJenaImpl implements SparqlDAO {
 	
 	public static Logger logger=(Logger) LoggerFactory.getLogger("org.glytoucan.registry.dao.SparqlDAOJenaImpl");
 
@@ -130,7 +128,7 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 	}
 
 	@Override
-	public List<SparqlEntity> query(SelectSparql select) throws SparqlException {
+	public List<SparqlEntity> query(SparqlBean select) throws SparqlException {
 		return query(select.getSparql());
 	}
 
@@ -139,7 +137,7 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 	}
 
 	@Override
-	public void insert(InsertSparql insert) throws SparqlException {
+	public void insert(SparqlBean insert) throws SparqlException {
 		insert(insert.getSparql());
 	}
 
@@ -176,15 +174,4 @@ public class SparqlDAOJenaImpl implements SparqlDAO {
 	}
 
 
-	@Override
-	public void delete(DeleteSparql string) throws SparqlException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void execute(InsertSparql string) throws SparqlException {
-		// TODO Auto-generated method stub
-		
-	}
 }

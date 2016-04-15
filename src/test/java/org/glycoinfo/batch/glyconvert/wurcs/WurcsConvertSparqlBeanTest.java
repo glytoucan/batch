@@ -47,7 +47,7 @@ public class WurcsConvertSparqlBeanTest {
 		return convert;
 	}
 
-	@Test
+//	@Test
 	public void testSelectSparql() throws SparqlException {
 		logger.debug(getConvertSelectSparql().getSparql());
 		
@@ -63,7 +63,7 @@ public class WurcsConvertSparqlBeanTest {
 				+ "}\n", getConvertSelectSparql().getSparql());
 	}
 	
-	@Test
+//	@Test
 	public void testInsertSparql() throws SparqlException {
 
 		ConvertInsertSparql convert = getConvertInsertSparql();
@@ -85,7 +85,7 @@ public class WurcsConvertSparqlBeanTest {
 				+ "<http://www.glycoinfo.org/rdf/glycan/123/wurcs> glytoucan:is_glycosequence_of <testSaccharideURI> .\n }\n", convert.getSparql());
 	}
 	
-	@Test
+//	@Test
 	public void testGlycomeDBSelectSparql() throws SparqlException {
 		logger.debug(getConvertSelectSparql().getSparql());
 		
@@ -101,7 +101,7 @@ public class WurcsConvertSparqlBeanTest {
 				+ "}\n", getConvertSelectSparql().getSparql());
 	}
 
-	@Test
+//	@Test
 	public void testGlycomeDBInsertSparql() throws SparqlException {
 
 		ConvertInsertSparql convert = getConvertInsertSparql();

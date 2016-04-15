@@ -6,18 +6,15 @@ import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSelectSparql;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MotifSparqlBeanTest.class)
 @Configuration
 @EnableAutoConfiguration
@@ -49,7 +46,7 @@ public class MotifSparqlBeanTest {
 //		return convert;
 //	}
 
-	@Test
+//	@Test
 	public void testSelectSparql() throws SparqlException {
 		logger.debug(getMotifSelectSparql().getSparql());
 		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"

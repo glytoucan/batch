@@ -7,6 +7,7 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
+import org.glycoinfo.rdf.scint.Scintillate;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.glycoinfo.rdf.service.impl.UserProcedureConfig;
@@ -67,10 +68,10 @@ public class UserProcedureTest {
 		se.setValue("member", "");
 		se.setValue("contributor", "");
 		se.remove("verifiedEmail");
-		se.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
+		se.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
 
 		SelectScint personScint = selectScintPerson;
-		personScint.setSparqlEntity(se);
+		personScint.update(se);
 		List<SparqlEntity> results = sparqlDAO.query(personScint.getSparqlBean());
 		
 		Assert.assertFalse(results.size() == 0);
@@ -92,9 +93,9 @@ public class UserProcedureTest {
 		userProcedure.add(se);
 		se.setValue("member", null);
 		se.remove("verifiedEmail");
-		se.setValue(SelectScint.NO_DOMAINS, SelectSparql.TRUE);
+		se.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
 		
-		selectScintPerson.setSparqlEntity(se);
+		selectScintPerson.update(se);
 		List<SparqlEntity> results = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		
 		Assert.assertFalse(results.size() == 0);

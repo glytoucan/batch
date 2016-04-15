@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @XmlRootElement (name="select-sparql")
-public interface SelectSparql extends Sparql {
+public interface SelectSparql extends SparqlBean {
 	@JsonProperty(value="define")
 	public String getDefine();
 	

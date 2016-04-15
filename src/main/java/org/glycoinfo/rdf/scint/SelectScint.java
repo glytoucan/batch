@@ -6,6 +6,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
+import org.glycoinfo.rdf.SparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.UriProvider;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -13,14 +14,10 @@ import org.glycoinfo.rdf.schema.SchemaSparqlFormatter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SelectScint extends Scintillate implements UriProvider {
+public class SelectScint extends ScintillateParent implements UriProvider {
 
 	SelectSparqlBean sparqlBean;
 	
-	public SelectSparqlBean getSparqlBean() throws SparqlException {
-		return sparqlBean;
-	}
-
 
 	public SelectScint() throws SparqlException {
 		this.sparqlBean = new SelectSparqlBean();
@@ -34,7 +31,7 @@ public class SelectScint extends Scintillate implements UriProvider {
 	
 	void init() throws SparqlException {
 		update();
-	}	
+	}
 
 	public void update() throws SparqlException {
 		this.sparqlBean.setPrefix(SchemaSparqlFormatter.getPrefixDefinition(this));
@@ -119,10 +116,6 @@ WHERE {
 		return sparqlBean.getSparqlEntity();
 	}
 	
-	public void setSparqlEntity(SparqlEntity se) {
-		this.sparqlBean.setSparqlEntity(se);
-	}
-
 	@Override
 	public String getUri() throws SparqlException {
 		if (null == getSparqlEntity() && null == getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY) && null == getSparqlEntity().getValue(SelectSparql.URI))
@@ -137,5 +130,15 @@ WHERE {
 			throw new SparqlException("need at least sparqlentity or URI");
 
 		return SchemaSparqlFormatter.getPrimaryKey(this, getSparqlEntity().getValue(SelectSparql.URI));
+	}
+
+	@Override
+	public SelectSparql getSparqlBean() {
+		return sparqlBean;
+	}
+
+	@Override
+	public void setSparqlBean(SparqlBean sparql) {
+		this.sparqlBean = (SelectSparqlBean) sparql;
 	}
 }
