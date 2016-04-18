@@ -264,7 +264,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		sparqlDAO.insert(insertScintProgramMembership.getSparqlBean());
 		
 		sparqlEntityPerson.setValue(MEMBER_OF, insertScintProgramMembership);
-		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlEntityPerson);
+		insertScintPerson.update(sparqlEntityPerson);
 		sparqlDAO.insert(insertScintPerson.getSparqlBean());
 
 		return sparqlentityProgramMembership.getValue(MEMBERSHIP_NUMBER);
