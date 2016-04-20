@@ -73,7 +73,7 @@ public class WebServiceClientTest {
 		logger.debug(image);
 	}
 	
-	@Test
+//	@Test
 	public void testRead() throws IOException {
 	    /* Test image to string and string to image start */
         BufferedImage img = ImageIO.read(new File("/home/aoki/workspace/rdf.glytoucan/src/test/resources/image.png"));

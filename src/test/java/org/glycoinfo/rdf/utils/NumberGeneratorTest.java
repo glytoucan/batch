@@ -36,8 +36,10 @@ public class NumberGeneratorTest {
 			logger.debug(URLEncoder.encode("$5$19700101010000$xeBxaHB8k6f.H6Y4t1Aoa6kSxGU90nr1XpXZ3rgTcr9", "UTF-8"));
 			logger.debug(URLEncoder.encode(NumberGenerator.generateHash("5852UnicarbDBGlytoucanPartner", sdf.format(dateVal)), "UTF-8"));
 			logger.debug(URLEncoder.encode("$5$19700101010000$KtaqOjyOLmtVNpA6YBeFpw7.u32eR9NT6/5OZIJHoJ5", "UTF-8"));
-			Assert.assertEquals("JDUkMTk3MDAxMDEwOTAwMDAkWEM2MXJ1bmRCWTZGYmZ6R0dYbnJWSllndzJienFrZnJiTFJBbm9tYTZVLw==", NumberGenerator.generateHash("5858UnicarbDBGlytoucanPartner", sdf.format(dateVal)));
-			Assert.assertEquals("JDUkMTk3MDAxMDEwOTAwMDAkaHJXRkV0S0s0dmtPMmxzR1dERGR2Q1RFMlRRY3o2MERwTFIzakZKQkpiNw==", NumberGenerator.generateHash("5852UnicarbDBGlytoucanPartner", sdf.format(dateVal)));
+			// these don't work on different environments like jenkins.  is date(0) different per jvm/env/time settings?
+//			Assert.assertEquals("JDUkMTk3MDAxMDEwOTAwMDAkWEM2MXJ1bmRCWTZGYmZ6R0dYbnJWSllndzJienFrZnJiTFJBbm9tYTZVLw==", NumberGenerator.generateHash("5858UnicarbDBGlytoucanPartner", sdf.format(dateVal)));
+//			Assert.assertEquals("JDUkMTk3MDAxMDEwOTAwMDAkaHJXRkV0S0s0dmtPMmxzR1dERGR2Q1RFMlRRY3o2MERwTFIzakZKQkpiNw==", NumberGenerator.generateHash("5852UnicarbDBGlytoucanPartner", sdf.format(dateVal)));
+			Assert.assertEquals("JDUkdGVzdFNhbHQkdzFCZmFrLnh2MkZjQU90QkNQNzNSdXVldlpFa1VUQU1WVEt6dXNKVU1mQg==", NumberGenerator.generateHash("5852UnicarbDBGlytoucanPartner", "testSalt"));
 			
 			} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
