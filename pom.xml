@@ -8,9 +8,9 @@
 	<packaging>jar</packaging>
 	<parent>
 		<groupId>org.glytoucan</groupId>
-		<artifactId>boot-master-pom</artifactId>
-		<version>0.23-SNAPSHOT</version>
-		<relativePath>../boot-master-pom/pom.xml</relativePath>
+		<artifactId>pom-site</artifactId>
+		<version>0.24-SNAPSHOT</version>
+		<relativePath>../pom-site/pom.xml</relativePath>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -171,6 +171,15 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<inherited>true</inherited>
+				<configuration>
+					<enableAssertions>false</enableAssertions>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
@@ -269,7 +278,7 @@
 				<!-- Import dependency management from Spring Boot -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
-				<version>1.2.5.RELEASE</version>
+				<version>1.3.3.RELEASE</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
