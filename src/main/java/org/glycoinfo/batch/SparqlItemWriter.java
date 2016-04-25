@@ -13,6 +13,7 @@ import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -38,6 +39,7 @@ public class SparqlItemWriter<T extends SparqlEntity> implements
 	private SparqlDAO schemaDAO;
 
 	@Autowired
+	@Qualifier("itemWriterInsertSparql")
 	private InsertSparql insertSparql;
 
 	@Autowired

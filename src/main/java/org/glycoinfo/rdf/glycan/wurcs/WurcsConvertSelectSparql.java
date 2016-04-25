@@ -84,8 +84,8 @@ public class WurcsConvertSelectSparql extends SelectSparqlBean implements
 				+ GlycanSequenceURI + " .\n" + "?" + GlycanSequenceURI
 				+ " glycan:has_sequence ?Sequence .\n" + "?"
 				+ GlycanSequenceURI + " glycan:in_carbohydrate_format "
-				+ getFormat();
-//		+"\n"+ getFilter();
+				+ getFormat()
+		+"\n"+ getFilter();
 	}
 
 	/**

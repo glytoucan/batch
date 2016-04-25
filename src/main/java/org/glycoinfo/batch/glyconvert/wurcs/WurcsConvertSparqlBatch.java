@@ -1,5 +1,7 @@
 package org.glycoinfo.batch.glyconvert.wurcs;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.batch.SparqlItemReader;
 import org.glycoinfo.batch.SparqlItemWriter;
 import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
@@ -27,32 +29,40 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import virtuoso.sesame2.driver.VirtuosoRepository;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = ("org.glycoinfo.batch.glyconvert.wurcs"))
+// @ComponentScan(basePackages = ("org.glycoinfo.batch"))
 @SpringApplicationConfiguration(classes = WurcsConvertSparqlBatch.class)
 @EnableBatchProcessing
 public class WurcsConvertSparqlBatch {
- 
-	// graph base to set the graph to insert into. The format type (toFormat()) will be added to the end. 
+
+	private static final Log logger = LogFactory.getLog(WurcsConvertSparqlBatch.class);
+
+	// graph base to set the graph to insert into. The format type (toFormat())
+	// will be added to the end.
 	// example: http://glytoucan.org/rdf/demo/0.7/wurcs
 	public static String graphbase = "http://rdf.glytoucan.org/sequence";
 	private int pageSize = 10000;
 
+	@Autowired
+	SparqlItemReader<SparqlEntity> sparqlItemReader;
+
+	@Autowired
+	SparqlItemWriter<SparqlEntity> sparqlItemWriter;
+
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
-		ApplicationContext ctx = SpringApplication.run(
-				WurcsConvertSparqlBatch.class, args);
+		ApplicationContext ctx = SpringApplication.run(WurcsConvertSparqlBatch.class, args);
 	}
 
 	@Bean
@@ -60,14 +70,14 @@ public class WurcsConvertSparqlBatch {
 		return new GlycoctToWurcsConverter();
 	}
 
-	@Bean
+	@Bean(name = "itemReaderSelectSparql")
 	SelectSparql getSelectSparql() {
 		SelectSparql select = new WurcsConvertSelectSparql();
 		select.setFrom("FROM <http://rdf.glytoucan.org> FROM <http://rdf.glytoucan.org/sequence/wurcs>");
 		return select;
 	}
 
-	@Bean
+	@Bean(name = "itemWriterInsertSparql")
 	InsertSparql getInsertSparql() {
 		ConvertInsertSparql convert = new ConvertInsertSparql();
 		convert.setGraphBase(graphbase);
@@ -85,32 +95,38 @@ public class WurcsConvertSparqlBatch {
 	}
 
 	@Bean
-	public ItemReader<SparqlEntity> reader() {
+	SparqlItemReader<SparqlEntity> sparqlItemReader() {
 		SparqlItemReader<SparqlEntity> reader = new SparqlItemReader<SparqlEntity>();
-		reader.setSelectSparql(getSelectSparql());
 		reader.setPageSize(pageSize);
 		return reader;
 	}
 
 	@Bean
-	public ItemWriter<SparqlEntity> writer() {
+	public ItemReader<SparqlEntity> reader() {
+		// logger.debug(sparqlItemReader.toString());
+		return sparqlItemReader;
+	}
+
+	@Bean
+	public SparqlItemWriter<SparqlEntity> sparqlItemWriter() {
 		SparqlItemWriter<SparqlEntity> reader = new SparqlItemWriter<SparqlEntity>();
-		reader.setInsertSparql(getInsertSparql());
 		return reader;
 	}
 
 	@Bean
-	public Job importUserJob(JobBuilderFactory jobs, Step s1) {
-		return jobs.get("ConvertWurcs").incrementer(new RunIdIncrementer())
-				.flow(s1).end().build();
+	public ItemWriter<SparqlEntity> writer() {
+		return sparqlItemWriter;
 	}
 
 	@Bean
-	public Step step1(StepBuilderFactory stepBuilderFactory,
-			ItemReader<SparqlEntity> reader, ItemWriter<SparqlEntity> writer,
-			ItemProcessor<SparqlEntity, SparqlEntity> processor) {
-		return stepBuilderFactory.get("step1")
-				.<SparqlEntity, SparqlEntity> chunk(10).reader(reader)
+	public Job importUserJob(JobBuilderFactory jobs, Step s1) {
+		return jobs.get("ConvertWurcs").incrementer(new RunIdIncrementer()).flow(s1).end().build();
+	}
+
+	@Bean
+	public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<SparqlEntity> reader,
+			ItemWriter<SparqlEntity> writer, ItemProcessor<SparqlEntity, SparqlEntity> processor) {
+		return stepBuilderFactory.get("step1").<SparqlEntity, SparqlEntity> chunk(10).reader(reader)
 				.processor(processor).writer(writer).build();
 	}
 
@@ -121,17 +137,15 @@ public class WurcsConvertSparqlBatch {
 
 		return process;
 	}
-	
+
 	@Bean
 	VirtSesameConnectionFactory getSesameConnectionFactory() {
 		return new VirtRepositoryConnectionFactory(getRepository());
 	}
-	
+
 	@Bean
 	public Repository getRepository() {
-		return new VirtuosoRepository(
-				getTripleStoreProperties().getUrl(), 
-				getTripleStoreProperties().getUsername(),
+		return new VirtuosoRepository(getTripleStoreProperties().getUrl(), getTripleStoreProperties().getUsername(),
 				getTripleStoreProperties().getPassword());
 	}
 
