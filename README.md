@@ -71,3 +71,5 @@ This is a Spring java-configured class which SELECT queries for strings from the
 # Credit
 This development is funded by the Integrated Database Project by MEXT (Ministry of Education, Culture, Sports, Science & Technology) 
 and the Program for Coordination Toward Integration of Related Databases by JST (Japan Science and Technology Agency) as part of the [International Glycan Repository project](http://www.glytoucan.org).
+
+
