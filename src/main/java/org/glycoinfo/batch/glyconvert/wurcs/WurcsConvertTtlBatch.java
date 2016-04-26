@@ -13,7 +13,7 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
-import org.glycoinfo.rdf.glycan.wurcs.WurcsConvertSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.ConvertSelectSparql;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -58,7 +58,7 @@ public class WurcsConvertTtlBatch {
 
 	@Bean
 	SelectSparql getSelectSparql() {
-		SelectSparql select = new WurcsConvertSelectSparql();
+		SelectSparql select = new ConvertSelectSparql();
 		select.setFrom("FROM <http://rdf.glytoucan.org>");
 		return select;
 	}

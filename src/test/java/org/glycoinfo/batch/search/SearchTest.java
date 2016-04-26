@@ -15,7 +15,7 @@ import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
-import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.WurcsGlycoSequenceSelectSparql;
 import org.glycoinfo.rdf.service.GlycanProcedure;
 import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.junit.Assert;
@@ -530,7 +530,7 @@ public class SearchTest {
 				
 				logger.debug("size:>" + sachList.size());				
 
-				GlycoSequenceSelectSparql glycoSelect = new GlycoSequenceSelectSparql();
+				WurcsGlycoSequenceSelectSparql glycoSelect = new WurcsGlycoSequenceSelectSparql();
 				glycoSelect.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/core>\n");
 				glycoSelect.setSparqlEntity(se);
 

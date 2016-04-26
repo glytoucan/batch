@@ -9,7 +9,7 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
-import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.WurcsGlycoSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,8 +36,8 @@ public class GlycoSequenceSparqlBeanTest {
 	SparqlDAO sparqlDAO;
 
 	@Bean
-	GlycoSequenceSelectSparql getGlycoSequenceSparql() {
-		GlycoSequenceSelectSparql ins = new GlycoSequenceSelectSparql();
+	WurcsGlycoSequenceSelectSparql getGlycoSequenceSparql() {
+		WurcsGlycoSequenceSelectSparql ins = new WurcsGlycoSequenceSelectSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
 		sparqlentity.setValue(Saccharide.PrimaryId, "G00009BX");
 		ins.setSparqlEntity(sparqlentity);

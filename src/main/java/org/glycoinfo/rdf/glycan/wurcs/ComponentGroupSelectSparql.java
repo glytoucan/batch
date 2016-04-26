@@ -33,7 +33,7 @@ where {
  * @author aoki
  *
  */
-public class ComponentGroupSelectSparql extends GlycoSequenceSelectSparql {
+public class ComponentGroupSelectSparql extends WurcsGlycoSequenceSelectSparql {
 
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(ComponentGroupSelectSparql.class);

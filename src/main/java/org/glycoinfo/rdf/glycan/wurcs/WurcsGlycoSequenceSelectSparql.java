@@ -25,13 +25,13 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class GlycoSequenceSelectSparql extends SelectSparqlBean implements InitializingBean, GlycoSequence {
+public class WurcsGlycoSequenceSelectSparql extends SelectSparqlBean implements InitializingBean, GlycoSequence {
 	private boolean whereset = false;
-	public GlycoSequenceSelectSparql(String sparql) {
+	public WurcsGlycoSequenceSelectSparql(String sparql) {
 		super(sparql);
 	}
 
-	public GlycoSequenceSelectSparql() {
+	public WurcsGlycoSequenceSelectSparql() {
 		super();
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX rogs: <http://http://www.glycoinfo.org/glyco/owl/relation#>\n"
@@ -47,7 +47,7 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 				+ "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
 				+ "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n"
 				+ "?" + GlycanSequenceURI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n"
-				;
+				+ getFilter();
 	}
 	
 	public String getPrimaryId() {
@@ -102,6 +102,8 @@ public class GlycoSequenceSelectSparql extends SelectSparqlBean implements Initi
 			return "FILTER NOT EXISTS {\n"
 				+ "?" + SaccharideURI + " glytoucan:has_derivatized_mass ?existingmass .\n}";
 		}
-		return "";
+		return "FILTER NOT EXISTS {\n" + "?" + SaccharideURI + " glycan:has_glycosequence ?GlycanSequenceIUPACURI .\n"
+		+ "?GlycanSequenceIUPACURI glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac .\n" + "}\n"
+		+ "}\n";
 	}
 }

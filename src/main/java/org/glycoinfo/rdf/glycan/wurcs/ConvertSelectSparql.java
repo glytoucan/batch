@@ -22,7 +22,7 @@ import org.springframework.util.Assert;
  * @author aoki
  *
  */
-public class WurcsConvertSelectSparql extends SelectSparqlBean implements
+public class ConvertSelectSparql extends SelectSparqlBean implements
 		GlyConvertSparql, InitializingBean {
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String Sequence = "Sequence";
@@ -32,11 +32,11 @@ public class WurcsConvertSelectSparql extends SelectSparqlBean implements
 	@Autowired
 	GlyConvert glyConvert;
 
-	public WurcsConvertSelectSparql(String sparql) {
+	public ConvertSelectSparql(String sparql) {
 		super(sparql);
 	}
 
-	public WurcsConvertSelectSparql() {
+	public ConvertSelectSparql() {
 		super();
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";

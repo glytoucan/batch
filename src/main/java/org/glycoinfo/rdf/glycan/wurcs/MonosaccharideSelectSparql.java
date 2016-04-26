@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class MonosaccharideSelectSparql extends GlycoSequenceSelectSparql implements WurcsMonosaccharide {
+public class MonosaccharideSelectSparql extends WurcsGlycoSequenceSelectSparql implements WurcsMonosaccharide {
 
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(MonosaccharideSelectSparql.class);

@@ -16,7 +16,7 @@ import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
 import org.glycoinfo.rdf.dao.virt.VirtRepositoryConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;
-import org.glycoinfo.rdf.glycan.wurcs.WurcsConvertSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.ConvertSelectSparql;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
@@ -72,7 +72,7 @@ public class WurcsConvertSparqlBatch {
 
 	@Bean(name = "itemReaderSelectSparql")
 	SelectSparql getSelectSparql() {
-		SelectSparql select = new WurcsConvertSelectSparql();
+		SelectSparql select = new ConvertSelectSparql();
 		select.setFrom("FROM <http://rdf.glytoucan.org> FROM <http://rdf.glytoucan.org/sequence/wurcs>");
 		return select;
 	}

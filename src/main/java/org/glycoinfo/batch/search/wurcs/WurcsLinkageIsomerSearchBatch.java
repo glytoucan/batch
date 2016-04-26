@@ -16,7 +16,7 @@ import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.relation.LinkageIsomerInsertSparql;
-import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.WurcsGlycoSequenceSelectSparql;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
@@ -66,7 +66,7 @@ public class WurcsLinkageIsomerSearchBatch {
 
 	@Bean(name="itemReaderSelectSparql")
 	SelectSparql getSelectSparql() {
-		SelectSparql select = new GlycoSequenceSelectSparql();
+		SelectSparql select = new WurcsGlycoSequenceSelectSparql();
 		SparqlEntity se = new SparqlEntity();
 		List<String> ignores = new ArrayList<>();
 		ignores.add("G70676RO");

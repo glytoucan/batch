@@ -2,7 +2,7 @@ package org.glycoinfo.rdf.glycan;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang.xwork.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.UriProvider;

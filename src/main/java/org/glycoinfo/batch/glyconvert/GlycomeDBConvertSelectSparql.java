@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.rdf.glycan.Saccharide;
-import org.glycoinfo.rdf.glycan.wurcs.WurcsConvertSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.ConvertSelectSparql;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class GlycomeDBConvertSelectSparql extends WurcsConvertSelectSparql implements
+public class GlycomeDBConvertSelectSparql extends ConvertSelectSparql implements
 		GlyConvertSparql, InitializingBean {
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String Sequence = "Sequence";

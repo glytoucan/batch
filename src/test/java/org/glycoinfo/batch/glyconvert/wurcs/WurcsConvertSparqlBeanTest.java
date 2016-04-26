@@ -69,6 +69,7 @@ public class WurcsConvertSparqlBeanTest {
     	logger.debug("count:>" + count);
         JobExecution jobExecution = jobLauncherTestUtils.launchJob();
 
+        // There are exceptions to the cases where the glycoct is weird.
         Assert.assertEquals("COMPLETED", jobExecution.getExitStatus().getExitCode());
 
     	results = sparqlDAO.query(select);

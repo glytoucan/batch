@@ -19,7 +19,7 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class GlycoSequenceResourceEntryContributorSelectSparql extends GlycoSequenceSelectSparql {
+public class GlycoSequenceResourceEntryContributorSelectSparql extends WurcsGlycoSequenceSelectSparql {
 	public static final String DateEntered = Saccharide.URI;
 	public static final String Mass = "Mass";
 	public static final String Contributor = "Contributor";

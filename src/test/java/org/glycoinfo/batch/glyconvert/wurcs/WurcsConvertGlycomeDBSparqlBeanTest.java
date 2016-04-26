@@ -12,7 +12,7 @@ import org.glycoinfo.convert.glycoct.GlycoctToWurcsConverter;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;
-import org.glycoinfo.rdf.glycan.wurcs.WurcsConvertSelectSparql;
+import org.glycoinfo.rdf.glycan.wurcs.ConvertSelectSparql;
 import org.springframework.context.annotation.Bean;
 
 //@RunWith(SpringJUnit4ClassRunner.class)
@@ -28,7 +28,7 @@ public class WurcsConvertGlycomeDBSparqlBeanTest {
 	}
 	
 	@Bean
-	WurcsConvertSelectSparql getConvertSelectSparql() {
+	ConvertSelectSparql getConvertSelectSparql() {
 		GlycomeDBConvertSelectSparql convert = new GlycomeDBConvertSelectSparql();
 		convert.setGlyConvert(getGlyConvert());
 		return convert;

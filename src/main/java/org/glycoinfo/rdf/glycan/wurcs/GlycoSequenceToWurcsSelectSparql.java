@@ -16,7 +16,7 @@ import org.glycoinfo.rdf.SparqlException;
  *
  */
 //@Component
-public class GlycoSequenceToWurcsSelectSparql extends GlycoSequenceSelectSparql  {
+public class GlycoSequenceToWurcsSelectSparql extends WurcsGlycoSequenceSelectSparql  {
 	protected Log logger = LogFactory.getLog(getClass());
 	
 	public static final String FormatGlycoSequenceURI = "FormatGlycoSequenceURI";
