@@ -69,7 +69,7 @@ public class WurcsConvertSparqlBeanTest {
     	logger.debug("count:>" + count);
         JobExecution jobExecution = jobLauncherTestUtils.launchJob();
 
-        Assert.assertEquals("COMPLETED", jobExecution.getExitStatus());
+        Assert.assertEquals("COMPLETED", jobExecution.getExitStatus().getExitCode());
 
     	results = sparqlDAO.query(select);
     	next = results.iterator().next();
