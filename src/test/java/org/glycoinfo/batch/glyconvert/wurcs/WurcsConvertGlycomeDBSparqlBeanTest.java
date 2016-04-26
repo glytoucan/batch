@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
+import org.glycoinfo.batch.glyconvert.ConvertSelectSparql;
 import org.glycoinfo.batch.glyconvert.GlycomeDBConvertInsertSparql;
 import org.glycoinfo.batch.glyconvert.GlycomeDBConvertSelectSparql;
 import org.glycoinfo.convert.GlyConvert;
@@ -12,7 +13,6 @@ import org.glycoinfo.convert.glycoct.GlycoctToWurcsConverter;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;
-import org.glycoinfo.rdf.glycan.wurcs.ConvertSelectSparql;
 import org.springframework.context.annotation.Bean;
 
 //@RunWith(SpringJUnit4ClassRunner.class)

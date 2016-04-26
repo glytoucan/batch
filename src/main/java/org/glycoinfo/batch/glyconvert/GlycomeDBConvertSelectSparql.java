@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.rdf.glycan.Saccharide;
-import org.glycoinfo.rdf.glycan.wurcs.ConvertSelectSparql;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

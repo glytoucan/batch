@@ -10,7 +10,6 @@ import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
-import org.glycoinfo.rdf.glycan.wurcs.ConvertSelectSparql;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
