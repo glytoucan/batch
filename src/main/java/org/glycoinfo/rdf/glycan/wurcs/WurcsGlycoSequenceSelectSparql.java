@@ -102,8 +102,6 @@ public class WurcsGlycoSequenceSelectSparql extends SelectSparqlBean implements 
 			return "FILTER NOT EXISTS {\n"
 				+ "?" + SaccharideURI + " glytoucan:has_derivatized_mass ?existingmass .\n}";
 		}
-		return "FILTER NOT EXISTS {\n" + "?" + SaccharideURI + " glycan:has_glycosequence ?GlycanSequenceIUPACURI .\n"
-		+ "?GlycanSequenceIUPACURI glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac .\n" + "}\n"
-		+ "}\n";
+		return "";
 	}
 }
