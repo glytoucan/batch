@@ -21,6 +21,13 @@
 		</layout>
 	</appender>
 
+	<!-- additional fooSystem logging -->
+	<appender name="TtlFile" class="org.apache.log4j.FileAppender">
+		<param name="File" value="./logs/ttl.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m" />
+		</layout>
+	</appender>
 
 	<logger name="org.glytoucan">
 		<level value="debug" />
@@ -33,6 +40,12 @@
 
 	<logger name="org.springframework">
 		<level value="warn" />
+	</logger>
+
+	<logger name="org.glycoinfo.rdf.glycan">
+		<appender-ref ref="console" />
+		<appender-ref ref="file" />
+		<appender-ref ref="TtlFile" />
 	</logger>
 
 	<root>
