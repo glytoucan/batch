@@ -66,11 +66,13 @@ public class SelectScint extends ScintillateParent implements UriProvider {
 				} else {
 					// otherwise construct the where itself, select ?column where ?a column "value" and ignore primary key
 					if (StringUtils.isNotBlank(getSparqlEntity().getValue(column) )) {
-						this.sparqlBean.setWhere("?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " ?" + column +" .\n");
+						this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " ?" + column +" .\n");
 						if (getSparqlEntity().getObjectValue(column) instanceof UriProvider)
-							this.sparqlBean.setWhere("?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " " + ((UriProvider)getSparqlEntity().getObjectValue(column)).getUri() + " .\n");
+							this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " " + ((UriProvider)getSparqlEntity().getObjectValue(column)).getUri() + " .\n");
 						else
-							this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n");
+							this.sparqlBean.setWhere(this.sparqlBean.getWhere() + SchemaSparqlFormatter.getInsert("?" + SelectSparql.URI , this, column, getSparqlEntity().getObjectValue(column)));
+//							this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "?" + SelectSparql.URI + " " + getPrefix() + ":" + column +  " \"" + getSparqlEntity().getValue(column) + "\" .\n");
+						
 					} else {
 						if (column.contains(":"))
 							this.sparqlBean.setWhere(this.sparqlBean.getWhere() + "?" + SelectSparql.URI + " " + column +  " ?" + column +" .\n");
@@ -100,6 +102,9 @@ WHERE {
 			 */
 			if (!columns.contains(NO_DOMAINS)) {
 			for(String domain: domains) {
+				if (StringUtils.isNotBlank(getSparqlEntity().getValue(domain))) {
+					continue;
+				}
 				this.sparqlBean.setSelect(this.sparqlBean.getSelect() + "?" + domain + " \n");
 				if (columns.contains(SelectSparql.PRIMARY_KEY)) {
 					// if we have the primary key, uri should be primary key address.
