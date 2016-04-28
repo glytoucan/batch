@@ -49,22 +49,24 @@ public class ConvertSparqlProcessor implements
 				throw e;
 		}
 
-		if (null != convertedSeq) {
-			// return
+//		if (null != convertedSeq) {
 			logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
 			
-			String encoded;
+			// log this action.  Conversion processes expect the wurcs to be there already
+			
+			
+//			String encoded;
 //			try {
 //				encoded = URLEncoder.encode(convertedSeq, "UTF-8");
-				encoded = convertedSeq;
+//				encoded = convertedSeq;
 //			} catch (UnsupportedEncodingException e) {
 //				e.printStackTrace();
 //				throw new ConvertException(e);
 //			}
 		
-			logger.debug("Encoded (" + convertedSeq + ") into (" + encoded + ")");
-			sparqlEntity.setValue(ConvertInsertSparql.ConvertedSequence, encoded);
-		}
+//			logger.debug("Encoded (" + convertedSeq + ") into (" + encoded + ")");
+			sparqlEntity.setValue(ConvertInsertSparql.ConvertedSequence, convertedSeq);
+//		}
 
 		if (null != errorMessage) {
 			String encodedErrorMessage;
