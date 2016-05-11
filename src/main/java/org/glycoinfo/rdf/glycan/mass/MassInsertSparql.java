@@ -1,4 +1,4 @@
-package org.glycoinfo.mass;
+package org.glycoinfo.rdf.glycan.mass;
 
 import org.glycoinfo.rdf.glycan.DerivatizedMassInsertSparql;
 import org.springframework.beans.factory.InitializingBean;

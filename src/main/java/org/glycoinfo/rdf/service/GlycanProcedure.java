@@ -22,6 +22,7 @@ public interface GlycanProcedure {
 	public static final String Format = "Format";
 	public static final String Id = "Id";
 	public static final String ResultSequence = "ResultSequence";
+	public static final String Description = "Description";
 	
 	public void setBatch(boolean batch);
 	
@@ -58,4 +59,6 @@ public interface GlycanProcedure {
 	String convertToWurcs(String sequence) throws ConvertException;
 
 	String validateWurcs(String sequence) throws WURCSException;
+
+	SparqlEntity getDescription(String accessionNumber);
 }

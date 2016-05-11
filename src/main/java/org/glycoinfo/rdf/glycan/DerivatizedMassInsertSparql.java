@@ -7,12 +7,10 @@ import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.UriProvider;
 //
-public class DerivatizedMassInsertSparql extends InsertSparqlBean {
+public class DerivatizedMassInsertSparql extends InsertSparqlBean implements DerivatizedMass {
 
 	String type = "a glycan:saccharide";
 	String hasPrimaryId = "glytoucan:has_primary_id";
-	public static String Mass = "Mass";
-	public static String MassLabel = "MassLabel";
 
 	public DerivatizedMassInsertSparql() {
 		this.prefix="PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";

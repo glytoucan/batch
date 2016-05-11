@@ -7,10 +7,10 @@ import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.batch.glyconvert.ConvertInsertSparql;
 import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.convert.glycoct.GlycoctToWurcsConverter;
-import org.glycoinfo.mass.MassSelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;
+import org.glycoinfo.rdf.glycan.mass.MassSelectSparql;
 import org.springframework.context.annotation.Bean;
 
 //@RunWith(SpringJUnit4ClassRunner.class)

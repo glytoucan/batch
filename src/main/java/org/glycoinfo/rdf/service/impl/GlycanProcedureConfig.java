@@ -3,7 +3,6 @@ package org.glycoinfo.rdf.service.impl;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.client.MSdbClient;
 import org.glycoinfo.convert.GlyConvertConfig;
-import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -12,6 +11,7 @@ import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
+import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
 import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
@@ -109,10 +109,10 @@ public class GlycanProcedureConfig implements GraphConfig {
 		return sb;
 	}
 	
-	@Bean
-	MSdbClient msdbClient() {
-		return new MSdbClient();
-	}
+//	@Bean
+//	MSdbClient msdbClient() {
+//		return new MSdbClient();
+//	}
 	
 	@Bean
 	public MSInsertSparql msInsertSparql() {

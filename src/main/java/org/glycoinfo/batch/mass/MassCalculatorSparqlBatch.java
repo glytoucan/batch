@@ -2,8 +2,6 @@ package org.glycoinfo.batch.mass;
 
 import org.glycoinfo.batch.SparqlItemReader;
 import org.glycoinfo.batch.SparqlItemWriter;
-import org.glycoinfo.mass.MassInsertSparql;
-import org.glycoinfo.mass.MassSelectSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
@@ -12,6 +10,8 @@ import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
 import org.glycoinfo.rdf.dao.virt.VirtRepositoryConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;
+import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
+import org.glycoinfo.rdf.glycan.mass.MassSelectSparql;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;

@@ -13,7 +13,8 @@ import org.springframework.util.Assert;
 
 /**
  * 
- * SelectSparql for retrieving the Wurcs of 
+ * Retrieves the sequence information for a saccharide with GlycoSequence.Format format.
+ * 
  * The filter removes any existing sequences in the getTo() of the GlyConvert.
  * 
  * For instance: Retrieving of original glycoct by using

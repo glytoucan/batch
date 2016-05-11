@@ -9,10 +9,10 @@ import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassCalculator;
 import org.glycoinfo.WURCSFramework.util.array.mass.WURCSMassException;
 import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
-import org.glycoinfo.mass.MassInsertSparql;
-import org.glycoinfo.mass.MassSelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
+import org.glycoinfo.rdf.glycan.mass.MassSelectSparql;
 import org.springframework.batch.item.ItemProcessor;
 
 public class MassSparqlProcessor implements

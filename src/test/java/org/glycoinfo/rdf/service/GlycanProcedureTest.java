@@ -9,7 +9,6 @@ import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.client.MSdbClient;
 import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.convert.error.ConvertException;
-import org.glycoinfo.mass.MassInsertSparql;
 import org.glycoinfo.rdf.DuplicateException;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
@@ -27,6 +26,7 @@ import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
+import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
 import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
@@ -1055,5 +1055,11 @@ LIN
 			Assert.assertNotEquals(0, result.trim().length());
 		}	
 		
-		
+		@Test
+		public void testDescriptionQuery() {
+			SparqlEntity description = glycanProcedure.getDescription("G00055MO");
+			String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
+			logger.debug(desc);
+			Assert.assertTrue(desc.contains("Galb1-4GlcNAcb1-R"));
+		}
 }

@@ -1,4 +1,4 @@
-package org.glycoinfo.mass;
+package org.glycoinfo.rdf.glycan.mass;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
