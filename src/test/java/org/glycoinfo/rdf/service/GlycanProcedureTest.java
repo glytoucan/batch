@@ -27,7 +27,7 @@ import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
-import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
+//import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
@@ -239,10 +239,10 @@ public class GlycanProcedureTest {
 		return new MailService();
 	}
 	
-	@Bean
-	MSdbClient msdbClient() {
-		return new MSdbClient();
-	}
+//	@Bean
+//	MSdbClient msdbClient() {
+//		return new MSdbClient();
+//	}
 	
 	@Bean
 	MonosaccharideSelectSparql monosaccharideSelectSparql() {
@@ -251,12 +251,12 @@ public class GlycanProcedureTest {
 		return sb;
 	}
 	
-	@Bean
-	public MSInsertSparql msInsertSparql() {
-		MSInsertSparql wrss = new MSInsertSparql();
-		wrss.setGraph("http://rdf.glytoucan.org/msdb");
-		return wrss;
-	}
+//	@Bean
+//	public MSInsertSparql msInsertSparql() {
+//		MSInsertSparql wrss = new MSInsertSparql();
+//		wrss.setGraph("http://rdf.glytoucan.org/msdb");
+//		return wrss;
+//	}
 	
 	@Autowired
 	DatabaseSelectSparql databaseSelectSparql;

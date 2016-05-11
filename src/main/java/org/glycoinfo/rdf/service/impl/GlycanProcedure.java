@@ -39,7 +39,7 @@ import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.SaccharideUtil;
 import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
 import org.glycoinfo.rdf.glycan.mass.MassSelectSparql;
-import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
+//import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
@@ -115,8 +115,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Autowired
 	MonosaccharideSelectSparql monosaccharideSelectSparql;
 
-	@Autowired
-	public MSInsertSparql msInsertSparql;
+//	@Autowired
+//	public MSInsertSparql msInsertSparql;
 
 	// @Autowired
 	// public SparqlEntityFactory sparqlEntityFactory;

@@ -12,7 +12,7 @@ import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
-import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
+//import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
@@ -114,12 +114,12 @@ public class GlycanProcedureConfig implements GraphConfig {
 //		return new MSdbClient();
 //	}
 	
-	@Bean
-	public MSInsertSparql msInsertSparql() {
-		MSInsertSparql wrss = new MSInsertSparql();
-		wrss.setGraph("http://rdf.glytoucan.org/msdb/monosaccharide");
-		return wrss;
-	}
+//	@Bean
+//	public MSInsertSparql msInsertSparql() {
+//		MSInsertSparql wrss = new MSInsertSparql();
+//		wrss.setGraph("http://rdf.glytoucan.org/msdb/monosaccharide");
+//		return wrss;
+//	}
 	
 	@Bean
 	GlycanProcedure glycanProcedure() {
