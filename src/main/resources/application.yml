@@ -15,12 +15,6 @@ spring:
    #     password: db@
         password: dba
         graph: graph
-logging:
-  path: ./log
-  file: debug.log
-  level.org.glycoinfo: DEBUG
-#tempgraph: http://rdf.glycoinfo.org
-
 wurcs:
   graph:
     target: <http://rdf.glytoucan.org/sequence/wurcs>
