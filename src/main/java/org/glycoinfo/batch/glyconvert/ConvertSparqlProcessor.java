@@ -10,6 +10,7 @@ import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
+import org.glycoinfo.rdf.glycan.Saccharide;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,12 +34,15 @@ public class ConvertSparqlProcessor implements
 		
 		// get the sequence
 		String sequence = sparqlEntity.getValue(ConvertSelectSparql.Sequence);
+		logger.debug("Converting (" + sequence + ")");
 		
+		String id = sparqlEntity.getValue(Saccharide.PrimaryId);
+		logger.debug("id (" + id + ")");
 		// convert the sequence
 		GlyConvert converter = getGlyConvert();
 		String convertedSeq = null;
 		String errorMessage = null;
-		try {
+        try {
 			convertedSeq = converter.convert(sequence);
 		} catch (ConvertException e) {
 			e.printStackTrace();

@@ -38,7 +38,8 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	public ConvertSelectSparql() {
 		super();
 		this.from = "FROM <http://rdf.glytoucan.org>\n"
-				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
+				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
+				+ "FROM <http://rdf.glytoucan.org/sequence/" + glyConvert.getToFormat() + ">";
 	}
 
 	protected Log logger = LogFactory.getLog(getClass());
