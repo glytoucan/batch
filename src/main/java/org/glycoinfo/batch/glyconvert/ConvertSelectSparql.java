@@ -37,9 +37,6 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 
 	public ConvertSelectSparql() {
 		super();
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
-				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
-				+ "FROM <http://rdf.glytoucan.org/sequence/" + glyConvert.getToFormat() + ">";
 	}
 
 	protected Log logger = LogFactory.getLog(getClass());
@@ -114,5 +111,12 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 		Assert.state(getSelect() != null, "A select is required");
 		Assert.state(getGlyConvert() != null,
 				"A conversion is required - is one configured for autowire?");
+	}
+	
+	@Override
+	public String getFrom() {
+    return "FROM <http://rdf.glytoucan.org>\n"
+        + "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
+        + "FROM <http://rdf.glytoucan.org/sequence/" + glyConvert.getToFormat() + ">";
 	}
 }
