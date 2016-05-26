@@ -9,12 +9,14 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,11 +35,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *         http://creativecommons.org/licenses/by/4.0/.
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { WurcsConvertSparqlBeanTest.class, WurcsConvertSparqlBatch.class })
-@Configuration
-// @EnableAutoConfiguration
-public class WurcsConvertSparqlBeanTest {
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@SpringApplicationConfiguration(classes = { WurcsConvertSparqlBeanTest.class, VirtSesameTransactionConfig.class })
+//@Configuration
+//@EnableAutoConfiguration
+public class WurcsConvertBatchTest {
 	protected Log logger = LogFactory.getLog(getClass());
 
 	@Autowired
@@ -51,7 +53,7 @@ public class WurcsConvertSparqlBeanTest {
 		return new JobLauncherTestUtils();
 	}
 
-	@Test
+//	@Test
 	// @Transactional
 	public void testJob() throws Exception {
 		SelectSparql select = new SelectSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"

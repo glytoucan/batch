@@ -24,6 +24,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -44,6 +45,9 @@ public class GlycoCTProcessBatch {
 	private static final String graph = "http://rdf.glytoucan.org";
 	private int pageSize = 5000;
 
+	@Autowired
+	TripleStoreProperties tripleStoreProperties;
+	
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
 		ApplicationContext ctx = SpringApplication.run(
@@ -70,10 +74,10 @@ public class GlycoCTProcessBatch {
 		return new SparqlDAOVirtSesameImpl();
 	}
 
-	@Bean
-	TripleStoreProperties getTripleStoreProperties() {
-		return new TripleStoreProperties();
-	}
+//	@Bean
+//	TripleStoreProperties getTripleStoreProperties() {
+//		return new TripleStoreProperties();
+//	}
 
 	@Bean
 	public ItemReader<SparqlEntity> reader() {
@@ -117,9 +121,9 @@ public class GlycoCTProcessBatch {
 	@Bean
 	public Repository getRepository() {
 		return new VirtuosoRepository(
-				getTripleStoreProperties().getUrl(), 
-				getTripleStoreProperties().getUsername(),
-				getTripleStoreProperties().getPassword());
+		    tripleStoreProperties.getUrl(), 
+		    tripleStoreProperties.getUsername(),
+		    tripleStoreProperties.getPassword());
 	}
 
 	@Bean

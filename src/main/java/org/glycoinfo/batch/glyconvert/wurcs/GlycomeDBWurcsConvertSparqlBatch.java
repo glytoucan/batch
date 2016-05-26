@@ -73,10 +73,10 @@ public class GlycomeDBWurcsConvertSparqlBatch {
 		return new SparqlDAOVirtSesameImpl();
 	}
 
-	@Bean
-	TripleStoreProperties getTripleStoreProperties() {
-		return new TripleStoreProperties();
-	}
+//	@Bean
+//	TripleStoreProperties getTripleStoreProperties() {
+//		return new TripleStoreProperties();
+//	}
 
 	@Bean
 	public ItemReader<SparqlEntity> reader() {

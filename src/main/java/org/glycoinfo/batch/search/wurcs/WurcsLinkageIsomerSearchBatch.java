@@ -13,6 +13,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
 import org.glycoinfo.rdf.dao.virt.VirtRepositoryConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.relation.LinkageIsomerInsertSparql;
@@ -43,7 +44,7 @@ import virtuoso.sesame2.driver.VirtuosoRepository;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = ("org.glycoinfo.batch.search.wurcs"))
-@SpringApplicationConfiguration(classes = WurcsLinkageIsomerSearchBatch.class)
+@SpringApplicationConfiguration(classes = { WurcsLinkageIsomerSearchBatch.class, VirtSesameTransactionConfig.class } )
 @EnableBatchProcessing
 public class WurcsLinkageIsomerSearchBatch {
 	
@@ -102,10 +103,10 @@ public class WurcsLinkageIsomerSearchBatch {
 		return new SparqlDAOVirtSesameImpl();
 	}
 
-	@Bean
-	TripleStoreProperties getTripleStoreProperties() {
-		return new TripleStoreProperties();
-	}
+//	@Bean
+//	TripleStoreProperties getTripleStoreProperties() {
+//		return new TripleStoreProperties();
+//	}
 
 	@Bean
 	public ItemReader<SparqlEntity> reader() {
@@ -149,23 +150,5 @@ public class WurcsLinkageIsomerSearchBatch {
 		process.setPostConverter(new LinkageIsomerPostConverter());
 		process.setPutall(true);
 		return process;
-	}
-	
-	@Bean
-	VirtSesameConnectionFactory getSesameConnectionFactory() {
-		return new VirtRepositoryConnectionFactory(getRepository());
-	}
-	
-	@Bean
-	public Repository getRepository() {
-		return new VirtuosoRepository(
-				getTripleStoreProperties().getUrl(), 
-				getTripleStoreProperties().getUsername(),
-				getTripleStoreProperties().getPassword());
-	}
-
-	@Bean
-	VirtSesameTransactionManager transactionManager() throws RepositoryException {
-		return new VirtSesameTransactionManager(getSesameConnectionFactory());
 	}
 }

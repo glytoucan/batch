@@ -12,6 +12,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
 import org.glycoinfo.rdf.dao.virt.VirtRepositoryConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;
 import org.glycoinfo.rdf.glycan.MotifInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
@@ -41,7 +42,7 @@ import virtuoso.sesame2.driver.VirtuosoRepository;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = ("org.glycoinfo.batch.search.wurcs"))
-@SpringApplicationConfiguration(classes = WurcsMotifSearchBatch.class)
+@SpringApplicationConfiguration(classes = { WurcsMotifSearchBatch.class, VirtSesameTransactionConfig.class })
 @EnableBatchProcessing
 public class WurcsMotifSearchBatch {
 	
@@ -79,11 +80,6 @@ public class WurcsMotifSearchBatch {
 	@Bean
 	SparqlDAO getSparqlDAO() {
 		return new SparqlDAOVirtSesameImpl();
-	}
-
-	@Bean
-	TripleStoreProperties getTripleStoreProperties() {
-		return new TripleStoreProperties();
 	}
 
 	@Bean
@@ -127,23 +123,5 @@ public class WurcsMotifSearchBatch {
 		process.setPostConverter(new MotifPostConverter());
 		process.setPutall(true);
 		return process;
-	}
-	
-	@Bean
-	VirtSesameConnectionFactory getSesameConnectionFactory() {
-		return new VirtRepositoryConnectionFactory(getRepository());
-	}
-	
-	@Bean
-	public Repository getRepository() {
-		return new VirtuosoRepository(
-				getTripleStoreProperties().getUrl(), 
-				getTripleStoreProperties().getUsername(),
-				getTripleStoreProperties().getPassword());
-	}
-
-	@Bean
-	VirtSesameTransactionManager transactionManager() throws RepositoryException {
-		return new VirtSesameTransactionManager(getSesameConnectionFactory());
 	}
 }

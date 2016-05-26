@@ -42,7 +42,6 @@ public class SparqlItemWriter<T extends SparqlEntity> implements
 	@Qualifier("itemWriterInsertSparql")
 	private InsertSparql insertSparql;
 
-	@Autowired
 	private InsertSparql insertFailSparql;
 
 	public InsertSparql getInsertSparql() {

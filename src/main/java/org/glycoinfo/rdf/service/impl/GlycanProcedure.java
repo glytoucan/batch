@@ -88,7 +88,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	SelectSparql glycoSequenceContributorSelectSparql;
 
 	@Autowired
-	SelectSparql listAllGlycoSequenceContributorSelectSparql;
+	SelectSparql listAllIdSelectSparql;
 
 	@Autowired
 	InsertSparql wurcsRDFInsertSparql;
@@ -696,9 +696,9 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 
 	@Override
 	public List<SparqlEntity> getGlycans(String offset, String limit) throws SparqlException {
-		listAllGlycoSequenceContributorSelectSparql.setLimit(limit);
-		listAllGlycoSequenceContributorSelectSparql.setOffset(offset);
-		return sparqlDAO.query(listAllGlycoSequenceContributorSelectSparql);
+		listAllIdSelectSparql.setLimit(limit);
+		listAllIdSelectSparql.setOffset(offset);
+		return sparqlDAO.query(listAllIdSelectSparql);
 	}
 
 	/**

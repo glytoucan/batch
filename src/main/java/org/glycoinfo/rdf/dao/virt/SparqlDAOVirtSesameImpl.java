@@ -46,15 +46,15 @@ import org.springframework.transaction.annotation.Transactional;
  * @author aoki
  */
 @Repository
-@Scope(value="request", proxyMode=ScopedProxyMode.TARGET_CLASS)
+//@Scope(value="request", proxyMode=ScopedProxyMode.TARGET_CLASS)
 //@SuppressWarnings({ "unchecked", "rawtypes" })
 public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 	
 	public static Log logger = (Log) LogFactory
 			.getLog("org.glytoucan.registry.dao.SparqlDAOVirtSesameImpl");
 
-	@Autowired(required=false)
-	TripleStoreProperties datasource;
+//	@Autowired(required=false)
+//	TripleStoreProperties datasource;
 	
 //	@Autowired
 //	SparqlEntityFactory sparqlEntityFactory;
@@ -70,13 +70,13 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 
 	
 //	@ConfigurationProperties(prefix="spring.triplestore")
-	public TripleStoreProperties getTripleStoreProperties() {
-		return datasource;
-	}
+//	public TripleStoreProperties getTripleStoreProperties() {
+//		return datasource;
+//	}
 
-	public void setTripleSource(TripleStoreProperties datasource) {
-		this.datasource = datasource;
-	}
+//	public void setTripleSource(TripleStoreProperties datasource) {
+//		this.datasource = datasource;
+//	}
 
 	public List<SparqlEntity> getAllClass() {
 		// Query sparql =
