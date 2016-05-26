@@ -61,4 +61,6 @@ public interface GlycanProcedure {
 	String validateWurcs(String sequence) throws WURCSException;
 
 	SparqlEntity getDescription(String accessionNumber);
+
+  List<SparqlEntity> getGlycansAll(String offset, String limit) throws SparqlException;
 }

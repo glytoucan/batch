@@ -11,6 +11,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.DatabaseSelectSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
+import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
@@ -58,12 +59,19 @@ public class GlycanProcedureConfig implements GraphConfig {
 	  SelectSparql ss = new SelectSparqlBean();
 	  ss.setPrefix("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
 	  "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n");
-	  ss.setSelect("distinct ?primary");
+	  ss.setSelect("distinct ?" + Saccharide.PrimaryId);
 	  ss.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>");
 	  ss.setWhere("?s a glycan:saccharide .\n" + 
-	  "?s glytoucan:has_primary_id ?primary .\n");
+	  "?s glytoucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n");
 	  return ss;
 	}
+	
+  @Bean
+  SelectSparql listAllGlycoSequenceContributorSelectSparql() {
+    GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
+    sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\nFROM <" + graph + "/users>\nFROM <http://rdf.glytoucan.org/sequence/glycoct>\nFROM <http://rdf.glytoucan.org/users>\n");
+    return sb;
+  }
 	
 	@Bean
 	MassInsertSparql massInsertSparql() {

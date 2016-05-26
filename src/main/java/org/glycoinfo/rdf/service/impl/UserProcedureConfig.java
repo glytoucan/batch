@@ -98,11 +98,11 @@ public class UserProcedureConfig implements GraphConfig {
 //		return classHandler; 
 //	}
 //	
-//	@Bean(name = "userProcedure")
-//	UserProcedure getUserProcedure() throws SparqlException {
-//		UserProcedure user = new org.glycoinfo.rdf.service.impl.UserProcedure();
-//		return user;
-//	}
+	@Bean(name = "userProcedure")
+	UserProcedure getUserProcedure() throws SparqlException {
+		UserProcedure user = new org.glycoinfo.rdf.service.impl.UserProcedure();
+		return user;
+	}
 //	
 //	@Bean(name = "contributorProcedure")
 //	ContributorProcedure getContributorProcedure() throws SparqlException {
@@ -110,8 +110,8 @@ public class UserProcedureConfig implements GraphConfig {
 //		return cp;
 //	}
 //	
-//	@Bean
-//	MailService mailService() {
-//		return new MailService();
-//	}
+	@Bean
+	MailService mailService() {
+		return new MailService();
+	}
 }
