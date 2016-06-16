@@ -1,6 +1,6 @@
 package org.glycoinfo.rdf.dao.virt;
 
-import org.glycoinfo.batch.glyconvert.SparqlItemConfig;
+import org.glycoinfo.batch.glyconvert.GlyConvertSparqlItemConfig;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;

@@ -1,4 +1,4 @@
-package org.glycoinfo.batch.glyconvert;
+package org.glycoinfo.batch;
 
 import org.glycoinfo.batch.SparqlItemReader;
 import org.glycoinfo.batch.SparqlItemWriter;
@@ -20,9 +20,6 @@ public class SparqlItemConfig {
 
   private int pageSize = 10000;
   
-  @Autowired
-  ConvertSparqlProcessor convertSparqlProcessor;
-
   @Bean
   public SparqlItemWriter<SparqlEntity> sparqlItemWriter() {
     SparqlItemWriter<SparqlEntity> reader = new SparqlItemWriter<SparqlEntity>();
@@ -51,29 +48,4 @@ public class SparqlItemConfig {
   public ItemWriter<SparqlEntity> writer() {
     return sparqlItemWriter;
   }
-
-  @Bean
-  public ItemProcessor<SparqlEntity, SparqlEntity> processor() {
-    return convertSparqlProcessor;
-  }
-  
-  @Bean
-  public ConvertSparqlProcessor convertSparqlProcessor() {
-    return new ConvertSparqlProcessor();
-  }
-  // @Bean
-  // public Job importUserJob(JobBuilderFactory jobs, Step s1) {
-  // return jobs.get("ConvertWurcs").incrementer(new
-  // RunIdIncrementer()).flow(s1).end().build();
-  // }
-  //
-  // @Bean
-  // public Step step1(StepBuilderFactory stepBuilderFactory,
-  // ItemReader<SparqlEntity> reader,
-  // ItemWriter<SparqlEntity> writer, ItemProcessor<SparqlEntity, SparqlEntity>
-  // processor) {
-  // return stepBuilderFactory.get("step1").<SparqlEntity, SparqlEntity>
-  // chunk(10).reader(reader)
-  // .processor(processor).writer(writer).build();
-  // }
 }
