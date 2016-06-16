@@ -14,13 +14,8 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
-import org.glycoinfo.rdf.dao.virt.VirtRepositoryConnectionFactory;
-import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
-import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;
 import org.glycoinfo.rdf.utils.TripleStoreProperties;
-import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -33,18 +28,18 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import virtuoso.sesame2.driver.VirtuosoRepository;
+import org.springframework.context.annotation.Import;
 
 @Configuration
 @EnableAutoConfiguration
 // @ComponentScan(basePackages = ("org.glycoinfo.batch"))
-@SpringApplicationConfiguration(classes = { WurcsConvertSparqlBatch.class, VirtSesameTransactionConfig.class })
 @EnableBatchProcessing
+@SpringBootApplication
+@Import(VirtSesameTransactionConfig.class)
 public class WurcsConvertSparqlBatch {
 
 	private static final Log logger = LogFactory.getLog(WurcsConvertSparqlBatch.class);
