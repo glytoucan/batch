@@ -16,13 +16,14 @@ triplestore:
   sesame:
     url: http://localhost:5358/openrdf-sesame/repositories/testnative
 logging:
+    path: ./log
+    file: debug.log
     level: org.glycoinfo=DEBUG
+#tempgraph: http://rdf.glycoinfo.org
 wurcs:
   graph:
     target: <http://rdf.glycoinfo.org/wurcs/seq/0.3/glytoucan/20150902>
     ms: <http://rdf.glycoinfo.org/wurcs/ms/0.2>
-
-
 mail:
   address:
     from: support@glytoucan.org
@@ -33,6 +34,5 @@ mail:
   body:
     newRegistration: newRegistration.vm
     notifyRegistration: notifyRegistration.vm
-
 msDb:
   rdf: http://www.monosaccharidedb.org/rdf/monosaccharide.action?name=
