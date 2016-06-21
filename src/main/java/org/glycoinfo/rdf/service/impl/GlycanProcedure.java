@@ -643,7 +643,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
         + "?wurcsgseq glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n" 
 				+ "optional {\n"
 				+ "?s glycan:has_glycosequence ?gseq .\n" + "?gseq glycan:has_sequence ?iupac .\n"
-				+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac_extended .\n"
+				+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac_condensed .\n"
 				+ "}" 
 				+ "optional {\n"
 				+ "?s glytoucan:has_derivatized_mass ?mass .\n" + "?mass rdf:type        glytoucan:derivatized_mass .\n"

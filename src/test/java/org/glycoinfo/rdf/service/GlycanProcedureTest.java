@@ -1062,6 +1062,6 @@ LIN
 			SparqlEntity description = glycanProcedure.getDescription("G00055MO");
 			String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
 			logger.debug(desc);
-			Assert.assertTrue(desc.contains("beta-D-Galp-(1->4)-beta-D-GlcpNAc(1->"));
+			Assert.assertTrue(desc.contains("Gal(b1-4)GlcNAc(b1-"));
 		}
 }
