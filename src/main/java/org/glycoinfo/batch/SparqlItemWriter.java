@@ -98,7 +98,7 @@ public class SparqlItemWriter<T extends SparqlEntity> implements
 
 			InsertSparql insertSparql = getInsertSparql();
 			try {
-				SparqlEntityFactory.set(t);
+//				SparqlEntityFactory.set(t);
 				insertSparql.setSparqlEntity(t);
 
 				if (!(insertSparql.getSparql().trim().length() == 0)) {

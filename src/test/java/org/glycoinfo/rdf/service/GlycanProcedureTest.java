@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.client.MSdbClient;
+import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.DuplicateException;
@@ -21,6 +22,7 @@ import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
 import org.glycoinfo.rdf.glycan.DatabaseSelectSparql;
+import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
@@ -705,11 +707,11 @@ LIN
 	
 	@Test
 	public void testListAll() throws SparqlException, NoSuchAlgorithmException {
-		List<SparqlEntity> se = glycanProcedure.getGlycans("100", "100");
-		
-		logger.debug(se.toString());
-//		Assert.assertNotNull(se);
-		
+		List<SparqlEntity> seList = glycanProcedure.getGlycans("100", "100");
+    Assert.assertNotNull(seList);
+		Assert.assertSame(100, seList.size());
+		SparqlEntity se = seList.get(0);
+		Assert.assertTrue(se.getValue(GlycoSequence.Sequence).contains("WURCS"));
 	}
 	
 //	@Test
@@ -765,10 +767,10 @@ LIN
 //		Assert.assertTrue(compare.containsAll(correct));
 	}
 	
-	@Bean
-	SparqlEntityFactory sparqlEntityFactory() {
-		return new SparqlEntityFactory();
-	}
+//	@Bean
+//	SparqlEntityFactory sparqlEntityFactory() {
+//		return new SparqlEntityFactory();
+//	}
 	
 //	@Test
 	@Transactional
@@ -1060,6 +1062,6 @@ LIN
 			SparqlEntity description = glycanProcedure.getDescription("G00055MO");
 			String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
 			logger.debug(desc);
-			Assert.assertTrue(desc.contains("beta-L-Galp-(1->4)-beta-L-GlcpNAc(1->"));
+			Assert.assertTrue(desc.contains("beta-D-Galp-(1->4)-beta-D-GlcpNAc(1->"));
 		}
 }

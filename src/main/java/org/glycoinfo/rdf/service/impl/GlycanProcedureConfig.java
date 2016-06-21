@@ -2,6 +2,7 @@ package org.glycoinfo.rdf.service.impl;
 
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.client.MSdbClient;
+import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
@@ -9,7 +10,9 @@ import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.DatabaseSelectSparql;
+import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
+import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
@@ -56,14 +59,18 @@ public class GlycanProcedureConfig implements GraphConfig {
 	
 	@Bean
 	SelectSparql listAllIdSelectSparql() throws SparqlException {
-	  SelectSparql ss = new SelectSparqlBean();
-	  ss.setPrefix("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
-	  "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n");
-	  ss.setSelect("distinct ?" + Saccharide.PrimaryId);
-	  ss.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>");
-	  ss.setWhere("?s a glycan:saccharide .\n" + 
-	  "?s glytoucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n");
-	  return ss;
+	  GlycoSequenceSelectSparql gsss = new GlycoSequenceSelectSparql();
+	  SparqlEntity se = new SparqlEntity();
+	  se.setValue(GlycoSequence.Format, GlyConvert.WURCS);
+	  gsss.setSparqlEntity(se);
+//	  SelectSparql ss = new SelectSparqlBean();
+//	  ss.setPrefix("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
+//	  "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n");
+//	  ss.setSelect("distinct ?" + Saccharide.PrimaryId);
+//	  ss.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>");
+//	  ss.setWhere("?s a glycan:saccharide .\n" + 
+//	  "?s glytoucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n");
+	  return gsss;
 	}
 	
   @Bean

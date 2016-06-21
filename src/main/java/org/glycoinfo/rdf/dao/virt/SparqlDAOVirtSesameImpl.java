@@ -243,11 +243,11 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 		if (!(deletesparql instanceof DeleteSparql))
 			throw new SparqlException("expected delete SPARQL");
 		DeleteSparql delete = (DeleteSparql)deletesparql;
-		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
-		if (null != se) {
-			delete.setSparqlEntity(se);
-			SparqlEntityFactory.unset();
-		}
+//		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
+//		if (null != se) {
+//			delete.setSparqlEntity(se);
+//			SparqlEntityFactory.unset();
+//		}
 		
 		RepositoryConnection connection = sesameConnectionFactory.getConnection();
 
@@ -286,11 +286,11 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 		if (!(insert instanceof InsertSparql))
 			throw new SparqlException("expected Insert SPARQL");
 		InsertSparql thisInsert = (InsertSparql)insert;
-		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
-		if (null != se) {
-			thisInsert.setSparqlEntity(se);
-			SparqlEntityFactory.unset();
-		}
+//		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
+//		if (null != se) {
+//			thisInsert.setSparqlEntity(se);
+//			SparqlEntityFactory.unset();
+//		}
 		
 		logger.debug(thisInsert);
 
@@ -332,11 +332,11 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 	@Override
 	@Transactional
 	public List<SparqlEntity> query(SparqlBean select) throws SparqlException {
-		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
-		if (null != se) {
-			select.setSparqlEntity(se);
-			SparqlEntityFactory.unset();
-		}
+//		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
+//		if (null != se) {
+//			select.setSparqlEntity(se);
+//			SparqlEntityFactory.unset();
+//		}
 		
 //		logger.debug("sparqlEntityFactory:>" + sparqlEntityFactory + "<");
 //		logger.debug("SparqlEntity:>" + se + "<");

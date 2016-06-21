@@ -86,7 +86,7 @@ public class InsertSparqlBean implements InsertSparql {
 		this.sparql = null;
 		this.sparqlEntity = sparqlentity;
 		
-		SparqlEntityFactory.set(sparqlentity);
+//		SparqlEntityFactory.set(sparqlentity);
 	}
 
 	@Override

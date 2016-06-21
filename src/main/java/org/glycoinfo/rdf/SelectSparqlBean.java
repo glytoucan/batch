@@ -121,7 +121,7 @@ public class SelectSparqlBean implements SelectSparql, InitializingBean {
 
 	@Override
 	public void setSparqlEntity(SparqlEntity sparqlentity) {
-		SparqlEntityFactory.set(sparqlentity);
+//		SparqlEntityFactory.set(sparqlentity);
 		this.sparqlEntity = sparqlentity;
 	}
 

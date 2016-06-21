@@ -80,7 +80,7 @@ public class DeleteSparqlBean implements DeleteSparql {
 		this.sparql = null;
 		this.sparqlEntity = sparqlentity;
 		
-		SparqlEntityFactory.set(sparqlentity);
+//		SparqlEntityFactory.set(sparqlentity);
 	}
 
 	@Override
