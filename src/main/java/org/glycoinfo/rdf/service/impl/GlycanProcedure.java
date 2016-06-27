@@ -635,11 +635,14 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		// "?s glytoucan:has_primary_id \"" + accessionNumber + "\" .\n" +
 		String sparql = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
 				+ "SELECT distinct ?iupac ?" + GlycoSequence.Sequence + " ?" + DerivatizedMass.MassLabel + " ?" 
 				+ DerivatizedMass.MassType + " ?" + DerivatizedMass.MassValue + "\n"
 				+ "WHERE { \n"
 				+ "?s a glycan:saccharide .\n" + "?s glytoucan:has_primary_id \"" + accessionNumber + "\" .\n"
-        + "?s glycan:has_glycosequence ?wurcsgseq .\n" + "?wurcsgseq glycan:has_sequence ?" + GlycoSequence.Sequence + " .\n"
+//        + "?s glycan:has_glycosequence ?wurcsgseq .\n" + "?wurcsgseq glycan:has_sequence ?" + GlycoSequence.Sequence + " .\n"
+        + "?s glycan:has_glycosequence ?wurcsgseq .\n" 
+        + "?wurcsgseq rdfs:label ?" + GlycoSequence.Sequence + " .\n"
         + "?wurcsgseq glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n" 
 				+ "optional {\n"
 				+ "?s glycan:has_glycosequence ?gseq .\n" + "?gseq glycan:has_sequence ?iupac .\n"
@@ -820,11 +823,11 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		// check if it doesn't exist.
 		try {
 			sparqlentity = searchBySequence(sequence);
-			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null
-					&& !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) {
-				logger.debug(AlreadyRegistered + " as:>" + sparqlentity.getValue(AccessionNumber) + "<");
-				return sparqlentity.getValue(AccessionNumber);
-			}
+//			if (null != sparqlentity && sparqlentity.getValue(AccessionNumber) != null
+//					&& !sparqlentity.getValue(AccessionNumber).equals(NotRegistered)) {
+//				logger.debug(AlreadyRegistered + " as:>" + sparqlentity.getValue(AccessionNumber) + "<");
+//				return sparqlentity.getValue(AccessionNumber);
+//			}
 			logger.debug("setting from sequence:>" + sparqlentity.getValue(GlycanProcedure.FromSequence)
 					+ "< sequence:>" + sparqlentity.getValue(GlycanProcedure.Sequence) + "<");
 			// setFromSequence(sparqlentity.getValue(GlycanProcedure.FromSequence));

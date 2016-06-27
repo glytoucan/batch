@@ -1,3 +1,4 @@
 #!/bin/sh
-. ./mvnalias.sh
-mvn -U -DskipTests=true -P rdf spring-boot:run
+. ./triplestore.dev.env
+echo SPRING_TRIPLESTORE_URL=$SPRING_TRIPLESTORE_URL SPRING_TRIPLESTORE_PASSWORD=$SPRING_TRIPLESTORE_PASSWORD mvn -U -DskipTests=true -P rdf spring-boot:run
+SPRING_TRIPLESTORE_URL=$SPRING_TRIPLESTORE_URL SPRING_TRIPLESTORE_PASSWORD=$SPRING_TRIPLESTORE_PASSWORD mvn -U -DskipTests=true -P rdf spring-boot:run
