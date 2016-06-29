@@ -1,6 +1,7 @@
 package org.glycoinfo.batch.glytoucan;
 
 import org.glycoinfo.batch.SparqlItemReader;
+import org.glycoinfo.batch.glyconvert.GlyConvertSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.dao.SparqlDAO;
@@ -8,6 +9,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
 import org.glycoinfo.rdf.dao.virt.VirtRepositoryConnectionFactory;
 import org.glycoinfo.rdf.dao.virt.VirtSesameConnectionFactory;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionManager;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceFilterNoWurcsSelectSparql;
 import org.glycoinfo.rdf.service.GlycanProcedure;
@@ -38,7 +40,7 @@ import virtuoso.sesame2.driver.VirtuosoRepository;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = ("org.glycoinfo.batch.glytoucan"))
-@Import(value = { GlycanProcedureConfig.class})
+@Import(value = { GlycanProcedureConfig.class, VirtSesameTransactionConfig.class})
 @EnableBatchProcessing
 public class GlycoCTProcessBatch {
  
@@ -59,7 +61,8 @@ public class GlycoCTProcessBatch {
 		SelectSparql select = new GlycoSequenceFilterNoWurcsSelectSparql();
 		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\n");
 		SparqlEntity se = new SparqlEntity();
-//		se.setValue(GlycoSequence.Format, "glycoct");
+//		se.setValue(GlyConvertSparql.FormattedFilter, "false");
+		
 		select.setSparqlEntity(se);
 		return select;
 	}
@@ -111,24 +114,6 @@ public class GlycoCTProcessBatch {
 	public ItemProcessor<SparqlEntity, SparqlEntity> processor() {
 		GlycoCTProcessor process = new GlycoCTProcessor();
 		return process;
-	}
-	
-	@Bean
-	VirtSesameConnectionFactory getSesameConnectionFactory() {
-		return new VirtRepositoryConnectionFactory(getRepository());
-	}
-	
-	@Bean
-	public Repository getRepository() {
-		return new VirtuosoRepository(
-		    tripleStoreProperties.getUrl(), 
-		    tripleStoreProperties.getUsername(),
-		    tripleStoreProperties.getPassword());
-	}
-
-	@Bean
-	VirtSesameTransactionManager transactionManager() throws RepositoryException {
-		return new VirtSesameTransactionManager(getSesameConnectionFactory());
 	}
 	
 	@Bean

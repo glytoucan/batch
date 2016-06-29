@@ -33,7 +33,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	ContributorInsertSparql contributorSparql;
 
 	@Autowired
-	ContributorNameSelectSparql contributorSelectSparql;
+	ContributorNameSelectSparql contributorNameSelectSparql;
 	
 	@Autowired
 	DatabaseSelectSparql databaseSelectSparql;
@@ -82,13 +82,13 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	@Override
 	public SparqlEntity searchContributor(String name) throws SparqlException {
 		if (StringUtils.isBlank(name))
-			throw new SparqlException("name cannot be blank");
+			throw new SparqlException("given name cannot be blank.  Please fix account information or login with google+.");
 
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(Contributor.NAME, name);
-		contributorSelectSparql.setSparqlEntity(se);
+		contributorNameSelectSparql.setSparqlEntity(se);
 
-		List<SparqlEntity> personUIDResult = sparqlDAO.query(contributorSelectSparql);
+		List<SparqlEntity> personUIDResult = sparqlDAO.query(contributorNameSelectSparql);
 		
 		if (personUIDResult.iterator().hasNext()) {
 			SparqlEntity idSE = personUIDResult.iterator().next();

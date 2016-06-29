@@ -376,12 +376,19 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	public String getIdByEmail(String email) throws SparqlException {
 		SparqlEntity emailSE = new SparqlEntity();
 		emailSE.setValue(EMAIL, email);
-		SparqlEntity contributor = null;
-		contributor = contributorProcedure.searchContributor(nameMap(emailSE));
-		if (StringUtils.isNotBlank(contributor.getValue(Contributor.ID))) {
-			emailSE.setValue(CONTRIBUTOR_ID, contributor.getValue(Contributor.ID));
-		}
-		return emailSE.getValue(CONTRIBUTOR_ID);
+		
+    SparqlEntity sparqlEntityPerson = new SparqlEntity();
+    sparqlEntityPerson.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
+    sparqlEntityPerson.setValue(CONTRIBUTOR_ID, null);
+    sparqlEntityPerson.setValue(EMAIL, email);
+    
+    selectScintPerson.update(sparqlEntityPerson);
+    List<SparqlEntity> person = sparqlDAO.query(selectScintPerson.getSparqlBean());
+    if (person.iterator().hasNext()) {
+      SparqlEntity sparqlEntity = (SparqlEntity) person.iterator().next();
+      return sparqlEntity.getValue(CONTRIBUTOR_ID);
+    }
+    throw new SparqlException("cannot identify user via email");
 	}
 	
 	public List<SparqlEntity> getAll() throws SparqlException {
