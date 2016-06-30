@@ -296,9 +296,11 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	 */
 	@Override
 	public SparqlEntity searchBySequence(String sequence) throws SparqlException, ConvertException {
+	  if (StringUtils.isBlank(sequence))
+	    throw new SparqlException("sequence cannot be blank");
 		logger.debug("sequence:>" + sequence + "<");
 
-		String wurcs = convertToWurcs(sequence);
+		String wurcs = convertToWurcs(sequence.trim());
 
 		// check RDF for wurcs
 		logger.debug("searching for:>" + wurcs + "<");
@@ -353,6 +355,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			} catch (ConvertException e) {
 				logger.error("convertexception seq:>" + sparqlSequence);
 				logger.error("convertexception msg:>" + e.getMessage());
+				se.setValue(FromSequence, sparqlSequence);
 				se.setValue(Sequence, CouldNotConvertHeader + e.getMessage());
 			}
 

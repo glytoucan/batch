@@ -24,6 +24,8 @@ public interface GlycanProcedure {
 	public static final String ResultSequence = "ResultSequence";
 	public static final String Description = "Description";
 	
+	public static final String CouldNotConvertErrorCode = "-100";
+	
 	public void setBatch(boolean batch);
 	
 	List<SparqlEntity> search(List<String> input) throws SparqlException;
