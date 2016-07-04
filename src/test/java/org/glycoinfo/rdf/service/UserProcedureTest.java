@@ -2,6 +2,7 @@ package org.glycoinfo.rdf.service;
 
 import java.util.List;
 
+import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
@@ -26,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {UserProcedureTest.class, VirtSesameTransactionConfig.class, GlycanProcedureConfig.class, UserProcedureConfig.class })
+@SpringApplicationConfiguration(classes = {UserProcedureTest.class, VirtSesameTransactionConfig.class, GlycanProcedureConfig.class, UserProcedureConfig.class, GlyConvertConfig.class })
 @ComponentScan(basePackages = {"org.glycoinfo.rdf.service", "org.glycoinfo.rdf.scint"})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf"}, excludeFilters={
 //		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=Configuration.class)})

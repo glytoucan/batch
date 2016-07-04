@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.glycoinfo.batch.search.wurcs.MotifSearchSparql;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
+import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -32,7 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { SearchTest.class, GlycanProcedureConfig.class, VirtSesameTransactionConfig.class } )
+@SpringApplicationConfiguration(classes = { SearchTest.class, GlycanProcedureConfig.class, VirtSesameTransactionConfig.class, GlyConvertConfig.class } )
 @Configuration
 @EnableAutoConfiguration
 public class SearchTest {
