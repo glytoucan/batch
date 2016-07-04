@@ -3,6 +3,7 @@
  */
 package org.glycoinfo.rdf.glycan.wurcs;
 
+import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.rdf.ResourceProcessException;
 import org.glycoinfo.rdf.ResourceProcessResult;
 import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
@@ -25,7 +26,7 @@ import jp.bluetree.log.LevelType;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { WurcsSequenceResourceProcessConfig.class, VirtSesameDAOTestConfig.class })
+@SpringApplicationConfiguration(classes = { WurcsSequenceResourceProcessConfig.class, VirtSesameDAOTestConfig.class, GlyConvertConfig.class })
 public class WurcsSequenceResourceProcessTest {
 
 	@Autowired

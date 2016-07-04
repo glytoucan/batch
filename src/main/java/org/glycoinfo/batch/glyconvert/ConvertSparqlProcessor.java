@@ -11,79 +11,91 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Saccharide;
+import org.glycoinfo.rdf.utils.SparqlEntityConverter;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ConvertSparqlProcessor implements
-		ItemProcessor<SparqlEntity, SparqlEntity> {
-	protected Log logger = LogFactory.getLog(getClass());
-	
-	@Autowired(required=true)
-	GlyConvert glyConvert;
+public class ConvertSparqlProcessor implements ItemProcessor<SparqlEntity, SparqlEntity> {
+  protected Log logger = LogFactory.getLog(getClass());
 
-	public GlyConvert getGlyConvert() {
-		return glyConvert;
-	}
+  @Autowired(required = true)
+  GlyConvert glyConvert;
 
-	public void setGlyConvert(GlyConvert glyConvert) {
-		this.glyConvert = glyConvert;
-	}
+  public GlyConvert getGlyConvert() {
+    return glyConvert;
+  }
 
-	@Override
-	public SparqlEntity process(final SparqlEntity sparqlEntity) throws SparqlException, ConvertException {
-		
-		// get the sequence
-		String sequence = sparqlEntity.getValue(ConvertSelectSparql.Sequence);
-		logger.debug("Converting (" + sequence + ")");
-		
-		String id = sparqlEntity.getValue(Saccharide.PrimaryId);
-		logger.debug("id (" + id + ")");
-		// convert the sequence
-		GlyConvert converter = getGlyConvert();
-		String convertedSeq = null;
-		String errorMessage = null;
-        try {
-			convertedSeq = converter.convert(sequence);
-		} catch (ConvertException e) {
-			e.printStackTrace();
-			logger.error("error processing:>" + sequence + "<");
-			if (e.getMessage() != null && e.getMessage().length() > 0)
-				errorMessage=e.getMessage();
-			else
-				throw e;
-		}
+  public void setGlyConvert(GlyConvert glyConvert) {
+    this.glyConvert = glyConvert;
+  }
 
-//		if (null != convertedSeq) {
-			logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
-			
-			// log this action.  Conversion processes expect the wurcs to be there already
-			
-			
-//			String encoded;
-//			try {
-//				encoded = URLEncoder.encode(convertedSeq, "UTF-8");
-//				encoded = convertedSeq;
-//			} catch (UnsupportedEncodingException e) {
-//				e.printStackTrace();
-//				throw new ConvertException(e);
-//			}
-		
-//			logger.debug("Encoded (" + convertedSeq + ") into (" + encoded + ")");
-			sparqlEntity.setValue(ConvertInsertSparql.ConvertedSequence, convertedSeq);
-//		}
+  SparqlEntityConverter<SparqlEntity> converter;
+  SparqlEntityConverter<SparqlEntity> postConverter;
 
-		if (null != errorMessage) {
-			String encodedErrorMessage;
-			try {
-				encodedErrorMessage = URLEncoder.encode(errorMessage, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-				throw new ConvertException(e);
-			}
+  public SparqlEntityConverter<SparqlEntity> getConverter() {
+    return converter;
+  }
 
-			sparqlEntity.setValue(GlycoSequence.ErrorMessage, encodedErrorMessage);
-		}
+  public void setConverter(SparqlEntityConverter<SparqlEntity> converter) {
+    this.converter = converter;
+  }
 
-		return sparqlEntity;
-	}
+  private SparqlEntityConverter<SparqlEntity> getPostConverter() {
+    return postConverter;
+  }
+
+  public void setPostConverter(SparqlEntityConverter<SparqlEntity> converter) {
+    this.postConverter = converter;
+  }
+
+  @Override
+  public SparqlEntity process(final SparqlEntity sparqlEntity) throws SparqlException, ConvertException {
+    SparqlEntity sparqlEntityProcessing = sparqlEntity;
+
+    if (null != converter)
+      sparqlEntityProcessing = converter.convert(sparqlEntity);
+    
+    // get the sequence
+    String sequence = sparqlEntityProcessing.getValue(ConvertSelectSparql.Sequence);
+    logger.debug("Converting (" + sequence + ")");
+
+    String id = sparqlEntityProcessing.getValue(Saccharide.PrimaryId);
+    logger.debug("id (" + id + ")");
+    // convert the sequence
+    GlyConvert converter = getGlyConvert();
+    String convertedSeq = null;
+    String errorMessage = null;
+    try {
+      convertedSeq = converter.convert(sequence);
+    } catch (ConvertException e) {
+      e.printStackTrace();
+      logger.error("error processing:>" + sequence + "<");
+      if (e.getMessage() != null && e.getMessage().length() > 0)
+        errorMessage = e.getMessage();
+      else
+        throw e;
+    }
+
+    // if (null != convertedSeq) {
+    logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
+    
+    if (null != postConverter)
+      sparqlEntityProcessing = postConverter.convert(sparqlEntity);
+
+    sparqlEntityProcessing.setValue(ConvertInsertSparql.ConvertedSequence, convertedSeq);
+
+    if (null != errorMessage) {
+      String encodedErrorMessage;
+      try {
+        encodedErrorMessage = URLEncoder.encode(errorMessage, "UTF-8");
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+        throw new ConvertException(e);
+      }
+
+      sparqlEntityProcessing.setValue(GlycoSequence.ErrorMessage, encodedErrorMessage);
+    }
+
+    return sparqlEntityProcessing;
+  }
 }

@@ -30,7 +30,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import( {ContributorProcedureConfig.class, GlyConvertConfig.class} )
+//@Import( {ContributorProcedureConfig.class, GlyConvertConfig.class} )
+@Import( {ContributorProcedureConfig.class} )
 public class GlycanProcedureConfig implements GraphConfig {
 
 	@Bean(name="SaccharideInsert")
