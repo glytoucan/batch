@@ -26,9 +26,13 @@ import org.glycoinfo.rdf.InsertSparqlBean;
 public class PartnerMetaInsertSparql extends InsertSparqlBean implements Partner {
 
 	void init(){
-		this.prefix = "\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \n"
-				+ "PREFIX dcterms: <http://purl.org/dc/terms/> \n"
-				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#> \n" ;
+		this.prefix = "\n\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+				+ "\n"
+				+ "PREFIX dcterms: <http://purl.org/dc/terms/>"
+				+ "\n"
+				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>"
+				+ "\n\n" ;
 	}
 
 	public PartnerMetaInsertSparql() {
@@ -44,9 +48,11 @@ public class PartnerMetaInsertSparql extends InsertSparqlBean implements Partner
 	
 	public String getInsert() {
 		if (StringUtils.isNotBlank(getSparqlEntity().getValue(PartnerName)) && StringUtils.isNotBlank(getSparqlEntity().getValue(PartnerName))) {
-			this.insert = "<http://rdf.glycoinfo.org/partner/" + getSparqlEntity().getValue(PartnerName) +"> \n"
+			this.insert = "<http://rdf.glycoinfo.org/partner/" + getSparqlEntity().getValue(PartnerUriName) +"> \n"
 					+ " a glytoucan:Partner ; \n"
-					+ " rdfs:label \""+ getSparqlEntity().getValue(PartnerName) +"\" .\n";
+					+ " dcterms:description \"" + getSparqlEntity().getValue(PartnerDesc) + "\"@en ; \n"
+					+ " rdfs:seeAlso " + getSparqlEntity().getValue(PartnerURL) + " ; \n"
+					+ " rdfs:label \""+ getSparqlEntity().getValue(PartnerName) +"\"@en .\n";
 		}
 		return this.insert;
 	}

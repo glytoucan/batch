@@ -38,21 +38,41 @@ public class PartnerMetaInsertSparqlTest {
 	PartnerMetaInsertSparql getPartnerMetaInsertSparql() {
 		PartnerMetaInsertSparql ins = new PartnerMetaInsertSparql();
 		SparqlEntity sparqlentity = new SparqlEntity();
-		sparqlentity.setValue(Partner.PartnerName, "partnername");
+		// for example "UniCarb-DB"
+		sparqlentity.setValue(Partner.PartnerUriName, "unicarb-db");
+		sparqlentity.setValue(Partner.PartnerName, "UniCarb-DB");
+		sparqlentity.setValue(Partner.PartnerDesc, "A comprehensive LC MS/MS library of N- and O- linked glycans released from glycoproteins that have been annotated with glycosidic and cross-ring fragmentation ions, retention times, and associated experimental metadata descriptions.");
+		sparqlentity.setValue(Partner.PartnerURL, "<http://unicarb-db.biomedicine.gu.se/>");
 		ins.setSparqlEntity(sparqlentity);
-		ins.setGraph("http://test");
+//		ins.setGraph("http://test");
+		ins.setGraph("http://rdf.glytoucan.org/partner");
 		return ins;
 	}
-
 	@Test
 	public void testInsertSparql() throws SparqlException {
 		logger.debug(getPartnerMetaInsertSparql().getSparql());
 	}
 	
+
+	// Select sparql
+	@Bean
+	PartnerMetaSelectSparql getPartnerMetaSelectSparql() {
+		PartnerMetaSelectSparql pss = new PartnerMetaSelectSparql();
+		return pss ;
+	}
+	@Test
+	public void testSelectSparql() throws SparqlException {
+		logger.debug(getPartnerMetaSelectSparql().getSparql());
+	}
+
+	
+	// execSparl
 	@Test
 	@Transactional
 	public void insertSparql() throws SparqlException {
+		sparqlDAO.query(getPartnerMetaSelectSparql());
 		sparqlDAO.insert(getPartnerMetaInsertSparql());
+		sparqlDAO.query(getPartnerMetaSelectSparql());
 	}
 
 }
