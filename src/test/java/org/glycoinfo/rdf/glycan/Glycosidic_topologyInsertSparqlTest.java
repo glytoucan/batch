@@ -48,40 +48,46 @@ public class Glycosidic_topologyInsertSparqlTest {
 		SparqlEntity sparqlentity = new SparqlEntity();
 		sparqlentity.setValue(Glycosidic_topology.URI, "insertsacharideuri");
 		sparqlentity.setValue(GlycoSequence.URI, "glycosequenceuri");
-		sparqlentity.setValue(Glycosidic_topology.PrimaryId_1, "L1primaryid1");
-		sparqlentity.setValue(Glycosidic_topology.PrimaryId_2, "L2primaryid");
+		sparqlentity.setValue(Glycosidic_topology.PrimaryId_1, "G14728XI");
+		sparqlentity.setValue(Glycosidic_topology.PrimaryId_2, "G24678II");
 		ins.setSparqlEntity(sparqlentity);
-		ins.setGraph("http://test");
+		ins.setGraph("http://rdf.glytoucan.org/topology");
 		return ins;
 	}
 
-	// 先に空を出させて、インサートして、セレクトもう一回する	
-//	@Bean
-//	SaccharideSelectSparql getSaccharideSelectSparql() {
-//		SaccharideSelectSparql sis = new SaccharideSelectSparql();
-//		SparqlEntity sparqlentity = new SparqlEntity();
-//		sparqlentity.setValue(Saccharide.PrimaryId, "primaryid");
-//		sis.setSparqlEntity(sparqlentity);
-//		return sis;
-//	}
+	//先に空を出させて、インサートして、セレクトもう一回する	
+	@Bean
+	D3SeqenceSelectSparql_has_topology getToplogySelectSparql() {
+		D3SeqenceSelectSparql_has_topology sis = new D3SeqenceSelectSparql_has_topology();
+		SparqlEntity sparqlentity = new SparqlEntity();
+		sparqlentity.setValue(Glycosidic_topology.PrimaryId_1, "G14728XI");
+		sis.setSparqlEntity(sparqlentity);
+		return sis;
+	}
+	
+	@Bean
+	D3SeqenceSelectSparql_topology_by getToplogySelectSparql_toplogy_by() {
+		D3SeqenceSelectSparql_topology_by sis = new D3SeqenceSelectSparql_topology_by();
+		SparqlEntity sparqlentity = new SparqlEntity();
+		sparqlentity.setValue(Glycosidic_topology.PrimaryId_2, "G24678II");
+		sis.setSparqlEntity(sparqlentity);
+		return sis;
+	}
 	
 	@Test
 	public void testInsertSparql() throws SparqlException {
 		logger.debug(getGlycosidic_topologyInsertSparql().getSparql());
 		
 		assertEquals(
-				"prefix glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-				+ "prefix rocs: <http://www.glycoinfo.org/glyco/owl/relation#>\n"
+				"PREFIX rocs: <http://www.glycoinfo.org/glyco/owl/relation#>\n"
 				+ "INSERT DATA\n"
-				+ "{ GRAPH <http://test>\n"
-				+ "{ <http://rdf.glycoinfo.org/glycan/L1primaryid1>\n"
-				+ " rocs:subsumes <http://rdf.glycoinfo.org/glycan/L2primaryid> ;\n"
-				+ " rocs:has_topology <http://rdf.glycoinfo.org/glycan/L2primaryid> .\n"
+				+ "{ GRAPH <http://rdf,glytoucan.org/topology>\n"
+				+ "{ <http://rdf.glycoinfo.org/glycan/G14728XI>\n"
+				+ " rocs:has_topology <http://rdf.glycoinfo.org/glycan/G24678II> .\n"
 				+ "<http://rdf.glycoinfo.org/glycan/L2primaryid>\n"
-				+ " a rocs:Glycosidic_topology ;\n"
-				+ "rocs:subsumed_by <http://rdf.glycoinfo.org/glycan/L1primaryid1> .\n"
-						+ " }\n"
-						+ "}\n",
+				+ " a rocs:Glycosidic_topology .\n"
+				+ " }\n"
+				+ "}\n",
 				getGlycosidic_topologyInsertSparql().getSparql());
 		
 	}
@@ -91,39 +97,51 @@ public class Glycosidic_topologyInsertSparqlTest {
 	public void insertSparql() throws SparqlException {
 		sparqlDAO.insert(getGlycosidic_topologyInsertSparql());
 		
-//		List<SparqlEntity> list = sparqlDAO.query(new SelectSparqlBean("prefix glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-//				+ "select ?s where { <http://rdf.glycoinfo.org/glycan/primaryid> a ?s }"));
-//		
-//		for (SparqlEntity sparqlEntity : list) {
-//			String output = sparqlEntity.getValue("s");
-//			Assert.assertEquals("http://purl.jp/bio/12/glyco/glycan#saccharide", output);
-//		}
+		List<SparqlEntity> list = sparqlDAO.query(getToplogySelectSparql());
+		for (SparqlEntity sparqlEntity : list) {
+			String output = sparqlEntity.getValue("s");
+			Assert.assertEquals("http://purl.jp/bio/12/glyco/glycan#saccharide", output);
+		}
 	}
 
-//	@Test
-//	@Transactional
-//	public void insertSelectSparql() throws SparqlException {
-//		sparqlDAO.insert(getGlycosidic_topologyInsertSparql());
-//		
-//		List<SparqlEntity> list = sparqlDAO.query(getSaccharideSelectSparql());
-//		if (list.iterator().hasNext()) {
-//			SparqlEntity se = list.iterator().next();
-//			logger.debug(se.getValue(SaccharideSelectSparql.SaccharideURI));
-//		}
-//	}
-//	
-//	@Test
-//	public void selectSparql() throws SparqlException {
-//		SaccharideSelectSparql sss = getSaccharideSelectSparql();
-//		SparqlEntity se = sss.getSparqlEntity();
-//		se.setValue(Saccharide.PrimaryId, "G00031MO");
-//		
-//		sss.setSparqlEntity(se);
-//		
-//		List<SparqlEntity> list = sparqlDAO.query(sss);
-//		if (list.iterator().hasNext()) {
-//			se = list.iterator().next();
-//			logger.debug(se.getValue(SaccharideSelectSparql.SaccharideURI));
-//		}
-//	}
+	@Test
+	@Transactional
+	public void insertSelectSparql() throws SparqlException {
+		sparqlDAO.insert(getGlycosidic_topologyInsertSparql());
+		
+		List<SparqlEntity> list = sparqlDAO.query(getToplogySelectSparql());
+		if (list.iterator().hasNext()) {
+			SparqlEntity se = list.iterator().next();
+			if ("G24678II".equals(se.getValue("topology_id")))
+				Assert.assertTrue("pass",true);
+		}
+	}
+	
+	@Test
+	@Transactional
+	public void insertSelectSparql_topology_by() throws SparqlException {
+		sparqlDAO.insert(getGlycosidic_topologyInsertSparql());
+		
+		List<SparqlEntity> list = sparqlDAO.query(getToplogySelectSparql_toplogy_by());
+		if (list.iterator().hasNext()) {
+			SparqlEntity se = list.iterator().next();
+			if ("G14728XI".equals(se.getValue("id")))
+				Assert.assertTrue("pass",true);
+		}
+	}
+	
+	@Test
+	public void selectSparql() throws SparqlException {
+		D3SeqenceSelectSparql_has_topology sss = getToplogySelectSparql();
+		SparqlEntity se = sss.getSparqlEntity();
+		se.setValue(Glycosidic_topology.PrimaryId_1, "G00031MO");
+		
+		sss.setSparqlEntity(se);
+		
+		List<SparqlEntity> list = sparqlDAO.query(sss);
+		if (list.iterator().hasNext()) {
+			se = list.iterator().next();
+			logger.debug(se.getValue(D3SeqenceSelectSparql_has_topology.SaccharideURI));
+		}
+	}
 }

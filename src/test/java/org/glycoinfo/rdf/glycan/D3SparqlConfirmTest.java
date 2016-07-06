@@ -28,7 +28,7 @@ public class D3SparqlConfirmTest {
 	    
 	    SparqlEntity sparqlentity = new SparqlEntity();
 //	    sparqlentity.setValue(Saccharide.PrimaryId, "G000TEST");
-	    sparqlentity.setValue(Saccharide.PrimaryId, "GxxxxxxD");
+	    sparqlentity.setValue(Glycosidic_topology.PrimaryId_1, "GxxxxxxD");
 	    dp.setSparqlEntity(sparqlentity);
 
 	     logger.debug(dp.getSparql());
