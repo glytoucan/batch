@@ -5,4 +5,5 @@ target*
 .project
 /bin
 logs*
+*.log*
 triplestore.prod.env

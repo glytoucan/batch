@@ -1,5 +1,6 @@
 package org.glycoinfo.batch.glyconvert;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.convert.GlyConvert;
@@ -7,6 +8,7 @@ import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.Assert;
 
 /**
@@ -27,8 +29,9 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	public static final String Sequence = "Sequence";
 	public static final String GlycanSequenceURI = "GlycanSequenceURI";
 	public static final String AccessionNumber = Saccharide.PrimaryId;
-
-	@Autowired
+	
+  @Autowired(required = true)
+  @Qualifier("org.glycoinfo.batch.glyconvert")
 	GlyConvert glyConvert;
 
 	public ConvertSelectSparql(String sparql) {
@@ -74,15 +77,18 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	 * @see org.glycoinfo.rdf.SelectSparqlBean#getWhere()
 	 */
 	public String getWhere() {
-		return "?" + SaccharideURI + " a glycan:saccharide .\n" + "?"
-				+ SaccharideURI
-				+ " glytoucan:has_primary_id ?" + AccessionNumber + " .\n" + "?"
-				+ SaccharideURI + " glycan:has_glycosequence ?"
-				+ GlycanSequenceURI + " .\n" + "?" + GlycanSequenceURI
-				+ " glycan:has_sequence ?Sequence .\n" + "?"
-				+ GlycanSequenceURI + " glycan:in_carbohydrate_format "
-				+ getFormat()
-		+"\n"+ getFilter();
+	  String where = "?" + SaccharideURI + " a glycan:saccharide .\n" + "?"
+        + SaccharideURI
+        + " glytoucan:has_primary_id ?" + AccessionNumber + " .\n" + "?"
+        + SaccharideURI + " glycan:has_glycosequence ?"
+        + GlycanSequenceURI + " .\n" + "?" + GlycanSequenceURI
+        + " glycan:has_sequence ?Sequence .\n" + "?"
+        + GlycanSequenceURI + " glycan:in_carbohydrate_format "
+        + getFormat()+"\n";
+	  if (StringUtils.isNotBlank(getSparqlEntity().getValue(GlyConvertSparql.DoNotFilter)))
+	    return where;
+	  else 
+	    return where + getFilter();
 	}
 
 	/**
@@ -115,7 +121,7 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 	
 	@Override
 	public String getFrom() {
-    return "FROM <http://rdf.glytoucan.org>\n"
+    return "FROM <http://rdf.glytoucan.org/core>\n"
         + "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
         + "FROM <http://rdf.glytoucan.org/sequence/" + glyConvert.getToFormat() + ">";
 	}

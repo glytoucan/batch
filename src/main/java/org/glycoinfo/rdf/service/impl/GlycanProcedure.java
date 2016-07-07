@@ -85,28 +85,39 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	InsertSparql resourceEntryInsertSparql;
 
 	@Autowired
+	@Qualifier("glycoSequenceContributorSelectSparql")
 	SelectSparql glycoSequenceContributorSelectSparql;
+	
+	@Autowired
+	@Qualifier("glycoSequenceSelectSparql")
+	SelectSparql glycoSequenceSelectSparql;
 
 	@Autowired
+	@Qualifier("listAllIdSelectSparql")
 	SelectSparql listAllIdSelectSparql;
 	
   @Autowired
+	@Qualifier("listAllGlycoSequenceContributorSelectSparql")
   SelectSparql listAllGlycoSequenceContributorSelectSparql;
 
 	@Autowired
+	@Qualifier("wurcsRDFInsertSparql")
 	InsertSparql wurcsRDFInsertSparql;
 
 	@Autowired
-	WurcsRDFMSInsertSparql wurcsRDFMSInsertSparql;
+	@Qualifier("wurcsRDFMSInsertSparql")
+	InsertSparql wurcsRDFMSInsertSparql;
 
 	@Autowired
-	@Qualifier("GlycosequenceInsert")
+	@Qualifier("glycoSequenceInsert")
 	InsertSparql glycoSequenceInsert;
 
 	@Autowired
+	@Qualifier("massInsertSparql")
 	MassInsertSparql massInsertSparql;
 
 	@Autowired
+	@Qualifier("substructureSearchSparql")
 	SubstructureSearchSparql substructureSearchSparql;
 
 	@Autowired
@@ -444,6 +455,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		SparqlEntity result = searchByAccessionNumber(accessionNumber);
 		while (result != null && StringUtils.isNotBlank(result.getValue(Saccharide.PrimaryId))) {
 			logger.debug("rerolling... " + result.getValue(Saccharide.PrimaryId));
+            accessionNumber = "G" + NumberGenerator.generateRandomString(7);
 
 			result = searchByAccessionNumber(accessionNumber);
 		}
@@ -480,7 +492,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		SparqlEntity glycoctSE = sparqlentity;
 		glycoctSE.setValue(GlycoSequence.Sequence, sparqlentity.getValue(GlycanProcedure.FromSequence));
 
-		registerGlycoSequence(sparqlentity);
+		if (!GlyConvert.WURCS.equals(DetectFormat.detect(sequence)))
+		  registerGlycoSequence(sparqlentity);
 
 		return accessionNumber;
 	}
@@ -621,7 +634,18 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			return list.iterator().next();
 		return null;
 	}
-
+	
+  @Override
+  public SparqlEntity searchSequenceByFormatAccessionNumber(String accessionNumber, String format) throws SparqlException {
+    SparqlEntity se = new SparqlEntity();
+    se.setValue(Saccharide.PrimaryId, accessionNumber);
+    se.setValue(GlycoSequence.Format, format);
+    glycoSequenceSelectSparql.setSparqlEntity(se);
+    List<SparqlEntity> list = sparqlDAO.query(glycoSequenceSelectSparql);
+    if (list.iterator().hasNext())
+      return list.iterator().next();
+    return null;
+  }
 	/**
 	 * 
 	 * Currently the following are the core data points that need to be
@@ -656,8 +680,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 				+ "?mass rdfs:label        ?" + DerivatizedMass.MassLabel + " .\n" + "?mass glytoucan:has_mass        ?" + DerivatizedMass.MassValue + " .\n"
 				+ "?mass glytoucan:has_derivatization_type ?" 
 				+ DerivatizedMass.MassType + " .\n" + "}\n" + "}\n" + "limit 10";
-		StringBuilder desc = new StringBuilder("Accession Number " + accessionNumber + " is a Glycan Sequence registered in the GlyTouCan repository.");
-		SparqlEntity se = null;
+		StringBuilder desc = new StringBuilder("Accession Number " + accessionNumber + " is a Glycan Structure Sequence registered in the GlyTouCan repository.");
+		SparqlEntity se = new SparqlEntity();
 
 		List<SparqlEntity> seList = null;
 		try {

@@ -3,8 +3,12 @@ package org.glycoinfo.batch.glyconvert;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.batch.SparqlItemConfig;
+import org.glycoinfo.batch.SparqlItemWriter;
 import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
@@ -14,11 +18,16 @@ import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.utils.SparqlEntityConverter;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ConvertSparqlProcessor implements ItemProcessor<SparqlEntity, SparqlEntity> {
   protected Log logger = LogFactory.getLog(getClass());
 
   @Autowired(required = true)
+  @Qualifier("org.glycoinfo.batch.glyconvert")
+//  @Resource(name="org.glycoinfo.batch.glyconvert")
   GlyConvert glyConvert;
 
   public GlyConvert getGlyConvert() {
@@ -68,7 +77,6 @@ public class ConvertSparqlProcessor implements ItemProcessor<SparqlEntity, Sparq
     try {
       convertedSeq = converter.convert(sequence);
     } catch (ConvertException e) {
-      e.printStackTrace();
       logger.error("error processing:>" + sequence + "<");
       if (e.getMessage() != null && e.getMessage().length() > 0)
         errorMessage = e.getMessage();
@@ -79,9 +87,6 @@ public class ConvertSparqlProcessor implements ItemProcessor<SparqlEntity, Sparq
     // if (null != convertedSeq) {
     logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
     
-    if (null != postConverter)
-      sparqlEntityProcessing = postConverter.convert(sparqlEntity);
-
     sparqlEntityProcessing.setValue(ConvertInsertSparql.ConvertedSequence, convertedSeq);
 
     if (null != errorMessage) {
@@ -93,8 +98,11 @@ public class ConvertSparqlProcessor implements ItemProcessor<SparqlEntity, Sparq
         throw new ConvertException(e);
       }
 
-      sparqlEntityProcessing.setValue(GlycoSequence.ErrorMessage, encodedErrorMessage);
+      sparqlEntityProcessing.setValue(SparqlItemWriter.Pass, encodedErrorMessage);
     }
+
+    if (null != postConverter)
+      sparqlEntityProcessing = postConverter.convert(sparqlEntityProcessing);
 
     return sparqlEntityProcessing;
   }

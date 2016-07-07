@@ -10,5 +10,6 @@ import org.glycoinfo.convert.GlyConvert;
  *
  */
 public interface GlyConvertSparql {
+    public static final String DoNotFilter = "DoNotFilter";
 	public GlyConvert getGlyConvert();
 }

@@ -65,4 +65,7 @@ public interface GlycanProcedure {
 	SparqlEntity getDescription(String accessionNumber);
 
   List<SparqlEntity> getGlycansAll(String offset, String limit) throws SparqlException;
+
+  SparqlEntity searchSequenceByFormatAccessionNumber(String accessionNumber, String format)
+      throws SparqlException;
 }

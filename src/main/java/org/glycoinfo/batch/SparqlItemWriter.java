@@ -3,6 +3,7 @@ package org.glycoinfo.batch;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.InsertSparql;
@@ -34,6 +35,8 @@ public class SparqlItemWriter<T extends SparqlEntity> implements
 
 	protected static final Log logger = LogFactory
 			.getLog(SparqlItemWriter.class);
+	  
+  public static String Pass = "Pass";
 
 	@Autowired
 	private SparqlDAO schemaDAO;
@@ -95,6 +98,9 @@ public class SparqlItemWriter<T extends SparqlEntity> implements
 			throws SQLException, SparqlException {
 		for (SparqlEntity t : items) {
 			logger.debug(t);
+
+			if (StringUtils.isNotBlank(t.getValue(Pass)))
+			  continue;
 
 			InsertSparql insertSparql = getInsertSparql();
 			try {

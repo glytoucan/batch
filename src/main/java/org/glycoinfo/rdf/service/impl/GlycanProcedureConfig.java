@@ -51,14 +51,14 @@ public class GlycanProcedureConfig implements GraphConfig {
 		return resourceEntryInsertSparql;
 	}
 
-	@Bean
+	@Bean(name="glycoSequenceContributorSelectSparql")
 	SelectSparql glycoSequenceContributorSelectSparql() {
 		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
-		sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\nFROM <http://rdf.glytoucan.org/sequence/glycoct>\nFROM <http://rdf.glytoucan.org/users>\n");
+		sb.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\nFROM <http://rdf.glytoucan.org/sequence/glycoct>\nFROM <http://rdf.glytoucan.org/users>\n");
 		return sb;
 	}
 	
-	@Bean
+	@Bean(name="listAllIdSelectSparql")
 	SelectSparql listAllIdSelectSparql() throws SparqlException {
 	  GlycoSequenceSelectSparql gsss = new GlycoSequenceSelectSparql();
 	  SparqlEntity se = new SparqlEntity();
@@ -68,27 +68,27 @@ public class GlycanProcedureConfig implements GraphConfig {
 //	  ss.setPrefix("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
 //	  "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n");
 //	  ss.setSelect("distinct ?" + Saccharide.PrimaryId);
-//	  ss.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>");
+//	  ss.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/core>");
 //	  ss.setWhere("?s a glycan:saccharide .\n" + 
 //	  "?s glytoucan:has_primary_id ?" + Saccharide.PrimaryId + " .\n");
 	  return gsss;
 	}
 	
-  @Bean
+  @Bean(name="listAllGlycoSequenceContributorSelectSparql")
   SelectSparql listAllGlycoSequenceContributorSelectSparql() {
     GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
-    sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\nFROM <" + graph + "/users>\nFROM <http://rdf.glytoucan.org/sequence/glycoct>\nFROM <http://rdf.glytoucan.org/users>\n");
+    sb.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\nFROM <" + graph + "/users>\nFROM <http://rdf.glytoucan.org/sequence/glycoct>\nFROM <http://rdf.glytoucan.org/users>\n");
     return sb;
   }
 	
-	@Bean
+	@Bean(name="massInsertSparql")
 	MassInsertSparql massInsertSparql() {
 		MassInsertSparql mass = new MassInsertSparql();
 		mass.setGraphBase(graph);
 		return mass;
 	}
 	
-	@Bean
+	@Bean(name="wurcsRDFInsertSparql")
 	WurcsRDFInsertSparql wurcsRDFInsertSparql() {
 		WurcsRDFInsertSparql wrdf = new WurcsRDFInsertSparql();
 		wrdf.setSparqlEntity(new SparqlEntity());
@@ -96,7 +96,7 @@ public class GlycanProcedureConfig implements GraphConfig {
 		return wrdf;
 	}
 	
-	@Bean
+	@Bean(name="wurcsRDFMSInsertSparql")
 	WurcsRDFMSInsertSparql wurcsRDFMSInsertSparql() {
 		WurcsRDFMSInsertSparql wrdf = new WurcsRDFMSInsertSparql();
 		wrdf.setSparqlEntity(new SparqlEntity());
@@ -104,7 +104,7 @@ public class GlycanProcedureConfig implements GraphConfig {
 		return wrdf;
 	}
 	
-	@Bean(name="GlycosequenceInsert")
+	@Bean(name="glycoSequenceInsert")
 	InsertSparql glycoSequenceInsert() {
 		GlycoSequenceInsertSparql gsis = new GlycoSequenceInsertSparql();
 		gsis.setSparqlEntity(new SparqlEntity());
@@ -115,14 +115,14 @@ public class GlycanProcedureConfig implements GraphConfig {
 	@Bean
 	MotifSequenceSelectSparql motifSequenceSelectSparql() {
 		MotifSequenceSelectSparql select = new MotifSequenceSelectSparql();
-//		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
+//		select.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
 		return select;
 	}
 	
 	@Bean
 	SaccharideSelectSparql saccharideSelectSparql() {
 		SaccharideSelectSparql select = new SaccharideSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>");
+		select.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/core>");
 		return select;
 	}
 	
@@ -165,4 +165,10 @@ public class GlycanProcedureConfig implements GraphConfig {
 //		dss.setFrom();
 		return dss;
 	}
+	
+	@Bean
+	public GlycoSequenceSelectSparql glycoSequenceSelectSparql() {
+	  
+	  return new GlycoSequenceSelectSparql();
+  }
 }

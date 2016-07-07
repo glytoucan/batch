@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.rdf.SelectSparql;
+import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
@@ -89,20 +90,27 @@ public class SparqlItemReader<T extends SparqlEntity> extends
 	protected Iterator<SparqlEntity> doPageRead() {
 
 		SelectSparql selectSparql = getSelectSparql();
-		selectSparql.setOffset(Integer.toString((pageSize * page)));
-		selectSparql.setLimit(Integer.toString(pageSize));
-		String q;
+
+
 		List<org.glycoinfo.rdf.dao.SparqlEntity> queryResults;
 		try {
-			q = selectSparql.getSparql();
 
-			StringBuffer query = new StringBuffer(q);
-			logger.debug("generated query:>" + query);
+	    //    https://github.com/mff-uk/DPUs/issues/78
+	    String prefix = selectSparql.getPrefix();
+	    selectSparql.setPrefix(null);
+        String q = selectSparql.getSparql();
+        StringBuilder query = new StringBuilder(q);
+        
+	    query.insert(0, prefix + "\nSELECT * WHERE { {");
+	    query.append("} } LIMIT " + Integer.toString(pageSize) + " OFFSET " + Integer.toString((pageSize * page)));
+	    
+//	    selectSparql.setOffset(Integer.toString((pageSize * page)));
+//	    selectSparql.setLimit(Integer.toString(pageSize));
+	    logger.debug("generated query:>" + query);
 
-			queryResults = schemaDAO.query(selectSparql);
+			queryResults = schemaDAO.query(new SelectSparqlBean(query.toString()));
 		} catch (SparqlException e) {
 			logger.warn("sparql exception:>" + e.getMessage());
-			e.printStackTrace();
 			return null;
 		}
 		return queryResults.iterator();
