@@ -42,7 +42,7 @@ public class SparqlDAOImplTest {
 			+ "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> \n"
 			+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#> \n";
 
-	public static final String from = "from <http://rdf.glytoucan.org>\n"
+	public static final String from = "from <http://rdf.glytoucan.org/core>\n"
 			+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
 			+ "from <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
 			+ "from <http://www.glytoucan.org/glyco/owl/glytoucan>\n";
@@ -276,7 +276,7 @@ public class SparqlDAOImplTest {
 	public void testKCFQuery() {
 		String query = prefix
 				+ "SELECT DISTINCT ?s ?name ?AccessionNumber ?Seq\n"
-				+ "from <http://rdf.glytoucan.org>\n"
+				+ "from <http://rdf.glytoucan.org/core>\n"
 				+ "from <http://glytoucan.org/rdf/demo/0.2/kcf>\n"
 				+ "from <http://glytoucan.org/rdf/demo/msdb/7>\n"
 				+ "from <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"

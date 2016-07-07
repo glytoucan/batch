@@ -21,7 +21,7 @@ PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>
 PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>
 
 SELECT ?MS count (distinct ?RES) AS ?count
-FROM <http://rdf.glytoucan.org>
+FROM <http://rdf.glytoucan.org/core>
 FROM <http://rdf.glytoucan.org/sequence/wurcs>
 where {
   #Unique RES 1
@@ -49,7 +49,7 @@ public class ComponentGroupSelectSparql extends WurcsGlycoSequenceSelectSparql {
 				+ "PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>\n"
 				+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
 		this.select = "?MS count(distinct ?RES) as ?count \n";;
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
+		this.from = "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
 	}
 

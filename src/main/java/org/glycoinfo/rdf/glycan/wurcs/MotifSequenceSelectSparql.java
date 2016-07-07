@@ -17,7 +17,7 @@ public class MotifSequenceSelectSparql extends SelectSparqlBean {
 		this.select = "?" + Motif.URI + " ?" + Saccharide.PrimaryId + " ?" + GlycoSequence.URI + " ?" + GlycoSequence.Sequence + " ?" + Motif.ReducingEnd + "\n";
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
+		this.from = "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
 		this.where 
 		= "?" + Motif.URI + " a glycan:glycan_motif .\n"

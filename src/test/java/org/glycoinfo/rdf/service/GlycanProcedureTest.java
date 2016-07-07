@@ -204,14 +204,14 @@ public class GlycanProcedureTest {
 	@Bean
 	SelectSparql listAllGlycoSequenceContributorSelectSparql() {
 		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
-		sb.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>");
+		sb.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>");
 		return sb;
 	}
 
 	@Bean
 	MotifSequenceSelectSparql motifSequenceSelectSparql() {
 		MotifSequenceSelectSparql select = new MotifSequenceSelectSparql();
-//		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
+//		select.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
 		return select;
 	}
 	
@@ -231,7 +231,7 @@ public class GlycanProcedureTest {
 	@Bean
 	SaccharideSelectSparql saccharideSelectSparql() {
 		SaccharideSelectSparql select = new SaccharideSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org>\n");
+		select.setFrom("FROM <http://rdf.glytoucan.org/core>\n");
 		return select;
 	}
 
@@ -249,7 +249,7 @@ public class GlycanProcedureTest {
 	@Bean
 	MonosaccharideSelectSparql monosaccharideSelectSparql() {
 		MonosaccharideSelectSparql sb = new MonosaccharideSelectSparql();
-		sb.setFrom(sb.getFrom() + "FROM <http://rdf.glytoucan.org>\n");
+		sb.setFrom(sb.getFrom() + "FROM <http://rdf.glytoucan.org/core>\n");
 		return sb;
 	}
 	
@@ -1064,4 +1064,40 @@ LIN
 			logger.debug(desc);
 			Assert.assertTrue(desc.contains("Gal(b1-4)GlcNAc(b1-"));
 		}
+		
+	  /**	
+	   * 
+	   * Check for retrieving description of structure right after registration.
+	   * 
+	   * This can occur when entry page referenced right after registering.  org.openrdf package has an assertion on null values, even though sparql can have optional fields.
+	   * Thus assertions need to be turned off at jvm: -da:org.openrdf
+	   * 
+	   * @throws SparqlException
+	   */
+    @Test
+    @Transactional
+    public void testDescriptionQueryNewRegistration() throws SparqlException {
+      // register a new structure
+      String result = glycanProcedure.register("WURCS=2.0/5,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a1221m-1x_1-5][a2122h-1x_1-5_2*NCC/3=O]/1-1-2-3-3-4-5/a4-b1_b4-c1_c3-d1_c6-e1_e?-f1_f?-g1", "254");
+      
+      SparqlEntity description = glycanProcedure.getDescription(result);
+      String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
+      logger.debug(desc);
+      Assert.assertTrue(desc.contains(""));
+    }
+		
+    @Test
+    @Transactional
+    public void testWurcs() throws SparqlException, ConvertException
+    {
+
+      String sequence = "WURCS=2.0/5,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a1221m-1x_1-5][a2122h-1x_1-5_2*NCC/3=O]/1-1-2-3-3-4-5/a4-b1_b4-c1_c3-d1_c6-e1_e?-f1_f?-g1";
+      logger.debug("sequence :>" + sequence + "<");
+      String result = glycanProcedure.register(sequence, "1");
+
+      logger.debug("result :>" + result + "<");
+      Assert.assertNotEquals(0, result.trim().length());
+      SparqlEntity sparqlEntity = glycanProcedure.searchByAccessionNumber(result);
+      
+    } 
 }

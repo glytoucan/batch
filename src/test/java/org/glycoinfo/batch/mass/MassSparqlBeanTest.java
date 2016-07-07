@@ -46,7 +46,7 @@ public class MassSparqlBeanTest {
 		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 				+ "SELECT DISTINCT ?SaccharideURI ?PrimaryId ?Sequence ?GlycanSequenceURI\n"
-				+ "FROM <http://rdf.glytoucan.org>\n"
+				+ "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
 				+ "WHERE {?SaccharideURI a glycan:saccharide .\n"
 				+ "?SaccharideURI glytoucan:has_primary_id ?PrimaryId .\n"

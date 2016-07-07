@@ -87,7 +87,7 @@ public class WurcsLinkageIsomerSearchBatch {
 		// from :https://docs.google.com/spreadsheets/d/1pFpN8YtyN7Xu7WXqTdnp1NBaRfIsQFUuRA_vrC4Y-wk/edit#gid=1200173560
 		se.setValue(GlycoSequence.IdentifiersToIgnore, ignores);
 		select.setSparqlEntity(se);
-		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/isomer>\n");
+		select.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/isomer>\n");
 		return select;
 	}
 

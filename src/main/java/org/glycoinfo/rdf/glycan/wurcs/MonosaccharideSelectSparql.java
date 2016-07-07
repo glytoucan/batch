@@ -21,7 +21,7 @@ PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
 PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#> 
 PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>
 select distinct ?ms
-FROM <http://rdf.glytoucan.org>
+FROM <http://rdf.glytoucan.org/core>
 FROM <http://rdf.glytoucan.org/sequence/wurcs>
 FROM <http://rdf.glytoucan.org/wurcs/ms>
 where {
@@ -37,7 +37,7 @@ PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>
 PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>
  SELECT DISTINCT ?Sequence
 ?PrimaryId
- ?WurcsMonosaccharideURI FROM <http://rdf.glytoucan.org>
+ ?WurcsMonosaccharideURI FROM <http://rdf.glytoucan.org/core>
 FROM <http://rdf.glytoucan.org/sequence/wurcs>
 FROM <http://rdf.glytoucan.org/wurcs/ms>
  WHERE {

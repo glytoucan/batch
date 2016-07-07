@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.glycoinfo</groupId>
 	<artifactId>batch</artifactId>
-	<version>0.3.3-SNAPSHOT</version>
+	<version>0.3.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<parent>
 		<groupId>org.glytoucan</groupId>
@@ -158,6 +158,11 @@
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+		  <groupId>jp.bluetree.log</groupId>
+          <artifactId>client</artifactId>
+          <version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>

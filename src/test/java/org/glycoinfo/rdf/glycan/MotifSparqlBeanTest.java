@@ -52,7 +52,7 @@ public class MotifSparqlBeanTest {
 		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 				+ "SELECT ?MotifURI ?PrimaryId ?GlycoSequenceURI ?Sequence\n"
-				+ "FROM <http://rdf.glytoucan.org>\n"
+				+ "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://glytoucan.org/rdf/demo/0.3/wurcs>\n"
 				+ "WHERE {?MotifURI a glycan:glycan_motif .\n"
 				+ "?MotifURI toucan:has_primary_id ?PrimaryId .\n"

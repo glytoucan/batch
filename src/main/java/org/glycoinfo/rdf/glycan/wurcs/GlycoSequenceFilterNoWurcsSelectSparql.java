@@ -30,7 +30,7 @@ public class GlycoSequenceFilterNoWurcsSelectSparql extends GlycoSequenceSelectS
 
 	public GlycoSequenceFilterNoWurcsSelectSparql() {
 		super();
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
+		this.from = "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n";
 	}
 	

@@ -34,7 +34,7 @@ public class SaccharideSelectSparql extends SelectSparqlBean implements Sacchari
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
 		this.select = "DISTINCT ?" + SaccharideURI + "\n?" + PrimaryId + "\n";
-//		this.from = "FROM <http://rdf.glytoucan.org>\n";
+//		this.from = "FROM <http://rdf.glytoucan.org/core>\n";
 	}
 	
 	public String getPrimaryId() {

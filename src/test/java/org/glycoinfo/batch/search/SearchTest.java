@@ -109,7 +109,7 @@ public class SearchTest {
 //		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 //				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 //				+ "SELECT DISTINCT ?SaccharideURI ?PrimaryId\n"
-//				+ "FROM <http://rdf.glytoucan.org>\n"
+//				+ "FROM <http://rdf.glytoucan.org/core>\n"
 //				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
 //				+ "FROM <http://www.glycoinfo.org/graph/wurcs/0.4>\n"
 //				+ "WHERE {?SaccharideURI toucan:has_primary_id ?PrimaryId .\n"
@@ -166,7 +166,7 @@ public class SearchTest {
 		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 				+ "SELECT DISTINCT ?SaccharideURI ?PrimaryId\n"
-				+ "FROM <http://rdf.glytoucan.org>\n"
+				+ "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
 				+ "FROM <http://www.glycoinfo.org/graph/wurcs/0.4>\n"
 				+ "WHERE {?SaccharideURI toucan:has_primary_id ?PrimaryId .\n"
@@ -226,7 +226,7 @@ public class SearchTest {
 //		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 //				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 //				+ "SELECT DISTINCT ?SaccharideURI ?PrimaryId\n"
-//				+ "FROM <http://rdf.glytoucan.org>\n"
+//				+ "FROM <http://rdf.glytoucan.org/core>\n"
 //				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
 //				+ "FROM <http://www.glycoinfo.org/graph/wurcs/0.4>\n"
 //				+ "WHERE {?SaccharideURI toucan:has_primary_id ?PrimaryId .\n"
@@ -286,7 +286,7 @@ public class SearchTest {
 //		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 //				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 //				+ "SELECT DISTINCT ?SaccharideURI ?PrimaryId\n"
-//				+ "FROM <http://rdf.glytoucan.org>\n"
+//				+ "FROM <http://rdf.glytoucan.org/core>\n"
 //				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
 //				+ "FROM <http://www.glycoinfo.org/graph/wurcs/0.4>\n"
 //				
@@ -346,7 +346,7 @@ public class SearchTest {
 //		assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 //				+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 //				+ "SELECT DISTINCT ?SaccharideURI ?PrimaryId\n"
-//				+ "FROM <http://rdf.glytoucan.org>\n"
+//				+ "FROM <http://rdf.glytoucan.org/core>\n"
 //				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
 //				+ "FROM <http://www.glycoinfo.org/graph/wurcs/0.4>\n"
 //				+ "WHERE {?SaccharideURI toucan:has_primary_id ?PrimaryId .\n"
@@ -408,7 +408,7 @@ public class SearchTest {
 //				assertEquals("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 //						+ "PREFIX toucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 //						+ "SELECT DISTINCT ?SaccharideURI ?PrimaryId\n"
-//						+ "FROM <http://rdf.glytoucan.org>\n"
+//						+ "FROM <http://rdf.glytoucan.org/core>\n"
 //						+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
 //						+ "FROM <http://www.glycoinfo.org/graph/wurcs/0.4>\n"
 //						+ "WHERE {?SaccharideURI toucan:has_primary_id ?PrimaryId .\n"
@@ -524,7 +524,7 @@ public class SearchTest {
 				se.setValue(Saccharide.PrimaryId, id);
 				
 				SaccharideSelectSparql select = new SaccharideSelectSparql();
-				select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>\n");
+				select.setFrom("FROM <http://rdf.glytoucan.org/core>\n");
 				select.setSparqlEntity(se);
 
 				List<SparqlEntity> sachList = sparqlDAO.query(select);
@@ -532,7 +532,7 @@ public class SearchTest {
 				logger.debug("size:>" + sachList.size());				
 
 				WurcsGlycoSequenceSelectSparql glycoSelect = new WurcsGlycoSequenceSelectSparql();
-				glycoSelect.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/core>\n");
+				glycoSelect.setFrom("FROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/core>\n");
 				glycoSelect.setSparqlEntity(se);
 
 				List<SparqlEntity> glycosachList = sparqlDAO.query(glycoSelect);
@@ -541,7 +541,7 @@ public class SearchTest {
 				logger.debug("size:>" + glycosachList.size());				
 				
 				org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql gSelect = new org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql();
-				gSelect.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/core>\n");
+				gSelect.setFrom("FROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/core>\n");
 				gSelect.setSparqlEntity(se);
 
 				List<SparqlEntity> gList = sparqlDAO.query(gSelect);

@@ -45,7 +45,7 @@ public class D3SequenceSelectSparql_isomer extends SelectSparqlBean {
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>"
 				+"PREFIX rogs: <http://http://www.glycoinfo.org/glyco/owl/relation#>";
 		this.select = "DISTINCT ?id\n" + "?has_linkage_isomer ?isomer\n";
-		this.from = "FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/motif>\nFROM <http://rdf.glytoucan.org/isomer>";
+		this.from = "FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/motif>\nFROM <http://rdf.glytoucan.org/isomer>";
 //		this.from = "FROM <http://rdf.glycoinfo.org/glycan/browser/demo>";
 	}
 

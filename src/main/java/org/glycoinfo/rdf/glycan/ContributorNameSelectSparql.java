@@ -12,7 +12,7 @@ public class ContributorNameSelectSparql extends SelectSparqlBean implements Con
 	/**
 	 * PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>
 SELECT ?id
-FROM <http://rdf.glytoucan.org>
+FROM <http://rdf.glytoucan.org/core>
 where {
 ?o a foaf:Person .
 BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/\") AS ?id) .

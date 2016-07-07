@@ -57,7 +57,7 @@ public class WurcsConvertBatchTest {
 	// @Transactional
 	public void testJob() throws Exception {
 		SelectSparql select = new SelectSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-				+ "SELECT count(distinct ?SaccharideURI) as ?test\n" + "FROM <http://rdf.glytoucan.org>\n"
+				+ "SELECT count(distinct ?SaccharideURI) as ?test\n" + "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n" + "WHERE {\n"
 				+ "?SaccharideURI glycan:has_glycosequence ?GlycanSequenceURI .\n"
 				+ "?GlycanSequenceURI glycan:has_sequence ?Sequence .\n"

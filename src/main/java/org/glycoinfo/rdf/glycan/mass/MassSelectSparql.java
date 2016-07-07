@@ -36,7 +36,7 @@ public class MassSelectSparql extends SelectSparqlBean implements InitializingBe
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
 		this.select = "DISTINCT ?" + SaccharideURI + " ?" + AccessionNumber
 				+ " ?" + Sequence + " ?" + GlycanSequenceURI;
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
+		this.from = "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
 		this.where = "?" + SaccharideURI + " a glycan:saccharide .\n" 
 				+ "?" + SaccharideURI + " glytoucan:has_primary_id ?" + AccessionNumber + " .\n"

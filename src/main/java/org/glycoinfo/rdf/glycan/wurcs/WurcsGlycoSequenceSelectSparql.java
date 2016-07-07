@@ -38,8 +38,7 @@ public class WurcsGlycoSequenceSelectSparql extends SelectSparqlBean implements 
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n";
 		this.select = "DISTINCT ?" + Sequence + "\n"
 				+ "?" + AccessionNumber + "\n";
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
-				+ "FROM <http://rdf.glytoucan.org/core>\n"
+		this.from = "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/isomer>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n";
 		this.where = "?" + SaccharideURI + " a glycan:saccharide .\n"

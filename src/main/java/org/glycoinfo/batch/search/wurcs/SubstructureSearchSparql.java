@@ -65,7 +65,7 @@ public class SubstructureSearchSparql extends SelectSparqlBean {
 	public String getFrom() {
 		return "FROM " + getGraphms() + "\n"
 				+ "FROM " + getGraphtarget() + "\n"
-				+ "FROM <http://rdf.glytoucan.org>\n";
+				+ "FROM <http://rdf.glytoucan.org/core>\n";
 	}
 
 	@Override

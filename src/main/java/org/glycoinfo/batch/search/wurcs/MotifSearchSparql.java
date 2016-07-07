@@ -20,7 +20,7 @@ public class MotifSearchSparql extends SelectSparqlBean {
 				+ "PREFIX wurcs: <http://www.glycoinfo.org/glyco/owl/wurcs#>";
 		this.select = "DISTINCT ?" + Saccharide.URI;
 //				+ " ?" + Saccharide.PrimaryId; 
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
+		this.from = "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
 				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.0>\n"
 				+ "FROM <http://rdf.glycoinfo.org/wurcs/0.5.0/ms>";

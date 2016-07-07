@@ -66,7 +66,7 @@ public class WurcsMotifSearchBatch {
 	@Bean(name="itemReaderSelectSparql")
 	SelectSparql getSelectSparql() {
 		SelectSparql select = new MotifSequenceSelectSparql();
-//		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
+//		select.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
 		return select;
 	}
 

@@ -1,6 +1,5 @@
 GlycoctToKcfConverter:
-    filepass:
-        "/home/aoki/workspace/GlyConvert/src/main/resources/GlycoctToKcf2.pl"
+  filepass: "/home/aoki/workspace/GlyConvert/src/main/resources/GlycoctToKcf2.pl"
 spring:
     application:
         name: glycosearch
@@ -18,7 +17,8 @@ triplestore:
 logging:
     path: ./log
     file: debug.log
-    level: org.glycoinfo=DEBUG
+    level: 
+      org.glycoinfo: DEBUG
 #tempgraph: http://rdf.glycoinfo.org
 wurcs:
   graph:

@@ -59,7 +59,7 @@ public class MassCalculatorSparqlBatch {
 	@Bean
 	SelectSparql getSelectSparql() {
 		SelectSparql select = new MassSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>");
+		select.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>");
 		return select;
 	}
 

@@ -68,7 +68,7 @@ public class GlycoSequenceSparqlBeanTest {
 				"PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 				+ " SELECT DISTINCT ?Sequence\n"
-				+ " FROM <http://rdf.glytoucan.org>\n"
+				+ " FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n"
 				+ " WHERE {?SaccharideURI a glycan:saccharide .\n"
 				+ "?SaccharideURI glycan:has_glycosequence ?GlycanSequenceURI .\n"

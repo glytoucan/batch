@@ -38,7 +38,7 @@ public class GlycoSequenceSelectSparql extends SaccharideSelectSparql implements
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
 		this.select = super.getSelect() + " ?" + Sequence + "\n";
-		this.from = "FROM <http://rdf.glytoucan.org>\n"
+		this.from = "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
 	}
 	

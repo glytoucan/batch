@@ -59,7 +59,7 @@ public class GlycoCTProcessBatch {
 	@Bean(name="itemReaderSelectSparql")
 	SelectSparql getSelectSparql() {
 		SelectSparql select = new GlycoSequenceFilterNoWurcsSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\n");
+		select.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\n");
 		SparqlEntity se = new SparqlEntity();
 //		se.setValue(GlyConvertSparql.FormattedFilter, "false");
 		
