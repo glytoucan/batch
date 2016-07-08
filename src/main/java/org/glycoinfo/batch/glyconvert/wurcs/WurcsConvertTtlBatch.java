@@ -59,7 +59,7 @@ public class WurcsConvertTtlBatch {
 	@Bean
 	SelectSparql getSelectSparql() {
 		SelectSparql select = new ConvertSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org>");
+		select.setFrom("FROM <http://rdf.glytoucan.org/core>");
 		return select;
 	}
 

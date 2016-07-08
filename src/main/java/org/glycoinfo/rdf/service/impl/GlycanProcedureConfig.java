@@ -166,9 +166,8 @@ public class GlycanProcedureConfig implements GraphConfig {
 		return dss;
 	}
 	
-	@Bean
+	@Bean(name="glycoSequenceSelectSparql")
 	public GlycoSequenceSelectSparql glycoSequenceSelectSparql() {
-	  
 	  return new GlycoSequenceSelectSparql();
   }
 }

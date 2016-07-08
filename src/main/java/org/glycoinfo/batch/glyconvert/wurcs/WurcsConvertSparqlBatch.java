@@ -72,7 +72,7 @@ public class WurcsConvertSparqlBatch {
 	@Bean(name = "itemReaderSelectSparql")
 	SelectSparql getSelectSparql() {
 		SelectSparql select = new ConvertSelectSparql();
-		select.setFrom("FROM <http://rdf.glytoucan.org> FROM <http://rdf.glytoucan.org/sequence/wurcs>");
+		select.setFrom("FROM <http://rdf.glytoucan.org/core> FROM <http://rdf.glytoucan.org/sequence/wurcs>");
 		return select;
 	}
 
