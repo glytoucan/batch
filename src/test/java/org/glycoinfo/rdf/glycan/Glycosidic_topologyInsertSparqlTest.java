@@ -57,8 +57,8 @@ public class Glycosidic_topologyInsertSparqlTest {
 
 	//先に空を出させて、インサートして、セレクトもう一回する	
 	@Bean
-	D3SeqenceSelectSparql_has_topology getToplogySelectSparql() {
-		D3SeqenceSelectSparql_has_topology sis = new D3SeqenceSelectSparql_has_topology();
+	D3SequenceSelectSparql_has_topology getToplogySelectSparql() {
+		D3SequenceSelectSparql_has_topology sis = new D3SequenceSelectSparql_has_topology();
 		SparqlEntity sparqlentity = new SparqlEntity();
 		sparqlentity.setValue(Glycosidic_topology.PrimaryId_1, "G14728XI");
 		sis.setSparqlEntity(sparqlentity);
@@ -66,8 +66,8 @@ public class Glycosidic_topologyInsertSparqlTest {
 	}
 	
 	@Bean
-	D3SeqenceSelectSparql_topology_by getToplogySelectSparql_toplogy_by() {
-		D3SeqenceSelectSparql_topology_by sis = new D3SeqenceSelectSparql_topology_by();
+	D3SequenceSelectSparql_topology_by getToplogySelectSparql_toplogy_by() {
+		D3SequenceSelectSparql_topology_by sis = new D3SequenceSelectSparql_topology_by();
 		SparqlEntity sparqlentity = new SparqlEntity();
 		sparqlentity.setValue(Glycosidic_topology.PrimaryId_2, "G24678II");
 		sis.setSparqlEntity(sparqlentity);
@@ -132,7 +132,7 @@ public class Glycosidic_topologyInsertSparqlTest {
 	
 	@Test
 	public void selectSparql() throws SparqlException {
-		D3SeqenceSelectSparql_has_topology sss = getToplogySelectSparql();
+		D3SequenceSelectSparql_has_topology sss = getToplogySelectSparql();
 		SparqlEntity se = sss.getSparqlEntity();
 		se.setValue(Glycosidic_topology.PrimaryId_1, "G00031MO");
 		
@@ -141,7 +141,7 @@ public class Glycosidic_topologyInsertSparqlTest {
 		List<SparqlEntity> list = sparqlDAO.query(sss);
 		if (list.iterator().hasNext()) {
 			se = list.iterator().next();
-			logger.debug(se.getValue(D3SeqenceSelectSparql_has_topology.SaccharideURI));
+			logger.debug(se.getValue(D3SequenceSelectSparql_has_topology.SaccharideURI));
 		}
 	}
 }
