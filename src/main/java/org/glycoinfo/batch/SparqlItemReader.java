@@ -50,79 +50,81 @@ import org.springframework.util.ClassUtils;
  * ?gseq . ?gseq glycan:has_sequence ?Seq . ?gseq glycan:in_carbohydrate_format
  * glycan:carbohydrate_format_kcf }
  * 
+ * since v1.2.2 this  
+ * 
  *
  */
 
-public class SparqlItemReader<T extends SparqlEntity> extends
-		AbstractPaginatedDataItemReader<SparqlEntity> implements
-		InitializingBean {
+public class SparqlItemReader<T extends SparqlEntity> extends AbstractPaginatedDataItemReader<SparqlEntity>
+    implements InitializingBean {
 
-	protected Log logger = LogFactory.getLog(getClass());
+  protected Log logger = LogFactory.getLog(getClass());
 
-	@Autowired
-	private SparqlDAO schemaDAO;
+  @Autowired
+  private SparqlDAO schemaDAO;
 
-	@Autowired
-	@Qualifier("itemReaderSelectSparql")
-	private SelectSparql selectSparql;
+  @Autowired
+  @Qualifier("itemReaderSelectSparql")
+  private SelectSparql selectSparql;
 
-	public SparqlItemReader() {
-		setName(ClassUtils.getShortName(SparqlItemReader.class));
-	}
+  public SparqlItemReader() {
+    setName(ClassUtils.getShortName(SparqlItemReader.class));
+  }
 
-	public void setSelectSparql(SelectSparql read) {
-		this.selectSparql = read;
-	}
+  public void setSelectSparql(SelectSparql read) {
+    this.selectSparql = read;
+  }
 
-	public SelectSparql getSelectSparql() {
-		return selectSparql;
-	}
+  public SelectSparql getSelectSparql() {
+    return selectSparql;
+  }
 
-	public SparqlDAO getSchemaDAO() {
-		return schemaDAO;
-	}
+  public SparqlDAO getSchemaDAO() {
+    return schemaDAO;
+  }
 
-	public void setSchemaDAO(SparqlDAO schemaDAO) {
-		this.schemaDAO = schemaDAO;
-	}
+  public void setSchemaDAO(SparqlDAO schemaDAO) {
+    this.schemaDAO = schemaDAO;
+  }
 
-	@Override
-	protected Iterator<SparqlEntity> doPageRead() {
+  @Override
+  protected Iterator<SparqlEntity> doPageRead() {
 
-		SelectSparql selectSparql = getSelectSparql();
+    SelectSparql selectSparqlTmp = getSelectSparql();
 
+    List<org.glycoinfo.rdf.dao.SparqlEntity> queryResults;
+    try {
 
-		List<org.glycoinfo.rdf.dao.SparqlEntity> queryResults;
-		try {
+      // https://github.com/mff-uk/DPUs/issues/78
+      String prefix = selectSparqlTmp.getPrefix();
+      selectSparqlTmp.setPrefix(null);
+      String q = selectSparqlTmp.getSparql();
+      StringBuilder query = new StringBuilder(q);
 
-	    //    https://github.com/mff-uk/DPUs/issues/78
-	    String prefix = selectSparql.getPrefix();
-	    selectSparql.setPrefix(null);
-        String q = selectSparql.getSparql();
-        StringBuilder query = new StringBuilder(q);
-        
-	    query.insert(0, prefix + "\nSELECT * WHERE { {");
-	    query.append("} } LIMIT " + Integer.toString(pageSize) + " OFFSET " + Integer.toString((pageSize * page)));
-	    
-//	    selectSparql.setOffset(Integer.toString((pageSize * page)));
-//	    selectSparql.setLimit(Integer.toString(pageSize));
-	    logger.debug("generated query:>" + query);
+      query.insert(0, prefix + "\nSELECT * WHERE { {");
+      query.append("} } LIMIT " + Integer.toString(pageSize) + " OFFSET " + Integer.toString((pageSize * page)));
 
-			queryResults = schemaDAO.query(new SelectSparqlBean(query.toString()));
-		} catch (SparqlException e) {
-			logger.warn("sparql exception:>" + e.getMessage());
-			return null;
-		}
-		return queryResults.iterator();
-	}
+      // selectSparql.setOffset(Integer.toString((pageSize * page)));
+      // selectSparql.setLimit(Integer.toString(pageSize));
+      logger.debug("generated query:>" + query);
 
-	/**
-	 * Checks mandatory properties
-	 *
-	 * @see InitializingBean#afterPropertiesSet()
-	 */
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		Assert.state(schemaDAO != null, "A DAO is required");
-	}
+      queryResults = schemaDAO.query(new SelectSparqlBean(query.toString()));
+
+      selectSparqlTmp.setPrefix(prefix);  // it's a singleton
+    } catch (SparqlException e) {
+      logger.warn("sparql exception:>" + e.getMessage());
+      return null;
+    }
+    return queryResults.iterator();
+  }
+
+  /**
+   * Checks mandatory properties
+   *
+   * @see InitializingBean#afterPropertiesSet()
+   */
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    Assert.state(schemaDAO != null, "A DAO is required");
+  }
 }
