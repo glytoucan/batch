@@ -7,17 +7,29 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.rdf.DeleteSparql;
 import org.glycoinfo.rdf.DeleteSparqlBean;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SelectSparqlBean;
+import org.glycoinfo.rdf.SparqlBean;
 import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.glycan.GlycoSequence;
+import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
+import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
+import org.glycoinfo.rdf.glycan.Saccharide;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = VirtSesameDAOTestConfig.class)
@@ -325,6 +337,174 @@ public class SparqlDAOImplTest {
 	}
 	
 	@Test
+	@Transactional
+	public void testDeleteG00029MO() throws SparqlException {
+	  
+//	  [31mapi_1            |[0m 2016-07-12 22:09:14.104 DEBUG 1 --- [p-nio-80-exec-8] o.g.r.dao.SparqlDAOVirtSesameImpl        :   Sequence="WURCS=2.0/4,7,6/[a2122h-1x_1-5_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5]/1-2-3-4-2-4-4/a4-b1_b4-c1_c3-d1_c6-f1_e1-d2|d4_g1-f3|f6"^^<http://www.w3.org/2001/XMLSchema#string>
+//	    [31mapi_1            |[0m 2016-07-12 22:09:14.104 DEBUG 1 --- [p-nio-80-exec-8] o.g.r.dao.SparqlDAOVirtSesameImpl        : RESULT 2: 
+//	    [31mapi_1            |[0m 2016-07-12 22:09:14.104 DEBUG 1 --- [p-nio-80-exec-8] o.g.r.dao.SparqlDAOVirtSesameImpl        :  SaccharideURI=http://rdf.glycoinfo.org/glycan/G00029MO
+//	    [31mapi_1            |[0m 2016-07-12 22:09:14.104 DEBUG 1 --- [p-nio-80-exec-8] o.g.r.dao.SparqlDAOVirtSesameImpl        :  PrimaryId="G00029MO"^^<http://www.w3.org/2001/XMLSchema#string>
+//	    [31mapi_1            |[0m 2016-07-12 22:09:14.104 DEBUG 1 --- [p-nio-80-exec-8] o.g.r.dao.SparqlDAOVirtSesameImpl        :  Sequence="WURCS=2.0/4,6,5/[u2122h_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5]/1-2-3-4-2-4/a4-b1_b4-c1_c3-d1_c6-f1_e1-d2|d4"^^<http://www.w3.org/2001/XMLSchema#string>
+//	    [31mapi_1            |[0m 2016-07-12 22:09:14.105 DEBUG 1 --- [p-nio-80-exec-8] o.g.api.controller.GlycanController      : image for G00029MO sequence:>WURCS=2.0/4,7,6/[a2122h-1x_1-5_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5]/1-2-3-4-2-4-4/a4-b1_b4-c1_c3-d1_c6-f1_e1-d2|d4_g1-f3|f6<
+	  
+	  String G00029MOGlycoCTToDelete="RES\n" + 
+	      "1b:x-dglc-HEX-x:x\n" + 
+	      "2s:n-acetyl\n" + 
+	      "3b:b-dglc-HEX-1:5\n" + 
+	      "4s:n-acetyl\n" + 
+	      "5b:b-dman-HEX-1:5\n" + 
+	      "6b:a-dman-HEX-1:5\n" + 
+	      "7b:b-dglc-HEX-1:5\n" + 
+	      "8s:n-acetyl\n" + 
+	      "9b:a-dman-HEX-1:5\n" + 
+	      "LIN\n" + 
+	      "1:1d(2+1)2n\n" + 
+	      "2:1o(4+1)3d\n" + 
+	      "3:3d(2+1)4n\n" + 
+	      "4:3o(4+1)5d\n" + 
+	      "5:5o(3+1)6d\n" + 
+	      "6:6o(2|4+1)7d\n" + 
+	      "7:7d(2+1)8n\n" + 
+	      "8:5o(6+1)9d";
+	  
+	  String G00029MOGlycoCTToKeep = "RES\n" + 
+	      "1b:x-dglc-HEX-1:5\n" + 
+	      "2s:n-acetyl\n" + 
+	      "3b:b-dglc-HEX-1:5\n" + 
+	      "4s:n-acetyl\n" + 
+	      "5b:b-dman-HEX-1:5\n" + 
+	      "6b:a-dman-HEX-1:5\n" + 
+	      "7b:b-dglc-HEX-1:5\n" + 
+	      "8s:n-acetyl\n" + 
+	      "9b:a-dman-HEX-1:5\n" + 
+	      "10b:a-dman-HEX-1:5\n" + 
+	      "LIN\n" + 
+	      "1:1d(2+1)2n\n" + 
+	      "2:1o(4+1)3d\n" + 
+	      "3:3d(2+1)4n\n" + 
+	      "4:3o(4+1)5d\n" + 
+	      "5:5o(3+1)6d\n" + 
+	      "6:6o(2|4+1)7d\n" + 
+	      "7:7d(2+1)8n\n" + 
+	      "8:5o(6+1)9d\n" + 
+	      "9:9o(3|6+1)10d";
+	  
+	  String G00029MOGlycoCTToKeepFormatted = G00029MOGlycoCTToKeep.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
+	  
+    String G00029MOGlycoCTToDeleteFormatted = G00029MOGlycoCTToDelete.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
+
+    String G00029MOWurcsToKeep="WURCS=2.0/4,7,6/[a2122h-1x_1-5_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5]/1-2-3-4-2-4-4/a4-b1_b4-c1_c3-d1_c6-f1_e1-d2|d4_g1-f3|f6";
+    
+    String G00029MOWurcsToDelete="WURCS=2.0/4,6,5/[u2122h_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5]/1-2-3-4-2-4/a4-b1_b4-c1_c3-d1_c6-f1_e1-d2|d4";
+	  
+	  GlycoSequenceSelectSparql gsss = new GlycoSequenceSelectSparql();
+	  gsss.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/glycoct>");
+	  
+	  SparqlEntity se = new SparqlEntity();
+	  se.setValue(Saccharide.PrimaryId, "G00029MO");
+	  se.setValue(GlycoSequence.Format, GlyConvert.GLYCOCT);
+	  
+	  gsss.setSparqlEntity(se);
+
+	  List<SparqlEntity> results = schemaDAO.query(gsss);
+	  
+	  Assert.assertNotNull(results);
+    Assert.assertEquals(2, results.size());
+	  SparqlEntity first = results.iterator().next();
+
+	  String queriedResultSequence = first.getValue("Sequence");
+	  
+    Assert.assertEquals(G00029MOGlycoCTToDelete, queriedResultSequence);
+    String queriedResultSequenceFormatted = queriedResultSequence.replaceAll("(?:\\r\\n|\\n)", "\\\\n");
+    Assert.assertEquals(G00029MOGlycoCTToDeleteFormatted, queriedResultSequenceFormatted);
+	  
+    SparqlBean simpleQuery = new SelectSparqlBean("select * \n" + 
+        "FROM <http://rdf.glytoucan.org/sequence/glycoct> "
+        + "WHERE  {"
+        + "?glycosequence ?v \"" + G00029MOGlycoCTToDeleteFormatted + "\"^^<http://www.w3.org/2001/XMLSchema#string> . "
+        + "} ");
+    results = schemaDAO.query(simpleQuery);
+    Assert.assertNotNull(results);
+    Assert.assertEquals(2, results.size());
+    
+    DeleteSparqlBean dsb = new DeleteSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
+        "DELETE WHERE { "
+        + "GRAPH <http://rdf.glytoucan.org/sequence/glycoct> {"
+            + "?glycosequence ?v \"" + G00029MOGlycoCTToDeleteFormatted + "\"^^<http://www.w3.org/2001/XMLSchema#string> . "
+            + "}"
+            + "}"
+        );
+
+    schemaDAO.delete(dsb);
+	  
+	    results = schemaDAO.query(simpleQuery);
+	    Assert.assertNotNull(results);
+	    Assert.assertEquals(0, results.size());
+	  
+	  results = schemaDAO.query(gsss);
+	  Assert.assertNotNull(results);
+	  Assert.assertEquals(1, results.size());
+	  
+    se.setValue(GlycoSequence.AccessionNumber, "G00029MO");
+    se.setValue(GlycoSequence.Format, GlyConvert.WURCS);
+    
+    gsss.setSparqlEntity(se);
+    gsss.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
+    
+      results = schemaDAO.query(gsss);
+      Assert.assertNotNull(results);
+      Assert.assertEquals(4, results.size());  // issue with /2.0 still exists, plus label
+
+	    SparqlBean simpleQueryWurcs = new SelectSparqlBean("select * \n" + 
+	        "FROM <http://rdf.glytoucan.org/sequence/wurcs> "
+	        + "WHERE  {"
+	        + "?glycosequence ?v \"" + G00029MOWurcsToDelete + "\"^^<http://www.w3.org/2001/XMLSchema#string> . "
+	        + "}");
+
+	    results = schemaDAO.query(simpleQueryWurcs);
+	    Assert.assertNotNull(results);
+	    Assert.assertEquals(4, results.size()); 
+	    
+	    dsb = new DeleteSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
+	        "DELETE WHERE { graph <http://rdf.glytoucan.org/sequence/wurcs> {\n" + 
+          "?glycoseq ?v \"" + G00029MOWurcsToDelete + "\"^^<http://www.w3.org/2001/XMLSchema#string> . " +
+	        "} }");
+	    
+	    schemaDAO.delete(dsb);
+	    
+	    results = schemaDAO.query(simpleQueryWurcs);
+	    Assert.assertNotNull(results);
+      Assert.assertEquals(0, results.size());
+      
+      results = schemaDAO.query(gsss);
+      Assert.assertNotNull(results);
+      Assert.assertEquals(2, results.size());  // issue with /2.0 still exists, plus label
+      
+	}
+	
+  private Model createDefaultModel(){
+    Model model = ModelFactory.createDefaultModel();
+    model.setNsPrefix("dc", "http://purl.org/dc/elements/1.1/");
+    model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+    model.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
+    model.setNsPrefix("bibo", "http://purl.org/ontology/bibo/");
+    model.setNsPrefix("owl", "http://www.w3.org/2002/07/owl#");
+    model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
+    model.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+    model.setNsPrefix("glycan", "http://purl.jp/bio/12/glyco/glycan#");
+    model.setNsPrefix("dcterms", "http://purl.org/dc/terms/");
+    model.setNsPrefix("glytoucan", "http://www.glytoucan.org/glyco/owl/glytoucan#");
+    
+//    model.setNsPrefix("skos", "http://www.w3.org/2004/02/skos/core#");
+//    model.setNsPrefix("edam", "http://edamontology.org/");
+//    model.setNsPrefix("faldo", "http://biohackathon.org/resource/faldo#");
+//    model.setNsPrefix("obo", "http://purl.obolibrary.org/obo/");
+//    model.setNsPrefix("uniprot", "http://purl.uniprot.org/core/");
+//    model.setNsPrefix("glyco", "http://purl.jp/bio/12/glyco/glycan#");
+    return model;
+  }
+
+  @Test
 	@Transactional
 	public void testDeleteBean() throws SparqlException {
 		DeleteSparql ds = new DeleteSparqlBean();
