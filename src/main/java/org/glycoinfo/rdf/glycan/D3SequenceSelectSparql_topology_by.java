@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class D3SeqenceSelectSparql_topology_by extends SelectSparqlBean {
+public class D3SequenceSelectSparql_topology_by extends SelectSparqlBean {
 
 	// public static final String SaccharideURI = Saccharide.URI;
 	// public static final String id = "id";
@@ -25,15 +25,15 @@ public class D3SeqenceSelectSparql_topology_by extends SelectSparqlBean {
 	public static final String SaccharideURI = Saccharide.URI;
 	public static final String id = "id";
 
-	public D3SeqenceSelectSparql_topology_by(String sparql) {
+	public D3SequenceSelectSparql_topology_by(String sparql) {
 		super(sparql);
 	}
 
-	public D3SeqenceSelectSparql_topology_by() {
+	public D3SequenceSelectSparql_topology_by() {
 		super();
 		this.prefix = "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 				+"PREFIX rocs: <http://www.glycoinfo.org/glyco/owl/relation#>\n";
-		this.select = "DISTINCT ?id ?has_topology ?topology_id\n";
+		this.select = "DISTINCT ?topology_id ((?has_topology) AS ?topology_by) ?id\n";
 		this.from = "FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/topology>\n";
 //		this.from = "FROM <http://rdf.glycoinfo.org/glycan/browser/demo>";
 	}
