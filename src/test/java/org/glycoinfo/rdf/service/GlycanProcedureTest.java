@@ -1100,4 +1100,18 @@ LIN
       SparqlEntity sparqlEntity = glycanProcedure.searchByAccessionNumber(result);
       
     } 
+    
+    @Test
+    public void testTopologyDuplicates() throws SparqlException, ConvertException {
+//      String sequence = "WURCS=2.0/2,3,2/[h44h][a2122h-1x_1-5]/1-2-2/a?-b1_b?-c1";
+//      String result = glycanProcedure.register(sequence, "254");
+//      logger.debug(result);
+      
+      String sequence = "WURCS=2.0/2,6,6/[a2122h-1x_1-5_3-6][a2122h-1x_1-5]/1-1-2-1-2-1/a1-f?_a?-b1_b?-c1_c?-d1_d?-e1_e?-f1";
+      String result = glycanProcedure.register(sequence, "254");
+      logger.debug(result);
+
+      
+      Assert.assertNotNull(result);
+    }
 }

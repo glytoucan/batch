@@ -98,11 +98,14 @@ public class ConvertSparqlProcessor implements ItemProcessor<SparqlEntity, Sparq
         throw new ConvertException(e);
       }
 
-      sparqlEntityProcessing.setValue(SparqlItemWriter.Pass, encodedErrorMessage);
+      return null;
     }
 
-    if (null != postConverter)
+    if (null != postConverter) {
       sparqlEntityProcessing = postConverter.convert(sparqlEntityProcessing);
+      if (null == sparqlEntityProcessing)
+        return null;
+    }
 
     return sparqlEntityProcessing;
   }

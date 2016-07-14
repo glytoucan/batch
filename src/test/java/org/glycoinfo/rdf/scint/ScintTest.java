@@ -118,4 +118,15 @@ public class ScintTest {
 		deleteScintProgramMembership.update(se);	
 		sparqlDAO.delete(deleteScintProgramMembership.getSparqlBean());
 	}
+	
+	
+	@Test
+	@Transactional
+	public void testInsertUri() throws SparqlException {
+  SparqlEntity sparqlEntityPerson = new SparqlEntity("TestID123");
+  sparqlEntityPerson.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
+  insertScintPerson.update(sparqlEntityPerson);
+
+	sparqlDAO.insert((InsertSparql) insertScintPerson.getSparqlBean());
+	}
 }

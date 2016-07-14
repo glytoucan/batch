@@ -328,9 +328,15 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			return searchResultSE;
 		}
 
-		if (list != null && list.size() > 1)
-			logger.warn("found more than one WURCS!");
+		if (list != null && list.size() > 1) {
+      logger.warn("found more than one WURCS!");
+		  for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+        SparqlEntity sparqlEntity = (SparqlEntity) iterator.next();
+        logger.warn("accession#:>" + sparqlEntity.getValue(AccessionNumber));
+      }
+		}
 		searchResultSE = list.get(0);
+    logger.debug("searchResultSE accession#:>" + searchResultSE.getValue(AccessionNumber));
 
 		searchResultSE.setValue(Image, "/glycans/" + searchResultSE.getValue(AccessionNumber)
 				+ "/image?style=extended&format=png&notation=cfg");
