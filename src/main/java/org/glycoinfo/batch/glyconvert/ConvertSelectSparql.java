@@ -40,6 +40,10 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 
 	public ConvertSelectSparql() {
 		super();
+		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
+				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
+		this.select = "DISTINCT ?" + SaccharideURI + " ?" + AccessionNumber
+				+ " ?" + Sequence + " ?" + GlycanSequenceURI;
 	}
 
 	protected Log logger = LogFactory.getLog(getClass());
@@ -61,14 +65,12 @@ public class ConvertSelectSparql extends SelectSparqlBean implements
 
 	@Override
 	public String getSelect() {
-		return "DISTINCT ?" + SaccharideURI + " ?" + AccessionNumber
-				+ " ?" + Sequence + " ?" + GlycanSequenceURI;
+	  return this.select;
 	}
 
 	@Override
 	public String getPrefix() {
-		return "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
-				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
+	  return this.prefix;
 	}
 
 	/*
