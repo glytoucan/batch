@@ -1,49 +1,13 @@
 package org.glycoinfo.rdf.glycan.msdb;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
 
-import org.glycoinfo.WURCSFramework.util.WURCSException;
-import org.glycoinfo.WURCSFramework.util.WURCSFactory;
-import org.glycoinfo.WURCSFramework.util.array.WURCSExporter;
-import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
-import org.glycoinfo.WURCSFramework.util.array.WURCSImporter;
-import org.glycoinfo.WURCSFramework.wurcs.array.MS;
-import org.glycoinfo.WURCSFramework.wurcs.array.UniqueRES;
-import org.glycoinfo.WURCSFramework.wurcs.array.WURCSArray;
-import org.glycoinfo.WURCSFramework.wurcs.rdf.WURCSExporterRDF;
-import org.glycoinfo.WURCSFramework.wurcs.rdf.WURCSRDFModelMS;
 import org.glycoinfo.client.MSdbClient;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
-import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Monosaccharide;
-import org.glycoinfo.rdf.glycan.Saccharide;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import virtuoso.jena.driver.VirtGraph;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.GraphUtil;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-
 
 public class MSInsertSparql extends InsertSparqlBean {
 

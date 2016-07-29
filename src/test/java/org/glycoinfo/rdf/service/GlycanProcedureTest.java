@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
-import org.glycoinfo.client.MSdbClient;
-import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.DuplicateException;
@@ -17,7 +15,6 @@ import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.dao.SparqlEntityFactory;
 import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
@@ -31,7 +28,6 @@ import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
 //import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
 import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceResourceEntryContributorSelectSparql;
-import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFInsertSparql;
@@ -289,15 +285,16 @@ LIN
 				+ "LIN\n"
 				+ "1:1d(2+1)2n\n"
 				+ "2:1o(4+1)3d";
+		
 		SparqlEntity se = glycanProcedure.searchBySequence(sequence);
 		
-		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycoSequence.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.Image));
-		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.Sequence));
-		Assert.assertNotNull(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycoSequence.Sequence));
+		Assert.assertNotNull(se.getValue(GlycoSequence.AccessionNumber));
 		Assert.assertNotNull(se.getValue(GlycanProcedure.Image));
-		Assert.assertNotNull(se.getValue(GlycoSequenceToWurcsSelectSparql.Sequence));
-		Assert.assertEquals("G00055MO", se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		Assert.assertNotNull(se.getValue(GlycoSequence.Sequence));
+		Assert.assertEquals("G00055MO", se.getValue(GlycoSequence.AccessionNumber));
 	}
 	
 	@Test
@@ -317,13 +314,13 @@ LIN
 				+ "2:1o(3+1)3d";
 		SparqlEntity se = glycanProcedure.searchBySequence(sequence);
 
-		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycoSequence.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.Image));
-		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.Sequence));
-		Assert.assertNotNull(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycoSequence.Sequence));
+		Assert.assertNotNull(se.getValue(GlycoSequence.AccessionNumber));
 		Assert.assertNotNull(se.getValue(GlycanProcedure.Image));
-		Assert.assertNotNull(se.getValue(GlycoSequenceToWurcsSelectSparql.Sequence));
-		Assert.assertEquals("G00031MO", se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		Assert.assertNotNull(se.getValue(GlycoSequence.Sequence));
+		Assert.assertEquals("G00031MO", se.getValue(GlycoSequence.AccessionNumber));
 	}
 
 	
@@ -441,9 +438,9 @@ LIN
 //		glycanProcedure.setSequence(sequence);
 		SparqlEntity se = glycanProcedure.searchBySequence(sequence);
 
-		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycoSequence.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.ResultSequence));
-		Assert.assertNotNull(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		Assert.assertNotNull(se.getValue(GlycoSequence.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.FromSequence));
 
 		String wurcs = se.getValue(GlycanProcedure.ResultSequence);
@@ -502,9 +499,9 @@ LIN
 //		glycanProcedure.setSequence(sequence);
 		SparqlEntity se = glycanProcedure.searchBySequence(sequence);
 
-		logger.debug(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		logger.debug(se.getValue(GlycoSequence.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.ResultSequence));
-		Assert.assertNotNull(se.getValue(GlycoSequenceToWurcsSelectSparql.AccessionNumber));
+		Assert.assertNotNull(se.getValue(GlycoSequence.AccessionNumber));
 		logger.debug(se.getValue(GlycanProcedure.FromSequence));
 
 		String wurcs = se.getValue(GlycanProcedure.ResultSequence);
@@ -520,189 +517,189 @@ LIN
 		logger.debug(se.toString());
 	}
 	
-	@Test
-	@Transactional
-	public void testRegisterG65696SL() throws SparqlException, ConvertException
-	{
-//		GlycoCT:
-//RES
-//1b:x-dglc-HEX-1:5
-//2b:b-dgal-HEX-1:5
-//3b:b-dglc-HEX-1:5
-//4s:n-acetyl
-//5b:b-dgal-HEX-1:5
-//6b:b-dglc-HEX-1:5
-//7s:n-acetyl
-//8b:b-dgal-HEX-1:5
-//9b:b-dglc-HEX-1:5
-//10s:n-acetyl
-//11b:b-dgal-HEX-1:5
-//12b:b-dglc-HEX-1:5
-//13s:n-acetyl
-//14b:b-dgal-HEX-1:5
-//LIN
-//1:1o(4+1)2d
-//2:2o(3+1)3d
-//3:3d(2+1)4n
-//4:3o(4+1)5d
-//5:2o(6+1)6d
-//6:6d(2+1)7n
-//7:6o(4+1)8d
-//8:8o(3+1)9d
-//9:9d(2+1)10n
-//10:9o(3+1)11d
-//11:8o(6+1)12d
-//12:12d(2+1)13n
-//13:12o(4+1)14d
-		String sequence = "RES\\n"
-				+ "1b:x-dglc-HEX-1:5\\n"
-				+ "2b:b-dgal-HEX-1:5\\n"
-				+ "3b:b-dglc-HEX-1:5\\n"
-				+ "4s:n-acetyl\\n"
-				+ "5b:b-dgal-HEX-1:5\\n"
-				+ "6b:b-dglc-HEX-1:5\\n"
-				+ "7s:n-acetyl\\n"
-				+ "8b:b-dgal-HEX-1:5\\n"
-				+ "9b:b-dglc-HEX-1:5\\n"
-				+ "10s:n-acetyl\\n"
-				+ "11b:b-dgal-HEX-1:5\\n"
-				+ "12b:b-dglc-HEX-1:5\\n"
-				+ "13s:n-acetyl\\n"
-				+ "14b:b-dgal-HEX-1:5\\n"
-				+ "LIN\\n"
-				+ "1:1o(4+1)2d\\n"
-				+ "2:2o(3+1)3d\\n"
-				+ "3:3d(2+1)4n\\n"
-				+ "4:3o(4+1)5d\\n"
-				+ "5:2o(6+1)6d\\n"
-				+ "6:6d(2+1)7n\\n"
-				+ "7:6o(4+1)8d\\n"
-				+ "8:8o(3+1)9d\\n"
-				+ "9:9d(2+1)10n\\n"
-				+ "10:9o(3+1)11d\\n"
-				+ "11:8o(6+1)12d\\n"
-				+ "12:12d(2+1)13n\\n"
-				+ "13:12o(4+1)14d\\n";
-
-		logger.debug("sequence:>" + sequence + "<");
-//		glycanProcedure.setId("G65696SL");
-//		glycanProcedure.setContributorId("5854");
-		String result = glycanProcedure.register(sequence, "5854");
-
-		Assert.assertNotNull(result);
-		
-	}
+//	@Test
+//	@Transactional
+//	public void testRegisterG65696SL() throws SparqlException, ConvertException
+//	{
+////		GlycoCT:
+////RES
+////1b:x-dglc-HEX-1:5
+////2b:b-dgal-HEX-1:5
+////3b:b-dglc-HEX-1:5
+////4s:n-acetyl
+////5b:b-dgal-HEX-1:5
+////6b:b-dglc-HEX-1:5
+////7s:n-acetyl
+////8b:b-dgal-HEX-1:5
+////9b:b-dglc-HEX-1:5
+////10s:n-acetyl
+////11b:b-dgal-HEX-1:5
+////12b:b-dglc-HEX-1:5
+////13s:n-acetyl
+////14b:b-dgal-HEX-1:5
+////LIN
+////1:1o(4+1)2d
+////2:2o(3+1)3d
+////3:3d(2+1)4n
+////4:3o(4+1)5d
+////5:2o(6+1)6d
+////6:6d(2+1)7n
+////7:6o(4+1)8d
+////8:8o(3+1)9d
+////9:9d(2+1)10n
+////10:9o(3+1)11d
+////11:8o(6+1)12d
+////12:12d(2+1)13n
+////13:12o(4+1)14d
+//		String sequence = "RES\\n"
+//				+ "1b:x-dglc-HEX-1:5\\n"
+//				+ "2b:b-dgal-HEX-1:5\\n"
+//				+ "3b:b-dglc-HEX-1:5\\n"
+//				+ "4s:n-acetyl\\n"
+//				+ "5b:b-dgal-HEX-1:5\\n"
+//				+ "6b:b-dglc-HEX-1:5\\n"
+//				+ "7s:n-acetyl\\n"
+//				+ "8b:b-dgal-HEX-1:5\\n"
+//				+ "9b:b-dglc-HEX-1:5\\n"
+//				+ "10s:n-acetyl\\n"
+//				+ "11b:b-dgal-HEX-1:5\\n"
+//				+ "12b:b-dglc-HEX-1:5\\n"
+//				+ "13s:n-acetyl\\n"
+//				+ "14b:b-dgal-HEX-1:5\\n"
+//				+ "LIN\\n"
+//				+ "1:1o(4+1)2d\\n"
+//				+ "2:2o(3+1)3d\\n"
+//				+ "3:3d(2+1)4n\\n"
+//				+ "4:3o(4+1)5d\\n"
+//				+ "5:2o(6+1)6d\\n"
+//				+ "6:6d(2+1)7n\\n"
+//				+ "7:6o(4+1)8d\\n"
+//				+ "8:8o(3+1)9d\\n"
+//				+ "9:9d(2+1)10n\\n"
+//				+ "10:9o(3+1)11d\\n"
+//				+ "11:8o(6+1)12d\\n"
+//				+ "12:12d(2+1)13n\\n"
+//				+ "13:12o(4+1)14d\\n";
+//
+//		logger.debug("sequence:>" + sequence + "<");
+////		glycanProcedure.setId("G65696SL");
+////		glycanProcedure.setContributorId("5854");
+//		String result = glycanProcedure.register(sequence, "5854");
+//
+//		Assert.assertNotNull(result);
+//		
+//	}
 	
-	@Test
-	@Transactional
-	public void testRegisterG46627YI() throws SparqlException, ConvertException
-	{
-//		GlycoCT:
-//		RES
-//		1b:x-dglc-HEX-1:5
-//		2b:b-dgal-HEX-1:5
-//		3b:b-dglc-HEX-1:5
-//		4s:n-acetyl
-//		5b:b-dgal-HEX-1:5
-//		6b:b-dglc-HEX-1:5
-//		7s:n-acetyl
-//		8b:a-lgal-HEX-1:5|6:d
-//		9b:b-dgal-HEX-1:5
-//		10b:b-dglc-HEX-1:5
-//		11s:n-acetyl
-//		12b:b-dgal-HEX-1:5
-//		13b:a-lgal-HEX-1:5|6:d
-//		LIN
-//		1:1o(4+1)2d
-//		2:2o(3+1)3d
-//		3:3d(2+1)4n
-//		4:3o(3+1)5d
-//		5:2o(6+1)6d
-//		6:6d(2+1)7n
-//		7:6o(3+1)8d
-//		8:6o(4+1)9d
-//		9:9o(3+1)10d
-//		10:10d(2+1)11n
-//		11:10o(3+1)12d
-//		12:12o(2+1)13d
-		String sequence = "RES\\n" +
-				"1b:x-dglc-HEX-1:5\\n" +
-				"2b:b-dgal-HEX-1:5\\n" +
-				"3b:b-dglc-HEX-1:5\\n" +
-				"4s:n-acetyl\\n" +
-				"5b:b-dgal-HEX-1:5\\n" +
-				"6b:b-dglc-HEX-1:5\\n" +
-				"7s:n-acetyl\\n" +
-				"8b:a-lgal-HEX-1:5|6:d\\n" +
-				"9b:b-dgal-HEX-1:5\\n" +
-				"10b:b-dglc-HEX-1:5\\n" +
-				"11s:n-acetyl\\n" +
-				"12b:b-dgal-HEX-1:5\\n" +
-				"13b:a-lgal-HEX-1:5|6:d\\n" +
-				"LIN\\n" +
-				"1:1o(4+1)2d\\n" +
-				"2:2o(3+1)3d\\n" +
-				"3:3d(2+1)4n\\n" +
-				"4:3o(3+1)5d\\n" +
-				"5:2o(6+1)6d\\n" +
-				"6:6d(2+1)7n\\n" +
-				"7:6o(3+1)8d\\n" +
-				"8:6o(4+1)9d\\n" +
-				"9:9o(3+1)10d\\n" +
-				"10:10d(2+1)11n\\n" +
-				"11:10o(3+1)12d\\n" +
-				"12:12o(2+1)13d\\n";
-
-		logger.debug("sequence:>" + sequence + "<");
-//		glycanProcedure.setId("G46627YI");
-//		glycanProcedure.setContributorId("5854");
-		String result = glycanProcedure.register(sequence, "5854");
-
-		Assert.assertNotNull(result);
-//		Assert.assertEquals("G46627YI", result);
-	}
+//	@Test
+//	@Transactional
+//	public void testRegisterG46627YI() throws SparqlException, ConvertException
+//	{
+////		GlycoCT:
+////		RES
+////		1b:x-dglc-HEX-1:5
+////		2b:b-dgal-HEX-1:5
+////		3b:b-dglc-HEX-1:5
+////		4s:n-acetyl
+////		5b:b-dgal-HEX-1:5
+////		6b:b-dglc-HEX-1:5
+////		7s:n-acetyl
+////		8b:a-lgal-HEX-1:5|6:d
+////		9b:b-dgal-HEX-1:5
+////		10b:b-dglc-HEX-1:5
+////		11s:n-acetyl
+////		12b:b-dgal-HEX-1:5
+////		13b:a-lgal-HEX-1:5|6:d
+////		LIN
+////		1:1o(4+1)2d
+////		2:2o(3+1)3d
+////		3:3d(2+1)4n
+////		4:3o(3+1)5d
+////		5:2o(6+1)6d
+////		6:6d(2+1)7n
+////		7:6o(3+1)8d
+////		8:6o(4+1)9d
+////		9:9o(3+1)10d
+////		10:10d(2+1)11n
+////		11:10o(3+1)12d
+////		12:12o(2+1)13d
+//		String sequence = "RES\\n" +
+//				"1b:x-dglc-HEX-1:5\\n" +
+//				"2b:b-dgal-HEX-1:5\\n" +
+//				"3b:b-dglc-HEX-1:5\\n" +
+//				"4s:n-acetyl\\n" +
+//				"5b:b-dgal-HEX-1:5\\n" +
+//				"6b:b-dglc-HEX-1:5\\n" +
+//				"7s:n-acetyl\\n" +
+//				"8b:a-lgal-HEX-1:5|6:d\\n" +
+//				"9b:b-dgal-HEX-1:5\\n" +
+//				"10b:b-dglc-HEX-1:5\\n" +
+//				"11s:n-acetyl\\n" +
+//				"12b:b-dgal-HEX-1:5\\n" +
+//				"13b:a-lgal-HEX-1:5|6:d\\n" +
+//				"LIN\\n" +
+//				"1:1o(4+1)2d\\n" +
+//				"2:2o(3+1)3d\\n" +
+//				"3:3d(2+1)4n\\n" +
+//				"4:3o(3+1)5d\\n" +
+//				"5:2o(6+1)6d\\n" +
+//				"6:6d(2+1)7n\\n" +
+//				"7:6o(3+1)8d\\n" +
+//				"8:6o(4+1)9d\\n" +
+//				"9:9o(3+1)10d\\n" +
+//				"10:10d(2+1)11n\\n" +
+//				"11:10o(3+1)12d\\n" +
+//				"12:12o(2+1)13d\\n";
+//
+//		logger.debug("sequence:>" + sequence + "<");
+////		glycanProcedure.setId("G46627YI");
+////		glycanProcedure.setContributorId("5854");
+//		String result = glycanProcedure.register(sequence, "5854");
+//
+//		Assert.assertNotNull(result);
+////		Assert.assertEquals("G46627YI", result);
+//	}
 	
-	@Test
-	@Transactional
-	public void testRegisterG92195EH() throws SparqlException, ConvertException
-	{
-
-		String sequence = "RES\\n" +
-				"1b:x-dglc-HEX-1:5\\n" +
-				"2b:b-dgal-HEX-1:5\\n" +
-				"3b:b-dglc-HEX-1:5\\n" +
-				"4s:n-acetyl\\n" +
-				"5b:b-dgal-HEX-1:5\\n" +
-				"6b:b-dglc-HEX-1:5\\n" +
-				"7s:n-acetyl\\n" +
-				"8b:a-lgal-HEX-1:5|6:d\\n" +
-				"9b:b-dgal-HEX-1:5\\n" +
-				"10b:b-dglc-HEX-1:5\\n" +
-				"11s:n-acetyl\\n" +
-				"12b:b-dgal-HEX-1:5\\n" +
-				"13b:a-lgal-HEX-1:5|6:d\\n" +
-				"LIN\\n" +
-				"1:1o(4+1)2d\\n" +
-				"2:2o(3+1)3d\\n" +
-				"3:3d(2+1)4n\\n" +
-				"4:3o(3+1)5d\\n" +
-				"5:2o(6+1)6d\\n" +
-				"6:6d(2+1)7n\\n" +
-				"7:6o(3+1)8d\\n" +
-				"8:6o(4+1)9d\\n" +
-				"9:9o(3+1)10d\\n" +
-				"10:10d(2+1)11n\\n" +
-				"11:10o(3+1)12d\\n" +
-				"12:12o(2+1)13d\\n";
-
-		logger.debug("sequence:>" + sequence + "<");
-//		glycanProcedure.setId("G92195EH");
-//		glycanProcedure.setContributorId("5854");
-		String result = glycanProcedure.register(sequence, "5854");
-
-		Assert.assertNotNull(result);
-		
-	}
+//	@Test
+//	@Transactional
+//	public void testRegisterG92195EH() throws SparqlException, ConvertException
+//	{
+//
+//		String sequence = "RES\\n" +
+//				"1b:x-dglc-HEX-1:5\\n" +
+//				"2b:b-dgal-HEX-1:5\\n" +
+//				"3b:b-dglc-HEX-1:5\\n" +
+//				"4s:n-acetyl\\n" +
+//				"5b:b-dgal-HEX-1:5\\n" +
+//				"6b:b-dglc-HEX-1:5\\n" +
+//				"7s:n-acetyl\\n" +
+//				"8b:a-lgal-HEX-1:5|6:d\\n" +
+//				"9b:b-dgal-HEX-1:5\\n" +
+//				"10b:b-dglc-HEX-1:5\\n" +
+//				"11s:n-acetyl\\n" +
+//				"12b:b-dgal-HEX-1:5\\n" +
+//				"13b:a-lgal-HEX-1:5|6:d\\n" +
+//				"LIN\\n" +
+//				"1:1o(4+1)2d\\n" +
+//				"2:2o(3+1)3d\\n" +
+//				"3:3d(2+1)4n\\n" +
+//				"4:3o(3+1)5d\\n" +
+//				"5:2o(6+1)6d\\n" +
+//				"6:6d(2+1)7n\\n" +
+//				"7:6o(3+1)8d\\n" +
+//				"8:6o(4+1)9d\\n" +
+//				"9:9o(3+1)10d\\n" +
+//				"10:10d(2+1)11n\\n" +
+//				"11:10o(3+1)12d\\n" +
+//				"12:12o(2+1)13d\\n";
+//
+//		logger.debug("sequence:>" + sequence + "<");
+////		glycanProcedure.setId("G92195EH");
+////		glycanProcedure.setContributorId("5854");
+//		String result = glycanProcedure.register(sequence, "5854");
+//
+//		Assert.assertNotNull(result);
+//		
+//	}
 	
 	
 	@Test
@@ -803,15 +800,25 @@ LIN
 	public void testRegisterWithCRLF() throws SparqlException, ConvertException
 	{
 
-		String sequence = "RES\r\n"
-				+ "1b:x-dglc-HEX-1:5\r\n"
-				+ "2b:x-dman-HEX-1:5\r\n"
-				+ "3b:x-dglc-HEX-1:5\r\n"
-				+ "4s:n-acetyl\r\n"
-				+ "LIN\r\n"
-				+ "1:1o(-1+1)2d\r\n"
-				+ "2:2o(-1+1)3d\r\n"
-				+ "3:3d(2+1)4n";
+		String sequence = "RES\r\n" + 
+		    "1b:b-dglc-HEX-1:5\r\n" + 
+		    "2s:n-acetyl\r\n" + 
+		    "3b:b-dglc-HEX-1:5\r\n" + 
+		    "4s:n-acetyl\r\n" + 
+		    "5b:b-dman-HEX-1:5\r\n" + 
+		    "6b:a-dman-HEX-1:5\r\n" + 
+		    "7b:a-dman-HEX-1:5\r\n" + 
+		    "8b:x-llyx-PEN-1:5\r\n" + 
+		    "9b:x-lgal-HEX-1:5|6:d\r\n" + 
+		    "LIN\r\n" + 
+		    "1:1d(2+1)2n\r\n" + 
+		    "2:1o(4+1)3d\r\n" + 
+		    "3:3d(2+1)4n\r\n" + 
+		    "4:3o(4+1)5d\r\n" + 
+		    "5:5o(3+1)6d\r\n" + 
+		    "6:5o(6+1)7d\r\n" + 
+		    "7:7o(-1+1)8d\r\n" + 
+		    "8:8o(-1+1)9d";
 
 		logger.debug("sequence:>" + sequence + "<");
 //		glycanProcedure.setId("G92195EH");
@@ -869,44 +876,44 @@ LIN
 	
 		
 		
-		@Test(expected=DuplicateException.class)
-	@Transactional
-	public void testRegisterUnicarbDB2() throws SparqlException, ConvertException
-	{
-
-		String sequence = "RES\n" +
-		"1b:o-dgal-HEX-0:0|1:aldi\n" +
-				"2s:n-acetyl\n" +
-		"3b:b-dgal-HEX-1:5\n" +
-				"4b:a-lgal-HEX-1:5|6:d\n" +
-		"5b:b-dglc-HEX-1:5\n" +
-				"6s:n-acetyl\n" +
-		"7b:b-dgal-HEX-1:5\n" +
-				"8b:a-lgal-HEX-1:5|6:d\n" +
-		"9b:b-dglc-HEX-1:5\n" +
-				"10s:n-acetyl\n" +
-		"11b:b-dgal-HEX-1:5\n" +
-				"12b:a-lgal-HEX-1:5|6:d\n" +
-		"LIN\n" +
-				"1:1d(2+1)2n\n" +
-		"2:1o(3+1)3d\n" +
-				"3:3o(2+1)4d\n" +
-		"4:3o(3+1)5d\n" +
-				"5:5d(2+1)6n\n" +
-		"6:5o(4+1)7d\n" +
-				"7:7o(2+1)8d\n" +
-		"8:1o(6+1)9d\n" +
-				"9:9d(2+1)10n\n" +
-		"10:9o(4+1)11d\n" +
-				"11:11o(2+1)12d";
-		logger.debug("sequence:>" + sequence + "<");
-//		glycanProcedure.setId("G92195EH");
-//		glycanProcedure.setContributorId("5854");
-		String result = glycanProcedure.register(sequence, "999");
-
-		Assert.assertNotNull(result);
-		
-	}
+//		@Test(expected=DuplicateException.class)
+//	@Transactional
+//	public void testRegisterUnicarbDB2() throws SparqlException, ConvertException
+//	{
+//
+//		String sequence = "RES\n" +
+//		"1b:o-dgal-HEX-0:0|1:aldi\n" +
+//				"2s:n-acetyl\n" +
+//		"3b:b-dgal-HEX-1:5\n" +
+//				"4b:a-lgal-HEX-1:5|6:d\n" +
+//		"5b:b-dglc-HEX-1:5\n" +
+//				"6s:n-acetyl\n" +
+//		"7b:b-dgal-HEX-1:5\n" +
+//				"8b:a-lgal-HEX-1:5|6:d\n" +
+//		"9b:b-dglc-HEX-1:5\n" +
+//				"10s:n-acetyl\n" +
+//		"11b:b-dgal-HEX-1:5\n" +
+//				"12b:a-lgal-HEX-1:5|6:d\n" +
+//		"LIN\n" +
+//				"1:1d(2+1)2n\n" +
+//		"2:1o(3+1)3d\n" +
+//				"3:3o(2+1)4d\n" +
+//		"4:3o(3+1)5d\n" +
+//				"5:5d(2+1)6n\n" +
+//		"6:5o(4+1)7d\n" +
+//				"7:7o(2+1)8d\n" +
+//		"8:1o(6+1)9d\n" +
+//				"9:9d(2+1)10n\n" +
+//		"10:9o(4+1)11d\n" +
+//				"11:11o(2+1)12d";
+//		logger.debug("sequence:>" + sequence + "<");
+////		glycanProcedure.setId("G92195EH");
+////		glycanProcedure.setContributorId("5854");
+//		String result = glycanProcedure.register(sequence, "999");
+//
+//		Assert.assertNotNull(result);
+//		
+//	}
 
 		@Test(expected=SparqlException.class)
 	@Transactional
@@ -1102,12 +1109,13 @@ LIN
     } 
     
     @Test
+    @Transactional
     public void testTopologyDuplicates() throws SparqlException, ConvertException {
 //      String sequence = "WURCS=2.0/2,3,2/[h44h][a2122h-1x_1-5]/1-2-2/a?-b1_b?-c1";
 //      String result = glycanProcedure.register(sequence, "254");
 //      logger.debug(result);
       
-      String sequence = "WURCS=2.0/2,6,6/[a2122h-1x_1-5_3-6][a2122h-1x_1-5]/1-1-2-1-2-1/a1-f?_a?-b1_b?-c1_c?-d1_d?-e1_e?-f1";
+      String sequence = "WURCS=2.0/5,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a221h-1x_1-5][a1221m-1x_1-5]/1-1-2-3-3-4-5/a4-b1_b4-c1_c3-d1_c6-e1_e?-f1_f?-g1";
       String result = glycanProcedure.register(sequence, "254");
       logger.debug(result);
 

@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
@@ -339,7 +340,7 @@ public class SparqlDAOImplTest {
 
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void testDeleteG88203PI() throws SparqlException {
 	  
@@ -473,7 +474,7 @@ public class SparqlDAOImplTest {
 	}
 	
 
-  @Test
+//  @Test
   @Transactional
   public void testDeleteG00029MO() throws SparqlException {
     
@@ -638,7 +639,7 @@ public class SparqlDAOImplTest {
         "?SaccharideURI glycan:has_glycosequence ?GlycanSequenceURI .\n" + 
         "?GlycanSequenceURI glycan:has_sequence ?Sequence .\n" + 
         "?GlycanSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n" + 
-        "} group by ?PrimaryId ?GlycanSequenceURI having count(distinct ?Sequence) > 1 order by ?PrimaryId";
+        "} group by ?PrimaryId having count(distinct ?Sequence) > 1 order by ?PrimaryId";
     
     SelectSparql sparql = new SelectSparqlBean(select);
 
@@ -655,13 +656,15 @@ public class SparqlDAOImplTest {
       
       for (SparqlEntity sparqlEntity2 : wurcsList) {
         String sequence = sparqlEntity2.getValue(GlycoSequence.Sequence);
-        logger.debug("sequence:" + sequence + "<");
+        logger.debug("sequence:\t" + sequence + "<");
         
         WURCSFactory wurcsFactory = new WURCSFactory(sequence);
         String wurcs = wurcsFactory.getWURCS();
-        logger.debug("wurcs\t:" + sequence + "<");
+        logger.debug("wurcs\t:" + wurcs + "<");
         
         if (!wurcs.equals(sequence)) {
+          logger.debug(">" + wurcs + "<!=");
+          logger.debug(">" + sequence + "<");          
           schemaDAO.delete(new DeleteSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> DELETE DATA { GRAPH <http://rdf.glytoucan.org/sequence/wurcs> { <http://rdf.glycoinfo.org/glycan/" + primaryId + "/wurcs/2.0> glycan:has_sequence \"" + sequence + "\"^^<http://www.w3.org/2001/XMLSchema#string> } }"));
           schemaDAO.delete(new DeleteSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> DELETE DATA { GRAPH <http://rdf.glytoucan.org/sequence/wurcs> { <http://rdf.glycoinfo.org/glycan/" + primaryId + "/wurcs> glycan:has_sequence \"" + sequence + "\"^^<http://www.w3.org/2001/XMLSchema#string> } }"));
           List<SparqlEntity> checkList = schemaDAO.query(new SelectSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> Select count(*) as ?count FROM <http://rdf.glytoucan.org/sequence/wurcs> WHERE { <http://rdf.glycoinfo.org/glycan/" + primaryId + "/wurcs> glycan:has_sequence \"" + sequence + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n" +

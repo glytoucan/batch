@@ -101,7 +101,8 @@ public class ResourceEntrySparqlBeanTest {
 		}
 	}
 
-	@Test
+	// TODO: replace with partner
+//	@Test
 	public void testSelectDatabase() throws SparqlException, UnsupportedEncodingException {
 		SelectSparql ss = databaseSelectSparql();
 		SparqlEntity se = new SparqlEntity();
@@ -115,8 +116,9 @@ public class ResourceEntrySparqlBeanTest {
 		}
 	}
 
-	@Test
-	@Transactional
+//	TODO: replace with partner
+//	@Test
+//	@Transactional
 	public void testInsertGlycanDBResource() throws SparqlException, UnsupportedEncodingException {
 
 		// <http://rdf.glycoinfo.org/unicarb-db/324>

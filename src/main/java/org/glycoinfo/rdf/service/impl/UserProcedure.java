@@ -162,7 +162,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		if (StringUtils.isBlank(nameMap(sparqlentityPerson)))
 			throw new SparqlException("given name cannot be blank.  Please fix account information or login with google+.");
 		
-		// check if Contributor exists, and map. 
+		// check if Contributor exists, using email mapping first and then just contributor name, add if it doesn't
 		String contributorId = contributorProcedure.addContributor(nameMap(sparqlentityPerson));
 
 		sparqlentityPerson.setValue(CONTRIBUTOR_ID, contributorId);
@@ -271,29 +271,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	}
 
 	private String nameMap(SparqlEntity sparqlEntity) {
-		if (sparqlEntity.getValue(EMAIL).equals("aokinobu@gmail.com"))
-			return "aoki";
-		if (sparqlEntity.getValue(EMAIL).equals("d.shinmachi.aist@gmail.com"))
-			return "daisuke shinmachi";
-		if (sparqlEntity.getValue(EMAIL).equals("glytoucan@gmail.com"))
-			return "Administrator";
-		if (sparqlEntity.getValue(EMAIL).equals("kkiyoko@soka.ac.jp"))
-			return "Kiyoko F. Aoki-Kinoshita";
-		if (sparqlEntity.getValue(EMAIL).equals("yamadaissaku@gmail.com"))
-			return "Issaku YAMADA";
-		if (sparqlEntity.getValue(EMAIL).equals("e1156225@soka-u.jp"))
-			return "Risa Sekimoto";
-		if (sparqlEntity.getValue(EMAIL).equals("t.shikanai@aist.go.jp"))
-			return "Toshihide Shikanai";
-		if (sparqlEntity.getValue(EMAIL).equals("matsubara@noguchi.or.jp"))
-			return "Masaaki Matsubara";
-		if (sparqlEntity.getValue(EMAIL).equals("yusyahassy@gmail.com"))
-			return "Nobuyuki Hashimoto";
-		if (sparqlEntity.getValue(EMAIL).equals("dfsmith@emory.edu"))
-			return "David F. Smith";
-		if (sparqlEntity.getValue(EMAIL).equals("e0956224@gmail.com"))
-			return "Yushi Takahashi";
-		
+	  // the name map is the mapping of gmail address to contributor ID.
 		return sparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.GIVEN_NAME);
 	}
 

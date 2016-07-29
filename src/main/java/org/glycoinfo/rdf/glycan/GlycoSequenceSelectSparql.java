@@ -37,7 +37,9 @@ public class GlycoSequenceSelectSparql extends SaccharideSelectSparql implements
 		super();
 		this.prefix = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>";
-		this.select = super.getSelect() + " ?" + Sequence + "\n";
+        this.select = super.getSelect() + " ?" + Sequence + " \n";
+//        this.select = super.getSelect() + " ?" + Sequence + " ?" + GlycanSequenceURI + " \n";
+//		this.select = super.getSelect() + " ?" + Sequence + " ?" + GlycanSequenceURI + " ?" + Label + " \n";
 		this.from = "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>";
 	}
@@ -50,8 +52,14 @@ public class GlycoSequenceSelectSparql extends SaccharideSelectSparql implements
 	@Override
 	public String getWhere() throws SparqlException {
 		String whereTmp = super.getWhere();
-		whereTmp += "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n"
-			+ "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n";
+		whereTmp += "?" + SaccharideURI + " glycan:has_glycosequence ?" + GlycanSequenceURI + " .\n";
+		if (StringUtils.isNotBlank(getSparqlEntity().getValue(GlycoSequence.Sequence))) {
+			whereTmp += "?" + GlycanSequenceURI + " glycan:has_sequence \"" + getSparqlEntity().getValue(GlycoSequence.Sequence) + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n"
+			    + "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n";
+//			    + "?" + GlycanSequenceURI + " rdfs:label \"" + getSparqlEntity().getValue(GlycoSequence.Sequence) + "\"^^<http://www.w3.org/2001/XMLSchema#string> .\n"
+//          + "?" + GlycanSequenceURI + " rdfs:label ?" + Label + " .\n";
+		} else
+			whereTmp += "?" + GlycanSequenceURI + " glycan:has_sequence ?" + Sequence + " .\n";
 
 		if (StringUtils.isNotBlank(getSparqlEntity().getValue(GlycoSequence.Format))) {
 			whereTmp += "?" + GlycanSequenceURI + " glycan:in_carbohydrate_format glycan:carbohydrate_format_" + getSparqlEntity().getValue(GlycoSequence.Format) + " .\n";

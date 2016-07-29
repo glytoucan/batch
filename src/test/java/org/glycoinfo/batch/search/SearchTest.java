@@ -508,11 +508,25 @@ public class SearchTest {
 			@Test
 			@Transactional
 			public void testRegisterAndSelect() throws SparqlException {
-				String sequence = "RES\n"
-						+ "1b:x-dglc-HEX-1:5\n"
-						+ "2b:x-dman-HEX-1:5\n"
-						+ "LIN\n"
-						+ "1:1o(-1+1)2d";
+				String sequence = "RES\n" + 
+				    "1b:b-dglc-HEX-1:5\n" + 
+				    "2s:n-acetyl\n" + 
+				    "3b:b-dglc-HEX-1:5\n" + 
+				    "4s:n-acetyl\n" + 
+				    "5b:b-dman-HEX-1:5\n" + 
+				    "6b:a-dman-HEX-1:5\n" + 
+				    "7b:a-dman-HEX-1:5\n" + 
+				    "8b:x-llyx-PEN-1:5\n" + 
+				    "9b:x-lgal-HEX-1:5|6:d\n" + 
+				    "LIN\n" + 
+				    "1:1d(2+1)2n\n" + 
+				    "2:1o(4+1)3d\n" + 
+				    "3:3d(2+1)4n\n" + 
+				    "4:3o(4+1)5d\n" + 
+				    "5:5o(3+1)6d\n" + 
+				    "6:5o(6+1)7d\n" + 
+				    "7:7o(-1+1)8d\n" + 
+				    "8:8o(-1+1)9d";
 				
 				logger.debug("sequence:>" + sequence + "<");
 //				glycanProcedure.setSequence(sequence);

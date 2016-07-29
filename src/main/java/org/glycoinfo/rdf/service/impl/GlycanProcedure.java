@@ -39,11 +39,8 @@ import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.SaccharideUtil;
 import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
 import org.glycoinfo.rdf.glycan.mass.MassSelectSparql;
-//import org.glycoinfo.rdf.glycan.msdb.MSInsertSparql;
-import org.glycoinfo.rdf.glycan.wurcs.GlycoSequenceToWurcsSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
-import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.utils.NumberGenerator;
@@ -345,12 +342,13 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	}
 
 	private List<SparqlEntity> searchSequence(String sparqlSequence) throws SparqlException {
-		GlycoSequenceToWurcsSelectSparql select = new GlycoSequenceToWurcsSelectSparql();
+//		GlycoSequenceToWurcsSelectSparql select = new GlycoSequenceToWurcsSelectSparql();
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(FromSequence, sparqlSequence);
-		select.setSparqlEntity(se);
-		logger.debug("searching with:>" + select + "<");
-		return sparqlDAO.query(select);
+    se.setValue(Sequence, sparqlSequence);
+		se.setValue(Format, GlyConvert.WURCS);
+		glycoSequenceSelectSparql.setSparqlEntity(se);
+		logger.debug("searching with:>" + glycoSequenceSelectSparql.getSparql() + "<");
+		return sparqlDAO.query(glycoSequenceSelectSparql);
 	}
 
 	@Override
