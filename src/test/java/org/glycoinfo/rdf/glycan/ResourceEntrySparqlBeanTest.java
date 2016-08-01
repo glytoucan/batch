@@ -9,7 +9,7 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { ResourceEntrySparqlBeanTest.class, VirtSesameDAOTestConfig.class })
+@SpringApplicationConfiguration(classes = { ResourceEntrySparqlBeanTest.class, VirtSesameTransactionConfig.class })
 @Configuration
 @EnableAutoConfiguration
 public class ResourceEntrySparqlBeanTest {

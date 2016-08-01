@@ -2,12 +2,13 @@ package org.glycoinfo.rdf.dao;
 
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 
-@SpringApplicationConfiguration(classes = VirtSesameDAOTestConfig.class)
+@SpringApplicationConfiguration(classes = VirtSesameTransactionConfig.class)
 public class SelectInsertImplTest {
 
 	public static Logger logger = (Logger) LoggerFactory

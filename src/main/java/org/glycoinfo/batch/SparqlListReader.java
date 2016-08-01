@@ -14,6 +14,7 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.data.AbstractPaginatedDataItemReader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
@@ -62,6 +63,7 @@ public class SparqlListReader<T extends List<SparqlEntity>> extends
 	private SparqlDAO schemaDAO;
 
 	@Autowired
+  @Qualifier("itemListReaderSelectSparql")
 	private SelectSparql selectSparql;
 
 	public SparqlListReader() {

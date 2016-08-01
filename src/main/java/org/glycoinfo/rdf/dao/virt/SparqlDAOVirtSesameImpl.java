@@ -292,7 +292,7 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 //			SparqlEntityFactory.unset();
 //		}
 		
-		logger.debug(thisInsert);
+//		logger.debug(thisInsert);
 
 		RepositoryConnection connection = sesameConnectionFactory.getConnection();
 

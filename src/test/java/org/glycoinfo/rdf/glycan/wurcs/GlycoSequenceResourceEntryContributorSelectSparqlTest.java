@@ -1,7 +1,7 @@
 package org.glycoinfo.rdf.glycan.wurcs;
 
 import org.glycoinfo.rdf.dao.SparqlDAO;
-import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { GlycoSequenceResourceEntryContributorSelectSparqlTest.class , VirtSesameDAOTestConfig.class })
+@SpringApplicationConfiguration(classes = { GlycoSequenceResourceEntryContributorSelectSparqlTest.class , VirtSesameTransactionConfig.class })
 @Configuration
 @EnableAutoConfiguration
 public class GlycoSequenceResourceEntryContributorSelectSparqlTest {

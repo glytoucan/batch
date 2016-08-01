@@ -12,6 +12,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -31,9 +32,11 @@ public class SparqlListWriter<T extends List<SparqlEntity>> implements
 	private SparqlDAO dao;
 
 	@Autowired
+  @Qualifier("itemWriterInsertSparql")
 	private InsertSparql insertSparql;
 
-	@Autowired
+	@Autowired(required=false)
+  @Qualifier("itemWriterFailInsertSparql")
 	private InsertSparql insertFailSparql;
 
 	public InsertSparql getInsertSparql() {

@@ -9,8 +9,8 @@ import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {ContributorInsertSparqlTest.class, VirtSesameDAOTestConfig.class })
+@SpringApplicationConfiguration(classes = {ContributorInsertSparqlTest.class, VirtSesameTransactionConfig.class })
 @ComponentScan(basePackages = {"org.glytoucan.ws"})
 @EnableAutoConfiguration
 public class ContributorInsertSparqlTest {

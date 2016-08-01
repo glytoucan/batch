@@ -10,7 +10,7 @@ import org.glycoinfo.rdf.ResourceProcessResult;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.junit.Assert;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,7 @@ import jp.bluetree.log.LevelType;
  *
  */
 //@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { SequenceResourceProcessConfig.class, VirtSesameDAOTestConfig.class })
+@SpringApplicationConfiguration(classes = { SequenceResourceProcessConfig.class, VirtSesameTransactionConfig.class })
 public class SequenceResourceProcessTest {
 	
 //	@Autowired

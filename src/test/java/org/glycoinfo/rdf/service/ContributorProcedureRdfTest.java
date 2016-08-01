@@ -4,8 +4,8 @@ import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.dao.VirtSesameDAOTestConfig;
 import org.glycoinfo.rdf.dao.virt.SparqlDAOVirtSesameImpl;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.glycan.Contributor;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 //@SpringApplicationConfiguration(classes = UserProcedureRdfTest.class)
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf.service"})
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {ContributorProcedureRdfTest.class, VirtSesameDAOTestConfig.class, ContributorProcedureConfig.class, GlycanProcedureConfig.class, GlyConvertConfig.class})
+@SpringApplicationConfiguration(classes = {ContributorProcedureRdfTest.class, VirtSesameTransactionConfig.class, ContributorProcedureConfig.class, GlycanProcedureConfig.class, GlyConvertConfig.class})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf.service"})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf"}, excludeFilters={
 //		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=Configuration.class)})

@@ -18,6 +18,8 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlBean;
 import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
+import org.glycoinfo.rdf.glycan.ContributorInsertSparqlTest;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
@@ -26,17 +28,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = VirtSesameDAOTestConfig.class)
+@SpringApplicationConfiguration(classes = {SparqlDAOImplTest.class, VirtSesameTransactionConfig.class })
+@EnableAutoConfiguration
 public class SparqlDAOImplTest {
 
 	public static Log logger = (Log) LogFactory
@@ -676,27 +678,27 @@ public class SparqlDAOImplTest {
     }
   }
 	
-  private Model createDefaultModel(){
-    Model model = ModelFactory.createDefaultModel();
-    model.setNsPrefix("dc", "http://purl.org/dc/elements/1.1/");
-    model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-    model.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
-    model.setNsPrefix("bibo", "http://purl.org/ontology/bibo/");
-    model.setNsPrefix("owl", "http://www.w3.org/2002/07/owl#");
-    model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
-    model.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-    model.setNsPrefix("glycan", "http://purl.jp/bio/12/glyco/glycan#");
-    model.setNsPrefix("dcterms", "http://purl.org/dc/terms/");
-    model.setNsPrefix("glytoucan", "http://www.glytoucan.org/glyco/owl/glytoucan#");
-    
-//    model.setNsPrefix("skos", "http://www.w3.org/2004/02/skos/core#");
-//    model.setNsPrefix("edam", "http://edamontology.org/");
-//    model.setNsPrefix("faldo", "http://biohackathon.org/resource/faldo#");
-//    model.setNsPrefix("obo", "http://purl.obolibrary.org/obo/");
-//    model.setNsPrefix("uniprot", "http://purl.uniprot.org/core/");
-//    model.setNsPrefix("glyco", "http://purl.jp/bio/12/glyco/glycan#");
-    return model;
-  }
+//  private Model createDefaultModel(){
+//    Model model = ModelFactory.createDefaultModel();
+//    model.setNsPrefix("dc", "http://purl.org/dc/elements/1.1/");
+//    model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+//    model.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
+//    model.setNsPrefix("bibo", "http://purl.org/ontology/bibo/");
+//    model.setNsPrefix("owl", "http://www.w3.org/2002/07/owl#");
+//    model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
+//    model.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+//    model.setNsPrefix("glycan", "http://purl.jp/bio/12/glyco/glycan#");
+//    model.setNsPrefix("dcterms", "http://purl.org/dc/terms/");
+//    model.setNsPrefix("glytoucan", "http://www.glytoucan.org/glyco/owl/glytoucan#");
+//    
+////    model.setNsPrefix("skos", "http://www.w3.org/2004/02/skos/core#");
+////    model.setNsPrefix("edam", "http://edamontology.org/");
+////    model.setNsPrefix("faldo", "http://biohackathon.org/resource/faldo#");
+////    model.setNsPrefix("obo", "http://purl.obolibrary.org/obo/");
+////    model.setNsPrefix("uniprot", "http://purl.uniprot.org/core/");
+////    model.setNsPrefix("glyco", "http://purl.jp/bio/12/glyco/glycan#");
+//    return model;
+//  }
 
   @Test
 	@Transactional

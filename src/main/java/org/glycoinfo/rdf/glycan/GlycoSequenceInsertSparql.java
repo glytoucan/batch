@@ -1,6 +1,6 @@
 package org.glycoinfo.rdf.glycan;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.glycoinfo.rdf.InsertSparqlBean;
 
 /**

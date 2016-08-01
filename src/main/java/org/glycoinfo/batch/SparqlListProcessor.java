@@ -11,6 +11,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.utils.SparqlEntityConverter;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class SparqlListProcessor implements
 		ItemProcessor<SparqlEntity, List<SparqlEntity>> {
@@ -26,6 +27,8 @@ public class SparqlListProcessor implements
 		this.putall = putall;
 	}
 
+	@Autowired
+  @Qualifier("itemProcessorSelectSparql")
 	SelectSparql sparql;
 
 	SelectSparql getSelectSparql() {
