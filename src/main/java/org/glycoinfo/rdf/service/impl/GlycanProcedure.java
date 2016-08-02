@@ -115,10 +115,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 
 	@Autowired
 	@Qualifier("substructureSearchSparql")
-	SubstructureSearchSparql substructureSearchSparql;
+	SelectSparql substructureSearchSparql;
 
 	@Autowired
-	MotifSequenceSelectSparql motifSequenceSelectSparql;
+	SelectSparql motifSequenceSelectSparql;
 
 	@Autowired
 	SaccharideSelectSparql saccharideSelectSparql;
@@ -819,7 +819,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		// wurcs to sparql
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(GlycoSequence.Sequence, sequence);
-		SubstructureSearchSparql sss = substructureSearchSparql;
+		SelectSparql sss = substructureSearchSparql;
 		sss.setLimit(limit);
 		sss.setOffset(offset);
 		sss.setSparqlEntity(se);
