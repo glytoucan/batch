@@ -9,6 +9,7 @@ import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;
+import org.glycoinfo.rdf.service.exception.InvalidException;
 
 public interface GlycanProcedure {
 	public static final String Image = "image"; 
@@ -62,7 +63,7 @@ public interface GlycanProcedure {
 
 	String validateWurcs(String sequence) throws WURCSException;
 
-	SparqlEntity getDescription(String accessionNumber);
+	SparqlEntity getDescription(String accessionNumber) throws InvalidException;
 
   List<SparqlEntity> getGlycansAll(String offset, String limit) throws SparqlException;
 

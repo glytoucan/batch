@@ -43,6 +43,7 @@ import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
+import org.glycoinfo.rdf.service.exception.InvalidException;
 import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -660,9 +661,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	 * 
 	 * @param accessionNumber
 	 * @return
+	 * @throws SparqlException 
 	 */
 	 @Override
-	public SparqlEntity getDescription(String accessionNumber) {
+	public SparqlEntity getDescription(String accessionNumber) throws InvalidException {
 		// "?s glytoucan:has_primary_id \"" + accessionNumber + "\" .\n" +
 		String sparql = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
 				+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
@@ -707,7 +709,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			massvalue = se.getValue(DerivatizedMass.MassValue);
 			masslabel = se.getValue(DerivatizedMass.MassLabel);
 			masstype = se.getValue(DerivatizedMass.MassType);
-		}
+		} else
+			throw new InvalidException(accessionNumber + " Not found");
 
 		logger.debug("mass label:>" + masslabel);
 		logger.debug("mass type:>" + masstype);

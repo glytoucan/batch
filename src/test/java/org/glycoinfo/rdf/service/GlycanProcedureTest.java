@@ -35,6 +35,7 @@ import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
+import org.glycoinfo.rdf.service.exception.InvalidException;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
 import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.glycoinfo.rdf.service.impl.MailService;
@@ -1065,11 +1066,18 @@ LIN
 		}	
 		
 		@Test
-		public void testDescriptionQuery() {
+		public void testDescriptionQuery() throws InvalidException {
 			SparqlEntity description = glycanProcedure.getDescription("G00055MO");
 			String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
 			logger.debug(desc);
 			Assert.assertTrue(desc.contains("Gal(b1-4)GlcNAc(b1-"));
+		}
+		
+		@Test(expected=InvalidException.class)
+		public void testInvalidNumber() throws InvalidException {
+			SparqlEntity description = glycanProcedure.getDescription("GTESTING");
+			String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
+			logger.debug(desc);
 		}
 		
 	  /**	
@@ -1083,7 +1091,7 @@ LIN
 	   */
     @Test
     @Transactional
-    public void testDescriptionQueryNewRegistration() throws SparqlException {
+    public void testDescriptionQueryNewRegistration() throws InvalidException, SparqlException {
       // register a new structure
       String result = glycanProcedure.register("WURCS=2.0/5,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a1221m-1x_1-5][a2122h-1x_1-5_2*NCC/3=O]/1-1-2-3-3-4-5/a4-b1_b4-c1_c3-d1_c6-e1_e?-f1_f?-g1", "254");
       
