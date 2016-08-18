@@ -909,4 +909,47 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		contributorProcedure.insertResourceEntry(list, dbId);
 		return null;
 	}
+	
+	
+	/**
+	 * 
+	 * Retrieve the total count of glycans.
+	 *
+	 * @return
+	 * @throws SparqlException 
+	 */
+	 @Override
+	public SparqlEntity getCount() {
+		String sparql = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
+				+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
+				+ "SELECT (COUNT(DISTINCT ?AccessionNumber) AS ?total)\n" + 
+				"WHERE {\n" + 
+				"?glycan glytoucan:has_primary_id ?AccessionNumber .\n" + 
+				"?glycan glycan:has_glycosequence ?gseq .\n" + 
+				"?gseq glycan:has_sequence ?Seq .\n" + 
+				"?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs \n" + 
+				"}";
+		SparqlEntity se = new SparqlEntity();
+
+		List<SparqlEntity> seList = null;
+		try {
+			seList = sparqlDAO.query(new SelectSparqlBean(sparql));
+		} catch (SparqlException e) {
+			// this should never happen, return 
+			se.setValue("total", "0");
+			
+			return se;
+		}
+
+		if (seList.iterator().hasNext()) {
+			se = seList.iterator().next();
+		} else {
+			// this should never happen, return 
+			se.setValue("total", "0");
+			
+			return se;			
+		}
+
+		return se;
+	}
 }

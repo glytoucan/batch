@@ -69,4 +69,6 @@ public interface GlycanProcedure {
 
   SparqlEntity searchSequenceByFormatAccessionNumber(String accessionNumber, String format)
       throws SparqlException;
+
+  SparqlEntity getCount();
 }
