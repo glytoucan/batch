@@ -20,18 +20,24 @@ import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.Scintillate;
 import org.glycoinfo.rdf.scint.SelectScint;
 import org.glycoinfo.rdf.service.ContributorProcedure;
+import org.glycoinfo.rdf.service.exception.ContributorException;
+import org.glycoinfo.rdf.service.exception.UserException;
 import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author developer
+ *
+ */
 @Service
 public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 
 	Log logger = LogFactory.getLog(UserProcedure.class);
 	
-	String[] requiredFields = {SelectSparql.PRIMARY_KEY, "email", "givenName", "familyName", "verifiedEmail"};
+	String[] requiredFields = {"email", "givenName", "familyName", "verifiedEmail"};
 
 	@Autowired
 	SparqlDAO sparqlDAO;
@@ -83,25 +89,25 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	@Autowired
 	MailService mailService;
 
-	ClassHandler getPersonClassHandler() throws SparqlException {
+	ClassHandler getPersonClassHandler() throws UserException {
 		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "Person");
 		scint.setSparqlDAO(sparqlDAO);
 		return scint; 
 	}
 	
-//	ClassHandler getRegisterActionClassHandler() throws SparqlException {
+//	ClassHandler getRegisterActionClassHandler() throws UserException {
 //		ClassHandler scint = new ClassHandler("schema", "http://schema.org/", "RegisterAction");
 //		scint.setSparqlDAO(sparqlDAO);
 //		return scint; 
 //	}
 	
-	ClassHandler getOrganizationClassHandler() throws SparqlException {
+	ClassHandler getOrganizationClassHandler() throws UserException {
 		ClassHandler ch = new ClassHandler("schema", "http://schema.org/", "Organization");
 		ch.setSparqlDAO(sparqlDAO);
 		return ch; 
 	}
 
-	ClassHandler getProgramMembershipClassHandler() throws SparqlException {
+	ClassHandler getProgramMembershipClassHandler() throws UserException {
 		ClassHandler classHandler = new ClassHandler("schema", "http://schema.org/", "ProgramMembership");
 		classHandler.setSparqlDAO(sparqlDAO);
 		return classHandler; 
@@ -109,27 +115,28 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	
 	@Override
 	@Transactional
-	public void add(SparqlEntity userSparqlEntity) throws SparqlException {
+	public void add(SparqlEntity userSparqlEntity) throws UserException {
 		Set<String> columns = userSparqlEntity.getColumns();
 		if (!columns.containsAll(Arrays.asList(requiredFields))) {
-			throw new SparqlException("not all required fields are supplied");
+			throw new UserException("not all required fields are supplied");
 		}
 
-		String id = userSparqlEntity.getValue(SelectSparql.PRIMARY_KEY);
-		SparqlEntity userdetails = getById(id);
+		String id = NumberGenerator.generateHash(userSparqlEntity.getValue(UserProcedure.EMAIL), new Date(0));
+		
+		SparqlEntity userdetails = getById(userSparqlEntity.getValue(UserProcedure.EMAIL));
 
 		// if have email and contributor id, then mapping was complete.
 		if (null != userdetails && StringUtils.isNotBlank(userdetails.getValue(CONTRIBUTOR_ID)) && StringUtils.isNotBlank(userdetails.getValue(EMAIL)))
 			return;
 
 		// get primary key from parameter (security)
-		String personUID = userSparqlEntity.getValue(SelectSparql.PRIMARY_KEY);
+//		String personUID = userSparqlEntity.getValue(SelectSparql.PRIMARY_KEY);
 		// check for primary key of user.  (should be at least at UUID)
-		if ( personUID == null || personUID.equals("")) {
-			throw new SparqlException("PRIMARY_KEY is >" + personUID + "<");
+		if ( id == null || id.equals("")) {
+			throw new UserException("PRIMARY_KEY is >" + id + "<");
 		}
 
-		final SparqlEntity sparqlentityPerson = new SparqlEntity(personUID);
+		final SparqlEntity sparqlentityPerson = new SparqlEntity(id);
 		
 		for (String field : requiredFields) {
 			if (field.equals("verifiedEmail"))
@@ -146,7 +153,11 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		// Organization entity
 		SparqlEntity sparqlentityOrganization = new SparqlEntity("glytoucan");
-		selectScintOrganization.update(sparqlentityOrganization);
+		try {
+			selectScintOrganization.update(sparqlentityOrganization);
+		} catch (SparqlException e) {
+			throw new UserException(e);
+		}
 		
 		String verified = userSparqlEntity.getValue(VERIFIED_EMAIL);
 		if (verified != null && verified.equals("true")) {
@@ -157,23 +168,35 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		sparqlentityPerson.setValue("member", selectScintOrganization);
 
 		if (StringUtils.isBlank(userSparqlEntity.getValue(org.glycoinfo.rdf.service.UserProcedure.EMAIL)))
-			throw new SparqlException("email cannot be blank.  Please fix account information.");
+			throw new UserException("email cannot be blank.  Please fix account information.");
 		
 		if (StringUtils.isBlank(nameMap(sparqlentityPerson)))
-			throw new SparqlException("given name cannot be blank.  Please fix account information or login with google+.");
+			throw new UserException("given name cannot be blank.  Please fix account information or login with google+.");
 		
 		// check if Contributor exists, using email mapping first and then just contributor name, add if it doesn't
-		String contributorId = contributorProcedure.addContributor(nameMap(sparqlentityPerson));
+		String contributorId;
+		try {
+			contributorId = contributorProcedure.addContributor(nameMap(sparqlentityPerson));
+		} catch (ContributorException e) {
+			throw new UserException(e);
+		}
 
 		sparqlentityPerson.setValue(CONTRIBUTOR_ID, contributorId);
 		
-		insertScintPerson.update(sparqlentityPerson);
+		try {
+			// before insert, hash the id.
+			sparqlentityPerson.setValue(SelectSparql.PRIMARY_KEY, NumberGenerator.generateHash(userSparqlEntity.getValue(UserProcedure.EMAIL), new Date(0)));
+			insertScintPerson.update(sparqlentityPerson);
 
-		sparqlDAO.insert(insertScintPerson.getSparqlBean());
+
+			sparqlDAO.insert(insertScintPerson.getSparqlBean());
+		} catch (SparqlException e) {
+			throw new UserException(e);
+		}
 		
-		// RegisterAction entity
+		// RegisterAction entityrequiredFields = {SelectSparql.PRIMARY_KEY, "email", "givenName", "familyName", "verifiedEmail"};
 		// UID is userid + register class
-		SparqlEntity sparqlentityRegisterAction = new SparqlEntity(personUID);
+		SparqlEntity sparqlentityRegisterAction = new SparqlEntity(id);
 		
 		// new DateTime Class
 //		SelectScint dateTimeSelect = new SelectScint();
@@ -185,12 +208,13 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		
 		// DateTime entity
 		SparqlEntity sparqlentityDateTime = new SparqlEntity(new Date());
+		try {
 		selectScintDateTime.update(sparqlentityDateTime);
 		
 		// set the datetime class to be the startTime range for the registeraction domain.
 		sparqlentityRegisterAction.setValue("startTime", selectScintDateTime);
 
-		SparqlEntity sparqlEntityPerson = new SparqlEntity(personUID);
+		SparqlEntity sparqlEntityPerson = new SparqlEntity(id);
 //		SelectScint personSelect = new SelectScint();
 //		personSelect.setClassHandler(getPersonClassHandler());
 		selectScintPerson.update(sparqlEntityPerson);
@@ -209,22 +233,25 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 			mailService.newRegistration(userdetails.getValue(UserProcedure.EMAIL), name);
 			mailService.newRegistrationAdmin(sparqlEntityPerson);
 		}
+		} catch (SparqlException e) {
+			throw new UserException(e);
+		}
 	}
 
 	@Override
 	@Transactional
-	public String generateHash(String id) throws SparqlException {
+	public String generateHash(String id) throws UserException {
 //		SparqlEntity userSE = getUser(email);
 //		String userid = userSE.getValue(ID);
 		
+		try {
 		// check if it exists
-		SparqlEntity sparqlEntityPerson = new SparqlEntity(id);
+		SparqlEntity sparqlEntityPerson = new SparqlEntity(NumberGenerator.generateHash(id, new Date(0)));
 		sparqlEntityPerson.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
-		
 		selectScintPerson.update(sparqlEntityPerson);
 		List<SparqlEntity> person = sparqlDAO.query(selectScintPerson.getSparqlBean());
 		if (null == person || !person.iterator().hasNext())
-			throw new SparqlException("id >" + id + "< doesnt exist");
+			throw new UserException("id >" + id + "< doesnt exist");
 		
 //		insertScintPerson.setClassHandler(getPersonClassHandler());
 		insertScintPerson.getSparqlBean().setSparqlEntity(sparqlEntityPerson);
@@ -268,6 +295,10 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		sparqlDAO.insert(insertScintPerson.getSparqlBean());
 
 		return sparqlentityProgramMembership.getValue(MEMBERSHIP_NUMBER);
+		} catch (SparqlException e) {
+			throw new UserException(e);
+		}
+
 	}
 
 	private String nameMap(SparqlEntity sparqlEntity) {
@@ -276,8 +307,10 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	}
 
 	@Override
-	public SparqlEntity getById(String primaryId) throws SparqlException {
-		SparqlEntity userSE = new SparqlEntity(primaryId);
+	public SparqlEntity getById(String primaryId) throws UserException {
+		try {
+			String id = NumberGenerator.generateHash(primaryId, new Date(0));
+		SparqlEntity userSE = new SparqlEntity(id);
 		
 		// Select Person
 //		SelectScint personScint = new SelectScint();
@@ -303,7 +336,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 			// set contributor name.
 			first.setValue(Contributor.NAME, nameMap(first));
 			
-			SparqlEntity programMembership = new SparqlEntity(GLYTOUCAN_PROGRAM + primaryId);
+			SparqlEntity programMembership = new SparqlEntity(GLYTOUCAN_PROGRAM + id);
 //			selectScintProgramMembership.setClassHandler(getProgramMembershipClassHandler());
 			programMembership.setValue("member", selectScintPerson);
 			
@@ -328,6 +361,9 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 			return first;
 		} else
 			return null;
+		} catch (SparqlException | ContributorException e) {
+			throw new UserException(e);
+		}
 	}
 
 	public String[] getRequiredFields() {
@@ -339,7 +375,7 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 	}
 	
 //	@Override
-//	public String getMembershipInfo(String email) throws SparqlException {
+//	public String getMembershipInfo(String email) throws UserException {
 //		SparqlEntity emailSE = new SparqlEntity();
 //		emailSE.setValue(EMAIL, email);
 //		SparqlEntity contributor = null;
@@ -351,7 +387,8 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 //	}
 
 	@Override
-	public String getIdByEmail(String email) throws SparqlException {
+	public String getIdByEmail(String email) throws UserException {
+		try {
 		SparqlEntity emailSE = new SparqlEntity();
 		emailSE.setValue(EMAIL, email);
 		
@@ -366,15 +403,24 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
       SparqlEntity sparqlEntity = (SparqlEntity) person.iterator().next();
       return sparqlEntity.getValue(CONTRIBUTOR_ID);
     }
-    throw new SparqlException("cannot identify user via email");
-	}
+    throw new UserException("cannot identify user via email");
+		} catch (SparqlException e) {
+			throw new UserException(e);
+		}
+    
+		}
 	
-	public List<SparqlEntity> getAll() throws SparqlException {
+	public List<SparqlEntity> getAll() throws UserException {
+		try {
 		return sparqlDAO.query(selectScintPerson.getSparqlBean());
+		} catch (SparqlException e) {
+			throw new UserException(e);
+		}
 	}
 
 	@Override
-	public List<SparqlEntity> getByContributorId(String username) throws SparqlException {
+	public List<SparqlEntity> getByContributorId(String username) throws UserException {
+		try {
 		SparqlEntity sparqlEntityPerson = new SparqlEntity();
 		sparqlEntityPerson.setValue("alternateName", username);
 		sparqlEntityPerson.setValue("givenName", null);
@@ -383,12 +429,17 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 		selectScintPerson.update(sparqlEntityPerson);
 
 		return sparqlDAO.query(selectScintPerson.getSparqlBean());
+		} catch (SparqlException e) {
+			throw new UserException(e);
+		}
+
 	}
 	
 	@Override
-	public boolean checkApiKey(String username, String hash) throws SparqlException {
+	public boolean checkApiKey(String username, String hash) throws UserException {
+		try {
 		if (StringUtils.isBlank(username) || StringUtils.isBlank(hash)) {
-			throw new SparqlException("username or hash cannot be blank");
+			throw new UserException("username or hash cannot be blank");
 		}
 		
 		hash = hash.trim();
@@ -425,5 +476,8 @@ public class UserProcedure implements org.glycoinfo.rdf.service.UserProcedure {
 			return hash.equals(storedHash);
 		}
 		return false;
+		} catch (SparqlException e) {
+			throw new UserException(e);
+		}
 	}
 }

@@ -49,7 +49,7 @@ public class UserProcedureConfig implements GraphConfig {
 
 	@Bean(name = "insertscintregisteraction")
 	InsertScint getInsertRegisterActionScint() throws SparqlException {
-		InsertScint insert = new InsertScint(graphUser, "schema", "http://schema.org/", "Organization");
+		InsertScint insert = new InsertScint(graphUser, "schema", "http://schema.org/", "RegisterAction");
 //		insert.getSparql().setGraph(graphUser);
 //		insert.setClassHandler(new SelectScint());
 		return insert;

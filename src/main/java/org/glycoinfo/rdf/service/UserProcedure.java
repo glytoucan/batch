@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.service.exception.UserException;
 
 public interface UserProcedure {
 	public static final String GIVEN_NAME = "givenName";
@@ -20,17 +21,18 @@ public interface UserProcedure {
 	public static final String MEMBER = "member";
 	public static final String MEMBER_OF = "memberOf";
 	
-	public void add(SparqlEntity userSparqlEntity) throws SparqlException; // with PRIMARY_ID 
+	public void add(SparqlEntity userSparqlEntity) throws UserException; // with PRIMARY_ID 
 	
-	public SparqlEntity getById(String primaryId) throws SparqlException;
+	public SparqlEntity getById(String primaryId) throws UserException;
 	
-	public String getIdByEmail(String email) throws SparqlException;
+	public String getIdByEmail(String email) throws UserException;
 	
-	public String generateHash(String primaryId) throws SparqlException;
+	public String generateHash(String primaryId) throws UserException;
 
-	public List<SparqlEntity> getAll() throws SparqlException;
+	public List<SparqlEntity> getAll() throws UserException;
 
-	public List<SparqlEntity> getByContributorId(String username) throws SparqlException;
+	public List<SparqlEntity> getByContributorId(String username) throws UserException;
 
-	boolean checkApiKey(String username, String hash) throws SparqlException;
+	boolean checkApiKey(String username, String hash) throws UserException;
+
 }

@@ -10,6 +10,7 @@ import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.scint.Scintillate;
 import org.glycoinfo.rdf.scint.SelectScint;
+import org.glycoinfo.rdf.service.exception.UserException;
 import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.glycoinfo.rdf.service.impl.UserProcedureConfig;
 import org.junit.Assert;
@@ -47,9 +48,9 @@ public class UserProcedureTest {
 	@Qualifier(value = "selectscintperson")
 	SelectScint selectScintPerson;
 
-	@Test(expected=SparqlException.class)
+	@Test(expected=UserException.class)
 	@Transactional
-	public void testInsufficientUser() throws SparqlException {
+	public void testInsufficientUser() throws SparqlException, UserException {
 		SparqlEntity se = new SparqlEntity();
 		se.setValue("id", "person456");
 		userProcedure.add(se);
@@ -57,15 +58,16 @@ public class UserProcedureTest {
 	
 	@Test
 	@Transactional
-	public void testUser() throws SparqlException {
+	public void testUser() throws SparqlException, UserException {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
+//		se.setValue(SelectSparql.PRIMARY_KEY, "person789@person.com");
 		se.setValue("email", "person789@person.com");
 		se.setValue("givenName", "person");
 		se.setValue("familyName", "789");
 		se.setValue("verifiedEmail", "true");
 		userProcedure.add(se);
 
+		se.remove(SelectSparql.PRIMARY_KEY);
 		se.setValue("member", "");
 		se.setValue("contributor", "");
 		se.remove("verifiedEmail");
@@ -85,8 +87,8 @@ public class UserProcedureTest {
 
 	@Test
 	@Transactional
-	public void testUserNotVerified() throws SparqlException {
-		SparqlEntity se = new SparqlEntity("person456");
+	public void testUserNotVerified() throws SparqlException, UserException {
+		SparqlEntity se = new SparqlEntity();
 		se.setValue("email", "person456@person.com");
 		se.setValue("givenName", "person");
 		se.setValue("familyName", "456");
@@ -117,28 +119,29 @@ public class UserProcedureTest {
 //		Assert.assertNotNull(results.getValue("alternateName"));
 //	}
 
-	@Test(expected=SparqlException.class)
+	@Test(expected=UserException.class)
 	@Transactional
-	public void testJoinBadMembership() throws SparqlException {
+	public void testJoinBadMembership() throws SparqlException, UserException {
 		String results = userProcedure.generateHash("person123@test.com");
 		Assert.assertNotNull(results);
 	}
 	
 	@Test
 	@Transactional
-	public void testJoinMembership() throws SparqlException {
+	public void testJoinMembership() throws SparqlException, UserException {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
+//		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
 		se.setValue(UserProcedure.EMAIL, "person789@person.com");
 		se.setValue(UserProcedure.GIVEN_NAME, "testperson789given");
 		se.setValue(UserProcedure.FAMILY_NAME, "testperson789family");
 		se.setValue(UserProcedure.VERIFIED_EMAIL, "true");
 		userProcedure.add(se);
 
-		String results = userProcedure.generateHash("person789");
+//		String results = userProcedure.generateHash("person789");
+		String results = userProcedure.generateHash(se.getValue(UserProcedure.EMAIL));
 		Assert.assertNotNull(results);
 		
-		se = userProcedure.getById("person789");
+		se = userProcedure.getById(se.getValue(UserProcedure.EMAIL));
 		logger.debug(se.getData().toString());
 		Assert.assertNotNull(se.getValue(UserProcedure.MEMBER_OF));
 		Assert.assertNotNull(se.getValue(UserProcedure.MEMBERSHIP_NUMBER));
@@ -147,19 +150,19 @@ public class UserProcedureTest {
 
 	@Test
 	@Transactional
-	public void testJoinMembershipTwice() throws SparqlException {
+	public void testJoinMembershipTwice() throws SparqlException, UserException {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
+//		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
 		se.setValue(UserProcedure.EMAIL, "person789@person.com");
 		se.setValue(UserProcedure.GIVEN_NAME, "testperson789given");
 		se.setValue(UserProcedure.FAMILY_NAME, "testperson789family");
 		se.setValue(UserProcedure.VERIFIED_EMAIL, "true");
 		userProcedure.add(se);
 
-		String results = userProcedure.generateHash("person789");
+		String results = userProcedure.generateHash(se.getValue(UserProcedure.EMAIL));
 		Assert.assertNotNull(results);
 		
-		se = userProcedure.getById("person789");
+		se = userProcedure.getById(se.getValue(UserProcedure.EMAIL));
 		logger.debug(se.getData().toString());
 		Assert.assertNotNull(se.getValue(UserProcedure.MEMBER_OF));
 		Assert.assertNotNull(se.getValue(UserProcedure.MEMBERSHIP_NUMBER));
@@ -169,10 +172,10 @@ public class UserProcedureTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String results2 = userProcedure.generateHash("person789");
+		String results2 = userProcedure.generateHash(se.getValue(UserProcedure.EMAIL));
 		Assert.assertNotNull(results2);
 		Assert.assertNotEquals(results, results2);
-		se = userProcedure.getById("person789");
+		se = userProcedure.getById(se.getValue(UserProcedure.EMAIL));
 		logger.debug(se.getData().toString());
 		Assert.assertNotNull(se.getValue(UserProcedure.MEMBER_OF));
 		Assert.assertNotNull(se.getValue(UserProcedure.MEMBERSHIP_NUMBER));
@@ -181,18 +184,18 @@ public class UserProcedureTest {
 	
 	@Test
 	@Transactional
-	public void testCheck() throws SparqlException {
+	public void testCheck() throws SparqlException, UserException {
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
+//		se.setValue(SelectSparql.PRIMARY_KEY, "person789");
 		se.setValue(UserProcedure.EMAIL, "person789@person.com");
 		se.setValue(UserProcedure.GIVEN_NAME, "testperson789given");
 		se.setValue(UserProcedure.FAMILY_NAME, "testperson789family");
 		se.setValue(UserProcedure.VERIFIED_EMAIL, "true");
 		userProcedure.add(se);
 		
-		String hash = userProcedure.generateHash("person789");
+		String hash = userProcedure.generateHash(se.getValue(UserProcedure.EMAIL));
 		
-		SparqlEntity sePerson = userProcedure.getById("person789");
+		SparqlEntity sePerson = userProcedure.getById(se.getValue(UserProcedure.EMAIL));
 		
 		Assert.assertTrue(userProcedure.checkApiKey(sePerson.getValue(UserProcedure.CONTRIBUTOR_ID), hash));
 	}
