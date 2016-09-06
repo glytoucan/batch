@@ -9,6 +9,7 @@ import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.glycan.Contributor;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
+import org.glycoinfo.rdf.service.exception.ContributorException;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureConfig;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
 import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
@@ -71,19 +72,51 @@ public class ContributorProcedureRdfTest extends AbstractTransactionalJUnit4Spri
 	
 	@Test
 	@Transactional
-	public void testAddContributor() throws SparqlException {
+	public void testAddContributor() throws ContributorException {
 		String id = contributorProcedure.addContributor("test");
 		Assert.assertNotNull(id);
 	}
 	
 	@Test
 	@Transactional
-	public void testAddSearch() throws SparqlException {
+	public void testAddSearch() throws ContributorException {
 		String id = contributorProcedure.addContributor("test2");
 		Assert.assertNotNull(id);
 		
 		SparqlEntity idData = contributorProcedure.searchContributor("test2");
 		
 		Assert.assertEquals(id, idData.getValue(Contributor.ID));
+	}
+	
+	@Test
+	@Transactional
+	public void testAddNewMember() throws ContributorException {
+		String id = contributorProcedure.addContributor("test");
+		Assert.assertNotNull(id);
+		
+		contributorProcedure.memberDb(id, "unicarb-db");
+		SparqlEntity result = contributorProcedure.selectDatabaseByContributor(id);
+		
+		Assert.assertNotNull(result);
+	}
+	
+	@Test
+//	@Transactional
+	public void testAddMembership() throws ContributorException {
+		String id = "5861";
+		contributorProcedure.memberDb(id, "unicarb-db");
+//		SparqlEntity result = contributorProcedure.selectDatabaseByContributor(id);
+//		
+//		Assert.assertNotNull(result);
+	}
+	
+	@Test
+	@Transactional
+	public void testAddMembershipConfirm() throws ContributorException {
+		String id = "5861";
+		contributorProcedure.memberDb(id, "unicarb-db");
+		SparqlEntity result = contributorProcedure.selectDatabaseByContributor(id);
+		
+		Assert.assertNotNull(result);
 	}
 }

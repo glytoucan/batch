@@ -35,7 +35,10 @@ import org.glycoinfo.rdf.glycan.wurcs.WurcsRDFMSInsertSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
 import org.glycoinfo.rdf.scint.SelectScint;
+import org.glycoinfo.rdf.service.exception.ContributorException;
+import org.glycoinfo.rdf.service.exception.GlycanException;
 import org.glycoinfo.rdf.service.exception.InvalidException;
+import org.glycoinfo.rdf.service.impl.ContributorProcedureConfig;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
 import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.glycoinfo.rdf.service.impl.MailService;
@@ -55,7 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {GlycanProcedureTest.class, VirtSesameTransactionConfig.class, GlycanProcedureConfig.class, GlyConvertConfig.class})
+@SpringApplicationConfiguration(classes = {GlycanProcedureTest.class, VirtSesameTransactionConfig.class, GlycanProcedureConfig.class, GlyConvertConfig.class, ContributorProcedureConfig.class})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf.service", "org.glycoinfo.rdf.scint"})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf"}, excludeFilters={
 //		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=Configuration.class)})
@@ -122,6 +125,9 @@ public class GlycanProcedureTest {
 	
 	@Autowired
 	GlycanProcedure glycanProcedure;
+
+	@Autowired
+	ContributorProcedure contributorProcedure;
 
 	@Bean(name = "glycanProcedure")
 	@Scope("prototype")
@@ -1113,9 +1119,8 @@ LIN
       logger.debug("result :>" + result + "<");
       Assert.assertNotEquals(0, result.trim().length());
       SparqlEntity sparqlEntity = glycanProcedure.searchByAccessionNumber(result);
-      
-    } 
-    
+    }
+
     @Test
     @Transactional
     public void testTopologyDuplicates() throws SparqlException, ConvertException {
@@ -1126,8 +1131,25 @@ LIN
       String sequence = "WURCS=2.0/5,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a221h-1x_1-5][a1221m-1x_1-5]/1-1-2-3-3-4-5/a4-b1_b4-c1_c3-d1_c6-e1_e?-f1_f?-g1";
       String result = glycanProcedure.register(sequence, "254");
       logger.debug(result);
-
       
       Assert.assertNotNull(result);
+    }
+    
+    @Test(expected=ContributorException.class)
+    @Transactional
+    public void testAddResourceInvalidUser() throws SparqlException, ConvertException, GlycanException, ContributorException {
+    	glycanProcedure.addResourceEntry("G00030MO", "1929291475", "1");
+    }
+    
+    
+    @Test
+//    @Transactional
+    public void testAddResourceG00030MO() throws SparqlException, ConvertException, GlycanException, ContributorException {
+    	String id = contributorProcedure.addContributor("hiTesting");
+    	contributorProcedure.memberDb(id, "unicarb-db");
+    	
+    	String result = glycanProcedure.addResourceEntry("G00030MO", id, "123");
+    	logger.debug("result:>" + result + "<");
+    	Assert.assertTrue("contains pubchem", result.contains("unicarb-db"));
     }
 }

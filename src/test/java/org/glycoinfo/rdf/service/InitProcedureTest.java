@@ -5,7 +5,6 @@ import org.glycoinfo.rdf.dao.SesameDAOTestConfig;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.scint.InsertScint;
-import org.glycoinfo.rdf.service.impl.UserProcedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import org.springframework.context.annotation.FilterType;
 //@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {InitProcedureTest.class, SesameDAOTestConfig.class} )
 @ComponentScan(basePackages = {"org.glycoinfo.rdf.service", "org.glycoinfo.rdf.scint"}, excludeFilters={
-		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=UserProcedureTest.class), @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=UserProcedure.class) })
+		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=InitProcedureTest.class)})
 //@ComponentScan(basePackages = {"org.glycoinfo.rdf"}, excludeFilters={
 //		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=Configuration.class)})
 @Configuration

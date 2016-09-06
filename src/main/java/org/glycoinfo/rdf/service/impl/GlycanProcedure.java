@@ -43,6 +43,8 @@ import org.glycoinfo.rdf.glycan.wurcs.MonosaccharideSelectSparql;
 import org.glycoinfo.rdf.glycan.wurcs.MotifSequenceSelectSparql;
 import org.glycoinfo.rdf.scint.ClassHandler;
 import org.glycoinfo.rdf.service.ContributorProcedure;
+import org.glycoinfo.rdf.service.exception.ContributorException;
+import org.glycoinfo.rdf.service.exception.GlycanException;
 import org.glycoinfo.rdf.service.exception.InvalidException;
 import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -897,19 +899,36 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		return sparqlentity.getValue(Saccharide.PrimaryId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.glycoinfo.rdf.service.GlycanProcedure#addResourceEntry(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
-	public String addResourceEntry(String accessionNumber, String name, String dbId) throws SparqlException {
-		List<SparqlEntity> list = contributorProcedure.selectDatabaseByContributor(name);
-		String uri = "http://rdf.glycoinfo.org/glycan/" + accessionNumber;
+	public String addResourceEntry(String accessionNumber, String contributorId, String dbId) throws GlycanException, ContributorException {
+		SparqlEntity databaseInfo = contributorProcedure.selectDatabaseByContributor(contributorId);
+		
+		SparqlEntity newResourceEntrySE = new SparqlEntity();
 
-		for (SparqlEntity sparqlEntity : list) {
-			sparqlEntity.setValue(Saccharide.URI, uri);
+		newResourceEntrySE.setValue(Saccharide.PrimaryId, accessionNumber);
+		newResourceEntrySE.setValue(ResourceEntry.GlycanDatabaseLiteral, databaseInfo.getValue(ResourceEntry.GlycanDatabaseLiteral));
+		newResourceEntrySE.setValue(ResourceEntry.DatabaseURL, databaseInfo.getValue(ResourceEntry.DatabaseURL));
+		newResourceEntrySE.setValue(ResourceEntry.Label, databaseInfo.getValue(ResourceEntry.Label));
+		newResourceEntrySE.setValue(ResourceEntry.Identifier, dbId);
+		newResourceEntrySE.setValue(ResourceEntry.ContributorId, contributorId);
+		newResourceEntrySE.setValue(ResourceEntry.PartnerId, databaseInfo.getValue(ResourceEntry.PartnerId));
+		newResourceEntrySE.setValue(ResourceEntry.DataSubmittedDate, new Date());
+		
+//		https://github.com/glytoucan/glytoucan.github.io/issues/74
+		resourceEntryInsertSparql.setGraph("http://rdf.glytoucan.org/partner/" + databaseInfo.getValue(ResourceEntry.PartnerId));
+
+		resourceEntryInsertSparql.setSparqlEntity(newResourceEntrySE);
+
+		try {
+			sparqlDAO.insert(resourceEntryInsertSparql);
+		} catch (SparqlException e) {
+			throw new GlycanException(e);
 		}
-
-		contributorProcedure.insertResourceEntry(list, dbId);
-		return null;
-	}
-	
+		return databaseInfo.getValue(ResourceEntry.GlycanDatabaseLiteral);
+	}	
 	
 	/**
 	 * 

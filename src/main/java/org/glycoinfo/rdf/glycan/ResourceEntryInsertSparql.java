@@ -51,8 +51,15 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 		if (null != getSparqlEntity().getValue(ResourceEntry.ResourceEntryURI) && null != getSparqlEntity().getValue(ResourceEntry.Identifier)) {
 			String url = getSparqlEntity().getValue(ResourceEntry.ResourceEntryURI) + getSparqlEntity().getValue(ResourceEntry.Identifier);
 			return url;
-		} else
-			return "http://rdf.glycoinfo.org/resource-entry/" + getSparqlEntity().getValue(Identifier);
+		} else {
+			String database = null;
+			if (StringUtils.isNotBlank(getSparqlEntity().getValue(Database)))
+				database = getSparqlEntity().getValue(Database);
+			if (StringUtils.isNotBlank(getSparqlEntity().getValue(PartnerId)))
+				database = getSparqlEntity().getValue(PartnerId);
+				
+			return "http://rdf.glycoinfo.org/glycan/resource-entry/" + database + "/" + getSparqlEntity().getValue(Identifier);
+		}
 	}
 
 	public String getInsert()  {
@@ -73,11 +80,13 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 			saccharideRelation = "<" + getSparqlEntity().getValue(Saccharide.URI) + "> glycan:has_resource_entry <" + getURI() + "> .\n";
 		}
 		
-		StringBuilder insertBuilder = new StringBuilder((StringUtils.isBlank(saccharideRelation)? "" : saccharideRelation) + "<" + getURI() + ">" + " a " + "glycan:resource_entry .\n");
+		StringBuilder insertBuilder = new StringBuilder((StringUtils.isBlank(saccharideRelation)? "" : saccharideRelation) + "<" + getURI() + ">" + " a " + "glycan:Resource_entry .\n");
 		if (StringUtils.isNotBlank(getSparqlEntity().getValue(Database)))
 			insertBuilder.append("<" + getURI() + ">" + " glycan:in_glycan_database glytoucan:database_" + getSparqlEntity().getValue(Database) + " .\n");
 		if (StringUtils.isNotBlank(getSparqlEntity().getValue(GlycanDatabaseLiteral)))
 			insertBuilder.append("<" + getURI() + ">" + " glycan:in_glycan_database <" + getSparqlEntity().getValue(GlycanDatabaseLiteral) + "> .\n");
+		if (StringUtils.isNotBlank(getSparqlEntity().getValue(Label)))
+			insertBuilder.append("<" + getURI() + ">" + " rdfs:label \"" + getSparqlEntity().getValue(Label) + "\" .\n");
 		
 		insertBuilder.append("<" + getURI() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(Identifier) + "\" .\n");
 		if (StringUtils.isNotBlank(getSparqlEntity().getValue(DatabaseURL))) {

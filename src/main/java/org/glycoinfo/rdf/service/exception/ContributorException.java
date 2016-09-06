@@ -1,24 +1,24 @@
 package org.glycoinfo.rdf.service.exception;
 
-public class UserException extends Exception {
+public class ContributorException extends Exception {
 
 	/**
 	 * 
 	 */
-	public UserException() {
+	public ContributorException() {
 	}
 
 	/**
 	 * @param message
 	 */
-	public UserException(String message) {
+	public ContributorException(String message) {
 		super(message);
 	}
 
 	/**
 	 * @param cause
 	 */
-	public UserException(Throwable cause) {
+	public ContributorException(Throwable cause) {
 		super(cause);
 	}
 
@@ -26,7 +26,7 @@ public class UserException extends Exception {
 	 * @param message
 	 * @param cause
 	 */
-	public UserException(String message, Throwable cause) {
+	public ContributorException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
@@ -36,7 +36,7 @@ public class UserException extends Exception {
 	 * @param enableSuppression
 	 * @param writableStackTrace
 	 */
-	public UserException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public ContributorException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
