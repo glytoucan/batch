@@ -23,6 +23,7 @@ import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.service.exception.ContributorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.annotation.Transactional;
 
 public class ContributorProcedureRdf implements ContributorProcedure  {
 
@@ -56,6 +57,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
      * 
 	 * @throws SparqlException
 	 */
+  @Transactional
 	public String addContributor(String name) throws ContributorException {
 		SparqlEntity result = searchContributor(name);
 		String id;
@@ -94,6 +96,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	}
 
 	@Override
+  @Transactional
 	public SparqlEntity searchContributor(String name) throws ContributorException {
 		if (StringUtils.isBlank(name))
 			throw new ContributorException("given name cannot be blank.  Please fix account information or login with google+.");
@@ -117,6 +120,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	}
 	
 	@Override
+  @Transactional
 	public SparqlEntity selectDatabaseByContributor(String contributorId) throws ContributorException {
 		if (StringUtils.isBlank(contributorId))
 			throw new ContributorException("contributorId cannot be blank");
@@ -142,6 +146,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	}
 
 	@Override
+  @Transactional
 	public List<SparqlEntity> insertResourceEntry(List<SparqlEntity> entries, String id) throws ContributorException {
 		if (null == entries)
 			throw new ContributorException("entries cannot be blank");
@@ -162,6 +167,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	}
 
 	@Override
+  @Transactional
 	public void memberDb(String contributorId, String dbAbbreviation) throws ContributorException {
 //		 insert 				?user foaf:member ?db .
 //		 for the ?db where glycan:has_abbreviation ?dbAbbreviation
