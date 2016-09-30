@@ -477,14 +477,16 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		// contributorProcedure.setId(contributorId);
 		// String id = contributorProcedure.searchContributor(userin);
 
-		resourceEntryInsertSparql.getSparqlEntity().setValue(Saccharide.PrimaryId, accessionNumber);
-		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Identifier, accessionNumber);
-		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.Database, ResourceEntry.Database_Glytoucan);
+		SparqlEntity resourceEntrySE = new SparqlEntity();
+		
+		resourceEntrySE.setValue(Saccharide.PrimaryId, accessionNumber);
+    resourceEntrySE.setValue(ResourceEntry.Identifier, accessionNumber);
+    resourceEntrySE.setValue(ResourceEntry.Database, ResourceEntry.Database_Glytoucan);
 
-		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.ContributorId, contributorId);
-		resourceEntryInsertSparql.getSparqlEntity().setValue(ResourceEntry.DataSubmittedDate, new Date());
+    resourceEntrySE.setValue(ResourceEntry.ContributorId, contributorId);
+    resourceEntrySE.setValue(ResourceEntry.DataSubmittedDate, new Date());
 
-		// resourceEntryInsertSparql.setSparqlEntity(reisSE);
+    resourceEntryInsertSparql.setSparqlEntity(resourceEntrySE);
 		sparqlDAO.insert(resourceEntryInsertSparql);
 		// }
 
@@ -927,6 +929,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		} catch (SparqlException e) {
 			throw new GlycanException(e);
 		}
+		
+		
 		return databaseInfo.getValue(ResourceEntry.GlycanDatabaseLiteral);
 	}	
 	
