@@ -401,7 +401,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
      try {
        result = register(sequence, contributorId);
      } catch (DuplicateException de) {
-       addResourceEntry(result, contributorId, partnerId);
+       addResourceEntry(de.getId(), contributorId, partnerId);
      }catch (SparqlException e) {
        throw new GlycanException(e);
      }
