@@ -405,6 +405,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
      }catch (SparqlException e) {
        throw new GlycanException(e);
      }
+     if (StringUtils.isNotBlank(result))
+       addResourceEntry(result, contributorId, partnerId);
 	   
 	   return result;
 	 }
