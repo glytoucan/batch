@@ -85,4 +85,6 @@ public interface GlycanProcedure {
       throws SparqlException;
 
   SparqlEntity getCount();
+
+  String register(String sequence, String contributorId, String partnerId) throws GlycanException, ContributorException;
 }

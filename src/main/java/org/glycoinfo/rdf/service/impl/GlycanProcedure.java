@@ -395,6 +395,20 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		return results;
 	}
 
+	 @Override
+	 public String register(String sequence, String contributorId, String partnerId) throws GlycanException, ContributorException {
+	   String result = null;
+     try {
+       result = register(sequence, contributorId);
+     } catch (DuplicateException de) {
+       addResourceEntry(result, contributorId, partnerId);
+     }catch (SparqlException e) {
+       throw new GlycanException(e);
+     }
+	   
+	   return result;
+	 }
+	
 	/**
 	 * 
 	 * Registration of a glycan using standard registration method via either
