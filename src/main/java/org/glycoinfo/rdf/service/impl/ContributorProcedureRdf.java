@@ -21,6 +21,7 @@ import org.glycoinfo.rdf.glycan.LatestContributorIdSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntry;
 import org.glycoinfo.rdf.service.ContributorProcedure;
 import org.glycoinfo.rdf.service.exception.ContributorException;
+import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,8 +59,8 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	 * @throws SparqlException
 	 */
   @Transactional
-	public String addContributor(String name) throws ContributorException {
-		SparqlEntity result = searchContributor(name);
+	public String addContributor(String name, String email) throws ContributorException {
+		SparqlEntity result = searchContributor(email);
 		String id;
 		if (result == null) {
 			// retrieve the latest contributor id
@@ -75,10 +76,13 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 			
 			id = idSE.getValue("id");
 			
+			String hash = NumberGenerator.generateHash(email, new Date(0));
+			
 			// insert the above data.
-			SparqlEntity sparqlEntityPerson = new SparqlEntity(id);
+			SparqlEntity sparqlEntityPerson = new SparqlEntity(hash);
 			sparqlEntityPerson.setValue(ContributorInsertSparql.ContributorName, name);
 			sparqlEntityPerson.setValue(ContributorInsertSparql.UserId, id);
+      sparqlEntityPerson.setValue(ContributorInsertSparql.HASH, hash);
 			contributorSparql.setSparqlEntity(sparqlEntityPerson);
 
 		try {
@@ -97,12 +101,12 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 
 	@Override
   @Transactional
-	public SparqlEntity searchContributor(String name) throws ContributorException {
-		if (StringUtils.isBlank(name))
-			throw new ContributorException("given name cannot be blank.  Please fix account information or login with google+.");
+	public SparqlEntity searchContributor(String email) throws ContributorException {
+		if (StringUtils.isBlank(email))
+			throw new ContributorException("email address cannot be blank.  Could not retrieve email from authentication service.");
 
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(Contributor.NAME, name);
+		se.setValue(Contributor.HASH, NumberGenerator.generateHash(email, new Date(0)));
 		contributorNameSelectSparql.setSparqlEntity(se);
 
 		List<SparqlEntity> personUIDResult;
@@ -168,7 +172,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 
 	@Override
   @Transactional
-	public void memberDb(String contributorId, String dbAbbreviation) throws ContributorException {
+	public void memberDb(String email, String dbAbbreviation) throws ContributorException {
 //		 insert 				?user foaf:member ?db .
 //		 for the ?db where glycan:has_abbreviation ?dbAbbreviation
 //		String insert = 
@@ -179,7 +183,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 //								+ "}";
 		
 		SparqlEntity dbSE = new SparqlEntity();
-		dbSE.setValue(Contributor.ID, contributorId);
+		dbSE.setValue(Contributor.HASH, NumberGenerator.generateHash(email, new Date(0)));
 		dbSE.setValue(ResourceEntry.Database_Abbreviation, dbAbbreviation);
 		InsertSparql ins = new ContributorDatabaseInsertSparql();
 		ins.setSparqlEntity(dbSE);

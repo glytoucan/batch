@@ -4,4 +4,5 @@ public interface Contributor {
 	static final String NAME = "Name";
 	static final String ID = "Id";
     static final String EMAIL = "Email";
+    static final String HASH = "Hash";
 }

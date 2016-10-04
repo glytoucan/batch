@@ -11,12 +11,12 @@ public class ContributorNameSelectSparql extends SelectSparqlBean implements Con
 
 	/**
 	 * PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>
-SELECT ?id
-FROM <http://rdf.glytoucan.org/core>
+SELECT *
+FROM <http://rdf.glytoucan.org/users>
 where {
 ?o a foaf:Person .
-BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/\") AS ?id) .
-?o foaf:name "aoki" .
+?o dcterms:identifier ?id .
+?o glytoucan:system_id ?hash .
 }
 	 * @param string 
 	 * 
@@ -34,6 +34,6 @@ BIND (STRAFTER(STR(?o), \"http://rdf.glycoinfo.org/glytoucan/contributor/userId/
 
 	@Override
 	public String getWhere() throws SparqlException {
-		return this.where + "?o foaf:name \"" + getSparqlEntity().getValue(Contributor.NAME) + "\"^^xsd:string . \n";
+		return this.where + "?o glytoucan:system_id \"" + getSparqlEntity().getValue(Contributor.HASH) + "\"^^xsd:string . \n";
 	}
 }

@@ -802,7 +802,7 @@ LIN
 		
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void testRegisterWithCRLF() throws SparqlException, ConvertException
 	{
@@ -833,9 +833,7 @@ LIN
 		String result = glycanProcedure.register(sequence, "999");
 
 		Assert.assertNotNull(result);
-		
 	}
-	
 	
 //		@Test
 	@Transactional
@@ -1121,7 +1119,7 @@ LIN
       SparqlEntity sparqlEntity = glycanProcedure.searchByAccessionNumber(result);
     }
 
-    @Test
+//    @Test
     @Transactional
     public void testTopologyDuplicates() throws SparqlException, ConvertException {
 //      String sequence = "WURCS=2.0/2,3,2/[h44h][a2122h-1x_1-5]/1-2-2/a?-b1_b?-c1";
@@ -1143,13 +1141,21 @@ LIN
     
     
     @Test
-//    @Transactional
+    @Transactional
     public void testAddResourceG00030MO() throws SparqlException, ConvertException, GlycanException, ContributorException {
-    	String id = contributorProcedure.addContributor("hiTesting");
-    	contributorProcedure.memberDb(id, "unicarb-db");
+    	String id = contributorProcedure.addContributor("hiTesting", "testglytoucan@gmail.com");
+    	contributorProcedure.memberDb("testglytoucan@gmail.com", "unicarb-db");
     	
     	String result = glycanProcedure.addResourceEntry("G00030MO", id, "123");
     	logger.debug("result:>" + result + "<");
-    	Assert.assertTrue("contains pubchem", result.contains("unicarb-db"));
+    	Assert.assertTrue("contains unicarb-db", result.contains("unicarb-db"));
+    }
+    
+    @Test
+    @Transactional
+    public void testAddResourceG00029MONobu() throws SparqlException, ConvertException, GlycanException, ContributorException {
+      String result = glycanProcedure.addResourceEntry("G00029MO", "254", "29");
+      logger.debug("result:>" + result + "<");
+      Assert.assertTrue("contains glycoepitope", result.contains("glycoepitope"));
     }
 }

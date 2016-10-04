@@ -18,9 +18,9 @@ public interface ContributorProcedure {
 	 * @return
 	 * @throws ContributorException
 	 */
-	String addContributor(String name) throws ContributorException;
+	String addContributor(String name, String email) throws ContributorException;
 	
-	SparqlEntity searchContributor(String name) throws ContributorException;
+	SparqlEntity searchContributor(String email) throws ContributorException;
 
 	/**
 	 * 

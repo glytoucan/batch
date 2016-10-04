@@ -15,7 +15,7 @@ import org.glycoinfo.rdf.InsertSparqlBean;
  * @author aoki
  *
  */
-public class ContributorInsertSparql extends InsertSparqlBean {
+public class ContributorInsertSparql extends InsertSparqlBean implements Contributor {
 	
 	public static final String UserId = "UserId";
 	public static final String ContributorName = "ContributorName";
@@ -31,11 +31,12 @@ public class ContributorInsertSparql extends InsertSparqlBean {
 		String insert = getUri() + " a foaf:Person .\n";
 	insert += getUri() + " dcterms:identifier \"" + getSparqlEntity().getValue(UserId) + "\"^^xsd:int .\n";
 	insert += getUri() + " foaf:name \"" + getSparqlEntity().getValue(ContributorName) + "\"^^xsd:string .\n"; 
+  insert += getUri() + " glytoucan:system_id \"" + getSparqlEntity().getValue(HASH) + "\"^^xsd:string .\n"; 
 
 		return insert;
 	}
 
 	private String getUri() {
-		return "<http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(UserId) + ">";
+		return "<http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(HASH) + ">";
 	}
 }
