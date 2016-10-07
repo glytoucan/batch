@@ -64,25 +64,24 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 		String id;
 		if (result == null) {
 			// retrieve the latest contributor id
-			SelectSparql selectLatestContributorId = new LatestContributorIdSparql();
-			List<SparqlEntity> personUIDResult;
-			try {
-				personUIDResult = sparqlDAO.query(selectLatestContributorId);
-			} catch (SparqlException e) {
-				throw new ContributorException(e);
-			}
+//			SelectSparql selectLatestContributorId = new LatestContributorIdSparql();
+//			List<SparqlEntity> personUIDResult;
+//			try {
+//				personUIDResult = sparqlDAO.query(selectLatestContributorId);
+//			} catch (SparqlException e) {
+//				throw new ContributorException(e);
+//			}
 			
-			SparqlEntity idSE = personUIDResult.iterator().next();
+//			SparqlEntity idSE = personUIDResult.iterator().next();
 			
-			id = idSE.getValue("id");
-			
-			String hash = NumberGenerator.generateHash(email, new Date(0));
+//			id = idSE.getValue("id");
+			id = NumberGenerator.generateSHA256Hash(email);
 			
 			// insert the above data.
-			SparqlEntity sparqlEntityPerson = new SparqlEntity(hash);
+			SparqlEntity sparqlEntityPerson = new SparqlEntity(id);
 			sparqlEntityPerson.setValue(ContributorInsertSparql.ContributorName, name);
 			sparqlEntityPerson.setValue(ContributorInsertSparql.UserId, id);
-      sparqlEntityPerson.setValue(ContributorInsertSparql.HASH, hash);
+      sparqlEntityPerson.setValue(ContributorInsertSparql.ID, id);
 			contributorSparql.setSparqlEntity(sparqlEntityPerson);
 
 		try {
@@ -106,7 +105,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 			throw new ContributorException("email address cannot be blank.  Could not retrieve email from authentication service.");
 
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(Contributor.HASH, NumberGenerator.generateHash(email, new Date(0)));
+		se.setValue(Contributor.ID, NumberGenerator.generateSHA256Hash(email));
 		contributorNameSelectSparql.setSparqlEntity(se);
 
 		List<SparqlEntity> personUIDResult;
@@ -183,7 +182,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 //								+ "}";
 		
 		SparqlEntity dbSE = new SparqlEntity();
-		dbSE.setValue(Contributor.HASH, NumberGenerator.generateHash(email, new Date(0)));
+		dbSE.setValue(Contributor.ID, NumberGenerator.generateSHA256Hash(email));
 		dbSE.setValue(ResourceEntry.Database_Abbreviation, dbAbbreviation);
 		InsertSparql ins = new ContributorDatabaseInsertSparql();
 		ins.setSparqlEntity(dbSE);

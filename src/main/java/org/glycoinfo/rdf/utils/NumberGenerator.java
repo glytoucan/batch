@@ -84,6 +84,10 @@ public class NumberGenerator {
 
     public static String generateHash(String input, String salt) {
     	String hash = Sha2Crypt.sha256Crypt(input.getBytes(), "$5$" + salt);
-    	return Base64.encodeBase64String(hash.getBytes());
+    	return org.apache.commons.codec.digest.DigestUtils.sha256Hex(Base64.encodeBase64String(hash.getBytes()));
     }
+    
+    public static String generateSHA256Hash(String input) {
+      return org.apache.commons.codec.digest.DigestUtils.sha256Hex(input);
+    }    
 }

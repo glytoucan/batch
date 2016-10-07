@@ -42,6 +42,7 @@ import org.glycoinfo.rdf.service.impl.ContributorProcedureConfig;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureRdf;
 import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
 import org.glycoinfo.rdf.service.impl.MailService;
+import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1154,7 +1155,7 @@ LIN
     @Test
     @Transactional
     public void testAddResourceG00029MONobu() throws SparqlException, ConvertException, GlycanException, ContributorException {
-      String result = glycanProcedure.addResourceEntry("G00029MO", "254", "29");
+      String result = glycanProcedure.addResourceEntry("G00029MO", NumberGenerator.generateSHA256Hash("aokinobu@gmail.com"), "29");
       logger.debug("result:>" + result + "<");
       Assert.assertTrue("contains glycoepitope", result.contains("glycoepitope"));
     }

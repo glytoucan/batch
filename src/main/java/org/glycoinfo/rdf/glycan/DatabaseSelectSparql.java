@@ -47,7 +47,7 @@ public class DatabaseSelectSparql extends SelectSparqlBean implements ResourceEn
 	@Override
 	public String getWhere() throws SparqlException {
 		String lWhere = "?" + ResourceEntry.UserURI + " a foaf:Person .\n"
-				+ "VALUES ?" + ResourceEntry.ContributorId + " { " + getSparqlEntity().getValue(ResourceEntry.ContributorId) + "}\n"
+				+ "VALUES ?" + ResourceEntry.ContributorId + " { \"" + getSparqlEntity().getValue(ResourceEntry.ContributorId) + "\"^^xsd:string }\n"
 				+ "?" + ResourceEntry.UserURI + " dcterms:identifier ?" + ResourceEntry.ContributorId + " .\n"
 				+ "?" + ResourceEntry.UserURI + " foaf:member ?" + ResourceEntry.GlycanDatabaseLiteral + " .\n"
 				+ "?" + ResourceEntry.GlycanDatabaseLiteral + " a glytoucan:Partner . \n"

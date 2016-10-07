@@ -31,7 +31,7 @@ public class ContributorDatabaseInsertSparql extends InsertSparqlBean  {
 	
 	@Override
 	public String getInsert()  {
-		return "<http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(Contributor.HASH) + "> foaf:member ?db .\n";
+		return "<http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(Contributor.ID) + "> foaf:member ?db .\n";
 	}
 
 

@@ -29,14 +29,14 @@ public class ContributorInsertSparql extends InsertSparqlBean implements Contrib
 	@Override
 	public String getInsert() {
 		String insert = getUri() + " a foaf:Person .\n";
-	insert += getUri() + " dcterms:identifier \"" + getSparqlEntity().getValue(UserId) + "\"^^xsd:int .\n";
+	insert += getUri() + " dcterms:identifier \"" + getSparqlEntity().getValue(ID) + "\"^^xsd:string .\n";
 	insert += getUri() + " foaf:name \"" + getSparqlEntity().getValue(ContributorName) + "\"^^xsd:string .\n"; 
-  insert += getUri() + " glytoucan:system_id \"" + getSparqlEntity().getValue(HASH) + "\"^^xsd:string .\n"; 
+//  insert += getUri() + " glytoucan:system_id \"" + getSparqlEntity().getValue(HASH) + "\"^^xsd:string .\n"; 
 
 		return insert;
 	}
 
 	private String getUri() {
-		return "<http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(HASH) + ">";
+		return "<http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(ID) + ">";
 	}
 }

@@ -34,6 +34,6 @@ where {
 
 	@Override
 	public String getWhere() throws SparqlException {
-		return this.where + "?o glytoucan:system_id \"" + getSparqlEntity().getValue(Contributor.HASH) + "\"^^xsd:string . \n";
+		return this.where + "?o dcterms:identifier \"" + getSparqlEntity().getValue(Contributor.ID) + "\"^^xsd:string . \n";
 	}
 }
