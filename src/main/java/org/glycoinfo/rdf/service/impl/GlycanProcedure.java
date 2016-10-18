@@ -22,6 +22,7 @@ import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.convert.GlyConvertDetect;
 import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.convert.util.DetectFormat;
+import org.glycoinfo.rdf.DeleteSparql;
 import org.glycoinfo.rdf.DuplicateException;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
@@ -84,6 +85,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Qualifier("ResourceEntryInsert")
 	InsertSparql resourceEntryInsertSparql;
 
+  @Autowired
+  @Qualifier("ResourceEntryDelete")
+  DeleteSparql resourceEntryDeleteSparql;
+	
 	@Autowired
 	@Qualifier("glycoSequenceContributorSelectSparql")
 	SelectSparql glycoSequenceContributorSelectSparql;
@@ -936,6 +941,16 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		newResourceEntrySE.setValue(ResourceEntry.PartnerId, databaseInfo.getValue(ResourceEntry.PartnerId));
 		newResourceEntrySE.setValue(ResourceEntry.DataSubmittedDate, new Date());
 		
+    resourceEntryDeleteSparql.setGraph("http://rdf.glytoucan.org/partner/" + databaseInfo.getValue(ResourceEntry.PartnerId));
+
+    resourceEntryDeleteSparql.setSparqlEntity(newResourceEntrySE);
+
+    try {
+      sparqlDAO.delete(resourceEntryDeleteSparql);
+    } catch (SparqlException e) {
+      throw new GlycanException(e);
+    }
+
 //		https://github.com/glytoucan/glytoucan.github.io/issues/74
 		resourceEntryInsertSparql.setGraph("http://rdf.glytoucan.org/partner/" + databaseInfo.getValue(ResourceEntry.PartnerId));
 
