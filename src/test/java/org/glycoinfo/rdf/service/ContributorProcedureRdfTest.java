@@ -125,7 +125,7 @@ public class ContributorProcedureRdfTest  {
 	}
 	
 	@Test
-//	@Transactional
+	@Transactional
 	public void testConvertToEmailHash() throws SparqlException, ContributorException {
 	  // retrieve all emails from schema
 	  selectScintPerson.update();
@@ -139,8 +139,8 @@ public class ContributorProcedureRdfTest  {
       String hash = NumberGenerator.generateSHA256Hash(sparqlEntity.getValue("email"));
       // insert the above data.
       SparqlEntity sparqlEntityPerson = new SparqlEntity(hash);
-      sparqlEntityPerson.setValue(ContributorInsertSparql.ContributorName, sparqlEntity.getValue("givenName"));
-      sparqlEntityPerson.setValue(ContributorInsertSparql.UserId, sparqlEntity.getValue("alternateName"));
+      sparqlEntityPerson.setValue(ContributorInsertSparql.ContributorName, sparqlEntity.getValue("givenName") + " " + sparqlEntity.getValue("familyName"));
+//      sparqlEntityPerson.setValue(ContributorInsertSparql.UserId, sparqlEntity.getValue("alternateName"));
       sparqlEntityPerson.setValue(ContributorInsertSparql.ID, hash);
       contributorSparql.setSparqlEntity(sparqlEntityPerson);
 

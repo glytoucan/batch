@@ -396,12 +396,13 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	}
 
 	 @Override
-	 public String register(String sequence, String contributorId, String partnerId) throws GlycanException, ContributorException {
+	 public String register(String sequence, String contributorId, String partnerId) throws GlycanException, ContributorException, DuplicateException {
 	   String result = null;
      try {
        result = register(sequence, contributorId);
      } catch (DuplicateException de) {
        addResourceEntry(de.getId(), contributorId, partnerId);
+       result = de.getId();
      }catch (SparqlException e) {
        throw new GlycanException(e);
      }

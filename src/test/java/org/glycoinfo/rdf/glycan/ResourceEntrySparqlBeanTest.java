@@ -106,7 +106,7 @@ public class ResourceEntrySparqlBeanTest {
 	public void testSelectDatabase() throws SparqlException, UnsupportedEncodingException {
 		SelectSparql ss = databaseSelectSparql();
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(ResourceEntry.ContributorId, "254");
+		se.setValue(ResourceEntry.ContributorId, "14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
 		ss.setSparqlEntity(se);
 		List<SparqlEntity> list = sparqlDAO.query(ss);
 
@@ -130,7 +130,7 @@ public class ResourceEntrySparqlBeanTest {
 		// <http://rdf.glycoinfo.org/glytoucan/contributor/userId/5861> .
 		SelectSparql ss = databaseSelectSparql();
 		SparqlEntity se = new SparqlEntity();
-		se.setValue(ResourceEntry.ContributorId, "254");
+		se.setValue(ResourceEntry.ContributorId, "14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
 		ss.setSparqlEntity(se);
 		List<SparqlEntity> list = sparqlDAO.query(ss);
 

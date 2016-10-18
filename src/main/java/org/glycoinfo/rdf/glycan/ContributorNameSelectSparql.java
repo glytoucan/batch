@@ -16,7 +16,6 @@ FROM <http://rdf.glytoucan.org/users>
 where {
 ?o a foaf:Person .
 ?o dcterms:identifier ?id .
-?o glytoucan:system_id ?hash .
 }
 	 * @param string 
 	 * 

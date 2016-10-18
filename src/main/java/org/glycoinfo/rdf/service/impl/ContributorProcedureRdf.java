@@ -53,7 +53,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	 * 
      * <http://rdf.glycoinfo.org/glytoucan/contributor/1>
      * a    foaf:Person ;
-     * dcterms:identifier    "1" ;
+     * dcterms:identifier    "815e7cbca52763e5c3fbb5a4dccc176479a50e2367f920843c4c35dca112e33d" ;
      * foaf:name "Administrator" .
      * 
 	 * @throws SparqlException
@@ -85,7 +85,7 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 			contributorSparql.setSparqlEntity(sparqlEntityPerson);
 
 		try {
-			sparqlDAO.insert(contributorSparql);		
+			sparqlDAO.insert(contributorSparql);
 		} catch (SparqlException e) {
 			throw new ContributorException(e);
 		}

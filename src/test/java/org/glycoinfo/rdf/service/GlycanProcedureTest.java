@@ -457,7 +457,7 @@ LIN
 //		glycanProcedure.setContributorId("test");
 		
 //		glycanProcedure.setSequence(sequence);
-		String id = glycanProcedure.register(sequence, "254");
+		String id = glycanProcedure.register(sequence, "14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
 		logger.debug("searching with id:>" + id + "<");
 		se = glycanProcedure.searchByAccessionNumber(id);
 		
@@ -1008,7 +1008,7 @@ LIN
 			logger.debug("sequence:>" + sequence + "<");
 //			glycanProcedure.setId("G92195EH");
 //			glycanProcedure.setContributorId("5854");
-			String result = glycanProcedure.register(sequence, "254");
+			String result = glycanProcedure.register(sequence, "14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
 
 			Assert.assertNotNull(result);
 			
@@ -1048,7 +1048,7 @@ LIN
 			logger.debug("sequence :>" + sequence + "<");
 //			glycanProcedure.setId("G92195EH");
 //			glycanProcedure.setContributorId("5854");
-			String result = glycanProcedure.register(sequence, "254");
+			String result = glycanProcedure.register(sequence, "14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
 
 			logger.debug("result :>" + result + "<");
 			Assert.assertNotEquals(0, result.trim().length());
@@ -1064,7 +1064,7 @@ LIN
 			logger.debug("sequence :>" + sequence + "<");
 //			glycanProcedure.setId("G92195EH");
 //			glycanProcedure.setContributorId("5854");
-			String result = glycanProcedure.register(sequence, "254");
+			String result = glycanProcedure.register(sequence, "14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
 
 			logger.debug("result :>" + result + "<");
 			Assert.assertNotEquals(0, result.trim().length());
@@ -1098,7 +1098,7 @@ LIN
     @Transactional
     public void testDescriptionQueryNewRegistration() throws InvalidException, SparqlException {
       // register a new structure
-      String result = glycanProcedure.register("WURCS=2.0/5,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a1221m-1x_1-5][a2122h-1x_1-5_2*NCC/3=O]/1-1-2-3-3-4-5/a4-b1_b4-c1_c3-d1_c6-e1_e?-f1_f?-g1", "254");
+      String result = glycanProcedure.register("WURCS=2.0/5,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a1221m-1x_1-5][a2122h-1x_1-5_2*NCC/3=O]/1-1-2-3-3-4-5/a4-b1_b4-c1_c3-d1_c6-e1_e?-f1_f?-g1", "14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
       
       SparqlEntity description = glycanProcedure.getDescription(result);
       String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
@@ -1113,7 +1113,7 @@ LIN
 
       String sequence = "WURCS=2.0/5,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a1221m-1x_1-5][a2122h-1x_1-5_2*NCC/3=O]/1-1-2-3-3-4-5/a4-b1_b4-c1_c3-d1_c6-e1_e?-f1_f?-g1";
       logger.debug("sequence :>" + sequence + "<");
-      String result = glycanProcedure.register(sequence, "1");
+      String result = glycanProcedure.register(sequence, "815e7cbca52763e5c3fbb5a4dccc176479a50e2367f920843c4c35dca112e33d");
 
       logger.debug("result :>" + result + "<");
       Assert.assertNotEquals(0, result.trim().length());
@@ -1124,11 +1124,11 @@ LIN
     @Transactional
     public void testTopologyDuplicates() throws SparqlException, ConvertException {
 //      String sequence = "WURCS=2.0/2,3,2/[h44h][a2122h-1x_1-5]/1-2-2/a?-b1_b?-c1";
-//      String result = glycanProcedure.register(sequence, "254");
+//      String result = glycanProcedure.register(sequence, "14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
 //      logger.debug(result);
       
       String sequence = "WURCS=2.0/5,7,6/[a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5][a221h-1x_1-5][a1221m-1x_1-5]/1-1-2-3-3-4-5/a4-b1_b4-c1_c3-d1_c6-e1_e?-f1_f?-g1";
-      String result = glycanProcedure.register(sequence, "254");
+      String result = glycanProcedure.register(sequence, "14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
       logger.debug(result);
       
       Assert.assertNotNull(result);
@@ -1137,7 +1137,7 @@ LIN
     @Test(expected=ContributorException.class)
     @Transactional
     public void testAddResourceInvalidUser() throws SparqlException, ConvertException, GlycanException, ContributorException {
-    	glycanProcedure.addResourceEntry("G00030MO", "1929291475", "1");
+    	glycanProcedure.addResourceEntry("G00030MO", "1929291475", "815e7cbca52763e5c3fbb5a4dccc176479a50e2367f920843c4c35dca112e33d");
     }
     
     
