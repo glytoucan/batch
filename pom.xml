@@ -117,7 +117,7 @@
 		<dependency>
 			<groupId>org.glycoinfo.convert</groupId>
 			<artifactId>glyconvert</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>log4j-api</artifactId>
