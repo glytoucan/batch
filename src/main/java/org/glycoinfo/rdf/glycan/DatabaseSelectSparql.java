@@ -41,7 +41,7 @@ public class DatabaseSelectSparql extends SelectSparqlBean implements ResourceEn
 		super();
 
 		this.select = "DISTINCT ?" + ContributorId + " ?" + ResourceEntry.UserURI + " ?" + ResourceEntry.GlycanDatabaseLiteral + " ?" + ResourceEntry.ResourceEntryURI + " ?" + ResourceEntry.DatabaseURL + " ?" + ResourceEntry.PartnerId + " ?" + ResourceEntry.Label;
-		this.from = "FROM <http://purl.jp/bio/12/glyco/glycan#>\nFROM <http://rdf.glytoucan.org/users>\nFROM <http://rdf.glytoucan.org/partner>\nFROM <http://rdf.glytoucan.org/member>\n";
+		this.from = "FROM <http://purl.jp/bio/12/glyco/glycan#>\nFROM <http://rdf.glytoucan.org/users>\nFROM <http://rdf.glytoucan.org/partner>\nFROM <http://rdf.glytoucan.org/partner/member>\n";
 	}
 
 	@Override

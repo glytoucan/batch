@@ -52,4 +52,6 @@ public interface ContributorProcedure {
 	 * @throws UserException
 	 */
 	public void memberDb(String contributorId, String dbAbbreviation) throws ContributorException;
+
+  void deleteMember(String email, String dbAbbreviation) throws ContributorException;
 }

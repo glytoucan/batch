@@ -104,6 +104,19 @@ public class ContributorProcedureRdfTest  {
 		Assert.assertNotNull(result);
 	}
 	
+	 
+  @Test(expected=ContributorException.class)
+  @Transactional
+  public void testDeleteMember() throws ContributorException {
+//    String id = contributorProcedure.addContributor("testglytoucan", "testglytoucan@gmail.com");
+//    Assert.assertNotNull(id);
+    
+    contributorProcedure.deleteMember("aokinobu@gmail.com", "glycoepitope");
+    SparqlEntity result = contributorProcedure.selectDatabaseByContributor("14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff");
+    
+//    Assert.assertNotNull(result);
+  }
+	
 	@Test
 	@Transactional
 	public void testAddMembership254() throws ContributorException {

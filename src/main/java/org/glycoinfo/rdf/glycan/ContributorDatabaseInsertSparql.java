@@ -24,7 +24,7 @@ public class ContributorDatabaseInsertSparql extends InsertSparqlBean  {
 				+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
 				+ "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
 				+ "PREFIX dcterms: <http://purl.org/dc/terms/>\n";
-		this.graph="http://rdf.glytoucan.org/users";
+		this.graph="http://rdf.glytoucan.org/partner/member";
 		this.using="USING <http://rdf.glytoucan.org/partner>";
 		this.setConstant(false);
 	}

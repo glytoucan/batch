@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glycoinfo.rdf.DeleteSparql;
+import org.glycoinfo.rdf.DeleteSparqlBean;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.InsertSparqlBean;
 import org.glycoinfo.rdf.SelectSparql;
@@ -192,6 +194,32 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 			throw new ContributorException(e);
 		}
 	}
+	
+	 @Override
+	  @Transactional
+	  public void deleteMember(String email, String dbAbbreviation) throws ContributorException {
+//	     insert         ?user foaf:member ?db .
+//	     for the ?db where glycan:has_abbreviation ?dbAbbreviation
+//	    String insert = 
+//	        + "INSERT {\n"
+//	        + "<http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + contributorId + "> foaf:member ?db .\n"
+//	            + "} WHERE {\n"
+//	            + "?db glycan:has_abbreviation \"" + dbAbbreviation + "\"^^<http://www.w3.org/2001/XMLSchema#string> . \n"
+//	                + "}";
+	    
+	    String deleteSparql="PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
+      "DELETE WHERE { graph <http://rdf.glytoucan.org/users> {\n" + 
+      "<http://rdf.glycoinfo.org/glytoucan/contributor/userId/14e1d868cf50557143032041eef95cc7271b8c3a0bdc5a52fb849cdf29ef4aff> foaf:member ?db .\n"
+      + "?db a glytoucan:Partner .\n" + 
+      "?db dcterms:identifier \"" + dbAbbreviation + "\"^^<http://www.w3.org/2001/XMLSchema#string> . \n"
+      + "} }";
+      DeleteSparql sparql = new DeleteSparqlBean(deleteSparql);
+	    try {
+	      sparqlDAO.delete(sparql);
+	    } catch (SparqlException e) {
+	      throw new ContributorException(e);
+	    }
+	  }
 	
 //	@Override
 //	public SparqlEntity insertContributorLog(String id, String message) throws SparqlException {
