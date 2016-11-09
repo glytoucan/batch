@@ -44,28 +44,13 @@ public class ResourceEntryDeleteSparql extends DeleteSparqlBean implements Resou
 		init();
 	}
 	
-	public String getURI() {
-		if (null != getSparqlEntity().getValue(ResourceEntry.ResourceEntryURI) && null != getSparqlEntity().getValue(ResourceEntry.Identifier)) {
-			String url = getSparqlEntity().getValue(ResourceEntry.ResourceEntryURI) + getSparqlEntity().getValue(ResourceEntry.Identifier);
-			return url;
-		} else {
-			String database = null;
-			if (StringUtils.isNotBlank(getSparqlEntity().getValue(Database)))
-				database = getSparqlEntity().getValue(Database);
-			if (StringUtils.isNotBlank(getSparqlEntity().getValue(PartnerId)))
-				database = getSparqlEntity().getValue(PartnerId);
-				
-			return "http://rdf.glycoinfo.org/glycan/resource-entry/" + database + "/" + getSparqlEntity().getValue(Identifier);
-		}
-	}
-
 	@Override
 	public String getDelete()  {
 		StringBuilder deleteBuilder = null;
     try {
-      deleteBuilder = new StringBuilder(getUri() + " ?v ?o . ");
+      deleteBuilder = new StringBuilder("<" + getUri() + "> ?v ?o .\n");
+//      deleteBuilder.append("?s glycan:has_resource_entry <" + getUri() + "> .\n");
     } catch (SparqlException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 		    
@@ -81,12 +66,11 @@ public class ResourceEntryDeleteSparql extends DeleteSparqlBean implements Resou
     if (StringUtils.isNotBlank(getSparqlEntity().getValue(PartnerId)))
       database = getSparqlEntity().getValue(PartnerId);
       
-    return "http://rdf.glycoinfo.org/glycan/resource-entry/" + database + "/" + getSparqlEntity().getValue(Identifier);
+    return ResourceEntryInsertSparql.generateUri(getSparqlEntity().getValue(AccessionNumber), database, getSparqlEntity().getValue(Identifier));
   }
   
   @Override
   public String getFormat() {
     return DELETEWHERE;
   }
-  
 }
