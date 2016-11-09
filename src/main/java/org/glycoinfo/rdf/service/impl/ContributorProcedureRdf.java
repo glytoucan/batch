@@ -125,7 +125,6 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 	}
 	
 	@Override
-  @Transactional
 	public SparqlEntity selectDatabaseByContributor(String contributorId) throws ContributorException {
 		if (StringUtils.isBlank(contributorId))
 			throw new ContributorException("contributorId cannot be blank");
@@ -150,26 +149,25 @@ public class ContributorProcedureRdf implements ContributorProcedure  {
 		return database;
 	}
 
-	@Override
-  @Transactional
-	public List<SparqlEntity> insertResourceEntry(List<SparqlEntity> entries, String id) throws ContributorException {
-		if (null == entries)
-			throw new ContributorException("entries cannot be blank");
-
-		if (entries.iterator().hasNext()) {
-			SparqlEntity databaseresult = entries.iterator().next();
-			databaseresult.setValue(ResourceEntry.Identifier, id);
-			databaseresult.setValue(ResourceEntry.DataSubmittedDate, new Date());
-			resourceEntryInsertSparql.setSparqlEntity(databaseresult);
-			try {
-				sparqlDAO.insert(resourceEntryInsertSparql);
-			} catch (SparqlException e) {
-				throw new ContributorException(e);
-			}
-		}
-		
-		return entries;
-	}
+//	@Override
+//	public List<SparqlEntity> insertResourceEntry(List<SparqlEntity> entries, String id) throws ContributorException {
+//		if (null == entries)
+//			throw new ContributorException("entries cannot be blank");
+//
+//		if (entries.iterator().hasNext()) {
+//			SparqlEntity databaseresult = entries.iterator().next();
+//			databaseresult.setValue(ResourceEntry.Identifier, id);
+//			databaseresult.setValue(ResourceEntry.DataSubmittedDate, new Date());
+//			resourceEntryInsertSparql.setSparqlEntity(databaseresult);
+//			try {
+//				sparqlDAO.insert(resourceEntryInsertSparql);
+//			} catch (SparqlException e) {
+//				throw new ContributorException(e);
+//			}
+//		}
+//		
+//		return entries;
+//	}
 
 	@Override
   @Transactional

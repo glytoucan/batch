@@ -135,6 +135,7 @@ public class SelectScintTest {
 	}
 	
 	@Test
+	@Transactional
 	public void testSelectDomain() throws SparqlException {
 		SparqlEntity sparqlentity = new SparqlEntity("person123");
 		sparqlentity.setValue("familyName", "");

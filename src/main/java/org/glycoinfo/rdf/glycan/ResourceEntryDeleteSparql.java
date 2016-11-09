@@ -45,19 +45,52 @@ public class ResourceEntryDeleteSparql extends DeleteSparqlBean implements Resou
 	}
 	
 	@Override
-	public String getDelete()  {
-		StringBuilder deleteBuilder = null;
-    try {
-      deleteBuilder = new StringBuilder("<" + getUri() + "> ?v ?o .\n");
-//      deleteBuilder.append("?s glycan:has_resource_entry <" + getUri() + "> .\n");
-    } catch (SparqlException e) {
-      e.printStackTrace();
+	public String getDelete() throws SparqlException  {
+//    if (StringUtils.isBlank(getSparqlEntity().getValue(Saccharide.PrimaryId)))
+//      throw new SparqlException("requires primary id");
+//    else if (StringUtils.isBlank(getSparqlEntity().getValue(Database)))
+//      throw new SparqlException("requires database");
+//    else if(StringUtils.isBlank(getSparqlEntity().getValue(ContributorId)))
+//      throw new SparqlException("requires contributor id");
+//    else if (StringUtils.isBlank(getSparqlEntity().getValue(DataSubmittedDate))) {
+//      throw new SparqlException("requires date submitted");
+//    }
+    String saccharideRelation = null;
+    if (null != getSparqlEntity().getValue(Saccharide.PrimaryId)) {
+      getSparqlEntity().setValue(Saccharide.URI, "http://rdf.glycoinfo.org/glycan/" + getSparqlEntity().getValue(Saccharide.PrimaryId));
     }
-		    
-		this.delete = deleteBuilder.toString();
-		return this.delete;
+    if (null != getSparqlEntity().getValue(Saccharide.URI)) {
+      saccharideRelation = "<" + getSparqlEntity().getValue(Saccharide.URI) + "> glycan:has_resource_entry <" + getUri() + "> .\n";
+    }
+    
+    StringBuilder insertBuilder = new StringBuilder((StringUtils.isBlank(saccharideRelation)? "" : saccharideRelation) + "<" + getUri() + ">" + " a " + "glycan:Resource_entry .\n");
+    if (StringUtils.isNotBlank(getSparqlEntity().getValue(Database)))
+      insertBuilder.append("<" + getUri() + ">" + " glycan:in_glycan_database glytoucan:database_" + getSparqlEntity().getValue(Database) + " .\n");
+    if (StringUtils.isNotBlank(getSparqlEntity().getValue(GlycanDatabaseLiteral)))
+      insertBuilder.append("<" + getUri() + ">" + " glycan:in_glycan_database <" + getSparqlEntity().getValue(GlycanDatabaseLiteral) + "> .\n");
+    if (StringUtils.isNotBlank(getSparqlEntity().getValue(Label)))
+      insertBuilder.append("<" + getUri() + ">" + " rdfs:label \"" + getSparqlEntity().getValue(Label) + "\" .\n");
+    
+    insertBuilder.append("<" + getUri() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(Identifier) + "\" .\n");
+    if (StringUtils.isNotBlank(getSparqlEntity().getValue(DatabaseURL))) {
+      String databaseUrl = getSparqlEntity().getValue(DatabaseURL);
+      logger.debug("databaseUrl:>" + databaseUrl);
+      databaseUrl = databaseUrl.replace("[?id?]", getSparqlEntity().getValue(Identifier));
+      logger.debug("databaseUrl:>" + databaseUrl);
+      insertBuilder.append("<" + getUri() + ">" + " rdfs:seeAlso <" + databaseUrl + "> .\n");
+    } else
+      insertBuilder.append("<" + getUri() + ">" + " rdfs:seeAlso <https://glytoucan.org/Structures/Glycans/" + getSparqlEntity().getValue(Identifier) + "> .\n");
+    insertBuilder.append("<" + getUri() + ">" + " glytoucan:contributor <http://rdf.glycoinfo.org/glytoucan/contributor/userId/" + getSparqlEntity().getValue(ContributorId) + "> .\n");
+    insertBuilder.append("<" + getUri() + ">" + " glytoucan:date_registered \"" + dateTimeStamp((Date) getSparqlEntity().getObjectValue(DataSubmittedDate)) + "\"^^xsd:dateTimeStamp ."); 
+    this.delete = insertBuilder.toString();
+    return this.delete;
 	}
 
+	 private String dateTimeStamp(Date value) {
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+	    return sdf.format(value);
+	  }
+	
   @Override
   public String getUri() throws SparqlException {
     String database = null;
@@ -69,8 +102,8 @@ public class ResourceEntryDeleteSparql extends DeleteSparqlBean implements Resou
     return ResourceEntryInsertSparql.generateUri(getSparqlEntity().getValue(AccessionNumber), database, getSparqlEntity().getValue(Identifier));
   }
   
-  @Override
-  public String getFormat() {
-    return DELETEWHERE;
-  }
+//  @Override
+//  public String getFormat() {
+//    return DELETEWHERE;
+//  }
 }

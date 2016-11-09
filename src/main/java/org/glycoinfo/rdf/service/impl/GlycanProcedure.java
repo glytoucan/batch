@@ -51,6 +51,7 @@ import org.glycoinfo.rdf.utils.NumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedure {
@@ -939,17 +940,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		newResourceEntrySE.setValue(ResourceEntry.Identifier, dbId);
 		newResourceEntrySE.setValue(ResourceEntry.ContributorId, contributorId);
 		newResourceEntrySE.setValue(ResourceEntry.PartnerId, databaseInfo.getValue(ResourceEntry.PartnerId));
+    newResourceEntrySE.setValue(ResourceEntry.AccessionNumber, accessionNumber);
 		newResourceEntrySE.setValue(ResourceEntry.DataSubmittedDate, new Date());
 		
-    resourceEntryDeleteSparql.setGraph("http://rdf.glytoucan.org/partner/" + databaseInfo.getValue(ResourceEntry.PartnerId));
-
-    resourceEntryDeleteSparql.setSparqlEntity(newResourceEntrySE);
-
-    try {
-      sparqlDAO.delete(resourceEntryDeleteSparql);
-    } catch (SparqlException e) {
-      throw new GlycanException(e);
-    }
+		removeResourceEntry(newResourceEntrySE, databaseInfo.getValue(ResourceEntry.PartnerId));
 
 //		https://github.com/glytoucan/glytoucan.github.io/issues/74
 		resourceEntryInsertSparql.setGraph("http://rdf.glytoucan.org/partner/" + databaseInfo.getValue(ResourceEntry.PartnerId));
@@ -966,7 +960,20 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		return databaseInfo.getValue(ResourceEntry.GlycanDatabaseLiteral);
 	}	
 	
-	/**
+//	@Override
+	public void removeResourceEntry(SparqlEntity resourceEntrySE, String partnerId) throws GlycanException {
+    resourceEntryDeleteSparql.setGraph("http://rdf.glytoucan.org/partner/" + partnerId);
+
+    resourceEntryDeleteSparql.setSparqlEntity(resourceEntrySE);
+
+    try {
+      sparqlDAO.delete(resourceEntryDeleteSparql);
+    } catch (SparqlException e) {
+      throw new GlycanException(e);
+    }
+  }
+
+  /**
 	 * 
 	 * Retrieve the total count of glycans.
 	 *
@@ -1007,4 +1014,37 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 
 		return se;
 	}
+
+	 @Override
+	 @Transactional
+  public SparqlEntity removeResourceEntry(String accessionNumber, String contributorId, String dbId) throws GlycanException, ContributorException {
+	    SparqlEntity databaseInfo = contributorProcedure.selectDatabaseByContributor(contributorId);
+	    
+	    SparqlEntity newResourceEntrySE = new SparqlEntity();
+
+	    newResourceEntrySE.setValue(Saccharide.PrimaryId, accessionNumber);
+	    newResourceEntrySE.setValue(ResourceEntry.GlycanDatabaseLiteral, databaseInfo.getValue(ResourceEntry.GlycanDatabaseLiteral));
+	    newResourceEntrySE.setValue(ResourceEntry.DatabaseURL, databaseInfo.getValue(ResourceEntry.DatabaseURL));
+	    newResourceEntrySE.setValue(ResourceEntry.Label, databaseInfo.getValue(ResourceEntry.Label));
+	    newResourceEntrySE.setValue(ResourceEntry.Identifier, dbId);
+	    newResourceEntrySE.setValue(ResourceEntry.ContributorId, contributorId);
+      newResourceEntrySE.setValue(ResourceEntry.AccessionNumber, accessionNumber);
+	    newResourceEntrySE.setValue(ResourceEntry.PartnerId, databaseInfo.getValue(ResourceEntry.PartnerId));
+	    newResourceEntrySE.setValue(ResourceEntry.DataSubmittedDate, new Date());
+	    
+	    removeResourceEntry(newResourceEntrySE, databaseInfo.getValue(ResourceEntry.PartnerId));
+
+//	    https://github.com/glytoucan/glytoucan.github.io/issues/74
+	    resourceEntryDeleteSparql.setGraph("http://rdf.glytoucan.org/partner/" + databaseInfo.getValue(ResourceEntry.PartnerId));
+
+	    resourceEntryDeleteSparql.setSparqlEntity(newResourceEntrySE);
+
+	    try {
+	      sparqlDAO.delete(resourceEntryDeleteSparql);
+	    } catch (SparqlException e) {
+	      throw new GlycanException(e);
+	    }
+	    
+	    return newResourceEntrySE;
+  }
 }

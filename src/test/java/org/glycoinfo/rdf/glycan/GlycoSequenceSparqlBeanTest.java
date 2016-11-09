@@ -22,6 +22,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { GlycoSequenceSparqlBeanTest.class , VirtSesameTransactionConfig.class })
@@ -70,6 +71,7 @@ public class GlycoSequenceSparqlBeanTest {
 	}
 	
 	@Test
+	 @Transactional
 	public void testRunSelectSparql() throws SparqlException {
 	  
 		SparqlEntity se = new SparqlEntity();
@@ -87,6 +89,7 @@ public class GlycoSequenceSparqlBeanTest {
 	}
 	
 	@Test
+	 @Transactional
 	public void testRunSelectToWurcsSparqlG00031MO() throws SparqlException {
 	  SparqlEntity se = new SparqlEntity();
 		String glycoct = "RES\n" + 

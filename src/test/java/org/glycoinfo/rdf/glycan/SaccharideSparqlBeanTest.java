@@ -108,6 +108,7 @@ public class SaccharideSparqlBeanTest {
 	}
 	
 	@Test
+	@Transactional
 	public void selectSparql() throws SparqlException {
 		SaccharideSelectSparql sss = getSaccharideSelectSparql();
 		SparqlEntity se = sss.getSparqlEntity();

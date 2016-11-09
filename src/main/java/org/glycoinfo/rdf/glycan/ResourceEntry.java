@@ -11,6 +11,7 @@ public interface ResourceEntry {
 	public static final String DatabaseURL = "DatabaseURL"; // http://unicarb-db.biomedicine.gu.se:9000/msData/"^^<http://www.w3.org/2001/XMLSchema#string>
 	public static final String Database_Glytoucan = "glytoucan"; // database_glytoucan
 	public static final String Database_Abbreviation = "database_abbreviation"; // database_abbreviation
+	public static final String AccessionNumber = "AccessionNumber";
 	public static final String PartnerId = "PartnerId";
 	public static final String Label = "Label";
 }

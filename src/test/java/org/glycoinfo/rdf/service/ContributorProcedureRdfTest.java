@@ -105,7 +105,7 @@ public class ContributorProcedureRdfTest  {
 	}
 	
 	 
-  @Test(expected=ContributorException.class)
+  @Test
   @Transactional
   public void testDeleteMember() throws ContributorException {
 //    String id = contributorProcedure.addContributor("testglytoucan", "testglytoucan@gmail.com");

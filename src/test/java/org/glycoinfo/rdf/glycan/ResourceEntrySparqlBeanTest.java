@@ -91,6 +91,7 @@ public class ResourceEntrySparqlBeanTest {
 	}
 
 	@Test
+	@Transactional
 	public void testSelect() throws SparqlException, UnsupportedEncodingException {
 		List<SparqlEntity> list = sparqlDAO.query(resourceEntrySelectSparql());
 

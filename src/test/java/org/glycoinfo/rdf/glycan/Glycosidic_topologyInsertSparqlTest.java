@@ -131,6 +131,7 @@ public class Glycosidic_topologyInsertSparqlTest {
 	}
 	
 	@Test
+	 @Transactional
 	public void selectSparql() throws SparqlException {
 		D3SequenceSelectSparql_has_topology sss = getToplogySelectSparql();
 		SparqlEntity se = sss.getSparqlEntity();

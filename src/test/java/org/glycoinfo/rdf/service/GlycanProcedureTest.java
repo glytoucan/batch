@@ -21,7 +21,9 @@ import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
 import org.glycoinfo.rdf.glycan.DatabaseSelectSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
+import org.glycoinfo.rdf.glycan.ResourceEntry;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
+import org.glycoinfo.rdf.glycan.ResourceEntrySelectSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
 import org.glycoinfo.rdf.glycan.SaccharideSelectSparql;
@@ -56,7 +58,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {GlycanProcedureTest.class, VirtSesameTransactionConfig.class, GlycanProcedureConfig.class, GlyConvertConfig.class, ContributorProcedureConfig.class})
@@ -285,6 +286,7 @@ LIN
 2:1o(4+1)3d
 	 */
 	@Test
+  @Transactional
 	public void testSearch() throws SparqlException, ConvertException {
 		String sequence = "RES\n" +
 				"1b:b-dglc-HEX-1:5\n" +
@@ -306,6 +308,7 @@ LIN
 	}
 	
 	@Test
+  @Transactional
 	public void testSearchG00031MO() throws SparqlException, ConvertException {
 		// ne
 //		data-wurcs="WURCS=2.0/2,2,1/[a2112h-1a_1-5_2*NCC/3=O][a2112h-1b_1-5]/1-2/a3-b1" >
@@ -352,6 +355,7 @@ LIN
 	}
 	
 	@Test(expected=SparqlException.class)
+  @Transactional
 	public void testRegisterNew() throws SparqlException, NoSuchAlgorithmException, ConvertException {
 		
 		String sequence="WURCS=2.0/4,4,3/[u2122h][a2112h-1b_1-5][a2112h-1a_1-5][a2112h-1b_1-5_2*NCC/3=O]/1-2-3-4/a4-b1_b3-c1_c3-d1";
@@ -412,6 +416,7 @@ LIN
 	}
 	
 	@Test
+  @Transactional
 	public void testSequenceScope() throws SparqlException, NoSuchAlgorithmException {
 		SparqlEntity se = glycanProcedure.searchByAccessionNumber("G00026MO");
 		logger.debug(se.getValue("Mass"));
@@ -711,6 +716,7 @@ LIN
 	
 	
 	@Test
+	@Transactional
 	public void testListAll() throws SparqlException, NoSuchAlgorithmException {
 		List<SparqlEntity> seList = glycanProcedure.getGlycans("100", "100");
     Assert.assertNotNull(seList);
@@ -1071,6 +1077,7 @@ LIN
 		}	
 		
 		@Test
+		@Transactional
 		public void testDescriptionQuery() throws InvalidException {
 			SparqlEntity description = glycanProcedure.getDescription("G00055MO");
 			String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
@@ -1079,6 +1086,7 @@ LIN
 		}
 		
 		@Test(expected=InvalidException.class)
+		@Transactional
 		public void testInvalidNumber() throws InvalidException {
 			SparqlEntity description = glycanProcedure.getDescription("GTESTING");
 			String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
@@ -1158,5 +1166,41 @@ LIN
       String result = glycanProcedure.addResourceEntry("G00029MO", NumberGenerator.generateSHA256Hash("aokinobu@gmail.com"), "29");
       logger.debug("result:>" + result + "<");
       Assert.assertTrue("contains glycoepitope", result.contains("glycoepitope"));
+    }
+    
+    @Test
+    @Transactional
+    public void testAddResourceG16546ZZNobu() throws SparqlException, ConvertException, GlycanException, ContributorException {
+      String result = glycanProcedure.addResourceEntry("G16546ZZ", NumberGenerator.generateSHA256Hash("aokinobu@gmail.com"), "12345");
+      logger.debug("result:>" + result + "<");
+      Assert.assertTrue("contains glycoepitope", result.contains("glycoepitope"));
+      
+      glycanProcedure.removeResourceEntry("G16546ZZ", NumberGenerator.generateSHA256Hash("aokinobu@gmail.com"), "12345");
+      
+      ResourceEntrySelectSparql ress = new ResourceEntrySelectSparql();
+      ress.setFrom("FROM <http://rdf.glytoucan.org/partner/glycoepitope>\n");
+      SparqlEntity sparqlentity = new SparqlEntity();
+      sparqlentity.setValue(ResourceEntry.Identifier, "12345");
+      ress.setSparqlEntity(sparqlentity);
+      
+      List<SparqlEntity> results = sparqlDAO.query(ress);
+      
+      Assert.assertTrue("results should be 0", results.size() == 0);
+    }
+    
+    @Test
+    @Transactional
+    public void testRemoveResourceG16546ZZNobu() throws SparqlException, ConvertException, GlycanException, ContributorException {
+      glycanProcedure.removeResourceEntry("G00048MO", NumberGenerator.generateSHA256Hash("aokinobu@gmail.com"), "12345REMOVEME");
+      
+      ResourceEntrySelectSparql ress = new ResourceEntrySelectSparql();
+      ress.setFrom("FROM <http://rdf.glytoucan.org/partner/glycoepitope>\n");
+      SparqlEntity sparqlentity = new SparqlEntity();
+      sparqlentity.setValue(ResourceEntry.Identifier, "12345REMOVEME");
+      ress.setSparqlEntity(sparqlentity);
+      
+      List<SparqlEntity> results = sparqlDAO.query(ress);
+      
+      Assert.assertTrue("results should be 0", results.size() == 0);
     }
 }

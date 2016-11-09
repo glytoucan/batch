@@ -39,7 +39,7 @@ public interface ContributorProcedure {
 	 * @return
 	 * @throws ContributorException
 	 */
-	List<SparqlEntity> insertResourceEntry(List<SparqlEntity> entries, String id) throws ContributorException;
+//	List<SparqlEntity> insertResourceEntry(List<SparqlEntity> entries, String id) throws ContributorException;
 	
 	/**
 	 * 
