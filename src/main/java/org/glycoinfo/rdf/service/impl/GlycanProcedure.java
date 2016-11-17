@@ -936,7 +936,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		newResourceEntrySE.setValue(Saccharide.PrimaryId, accessionNumber);
 		newResourceEntrySE.setValue(ResourceEntry.GlycanDatabaseLiteral, databaseInfo.getValue(ResourceEntry.GlycanDatabaseLiteral));
 		newResourceEntrySE.setValue(ResourceEntry.DatabaseURL, databaseInfo.getValue(ResourceEntry.DatabaseURL));
-		newResourceEntrySE.setValue(ResourceEntry.Label, databaseInfo.getValue(ResourceEntry.Label));
+		newResourceEntrySE.setValue(ResourceEntry.DatabaseName, databaseInfo.getValue(ResourceEntry.DatabaseName));
 		newResourceEntrySE.setValue(ResourceEntry.Identifier, dbId);
 		newResourceEntrySE.setValue(ResourceEntry.ContributorId, contributorId);
 		newResourceEntrySE.setValue(ResourceEntry.PartnerId, databaseInfo.getValue(ResourceEntry.PartnerId));
@@ -1025,7 +1025,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	    newResourceEntrySE.setValue(Saccharide.PrimaryId, accessionNumber);
 	    newResourceEntrySE.setValue(ResourceEntry.GlycanDatabaseLiteral, databaseInfo.getValue(ResourceEntry.GlycanDatabaseLiteral));
 	    newResourceEntrySE.setValue(ResourceEntry.DatabaseURL, databaseInfo.getValue(ResourceEntry.DatabaseURL));
-	    newResourceEntrySE.setValue(ResourceEntry.Label, databaseInfo.getValue(ResourceEntry.Label));
+	    newResourceEntrySE.setValue(ResourceEntry.DatabaseName, databaseInfo.getValue(ResourceEntry.DatabaseName));
 	    newResourceEntrySE.setValue(ResourceEntry.Identifier, dbId);
 	    newResourceEntrySE.setValue(ResourceEntry.ContributorId, contributorId);
       newResourceEntrySE.setValue(ResourceEntry.AccessionNumber, accessionNumber);
