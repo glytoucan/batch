@@ -109,7 +109,7 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 	}
 
   public static String generateUri(String accessionNumber, String database, String partnerAccessionNumber) {
-//    return "http://rdf.glycoinfo.org/glycan/resource-entry/" + accessionNumber + "/" + database + "/" + partnerAccessionNumber;
-    return "http://rdf.glycoinfo.org/glycan/resource-entry/" + database + "/" + partnerAccessionNumber;
+    return "http://rdf.glycoinfo.org/glycan/resource-entry/" + accessionNumber + "/" + database + "/" + partnerAccessionNumber;
+//    return "http://rdf.glycoinfo.org/glycan/resource-entry/" + database + "/" + partnerAccessionNumber;
   }
 }
