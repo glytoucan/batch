@@ -18,6 +18,8 @@ public class InsertSparqlBean implements InsertSparql {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
 	protected String insert, prefix, where, graph, using;
+	protected boolean constant = true;
+
 	String graphbase;
 
 	StringBuffer sparql;
@@ -116,17 +118,19 @@ public class InsertSparqlBean implements InsertSparql {
 			StringBuffer sparqlbuf = new StringBuffer();
 			sparqlbuf.append(getPrefix() != null ? getPrefix() : "");
 			if (getFormat().equals(InsertSparql.SPARQL)) {
-				sparqlbuf.append("INSERT DATA\n");
-			sparqlbuf.append(getGraph() != null ? "{ GRAPH <" + getGraph()
-					+ ">\n" : "");
-			// sparqlbuf.append(getUsing());
-			sparqlbuf.append("{ " + getInsert() + " }\n");
-			sparqlbuf.append(getGraph() != null ? "}\n" : "");
-			sparqlbuf.append(getWhere() != null ? "WHERE " + getWhere() + "\n" : "");
+				sparqlbuf.append("INSERT ");
+				if (isConstant())
+					sparqlbuf.append(" DATA \n");
+					
+				sparqlbuf.append(getGraph() != null ? "{ GRAPH <" + getGraph() + ">\n" : "");
+				// sparqlbuf.append(getUsing());
+				sparqlbuf.append("{ " + getInsert() + " }\n");
+				sparqlbuf.append(getGraph() != null ? "}\n" : "");
+				sparqlbuf.append(getUsing() != null ? getUsing() + "\n" : "");
+				sparqlbuf.append(getWhere() != null ? "WHERE {" + getWhere() + "}\n" : "");
 			} else {
 				sparqlbuf.append(getInsert());
 			}
-//			logger.debug(sparqlbuf.toString());
 			return sparqlbuf.toString();
 		} else {
 			logger.debug(this.sparql.toString());
@@ -160,4 +164,13 @@ public class InsertSparqlBean implements InsertSparql {
 	public String getFormat() {
 		return InsertSparql.SPARQL;
 	}
+	
+	public boolean isConstant() {
+		return constant;
+	}
+
+	public void setConstant(boolean constant) {
+		this.constant = constant;
+	}
+
 }

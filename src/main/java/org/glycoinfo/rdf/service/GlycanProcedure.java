@@ -9,6 +9,9 @@ import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.Saccharide;
+import org.glycoinfo.rdf.service.exception.ContributorException;
+import org.glycoinfo.rdf.service.exception.GlycanException;
+import org.glycoinfo.rdf.service.exception.InvalidException;
 
 public interface GlycanProcedure {
 	public static final String Image = "image"; 
@@ -56,16 +59,34 @@ public interface GlycanProcedure {
 
 	String initialize(String sequence, String id) throws SparqlException;
 
-	public String addResourceEntry(String accessionNumber, String name, String dbId) throws SparqlException;
+	/**
+	 * 
+	 * Insert the resource entry value for a particular partner database id.  The database in which it is assocated to, is based upon the membership of the username.
+	 * WARNING: There are no checks on the accession number.  It is assumed to be valid before executing this.  Otherwise unlinked data will be stored (and never used).
+	 * 
+	 * @param accessionNumber
+	 * @param contributorId
+	 * @param dbId
+	 * @return
+	 * @throws GlycanException in case of invalid accession Number
+	 * @throws ContributorException in case of invalid contributor
+	 */
+	public String addResourceEntry(String accessionNumber, String contributorId, String dbId) throws GlycanException, ContributorException;
 
 	String convertToWurcs(String sequence) throws ConvertException;
 
 	String validateWurcs(String sequence) throws WURCSException;
 
-	SparqlEntity getDescription(String accessionNumber);
+	SparqlEntity getDescription(String accessionNumber) throws InvalidException;
 
   List<SparqlEntity> getGlycansAll(String offset, String limit) throws SparqlException;
 
   SparqlEntity searchSequenceByFormatAccessionNumber(String accessionNumber, String format)
       throws SparqlException;
+
+  SparqlEntity getCount();
+
+  String register(String sequence, String contributorId, String partnerId) throws GlycanException, ContributorException;
+
+  SparqlEntity removeResourceEntry(String accessionNumber, String contributorId, String dbId) throws GlycanException, ContributorException;
 }

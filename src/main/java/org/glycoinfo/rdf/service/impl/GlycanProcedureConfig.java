@@ -4,6 +4,7 @@ import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.client.MSdbClient;
 import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.convert.GlyConvertConfig;
+import org.glycoinfo.rdf.DeleteSparql;
 import org.glycoinfo.rdf.InsertSparql;
 import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
@@ -13,6 +14,7 @@ import org.glycoinfo.rdf.glycan.DatabaseSelectSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.GlycoSequenceInsertSparql;
 import org.glycoinfo.rdf.glycan.GlycoSequenceSelectSparql;
+import org.glycoinfo.rdf.glycan.ResourceEntryDeleteSparql;
 import org.glycoinfo.rdf.glycan.ResourceEntryInsertSparql;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.glycan.SaccharideInsertSparql;
@@ -39,6 +41,16 @@ public class GlycanProcedureConfig implements GraphConfig {
 		SaccharideInsertSparql sis = new SaccharideInsertSparql();
 		sis.setGraph(graph + "/core");
 		return sis;
+	}
+	
+  @Bean(name="ResourceEntryDelete")
+  DeleteSparql getResourceEntryDeleteSparql() {
+    ResourceEntryDeleteSparql resourceEntryDeleteSparql = new ResourceEntryDeleteSparql();
+    SparqlEntity se = new SparqlEntity();
+    se.setValue(ResourceEntryInsertSparql.Database, "glytoucan");
+    resourceEntryDeleteSparql.setSparqlEntity(se);
+    resourceEntryDeleteSparql.setGraph(graph + "/core");
+    return resourceEntryDeleteSparql;
 	}
 	
 	@Bean(name="ResourceEntryInsert")

@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { GlycoSequenceResourceEntryContributorSelectSparqlTest.class , VirtSesameTransactionConfig.class })
@@ -21,6 +22,7 @@ public class GlycoSequenceResourceEntryContributorSelectSparqlTest {
 //  @Autowired
 //  GlycoSequenceResourceEntryContributorSelectSparql glycoSequenceResourceEntryContributorSelectSparql;
   @Test
+  @Transactional
   public void testGlycoSequenceResourceEntryContributorSelectSparql() throws Exception {
     GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
     sb.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\nFROM <http://rdf.glytoucan.org/sequence/glycoct>\nFROM <http://rdf.glytoucan.org/users>\n");

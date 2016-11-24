@@ -9,10 +9,8 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlDAO;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
-import org.glycoinfo.rdf.service.UserProcedure;
 import org.glycoinfo.rdf.service.impl.ContributorProcedureConfig;
 import org.glycoinfo.rdf.service.impl.GlycanProcedureConfig;
-import org.glycoinfo.rdf.service.impl.UserProcedureConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -30,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {ScintTest.class, VirtSesameTransactionConfig.class, UserProcedureConfig.class, ContributorProcedureConfig.class, GlycanProcedureConfig.class, GlyConvertConfig.class})
+@SpringApplicationConfiguration(classes = {ScintTest.class, VirtSesameTransactionConfig.class, ContributorProcedureConfig.class, GlycanProcedureConfig.class, GlyConvertConfig.class})
 @ComponentScan(basePackages = {"org.glycoinfo.rdf.scint"}, excludeFilters={
 		  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=SelectScintTest.class)})
 @Configuration
@@ -40,6 +38,8 @@ public class ScintTest {
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(ScintTest.class);
 	
+	public static final String graphUser = "http://test/schema/users";
+	
 	@Autowired
 	@Qualifier(value = "ClassHandler")
 	ClassHandler classHandler;
@@ -47,33 +47,33 @@ public class ScintTest {
 	@Autowired
 	SparqlDAO sparqlDAO;
 	
-	@Autowired
-	@Qualifier(value = "selectscintperson")
-	SelectScint selectScintPerson;
+//	@Autowired
+//	@Qualifier(value = "selectscintperson")
+//	SelectScint selectScintPerson;
 
 	@Autowired
 	@Qualifier(value = "insertscintperson")
 	InsertScint insertScintPerson;
 	
-	@Autowired
-	@Qualifier(value = "selectscintregisteraction")
-	SelectScint selectScintRegisterAction;
-
-	@Autowired
-	@Qualifier(value = "insertscintregisteraction")
-	InsertScint insertScintRegisterAction;
-	
-	@Autowired
-	@Qualifier(value = "insertScintProgramMembership")
-	InsertScint insertScintProgramMembership;
-
-	@Autowired
-	@Qualifier(value = "deleteScintProgramMembership")
-	DeleteScint deleteScintProgramMembership;
-	
-	@Autowired
-	@Qualifier(value = "selectScintProgramMembership")
-	SelectScint selectScintProgramMembership;
+//	@Autowired
+//	@Qualifier(value = "selectscintregisteraction")
+//	SelectScint selectScintRegisterAction;
+//
+//	@Autowired
+//	@Qualifier(value = "insertscintregisteraction")
+//	InsertScint insertScintRegisterAction;
+//	
+//	@Autowired
+//	@Qualifier(value = "insertScintProgramMembership")
+//	InsertScint insertScintProgramMembership;
+//
+//	@Autowired
+//	@Qualifier(value = "deleteScintProgramMembership")
+//	DeleteScint deleteScintProgramMembership;
+//	
+//	@Autowired
+//	@Qualifier(value = "selectScintProgramMembership")
+//	SelectScint selectScintProgramMembership;
 
 	@Bean(name = "ClassHandler")
 	ClassHandler getClassHandler() throws SparqlException {
@@ -86,39 +86,14 @@ public class ScintTest {
 		logger.debug("" + classHandler.getDomains());
 	}
 	
-	@Test
-	@Transactional
-	public void testDeleteProgramMembership() throws SparqlException {
-		
-		SparqlEntity sparqlEntityPerson = new SparqlEntity("TestID123");
-		sparqlEntityPerson.setValue(Scintillate.NO_DOMAINS, SelectSparql.TRUE);
-		
-		insertScintPerson.update(sparqlEntityPerson);
-		
-		sparqlDAO.insert((InsertSparql) insertScintPerson.getSparqlBean());
 
-		// ProgramMembership entity
-		SparqlEntity sparqlentityProgramMembership = new SparqlEntity(UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
-		sparqlentityProgramMembership.setValue(UserProcedure.PROGRAM_NAME, UserProcedure.GLYTOUCAN_PROGRAM_TITLE);
-		
-		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, "123");
-		sparqlentityProgramMembership.setValue(UserProcedure.MEMBER, insertScintPerson);
-		
-		insertScintProgramMembership.update(sparqlentityProgramMembership);
-		
-		sparqlDAO.insert((InsertSparql) insertScintProgramMembership.getSparqlBean());
-
-		sparqlentityProgramMembership.setValue(UserProcedure.MEMBERSHIP_NUMBER, null);
-		selectScintProgramMembership.update(sparqlentityProgramMembership);
-		List<SparqlEntity> list = sparqlDAO.query(selectScintProgramMembership.getSparqlBean());
-		
-		SparqlEntity se = list.iterator().next();
-		se.setValue(SelectSparql.PRIMARY_KEY, UserProcedure.GLYTOUCAN_PROGRAM + sparqlEntityPerson.getValue(SelectSparql.PRIMARY_KEY));
-		// delete the previous Program Membership
-		deleteScintProgramMembership.update(se);	
-		sparqlDAO.delete(deleteScintProgramMembership.getSparqlBean());
-	}
 	
+	@Bean(name = "insertscintperson")
+	InsertScint getInsertPersonScint() throws SparqlException {
+		InsertScint insert = new InsertScint(graphUser, "schema", "http://schema.org/", "Person");
+//		insert.setClassHandler(getPersonClassHandler());
+		return insert;
+	}
 	
 	@Test
 	@Transactional

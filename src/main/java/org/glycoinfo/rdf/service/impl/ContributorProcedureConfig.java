@@ -1,5 +1,6 @@
 package org.glycoinfo.rdf.service.impl;
 
+import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparql;
 import org.glycoinfo.rdf.glycan.ContributorNameSelectSparql;
@@ -38,8 +39,8 @@ public class ContributorProcedureConfig implements GraphConfig {
 //		return ins;
 //	}
 	
-	@Bean
-	DatabaseSelectSparql databaseSelectSparql() {
+	@Bean(name="DatabaseSelectSparql")
+	SelectSparql databaseSelectSparql() {
 		DatabaseSelectSparql db = new DatabaseSelectSparql();
 		return db;
 	}

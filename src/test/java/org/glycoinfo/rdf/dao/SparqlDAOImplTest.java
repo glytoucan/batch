@@ -2,6 +2,7 @@ package org.glycoinfo.rdf.dao;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 
 import java.util.List;
 
@@ -71,6 +72,7 @@ public class SparqlDAOImplTest {
 			+ "USING <http://www.glytoucan.org/glyco/owl/glytoucan>\n";
 
 	@Test
+	@Transactional
 	public void testQuery() {
 //		String query = "SELECT ?s ?v ?type WHERE { ?s ?v ?type . } LIMIT 100";
 		String query = "SELECT  ?s ?v ?o WHERE\n" +
@@ -89,6 +91,7 @@ public class SparqlDAOImplTest {
 	}
 
 	@Test
+	@Transactional
 	public void testQuery2() {
 		String query = "SELECT distinct ?s WHERE  {[] a ?s}  LIMIT 100";
 		try {
@@ -210,6 +213,7 @@ public class SparqlDAOImplTest {
 	}
 
 	@Test
+	 @Transactional
 	public void testConvertQuery() {
 		String query = prefix
 				+ "SELECT DISTINCT ?s ?AccessionNumber ?Seq ?type\n" 
@@ -341,6 +345,101 @@ public class SparqlDAOImplTest {
 //			}
 
 	}
+	
+	
+
+	@Test
+	@Transactional
+	public void testDelete2() throws SparqlException {
+	  schemaDAO.insert(new InsertSparqlBean("insert data { graph <http://bluetree.jp/nobutest> { <1> <2> \"3\" . \n } }"));
+	  String query = prefix + "SELECT ?s ?v ?o\n" + "from <http://bluetree.jp/nobutest>\n"
+      + "WHERE { <1> ?v ?o } limit 10";
+
+  try {
+    logger.debug("query:>" + query);
+    List<SparqlEntity> list = schemaDAO.query(new SelectSparqlBean(query));
+    if (list.size() > 0) {
+      SparqlEntity row = list.get(0);
+      logger.debug("s:>" + row.getValue("s"));
+      logger.debug("v:>" + row.getValue("v"));
+      logger.debug("o:>" + row.getValue("o"));
+    } else
+      fail();
+  } catch (Exception e) {
+    e.printStackTrace();
+    assertFalse("Exception occurred while querying schema.", true);
+  }
+
+  
+	    schemaDAO
+	        .delete(new DeleteSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
+	            + "DELETE DATA { graph <http://bluetree.jp/nobutest> {"
+	            + "<1> <2> \"3\" . } }"));
+	    
+	    try {
+	      logger.debug("query:>" + query);
+	      List<SparqlEntity> list = schemaDAO.query(new SelectSparqlBean(query));
+	      if (list.size() > 0) {
+	        SparqlEntity row = list.get(0);
+	        logger.debug("s:>" + row.getValue("s"));
+	        logger.debug("v:>" + row.getValue("v"));
+	        logger.debug("o:>" + row.getValue("o"));
+	        fail();
+	      } else
+	        return;
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	      assertFalse("Exception occurred while querying schema.", true);
+	    }
+
+	  }
+	
+	 @Test
+	  @Transactional
+	  public void testDelete3() throws SparqlException {
+	    schemaDAO.insert(new InsertSparqlBean("insert data { graph <http://bluetree.jp/nobutest> { <1> <2> \"3\" . \n } }"));
+	    String query = prefix + "SELECT ?v ?o\n" + "from <http://bluetree.jp/nobutest>\n"
+	      + "WHERE { <1> ?v ?o } limit 10";
+
+	  try {
+	    logger.debug("query:>" + query);
+	    List<SparqlEntity> list = schemaDAO.query(new SelectSparqlBean(query));
+	    if (list.size() > 0) {
+	      SparqlEntity row = list.get(0);
+//	      logger.debug("s:>" + row.getValue("s"));
+	      logger.debug("v:>" + row.getValue("v"));
+	      logger.debug("o:>" + row.getValue("o"));
+	    } else
+	      fail();
+	  } catch (Exception e) {
+	    e.printStackTrace();
+	    assertFalse("Exception occurred while querying schema.", true);
+	  }
+
+	  
+	      schemaDAO
+	          .delete(new DeleteSparqlBean("PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#> "
+	              + "DELETE WHERE { graph <http://bluetree.jp/nobutest> {"
+	              + "<1> ?v ?o . } }"));
+	      
+	      try {
+	        logger.debug("query:>" + query);
+	        List<SparqlEntity> list = schemaDAO.query(new SelectSparqlBean(query));
+	        if (list.size() > 0) {
+	          SparqlEntity row = list.get(0);
+//	          logger.debug("s:>" + row.getValue("s"));
+	          logger.debug("v:>" + row.getValue("v"));
+	          logger.debug("o:>" + row.getValue("o"));
+	          fail();
+	        } else
+	          return;
+	      } catch (Exception e) {
+	        e.printStackTrace();
+	        assertFalse("Exception occurred while querying schema.", true);
+	      }
+
+	    }
+	
 	
 //	@Test
 	@Transactional
@@ -631,17 +730,19 @@ public class SparqlDAOImplTest {
     String select = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
         "PREFIX rogs: <http://http://www.glycoinfo.org/glyco/owl/relation#>\n" + 
         "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n" + 
-        " SELECT DISTINCT ?PrimaryId #count(distinct ?Sequence)  ?date ?contrib\n" + 
-        " FROM <http://rdf.glytoucan.org/core>\n" + 
-        "#FROM <http://rdf.glytoucan.org/isomer>\n" + 
+        " SELECT DISTINCT ?PrimaryId \n"
+//        + "#count(distinct ?Sequence)  ?date ?contrib\n" 
+        + " FROM <http://rdf.glytoucan.org/core>\n" + 
+//        "#FROM <http://rdf.glytoucan.org/isomer>\n" + 
         "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n" + 
         " WHERE {\n" + 
         "?SaccharideURI a glycan:saccharide .\n" + 
         "?SaccharideURI glytoucan:has_primary_id ?PrimaryId .\n" + 
         "?SaccharideURI glycan:has_glycosequence ?GlycanSequenceURI .\n" + 
         "?GlycanSequenceURI glycan:has_sequence ?Sequence .\n" + 
-        "?GlycanSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n" + 
-        "} group by ?PrimaryId having count(distinct ?Sequence) > 1 order by ?PrimaryId";
+        "?GlycanSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n" +
+        "} group by ?PrimaryId order by ?PrimaryId limit 100";
+//        "} group by ?PrimaryId having count(distinct ?Sequence) > 1 order by ?PrimaryId";
     
     SelectSparql sparql = new SelectSparqlBean(select);
 

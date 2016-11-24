@@ -54,6 +54,9 @@ public interface DeleteSparql extends SparqlBean {
 	public static final String SPARQL = "SPARQL";
 	public static final String Turtle = "Turtle";
 
+  public static final String DELETEWHERE = "DELETE WHERE";
+
+	
 	/**
 	 * 
 	 * Delete section.

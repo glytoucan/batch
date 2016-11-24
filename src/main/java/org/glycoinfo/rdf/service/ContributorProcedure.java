@@ -2,8 +2,9 @@ package org.glycoinfo.rdf.service;
 
 import java.util.List;
 
-import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
+import org.glycoinfo.rdf.service.exception.ContributorException;
+
 
 public interface ContributorProcedure {
 	
@@ -15,12 +16,42 @@ public interface ContributorProcedure {
 	 * 
 	 * @param name
 	 * @return
-	 * @throws SparqlException
+	 * @throws ContributorException
 	 */
-	String addContributor(String name) throws SparqlException;
+	String addContributor(String name, String email) throws ContributorException;
 	
-	SparqlEntity searchContributor(String name) throws SparqlException;
+	SparqlEntity searchContributor(String email) throws ContributorException;
 
-	List<SparqlEntity> selectDatabaseByContributor(String contributorId) throws SparqlException;
-	List<SparqlEntity> insertResourceEntry(List<SparqlEntity> entries, String id) throws SparqlException;
+	/**
+	 * 
+	 * Retrieve the glycan database literal named individual in which the contributor is a member of.
+	 * 
+	 * @param contributorId
+	 * @return
+	 * @throws ContributorException
+	 */
+	SparqlEntity selectDatabaseByContributor(String contributorId) throws ContributorException;
+	
+	
+	/**
+	 * @param entries
+	 * @param id
+	 * @return
+	 * @throws ContributorException
+	 */
+//	List<SparqlEntity> insertResourceEntry(List<SparqlEntity> entries, String id) throws ContributorException;
+	
+	/**
+	 * 
+	 * Set contributor to become a member of a database.  
+	 * In other words, insert the user to be an foaf:member of the database 
+	 * which glycan:has_abbreviation of the passed dbAbbreviation.
+	 * 
+	 * @param contributorId contributor Id of the user
+	 * @param dbAbbreviation database abbreviation
+	 * @throws UserException
+	 */
+	public void memberDb(String contributorId, String dbAbbreviation) throws ContributorException;
+
+  void deleteMember(String email, String dbAbbreviation) throws ContributorException;
 }

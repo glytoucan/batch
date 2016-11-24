@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class DeleteSparqlBean implements DeleteSparql {
 
-	protected Logger logger = LoggerFactory.getLogger(getClass());
+  protected Logger logger = LoggerFactory.getLogger(getClass());
 
 	protected String delete, prefix, where, graph, using;
 	String graphbase;
@@ -106,12 +106,16 @@ public class DeleteSparqlBean implements DeleteSparql {
 	 */
 	@Override
 	public String getSparql() throws SparqlException {
+    StringBuffer sparqlbuf = new StringBuffer();
 		if (this.sparql == null) {
-			StringBuffer sparqlbuf = new StringBuffer();
 			sparqlbuf.append(getPrefix() != null ? getPrefix() : "");
-			if (getFormat().equals(InsertSparql.SPARQL)) {
-				sparqlbuf.append("DELETE DATA\n");
-			sparqlbuf.append(getGraph() != null ? "{ GRAPH <" + getGraph()
+			if (getFormat().equals(InsertSparql.SPARQL) || getFormat().equals(DELETEWHERE)) {
+  			if (getFormat().equals(DELETEWHERE)) {
+          sparqlbuf.append("DELETE WHERE\n");
+  			} else
+          sparqlbuf.append("DELETE DATA\n");
+
+      sparqlbuf.append(getGraph() != null ? "{ GRAPH <" + getGraph()
 					+ ">\n" : "");
 			// sparqlbuf.append(getUsing());
 			sparqlbuf.append("{ " + getDelete() + " }\n");

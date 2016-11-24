@@ -18,9 +18,9 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {WebServiceClientTest.class})
-@EnableAutoConfiguration
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@SpringApplicationConfiguration(classes = {WebServiceClientTest.class})
+//@EnableAutoConfiguration
 public class WebServiceClientTest {
 	public static Logger logger = (Logger) LoggerFactory
 			.getLogger(WebServiceClientTest.class);
@@ -33,10 +33,10 @@ public class WebServiceClientTest {
 	@Autowired
 	MSdbClient msdbClient;
 	
-	@Test
-	public void testReadMs() throws IOException {
-		String ttl = msdbClient.getTtl("a-dall-HEX-1:5|2,3:anhydro");
-		
-		logger.debug(ttl);
-	}
+//	@Test
+//	public void testReadMs() throws IOException {
+//		String ttl = msdbClient.getTtl("a-dall-HEX-1:5|2,3:anhydro");
+//		
+//		logger.debug(ttl);
+//	}
 }

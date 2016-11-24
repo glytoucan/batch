@@ -53,12 +53,12 @@ public class GlycoSequenceInsertSparql extends InsertSparqlBean {
 						.getValue(GlycoSequence.Format) + ">";
 	}
 
-	public String getUsing() {
-		return "USING <http://glytoucan.org/rdf/demo/0.2>\n"
-				+ "USING <http://glytoucan.org/rdf/demo/msdb/8>\n"
-				+ "USING <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
-				+ "USING <http://www.glytoucan.org/glyco/owl/glytoucan>\n";
-	}
+//	public String getUsing() {
+//		return "USING <http://glytoucan.org/rdf/demo/0.2>\n"
+//				+ "USING <http://glytoucan.org/rdf/demo/msdb/8>\n"
+//				+ "USING <http://purl.jp/bio/12/glyco/glycan/ontology/0.18>\n"
+//				+ "USING <http://www.glytoucan.org/glyco/owl/glytoucan>\n";
+//	}
 
 	@Override
 	public String getInsert() {

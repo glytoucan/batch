@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.glycoinfo</groupId>
 	<artifactId>batch</artifactId>
-	<version>0.3.5-SNAPSHOT</version>
+	<version>0.3.8-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<parent>
 		<groupId>org.glytoucan</groupId>
@@ -17,13 +17,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch</artifactId>
 			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-jdbc</artifactId>
-				</exclusion>
 <!-- 				<exclusion> -->
 <!-- 					<groupId>org.springframework.boot</groupId> -->
 <!-- 					<artifactId>spring-boot-starter-logging</artifactId> -->
+<!-- 				</exclusion> -->
+<!-- 				<exclusion> -->
+<!-- 					<groupId>org.springframework</groupId> -->
+<!-- 					<artifactId>spring-jdbc</artifactId> -->
 <!-- 				</exclusion> -->
 			</exclusions>
 		</dependency>
@@ -117,7 +117,7 @@
 		<dependency>
 			<groupId>org.glycoinfo.convert</groupId>
 			<artifactId>glyconvert</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>log4j-api</artifactId>
@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>org.glytoucan</groupId>
 			<artifactId>model</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>1.2.4-TOCO-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>jp.bluetree.log</groupId>
@@ -153,11 +153,12 @@
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-		  <groupId>jp.bluetree.log</groupId>
-          <artifactId>client</artifactId>
-          <version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-jdbc</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<build>

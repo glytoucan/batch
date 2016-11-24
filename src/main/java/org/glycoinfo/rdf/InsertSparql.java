@@ -115,4 +115,6 @@ public interface InsertSparql extends SparqlBean {
 	public void addRelated(List<InsertSparql> related);
 	
 	public String getFormat();
+	
+	public boolean isConstant();
 }
