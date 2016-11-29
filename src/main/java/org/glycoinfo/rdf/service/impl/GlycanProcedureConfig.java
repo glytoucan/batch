@@ -125,7 +125,7 @@ public class GlycanProcedureConfig implements GraphConfig {
 	}
 	
 	@Bean
-	MotifSequenceSelectSparql motifSequenceSelectSparql() {
+	SelectSparql motifSequenceSelectSparql() {
 		MotifSequenceSelectSparql select = new MotifSequenceSelectSparql();
 //		select.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>");
 		return select;
@@ -163,8 +163,8 @@ public class GlycanProcedureConfig implements GraphConfig {
 		return glycanProc; 
 	}
 
-	@Bean
-	SubstructureSearchSparql substructureSearchSparql() {
+	@Bean(name="substructureSearchSparql")
+	SelectSparql substructureSearchSparql() {
 		SubstructureSearchSparql sss = new SubstructureSearchSparql();
 		sss.setGraphtarget("<http://rdf.glytoucan.org/sequence/wurcs>");
 		sss.setGraphms("<http://rdf.glytoucan.org/wurcs/ms>");

@@ -68,8 +68,8 @@ public class ResourceEntryDeleteSparql extends DeleteSparqlBean implements Resou
       insertBuilder.append("<" + getUri() + ">" + " glycan:in_glycan_database glytoucan:database_" + getSparqlEntity().getValue(Database) + " .\n");
     if (StringUtils.isNotBlank(getSparqlEntity().getValue(GlycanDatabaseLiteral)))
       insertBuilder.append("<" + getUri() + ">" + " glycan:in_glycan_database <" + getSparqlEntity().getValue(GlycanDatabaseLiteral) + "> .\n");
-    if (StringUtils.isNotBlank(getSparqlEntity().getValue(Label)))
-      insertBuilder.append("<" + getUri() + ">" + " rdfs:label \"" + getSparqlEntity().getValue(Label) + "\" .\n");
+    if (StringUtils.isNotBlank(getSparqlEntity().getValue(DatabaseName)))
+      insertBuilder.append("<" + getUri() + ">" + " rdfs:label \"" + getSparqlEntity().getValue(DatabaseName) + "\" .\n");
     
     insertBuilder.append("<" + getUri() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(Identifier) + "\" .\n");
     if (StringUtils.isNotBlank(getSparqlEntity().getValue(DatabaseURL))) {

@@ -85,8 +85,8 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 			insertBuilder.append("<" + getUri() + ">" + " glycan:in_glycan_database glytoucan:database_" + getSparqlEntity().getValue(Database) + " .\n");
 		if (StringUtils.isNotBlank(getSparqlEntity().getValue(GlycanDatabaseLiteral)))
 			insertBuilder.append("<" + getUri() + ">" + " glycan:in_glycan_database <" + getSparqlEntity().getValue(GlycanDatabaseLiteral) + "> .\n");
-		if (StringUtils.isNotBlank(getSparqlEntity().getValue(Label)))
-			insertBuilder.append("<" + getUri() + ">" + " rdfs:label \"" + getSparqlEntity().getValue(Label) + "\" .\n");
+		if (StringUtils.isNotBlank(getSparqlEntity().getValue(DatabaseName)))
+			insertBuilder.append("<" + getUri() + ">" + " rdfs:label \"" + getSparqlEntity().getValue(DatabaseName) + "\" .\n");
 		
 		insertBuilder.append("<" + getUri() + ">" + " dcterms:identifier \"" + getSparqlEntity().getValue(Identifier) + "\" .\n");
 		if (StringUtils.isNotBlank(getSparqlEntity().getValue(DatabaseURL))) {
@@ -109,7 +109,7 @@ public class ResourceEntryInsertSparql extends InsertSparqlBean implements Resou
 	}
 
   public static String generateUri(String accessionNumber, String database, String partnerAccessionNumber) {
-//    return "http://rdf.glycoinfo.org/glycan/resource-entry/" + accessionNumber + "/" + database + "/" + partnerAccessionNumber;
-    return "http://rdf.glycoinfo.org/glycan/resource-entry/" + database + "/" + partnerAccessionNumber;
+    return "http://rdf.glycoinfo.org/glycan/resource-entry/" + accessionNumber + "/" + database + "/" + partnerAccessionNumber;
+//    return "http://rdf.glycoinfo.org/glycan/resource-entry/" + database + "/" + partnerAccessionNumber;
   }
 }

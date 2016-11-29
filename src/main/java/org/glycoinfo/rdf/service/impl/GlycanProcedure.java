@@ -124,10 +124,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 
 	@Autowired
 	@Qualifier("substructureSearchSparql")
-	SubstructureSearchSparql substructureSearchSparql;
+	SelectSparql substructureSearchSparql;
 
 	@Autowired
-	MotifSequenceSelectSparql motifSequenceSelectSparql;
+	SelectSparql motifSequenceSelectSparql;
 
 	@Autowired
 	SaccharideSelectSparql saccharideSelectSparql;
@@ -849,7 +849,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		// wurcs to sparql
 		SparqlEntity se = new SparqlEntity();
 		se.setValue(GlycoSequence.Sequence, sequence);
-		SubstructureSearchSparql sss = substructureSearchSparql;
+		SelectSparql sss = substructureSearchSparql;
 		sss.setLimit(limit);
 		sss.setOffset(offset);
 		sss.setSparqlEntity(se);
@@ -936,7 +936,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		newResourceEntrySE.setValue(Saccharide.PrimaryId, accessionNumber);
 		newResourceEntrySE.setValue(ResourceEntry.GlycanDatabaseLiteral, databaseInfo.getValue(ResourceEntry.GlycanDatabaseLiteral));
 		newResourceEntrySE.setValue(ResourceEntry.DatabaseURL, databaseInfo.getValue(ResourceEntry.DatabaseURL));
-		newResourceEntrySE.setValue(ResourceEntry.Label, databaseInfo.getValue(ResourceEntry.Label));
+		newResourceEntrySE.setValue(ResourceEntry.DatabaseName, databaseInfo.getValue(ResourceEntry.DatabaseName));
 		newResourceEntrySE.setValue(ResourceEntry.Identifier, dbId);
 		newResourceEntrySE.setValue(ResourceEntry.ContributorId, contributorId);
 		newResourceEntrySE.setValue(ResourceEntry.PartnerId, databaseInfo.getValue(ResourceEntry.PartnerId));
@@ -1025,7 +1025,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	    newResourceEntrySE.setValue(Saccharide.PrimaryId, accessionNumber);
 	    newResourceEntrySE.setValue(ResourceEntry.GlycanDatabaseLiteral, databaseInfo.getValue(ResourceEntry.GlycanDatabaseLiteral));
 	    newResourceEntrySE.setValue(ResourceEntry.DatabaseURL, databaseInfo.getValue(ResourceEntry.DatabaseURL));
-	    newResourceEntrySE.setValue(ResourceEntry.Label, databaseInfo.getValue(ResourceEntry.Label));
+	    newResourceEntrySE.setValue(ResourceEntry.DatabaseName, databaseInfo.getValue(ResourceEntry.DatabaseName));
 	    newResourceEntrySE.setValue(ResourceEntry.Identifier, dbId);
 	    newResourceEntrySE.setValue(ResourceEntry.ContributorId, contributorId);
       newResourceEntrySE.setValue(ResourceEntry.AccessionNumber, accessionNumber);

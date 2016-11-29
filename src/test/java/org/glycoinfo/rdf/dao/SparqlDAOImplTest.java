@@ -730,17 +730,19 @@ public class SparqlDAOImplTest {
     String select = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
         "PREFIX rogs: <http://http://www.glycoinfo.org/glyco/owl/relation#>\n" + 
         "PREFIX glytoucan:  <http://www.glytoucan.org/glyco/owl/glytoucan#>\n" + 
-        " SELECT DISTINCT ?PrimaryId #count(distinct ?Sequence)  ?date ?contrib\n" + 
-        " FROM <http://rdf.glytoucan.org/core>\n" + 
-        "#FROM <http://rdf.glytoucan.org/isomer>\n" + 
+        " SELECT DISTINCT ?PrimaryId \n"
+//        + "#count(distinct ?Sequence)  ?date ?contrib\n" 
+        + " FROM <http://rdf.glytoucan.org/core>\n" + 
+//        "#FROM <http://rdf.glytoucan.org/isomer>\n" + 
         "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n" + 
         " WHERE {\n" + 
         "?SaccharideURI a glycan:saccharide .\n" + 
         "?SaccharideURI glytoucan:has_primary_id ?PrimaryId .\n" + 
         "?SaccharideURI glycan:has_glycosequence ?GlycanSequenceURI .\n" + 
         "?GlycanSequenceURI glycan:has_sequence ?Sequence .\n" + 
-        "?GlycanSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n" + 
-        "} group by ?PrimaryId having count(distinct ?Sequence) > 1 order by ?PrimaryId";
+        "?GlycanSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n" +
+        "} group by ?PrimaryId order by ?PrimaryId limit 100";
+//        "} group by ?PrimaryId having count(distinct ?Sequence) > 1 order by ?PrimaryId";
     
     SelectSparql sparql = new SelectSparqlBean(select);
 

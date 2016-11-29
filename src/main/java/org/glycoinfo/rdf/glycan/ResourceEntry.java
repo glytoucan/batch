@@ -14,4 +14,5 @@ public interface ResourceEntry {
 	public static final String AccessionNumber = "AccessionNumber";
 	public static final String PartnerId = "PartnerId";
 	public static final String Label = "Label";
+	public static final String DatabaseName = "DatabaseName";
 }
