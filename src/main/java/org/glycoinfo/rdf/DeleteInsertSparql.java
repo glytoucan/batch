@@ -94,19 +94,35 @@ public interface DeleteInsertSparql extends SparqlBean {
 	
 	/**
 	 * 
-	 * Get the graphs used in all sparql commands.
+	 * Get the graphs as target of delete used in sparql commands.
 	 * 
 	 * @return
 	 */
-	public String getGraph();
+	public String getFromGraph();
 
 	/**
 	 * 
-	 * Set the graphs.
+	 * Set the graphs as target of delete.
 	 * 
 	 * @param graph
 	 */
-	public void setGraph(String graph);
+	public void setFromGraph(String fromGraph);
+	
+	/**
+	 * 
+	 * Get the graphs as target of insert used in sparql commands.
+	 * 
+	 * @return
+	 */
+	public String getToGraph();
+
+	/**
+	 * 
+	 * Set the graphs as target of insert.
+	 * 
+	 * @param graph
+	 */
+	public void setToGraph(String toGraph);
 	
 	/**
 	 * 

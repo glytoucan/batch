@@ -10,7 +10,7 @@ public class DeleteInsertSparqlBean implements DeleteInsertSparql {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected String prefix, delete, graph, insert, using, where;
+	protected String prefix, delete, fromGraph, toGraph, insert, using, where;
 	String graphbase;
 
 	StringBuffer sparql;
@@ -55,15 +55,26 @@ public class DeleteInsertSparqlBean implements DeleteInsertSparql {
 		this.insert = insert;
 	}
 
-	// GRAPH
+	// From GRAPH 
 	@Override
-	public String getGraph() {
-		return graph;
+	public String getFromGraph() {
+		return fromGraph;
 	}
 
 	@Override
-	public void setGraph(String graph) {
-		this.graph = graph;
+	public void setFromGraph(String fromGraph) {
+		this.fromGraph = fromGraph;
+	}
+
+	// To GRAPH
+	@Override
+	public String getToGraph() {
+		return toGraph;
+	}
+
+	@Override
+	public void setToGraph(String toGraph) {
+		this.toGraph = toGraph;
 	}
 
 	// USING
@@ -126,13 +137,13 @@ public class DeleteInsertSparqlBean implements DeleteInsertSparql {
 			sparqlbuf.append(getPrefix() != null ? getPrefix() : "");
 			if (getFormat().equals(DeleteInsertSparql.SPARQL)) {
 				sparqlbuf.append("DELETE \n");
-				sparqlbuf.append(getGraph() != null ? "{ GRAPH <" + getGraph() + ">\n" : "");
+				sparqlbuf.append(getFromGraph() != null ? "{ GRAPH <" + getFromGraph() + ">\n" : "");
 				sparqlbuf.append("{ " + getDelete() + " }\n");
-				sparqlbuf.append(getGraph() != null ? "}\n" : "");
+				sparqlbuf.append(getFromGraph() != null ? "}\n" : "");
 				sparqlbuf.append("INSERT \n");
-				sparqlbuf.append(getGraph() != null ? "{ GRAPH <" + getGraph() + ">\n" : "");
+				sparqlbuf.append(getToGraph() != null ? "{ GRAPH <" + getToGraph() + ">\n" : "");
 				sparqlbuf.append("{ " + getDelete() + " }\n");
-				sparqlbuf.append(getGraph() != null ? "}\n" : "");
+				sparqlbuf.append(getToGraph() != null ? "}\n" : "");
 				sparqlbuf.append(getUsing() != null ? "USING <" + getUsing() + ">\n" : "");
 				sparqlbuf.append(getWhere() != null ? "WHERE " + getWhere() + "\n" : "");
 			} else {
