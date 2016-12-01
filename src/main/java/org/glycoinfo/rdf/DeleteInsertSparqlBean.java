@@ -138,14 +138,14 @@ public class DeleteInsertSparqlBean implements DeleteInsertSparql {
 			if (getFormat().equals(DeleteInsertSparql.SPARQL)) {
 				sparqlbuf.append("DELETE \n");
 				sparqlbuf.append(getFromGraph() != null ? "{ GRAPH <" + getFromGraph() + ">\n" : "");
-				sparqlbuf.append("{ " + getDelete() + " }\n");
+				sparqlbuf.append(" { \n" + getDelete() + "\n }\n");
 				sparqlbuf.append(getFromGraph() != null ? "}\n" : "");
 				sparqlbuf.append("INSERT \n");
 				sparqlbuf.append(getToGraph() != null ? "{ GRAPH <" + getToGraph() + ">\n" : "");
-				sparqlbuf.append("{ " + getDelete() + " }\n");
+				sparqlbuf.append(" { \n" + getInsert() + "\n }\n");
 				sparqlbuf.append(getToGraph() != null ? "}\n" : "");
 				sparqlbuf.append(getUsing() != null ? "USING <" + getUsing() + ">\n" : "");
-				sparqlbuf.append(getWhere() != null ? "WHERE " + getWhere() + "\n" : "");
+				sparqlbuf.append(getWhere() != null ? "WHERE {\n" + getWhere() + "\n} \n" : "");
 			} else {
 				sparqlbuf.append(getDelete());
 			}
