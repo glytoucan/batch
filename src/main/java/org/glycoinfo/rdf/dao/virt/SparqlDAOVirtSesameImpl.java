@@ -283,21 +283,17 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 	@Override
 	@Transactional
 	public void execute(SparqlBean insert) throws SparqlException {
-		if (!(insert instanceof InsertSparql))
-			throw new SparqlException("expected Insert SPARQL");
-		InsertSparql thisInsert = (InsertSparql)insert;
-//		SparqlEntity se = SparqlEntityFactory.getSparqlEntity();
-//		if (null != se) {
-//			thisInsert.setSparqlEntity(se);
-//			SparqlEntityFactory.unset();
-//		}
-		
-//		logger.debug(thisInsert);
-
+		String statement = insert.getSparql();
+		String format = InsertSparql.SPARQL;
+		String graph = null;
+		if (insert instanceof InsertSparql) {
+			InsertSparql thisInsert = (InsertSparql)insert;
+			format = thisInsert.getFormat();
+			graph = thisInsert.getGraph();
+		}
 		RepositoryConnection connection = sesameConnectionFactory.getConnection();
 
-		String format = thisInsert.getFormat();
-		String statement = thisInsert.getSparql();
+//		String statement = thisInsert.getSparql();
 		logger.debug("format:>"+format);
 		logger.debug(statement);
 		
@@ -316,7 +312,7 @@ public class SparqlDAOVirtSesameImpl implements SparqlDAO {
 			} else if (format.equals(InsertSparql.Turtle)) {
 				StringReader reader = new StringReader(statement);
 				ValueFactory f = connection.getValueFactory();
-				Resource res = f.createURI(thisInsert.getGraph());
+				Resource res = f.createURI(graph);
 				connection.add(reader, "", RDFFormat.TURTLE, res);
 			}
 		} catch (RepositoryException | MalformedQueryException | UpdateExecutionException | RDFParseException | IOException e) {
