@@ -725,7 +725,7 @@ public class SparqlDAOImplTest {
    * 
    */
   @Test
-  @Transactional
+//  @Transactional
   public void testDeleteDuplicateLimitedRepeatWurcs() throws SparqlException, WURCSException {
     String select = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n" + 
         "PREFIX rogs: <http://http://www.glycoinfo.org/glyco/owl/relation#>\n" + 
@@ -741,8 +741,8 @@ public class SparqlDAOImplTest {
         "?SaccharideURI glycan:has_glycosequence ?GlycanSequenceURI .\n" + 
         "?GlycanSequenceURI glycan:has_sequence ?Sequence .\n" + 
         "?GlycanSequenceURI glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n" +
-        "} group by ?PrimaryId order by ?PrimaryId limit 100";
-//        "} group by ?PrimaryId having count(distinct ?Sequence) > 1 order by ?PrimaryId";
+//        "} group by ?PrimaryId order by ?PrimaryId limit 100";
+        "} group by ?PrimaryId having (count(distinct ?Sequence) > 1) order by ?PrimaryId";
     
     SelectSparql sparql = new SelectSparqlBean(select);
 
