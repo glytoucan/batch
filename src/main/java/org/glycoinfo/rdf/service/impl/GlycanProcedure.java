@@ -93,6 +93,10 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 	@Autowired
 	@Qualifier("glycoSequenceContributorSelectSparql")
 	SelectSparql glycoSequenceContributorSelectSparql;
+
+	@Autowired
+	@Qualifier("glycoSequenceResourceEntryContributorArchivedSelectSparql")
+	SelectSparql glycoSequenceResourceEntryContributorArchivedSelectSparql;
 	
 	@Autowired
 	@Qualifier("glycoSequenceSelectSparql")
@@ -482,12 +486,12 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		accessionNumber = "G" + NumberGenerator.generateRandomString(7);
 
 		// SparqlEntity searchAccNumEntity = sparqlEntityFactory.create();
-		SparqlEntity result = searchByAccessionNumber(accessionNumber);
+		SparqlEntity result = searchByAccessionNumberIncludingArchived(accessionNumber);
 		while (result != null && StringUtils.isNotBlank(result.getValue(Saccharide.PrimaryId))) {
 			logger.debug("rerolling... " + result.getValue(Saccharide.PrimaryId));
             accessionNumber = "G" + NumberGenerator.generateRandomString(7);
 
-			result = searchByAccessionNumber(accessionNumber);
+			result = searchByAccessionNumberIncludingArchived(accessionNumber);
 		}
 
 		logger.debug("setting accession#:>" + accessionNumber + "<");
@@ -662,6 +666,18 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		// se.setValue(Saccharide.PrimaryId, accessionNumber);
 		glycoSequenceContributorSelectSparql.setSparqlEntity(accessionNumber);
 		List<SparqlEntity> list = sparqlDAO.query(glycoSequenceContributorSelectSparql);
+		if (list.iterator().hasNext())
+			return list.iterator().next();
+		return null;
+	}
+	
+
+	@Override
+	public SparqlEntity searchByAccessionNumberIncludingArchived(String accessionNumber) throws SparqlException {
+		SparqlEntity se = new SparqlEntity();
+		se.setValue(Saccharide.PrimaryId, accessionNumber);
+		glycoSequenceResourceEntryContributorArchivedSelectSparql.setSparqlEntity(se);
+		List<SparqlEntity> list = sparqlDAO.query(glycoSequenceResourceEntryContributorArchivedSelectSparql);
 		if (list.iterator().hasNext())
 			return list.iterator().next();
 		return null;
@@ -870,7 +886,8 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 						+ "WHERE {\n" 
 						+ "  ?s a glycan:saccharide .\n" 
 						+ "  ?s glytoucan:has_primary_id ?archivedId .\n" 
-						+ "}\n" 
+						+ "}\n"
+						+ "ORDER BY ?archivedId"
 						+ "OFFSET " + offset + "\n"
 				        + "LIMIT " + limitModified;
 				SparqlEntity se = new SparqlEntity();

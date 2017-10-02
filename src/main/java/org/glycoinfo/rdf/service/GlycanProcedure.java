@@ -93,4 +93,6 @@ public interface GlycanProcedure {
 SparqlEntity getDescriptionCore(String accessionNumber) throws InvalidException;
 
 List<SparqlEntity> getArchivedAccessionNumbers(String offset, String limit) throws InvalidException;
+
+SparqlEntity searchByAccessionNumberIncludingArchived(String accessionNumber) throws SparqlException;
 }
