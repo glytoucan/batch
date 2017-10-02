@@ -851,7 +851,53 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 			return se;
 		}
 
-	 
+
+			/**
+			 * 
+			 * Retrieve a list of the archived accession numbers found in the archived graph.
+			 * 
+			 * @return List of archived accession numbers
+			 * @throws InvalidException 
+			 */
+			 @Override
+			public List<SparqlEntity> getArchivedAccessionNumbers(String offset, String limit) throws InvalidException {
+				int limitModified = Integer.parseInt(limit) + 1;
+				String sparql = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
+						+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
+						+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+						+ "SELECT ?archivedId\n" 
+						+ "FROM  <http://rdf.glytoucan.org/archive>\n" 
+						+ "WHERE {\n" 
+						+ "  ?s a glycan:saccharide .\n" 
+						+ "  ?s glytoucan:has_primary_id ?archivedId .\n" 
+						+ "}\n" 
+						+ "OFFSET " + offset + "\n"
+				        + "LIMIT " + limitModified;
+				SparqlEntity se = new SparqlEntity();
+
+				List<SparqlEntity> seList = null;
+				try {
+					seList = sparqlDAO.query(new SelectSparqlBean(sparql));
+				} catch (SparqlException e) {
+					e.printStackTrace();
+					se.setValue("message", e.getMessage());
+					return seList;
+				}
+
+				String id = null;
+
+				if (seList.iterator().hasNext()) {
+					se = seList.iterator().next();
+					id = se.getValue("archivedId");
+					logger.debug("archived ID:" + id);
+				} else
+					throw new InvalidException("Sparql Query Invalid");
+				
+				return seList;
+			}
+
+
+		 
 	@Override
 	public List<SparqlEntity> getGlycans(String offset, String limit) throws SparqlException {
 		listAllIdSelectSparql.setLimit(limit);

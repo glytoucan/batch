@@ -1212,5 +1212,18 @@ LIN
       logger.debug(desc);
 	  Assert.assertNull(desc);
 	}
+	
+	@Test
+	public void testArchived() throws InvalidException {
+	  List<SparqlEntity> seList = glycanProcedure.getArchivedAccessionNumbers("0", "100");
+		SparqlEntity se = new SparqlEntity();
+		String id = null;
 
+		if (seList.iterator().hasNext()) {
+			se = seList.iterator().next();
+			id = se.getValue("archivedId");
+			logger.debug("archived ID:" + id);
+		} else
+			throw new InvalidException("Sparql Query Invalid");
+	}
 }

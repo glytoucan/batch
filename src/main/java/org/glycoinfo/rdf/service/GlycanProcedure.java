@@ -91,4 +91,6 @@ public interface GlycanProcedure {
   SparqlEntity removeResourceEntry(String accessionNumber, String contributorId, String dbId) throws GlycanException, ContributorException;
 
 SparqlEntity getDescriptionCore(String accessionNumber) throws InvalidException;
+
+List<SparqlEntity> getArchivedAccessionNumbers(String offset, String limit) throws InvalidException;
 }
