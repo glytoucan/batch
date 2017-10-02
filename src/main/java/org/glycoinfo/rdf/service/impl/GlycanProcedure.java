@@ -887,7 +887,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 						+ "  ?s a glycan:saccharide .\n" 
 						+ "  ?s glytoucan:has_primary_id ?archivedId .\n" 
 						+ "}\n"
-						+ "ORDER BY ?archivedId"
+						+ "ORDER BY ?archivedId\n"
 						+ "OFFSET " + offset + "\n"
 				        + "LIMIT " + limitModified;
 				SparqlEntity se = new SparqlEntity();
