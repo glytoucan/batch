@@ -698,6 +698,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
 				+ "SELECT distinct ?iupac ?" + GlycoSequence.Sequence + " ?" + DerivatizedMass.MassLabel + " ?" 
 				+ DerivatizedMass.MassType + " ?" + DerivatizedMass.MassValue + "\n"
+//				+ "FROM <http://rdf.glytoucan.org/core>\n"
 				+ "WHERE { \n"
 				+ "?s a glycan:saccharide .\n" + "?s glytoucan:has_primary_id \"" + accessionNumber + "\" .\n"
 //        + "?s glycan:has_glycosequence ?wurcsgseq .\n" + "?wurcsgseq glycan:has_sequence ?" + GlycoSequence.Sequence + " .\n"
@@ -761,6 +762,97 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 		return se;
 	}
 
+		/**
+		 * 
+		 * Currently the following are the core data points that need to be
+		 * retrieved for a detailed description of the glycan:
+		 * 
+		 * accession number mass IUPAC formatted sequence string:
+		 * GlycoSequence.Sequence
+		 * 
+		 * @param accessionNumber
+		 * @return
+		 * @throws SparqlException 
+		 */
+		 @Override
+		public SparqlEntity getDescriptionCore(String accessionNumber) throws InvalidException {
+			// "?s glytoucan:has_primary_id \"" + accessionNumber + "\" .\n" +
+			String sparql = "PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\n"
+					+ "PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>\n"
+					+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+					+ "SELECT distinct ?iupac ?" + GlycoSequence.Sequence + " ?" + DerivatizedMass.MassLabel + " ?" 
+					+ DerivatizedMass.MassType + " ?" + DerivatizedMass.MassValue + "\n"
+					+ "FROM <http://rdf.glytoucan.org/core>\n"
+					+ "FROM <http://rdf.glytoucan.org/core>\n" + 
+					"FROM <http://rdf.glytoucan.org/sequence/wurcs>\n" + 
+					"FROM <http://rdf.glytoucan.org/sequence/iupac_extended>\n" + 
+					"FROM <http://rdf.glytoucan.org/sequence/iupac_condensed>\n" + 
+					"FROM <http://rdf.glytoucan.org/sequence/iupac>\n" + 
+					"FROM <http://rdf.glytoucan.org/mass>\n"
+					+ "WHERE { \n"
+					+ "?s a glycan:saccharide .\n" + "?s glytoucan:has_primary_id \"" + accessionNumber + "\" .\n"
+//	        + "?s glycan:has_glycosequence ?wurcsgseq .\n" + "?wurcsgseq glycan:has_sequence ?" + GlycoSequence.Sequence + " .\n"
+	        + "?s glycan:has_glycosequence ?wurcsgseq .\n" 
+	        + "?wurcsgseq rdfs:label ?" + GlycoSequence.Sequence + " .\n"
+	        + "?wurcsgseq glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs .\n" 
+					+ "optional {\n"
+					+ "?s glycan:has_glycosequence ?gseq .\n" + "?gseq glycan:has_sequence ?iupac .\n"
+					+ "?gseq glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac_condensed .\n"
+					+ "}" 
+					+ "optional {\n"
+					+ "?s glytoucan:has_derivatized_mass ?mass .\n" + "?mass rdf:type        glytoucan:derivatized_mass .\n"
+					+ "?mass rdfs:label        ?" + DerivatizedMass.MassLabel + " .\n" + "?mass glytoucan:has_mass        ?" + DerivatizedMass.MassValue + " .\n"
+					+ "?mass glytoucan:has_derivatization_type ?" 
+					+ DerivatizedMass.MassType + " .\n" + "}\n" + "}\n" + "limit 10";
+			StringBuilder desc = new StringBuilder("Accession Number " + accessionNumber + " is a Glycan Structure Sequence registered in the GlyTouCan repository.");
+			SparqlEntity se = new SparqlEntity();
+
+			List<SparqlEntity> seList = null;
+			try {
+				seList = sparqlDAO.query(new SelectSparqlBean(sparql));
+			} catch (SparqlException e) {
+				e.printStackTrace();
+				se = new SparqlEntity();
+				se.setValue(Description, desc.toString());
+				
+				return se;
+			}
+
+			String iupac = null, massvalue = null, masslabel = null, masstype = null, sequence = null;
+
+			if (seList.iterator().hasNext()) {
+				se = seList.iterator().next();
+				iupac = se.getValue("iupac");
+				sequence= se.getValue(GlycoSequence.Sequence);
+				massvalue = se.getValue(DerivatizedMass.MassValue);
+				masslabel = se.getValue(DerivatizedMass.MassLabel);
+				masstype = se.getValue(DerivatizedMass.MassType);
+			} else
+				throw new InvalidException(accessionNumber + " Not found");
+
+			logger.debug("mass label:>" + masslabel);
+			logger.debug("mass type:>" + masstype);
+			logger.debug("mass value:>" + massvalue);
+			logger.debug("IUPAC:>" + iupac);
+			
+			if (StringUtils.isNotBlank(iupac))
+				desc.append("  The IUPAC representation is " + iupac + ".");
+			if (StringUtils.isNotBlank(sequence))
+				desc.append("  The WURCS representation is " + sequence + ".");
+
+			if (null != massvalue) {
+				desc.append("  It has a mass of " + masslabel);
+				if (masstype.contains("derivatization_type_none"))
+					desc.append(", computed without any derivatization");
+				desc.append(".");
+			}
+			se.setValue(Description, desc.toString());
+			se.setValue(ResourceEntry.Identifier, accessionNumber);
+
+			return se;
+		}
+
+	 
 	@Override
 	public List<SparqlEntity> getGlycans(String offset, String limit) throws SparqlException {
 		listAllIdSelectSparql.setLimit(limit);
