@@ -782,7 +782,7 @@ public class GlycanProcedure implements org.glycoinfo.rdf.service.GlycanProcedur
 					+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
 					+ "SELECT distinct ?iupac ?" + GlycoSequence.Sequence + " ?" + DerivatizedMass.MassLabel + " ?" 
 					+ DerivatizedMass.MassType + " ?" + DerivatizedMass.MassValue + "\n"
-					+ "FROM NAMED <http://rdf.glytoucan.org/core>\n"
+					+ "FROM <http://rdf.glytoucan.org/core>\n"
 					+ "FROM <http://rdf.glytoucan.org/sequence/wurcs>\n" + 
 					"FROM <http://rdf.glytoucan.org/sequence/iupac_extended>\n" + 
 					"FROM <http://rdf.glytoucan.org/sequence/iupac_condensed>\n" + 
