@@ -80,26 +80,16 @@ public class ConvertSparqlProcessor implements ItemProcessor<SparqlEntity, Sparq
       logger.error("error processing:>" + sequence + "<");
       if (e.getMessage() != null && e.getMessage().length() > 0)
         errorMessage = e.getMessage();
-      else
-        throw e;
+      throw e;
     }
 
     // if (null != convertedSeq) {
     logger.debug("Converting (" + sequence + ") into (" + convertedSeq + ")");
+
+    if (null == convertedSeq)
+      return null;
     
     sparqlEntityProcessing.setValue(ConvertInsertSparql.ConvertedSequence, convertedSeq);
-
-    if (null != errorMessage) {
-      String encodedErrorMessage;
-      try {
-        encodedErrorMessage = URLEncoder.encode(errorMessage, "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
-        throw new ConvertException(e);
-      }
-
-      return null;
-    }
 
     if (null != postConverter) {
       sparqlEntityProcessing = postConverter.convert(sparqlEntityProcessing);

@@ -89,4 +89,10 @@ public interface GlycanProcedure {
   String register(String sequence, String contributorId, String partnerId) throws GlycanException, ContributorException;
 
   SparqlEntity removeResourceEntry(String accessionNumber, String contributorId, String dbId) throws GlycanException, ContributorException;
+
+SparqlEntity getDescriptionCore(String accessionNumber) throws InvalidException;
+
+List<SparqlEntity> getArchivedAccessionNumbers(String offset, String limit) throws InvalidException;
+
+SparqlEntity searchByAccessionNumberIncludingArchived(String accessionNumber) throws SparqlException;
 }

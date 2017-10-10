@@ -22,6 +22,7 @@ import org.springframework.util.Assert;
 public class GlycoSequenceResourceEntryContributorSelectSparql extends WurcsGlycoSequenceSelectSparql {
 	public static final String DateEntered = Saccharide.URI;
 	public static final String Mass = "Mass";
+  public static final String MassLabel = "MassLabel";
 	public static final String Contributor = "Contributor";
 
 	public GlycoSequenceResourceEntryContributorSelectSparql(String sparql) {
@@ -32,6 +33,7 @@ public class GlycoSequenceResourceEntryContributorSelectSparql extends WurcsGlyc
 		super();
 		this.select += "?" + DateEntered + "\n"
 						+ "?" + Mass + "\n"
+            + "?" + MassLabel + "\n"
 						+ "?" + Contributor + "\n"
 						+ "?GlycoCTSequence" + "\n"
 						+ "?DateRegistered" + "\n";
@@ -54,9 +56,15 @@ public class GlycoSequenceResourceEntryContributorSelectSparql extends WurcsGlyc
 				+ "OPTIONAL {\n"
 				+ "?" + SaccharideURI + " glytoucan:has_derivatized_mass ?derivMass .\n"
 				+ "?derivMass glytoucan:has_mass ?" + Mass + " .\n"
+        + "?derivMass rdfs:label ?" + MassLabel + " .\n"
 				+ "}\n"
 				;
 		}
+	
+	@Override
+	public String getOrderBy() { 
+	  return "DateRegistered";
+	}
 
 
 

@@ -70,6 +70,15 @@ public class GlycanProcedureConfig implements GraphConfig {
 		return sb;
 	}
 	
+	@Bean(name="glycoSequenceResourceEntryContributorArchivedSelectSparql")
+	SelectSparql glycoSequenceResourceEntryContributorArchivedSelectSparql() {
+		GlycoSequenceResourceEntryContributorSelectSparql sb = new GlycoSequenceResourceEntryContributorSelectSparql();
+		sb.setFrom("FROM <http://rdf.glytoucan.org/core>\nFROM <http://rdf.glytoucan.org/archive>\nFROM <http://rdf.glytoucan.org/sequence/wurcs>\nFROM <http://rdf.glytoucan.org/mass>\nFROM <http://rdf.glytoucan.org/sequence/glycoct>\nFROM <http://rdf.glytoucan.org/users>\n");
+		return sb;
+	}
+
+	
+	
 	@Bean(name="listAllIdSelectSparql")
 	SelectSparql listAllIdSelectSparql() throws SparqlException {
 	  GlycoSequenceSelectSparql gsss = new GlycoSequenceSelectSparql();

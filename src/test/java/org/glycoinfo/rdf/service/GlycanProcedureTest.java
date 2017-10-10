@@ -1203,4 +1203,27 @@ LIN
       
       Assert.assertTrue("results should be 0", results.size() == 0);
     }
+    
+	@Test(expected=InvalidException.class)
+	public void testGetDescriptionCore() throws InvalidException {
+//		G68335WN will be archived so invalid exception expected
+	  SparqlEntity description = glycanProcedure.getDescriptionCore("G68335WN");
+      String desc = description.getValue(org.glycoinfo.rdf.service.impl.GlycanProcedure.Description);
+      logger.debug(desc);
+	  Assert.assertNull(desc);
+	}
+	
+	@Test
+	public void testArchived() throws InvalidException {
+	  List<SparqlEntity> seList = glycanProcedure.getArchivedAccessionNumbers("0", "100");
+		SparqlEntity se = new SparqlEntity();
+		String id = null;
+
+		if (seList.iterator().hasNext()) {
+			se = seList.iterator().next();
+			id = se.getValue("archivedId");
+			logger.debug("archived ID:" + id);
+		} else
+			throw new InvalidException("Sparql Query Invalid");
+	}
 }
