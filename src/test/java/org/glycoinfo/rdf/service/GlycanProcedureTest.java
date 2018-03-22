@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.jena.atlas.logging.Log;
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
 import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.convert.error.ConvertException;
@@ -1190,6 +1191,30 @@ LIN
     
     @Test
     @Transactional
+//    WURCS=2.0/1,1,0/[Ad1zz12h_3-7_1*N(CC^ZCCCC^ZCCCC$7/6CC$3)_6*NCN(C^ECC^ECC^ZC$5)/7OC/3=O]/1/
+    public void testRemoveResourceDollarMark() throws SparqlException, ConvertException, GlycanException, ContributorException {
+    	
+  String sequence ="WURCS=2.0/1,1,0/[Ad1zz12h_3-7_1*N(CC^ZCCCC^ZCCCC$7/6CC$3)_6*NCN(C^ECC^ECC^ZC$5)/7OC/3=O]/1/"; 
+    	SparqlEntity sequenceSE = glycanProcedure.searchBySequence(sequence);
+    	logger.debug(sequenceSE.getValue(GlycanProcedure.AccessionNumber));
+    	
+    	
+//      glycanProcedure.removeResourceEntry(sequenceSE.getValue(GlycanProcedure.AccessionNumber), NumberGenerator.generateSHA256Hash("aokinobu@gmail.com"), "12345REMOVEME");
+      glycanProcedure.removeResourceEntry(sequenceSE.getValue(GlycanProcedure.AccessionNumber), "82f22ca13e2ce280f13b346a7bd0cc37e8b9b557b43a081bd04b517e9acbc5c4", "CHEBI:100039");
+      
+      ResourceEntrySelectSparql ress = new ResourceEntrySelectSparql();
+      ress.setFrom("FROM <http://rdf.glytoucan.org/partner/glyconavi>\n");
+      SparqlEntity sparqlentity = new SparqlEntity();
+      sparqlentity.setValue(ResourceEntry.Identifier, "CHEBI:100039");
+      ress.setSparqlEntity(sparqlentity);
+      
+      List<SparqlEntity> results = sparqlDAO.query(ress);
+      
+      Assert.assertTrue("results should be 0", results.size() == 0);
+    }
+    
+    @Test
+    @Transactional
     public void testRemoveResourceG16546ZZNobu() throws SparqlException, ConvertException, GlycanException, ContributorException {
       glycanProcedure.removeResourceEntry("G00048MO", NumberGenerator.generateSHA256Hash("aokinobu@gmail.com"), "12345REMOVEME");
       
@@ -1203,6 +1228,7 @@ LIN
       
       Assert.assertTrue("results should be 0", results.size() == 0);
     }
+    
     
 	@Test(expected=InvalidException.class)
 	public void testGetDescriptionCore() throws InvalidException {
