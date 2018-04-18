@@ -5,6 +5,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.Sail;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionSystemException;
@@ -23,7 +24,7 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
  *
  * @author ameingast@gmail.com
  */
-public class VirtSesameTransactionManager extends AbstractPlatformTransactionManager {
+public class VirtSesameTransactionManager extends DataSourceTransactionManager {
     private final VirtSesameConnectionFactory sesameConnectionFactory;
 
     /**

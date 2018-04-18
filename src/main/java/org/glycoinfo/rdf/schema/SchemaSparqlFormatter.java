@@ -19,9 +19,13 @@ public class SchemaSparqlFormatter {
 		return classHandler.getPrefix() + ":" + classHandler.getClassName();
 	}
 	
-	public static String getPrefixDefinition(ClassHandler classHandler) {
-		return "prefix " + classHandler.getPrefix() + ": <" + classHandler.getPrefixIri() + ">";
-	}
+  public static String getPrefixDefinition(ClassHandler classHandler) {
+    if (classHandler.getPrefixIri().contains("<"))
+      return "prefix " + classHandler.getPrefix() + ": <"
+          + classHandler.getPrefixIri().substring(1, classHandler.getPrefixIri().length() - 1) + ">";
+    else
+      return "prefix " + classHandler.getPrefix() + ": <" + classHandler.getPrefixIri() + ">";
+  }
 	
 	public static String getDomainName(ClassHandler classHandler, String uri) {
 		// uri = http://schema.org/additionalName

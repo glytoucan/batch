@@ -41,6 +41,8 @@ public class SelectScint extends ScintillateParent implements UriProvider {
 		if (null != getSparqlEntity()) {
 			if (null != getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY))
 				this.sparqlBean.setWhere(SchemaSparqlFormatter.getAClassWhere(SchemaSparqlFormatter.getUri(this, getSparqlEntity().getValue(SelectSparql.PRIMARY_KEY)), this) + " \n");
+			else
+			  this.sparqlBean.setWhere(SchemaSparqlFormatter.getAClassWhere("?" + SelectSparql.URI, this) + " \n");
 			
 			Set<String> columns = getSparqlEntity().getColumns();
 
