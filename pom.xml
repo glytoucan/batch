@@ -204,6 +204,10 @@
 			<id>glycoinfo</id>
 			<url>http://nexus.glycoinfo.org/content/groups/public</url>
 		</repository>
+		<repository>
+			<id>sparqlite</id>
+			<url>http://nexus.sparqlite.com/content/groups/public</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
