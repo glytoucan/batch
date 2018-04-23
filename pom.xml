@@ -288,6 +288,7 @@
 		<repository.user>glytoucan</repository.user>
 		<repository.name>batch</repository.name>
 		<googleAnalyticsAccountId>UA-54566807-1</googleAnalyticsAccountId>
+       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
