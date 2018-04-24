@@ -1,4 +1,4 @@
-package org.glycoinfo.rdf.dao;
+package org.glycoinfo.rdf.glycan;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
@@ -19,6 +19,8 @@ import org.glycoinfo.rdf.SelectSparql;
 import org.glycoinfo.rdf.SelectSparqlBean;
 import org.glycoinfo.rdf.SparqlBean;
 import org.glycoinfo.rdf.SparqlException;
+import org.glycoinfo.rdf.dao.SparqlDAO;
+import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.dao.virt.VirtSesameTransactionConfig;
 import org.glycoinfo.rdf.glycan.ContributorInsertSparqlTest;
 import org.glycoinfo.rdf.glycan.GlycoSequence;

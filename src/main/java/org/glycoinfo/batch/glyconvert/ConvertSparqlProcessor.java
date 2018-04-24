@@ -1,19 +1,11 @@
 package org.glycoinfo.batch.glyconvert;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import javax.annotation.Resource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glycoinfo.batch.SparqlItemConfig;
-import org.glycoinfo.batch.SparqlItemWriter;
 import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.convert.error.ConvertException;
 import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
-import org.glycoinfo.rdf.glycan.GlycoSequence;
 import org.glycoinfo.rdf.glycan.Saccharide;
 import org.glycoinfo.rdf.utils.SparqlEntityConverter;
 import org.springframework.batch.item.ItemProcessor;
