@@ -1,7 +1,6 @@
 package org.glycoinfo.rdf.service.impl;
 
 import org.glycoinfo.batch.search.wurcs.SubstructureSearchSparql;
-import org.glycoinfo.client.MSdbClient;
 import org.glycoinfo.convert.GlyConvert;
 import org.glycoinfo.convert.GlyConvertConfig;
 import org.glycoinfo.rdf.DeleteSparql;
