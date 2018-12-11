@@ -13,14 +13,20 @@ import org.glycoinfo.rdf.SparqlException;
 import org.glycoinfo.rdf.dao.SparqlEntity;
 import org.glycoinfo.rdf.glycan.mass.MassInsertSparql;
 import org.glycoinfo.rdf.glycan.mass.MassSelectSparql;
+import org.glycoinfo.rdf.service.GlycanProcedure;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MassSparqlProcessor implements
 		ItemProcessor<SparqlEntity, SparqlEntity> {
+	
+	@Autowired
+	GlycanProcedure glycanProcedure;
+	
 	protected Log logger = LogFactory.getLog(getClass());
 
 	@Override
-	public SparqlEntity process(final SparqlEntity sparqlEntity)
+	public SparqlEntity process(SparqlEntity sparqlEntity)
 			throws SparqlException, WURCSMassException {
 
 		// get the sequence
@@ -36,51 +42,10 @@ public class MassSparqlProcessor implements
 		boolean cancalculate = true;
 		
 		if (null != sequence && sequence.length() > 0) {
-			try {
-//				String decodedSequence = URLDecoder.decode(sequence, "UTF-8");
-//				logger.debug("processing decoded:>" + decodedSequence + "<");
-				
-				t_objWURCS = t_objImporter.extractWURCSArray(sequence);
-			} catch (WURCSFormatException e) {
-				sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate invalid format");
-				cancalculate = false;
-//				throw new SparqlException(e);
-//			} catch (UnsupportedEncodingException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-			}
-			if (cancalculate) {
-
-				try {
-					testMass = WURCSMassCalculator.calcMassWURCS(t_objWURCS);
-				} catch (WURCSMassException e) {
-					if (e.getMessage().contains("repeating unit")) {
-						testMass = new BigDecimal(-1);
-						sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate repeating units");
-					}
-					else if (e.getMessage().contains("unknown carbon length")) {
-						testMass = new BigDecimal(-2);
-						sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate unknown carbon length");
-					}
-					else if (e.getMessage().contains(
-							"Cannot calculate linkage with probability")) {
-						testMass = new BigDecimal(-3);
-						sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate linkages with probability");
-					}
-					else
-						throw e;
-				}
-			}
+				sparqlEntity = glycanProcedure.calculateMass(sequence);
 		} else  {
 			testMass = new BigDecimal(-4); // glycoct could not be converted to wurcs
 			sparqlEntity.setValue(MassInsertSparql.MassLabel, "cannot calculate: no sequence");
-		}
-
-		// return
-		logger.debug("Mass of (" + sequence + ") is (" + testMass + ")");
-		if (testMass.intValue() > -1) {
-			sparqlEntity.setValue(MassInsertSparql.Mass, testMass);
-			sparqlEntity.setValue(MassInsertSparql.MassLabel, testMass);
 		}
 
 		return sparqlEntity;
